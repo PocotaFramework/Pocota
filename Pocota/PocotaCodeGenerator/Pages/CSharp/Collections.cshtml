@@ -1,0 +1,61 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model ClassModel
+@{
+}
+
+    protected override bool IsCollectionChanged(string property)
+    {
+        switch(property)
+        {
+@foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
+{
+    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    <text>            case "@pm.Name":
+                return !Enumerable.SequenceEqual(
+                        @Html.Raw($"{fieldName}.OrderBy(o => o.GetHashCode()),") 
+                        @Html.Raw($"_initial{fieldName}.OrderBy(o => o.GetHashCode()),")
+                        ReferenceEqualityComparer.Instance
+                    );
+</text>
+}
+            default:
+                return false;
+        }
+    }
+
+    protected override void CancelCollectionsChanges()
+    {
+@foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
+{
+    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    <text>@Html.Raw($"        for(int i = {fieldName}.Count - 1; i >= 0; --i)")
+        {
+@Html.Raw($"            if (!_initial{fieldName}.Contains({fieldName}[i]))")
+            {
+@Html.Raw($"                {fieldName}.RemoveAt(i);")
+            }
+        }
+@Html.Raw($"        foreach(var item in _initial{fieldName})")
+        {
+@Html.Raw($"            if(!{fieldName}.Contains(item))")
+            {
+@Html.Raw($"                {fieldName}.Add(item);")
+            }
+        }
+</text>
+}
+    }
+
+    protected override void AcceptCollectionsChanges()
+    {
+@foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
+{
+    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    <text>@Html.Raw($"        if(_modified is null || !_modified.ContainsKey(\"{pm.Name}\"))")
+        {
+@Html.Raw($"            _initial{fieldName}.Clear();")
+@Html.Raw($"            _initial{fieldName}.AddRange({fieldName});")
+        }
+</text>
+}
+    }

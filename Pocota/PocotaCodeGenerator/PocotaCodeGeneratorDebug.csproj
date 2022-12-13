@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Net.Leksi.Pocota.CodeGenerator</AssemblyName>
+    <RootNamespace>Net.Leksi.Pocota.Common</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Net.Leksi.DocsRazorator" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
+    <ProjectReference Include="..\PocotaCommon\PocotaCommonDebug.csproj" />
+  </ItemGroup>
+
+</Project>
