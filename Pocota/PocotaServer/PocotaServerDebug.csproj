@@ -9,4 +9,8 @@
     <RootNamespace>Net.Leksi.Pocota.Server</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PocotaCommon\PocotaCommonDebug.csproj" />
+  </ItemGroup>
+
 </Project>

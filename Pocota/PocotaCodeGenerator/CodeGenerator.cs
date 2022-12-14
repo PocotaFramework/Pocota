@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.DocsRazorator;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Common;
@@ -11,6 +11,8 @@ public class CodeGenerator : IModelBuilder
 {
     private const string s_base = "Base";
     private const string s_void = "void";
+    private const string s_projection = "Projection";
+    private const string s_controllerBase = "ControllerBase";
 
     private readonly Dictionary<Type, List<Type>> _projectors = new();
     private readonly Dictionary<Type, Type> _projections = new();
@@ -70,12 +72,16 @@ public class CodeGenerator : IModelBuilder
                             $"Only interfaces allowed but {projection} is not one!"
                             );
                     }
-                    if (_projections.TryAdd(projection, attr.Projector))
+                    if (!_projections.TryAdd(projection, attr.Projector))
                     {
-                        _projectors[attr.Projector].Add(projection);
+                        throw new InvalidOperationException(
+                            $"The projection type {projection} already has it's projector {_projections[projection]}!"
+                            );
                     }
+                    _projectors[attr.Projector].Add(projection);
                 }
             }
+            CheckConsistency(attr.Projector, attr.Projections);
             if (attr.PrimaryKey is { })
             {
                 PrimaryKeyDefinition? keyDefinition = null;
@@ -152,60 +158,43 @@ public class CodeGenerator : IModelBuilder
             model.Properties.Clear();
             model.Classes.Clear();
 
-            if (request.Interface.Namespace is { })
-            {
-                model.Usings.Add(request.Interface.Namespace);
-            }
-            model.Usings.Add(typeof(IProjector).Namespace!);
+            AddUsings(model, request.Interface);
+            AddUsings(model, typeof(IProjector));
+            AddUsings(model, typeof(IProjection<>));
+            AddUsings(model, typeof(Client.PocoBase));
+            AddUsings(model, typeof(Properties<>));
+            AddUsings(model, typeof(Property<>));
 
             model.ClassName = MakeBaseClassName(request.Interface.Name); 
             model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
             model.IsEntity = _keyDefinitions.ContainsKey(request.Interface);
-            if (model.IsEntity)
-            {
-                AddUsings(model, typeof(Client.EntityBase));
-            }
-            else
-            {
-                AddUsings(model, typeof(Client.EnvelopeBase));
-            }
 
             foreach (PropertyInfo pi in request.Interface.GetProperties())
             {
-                PropertyModel propertyModel = new() { Name = pi.Name };
-                if (_projections.ContainsKey(pi.PropertyType))
+                PropertyModel propertyModel = new() {
+                    Name = pi.Name,
+                    IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable
+                };
+                if (_projectors.ContainsKey(pi.PropertyType) || _projections.ContainsKey(pi.PropertyType))
                 {
-                    throw new InvalidOperationException(
-                        $"A projector {request.Interface} cannot contain a projection type property {pi}!"
-                        );
-                }
-                if (_projectors.ContainsKey(pi.PropertyType))
-                {
+                    AddUsings(model, (_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType));
                     propertyModel.IsProjector = true;
                 }
                 if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                 {
                     propertyModel.IsList = true;
-                }
-                if (!pi.CanWrite)
-                {
-                    propertyModel.IsReadOnly = true;
-                }
-                NullabilityInfoContext nullability = new();
-                if (nullability.Create(pi).ReadState is NullabilityState.Nullable)
-                {
-                    propertyModel.IsNullable = true;
+                    AddUsings(model, typeof(NotifyCollectionChangedEventArgs));
                 }
                 if (propertyModel.IsList)
                 {
                     Type itemType = pi.PropertyType.GetGenericArguments()[0];
                     AddUsings(model, typeof(ObservableCollection<>));
-                    AddUsings(model, itemType);
-                    if (_projectors.ContainsKey(itemType))
+                    AddUsings(model, (_projections.ContainsKey(itemType) ? _projections[itemType] : itemType));
+                    if (_projectors.ContainsKey(itemType) || _projections.ContainsKey(itemType))
                     {
                         propertyModel.IsProjector = true;
                         propertyModel.IsNullable = false;
-                        propertyModel.ItemType = MakeBaseClassName(itemType.Name);
+                        propertyModel.ItemType = MakeBaseClassName((_projections.ContainsKey(itemType) ? _projections[itemType] : itemType).Name);
                     }
                     else
                     {
@@ -215,27 +204,141 @@ public class CodeGenerator : IModelBuilder
                 }
                 else if(propertyModel.IsProjector)
                 {
-                    propertyModel.Type = MakeBaseClassName(pi.PropertyType.Name);
+                    propertyModel.Type = MakeBaseClassName((_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType).Name);
                 }
                 else
                 {
                     AddUsings(model, pi.PropertyType);
                     propertyModel.Type = GetTypeName(pi.PropertyType);
                 }
-                Console.WriteLine($"Property {propertyModel.Name}");
-                Console.WriteLine($"    IsProjector: {propertyModel.IsProjector}");
-                Console.WriteLine($"         IsList: {propertyModel.IsList}");
-                Console.WriteLine($"     IsReadOnly: {propertyModel.IsReadOnly}");
-                Console.WriteLine($"     IsNullable: {propertyModel.IsNullable}");
-                Console.WriteLine($"           Type: {propertyModel.Type}");
-                Console.WriteLine($"       ItemType: {propertyModel.ItemType}");
-                model.Properties.Add(propertyModel);
-                foreach(Type projection in _projectors[request.Interface])
+                propertyModel.Interfaces.Add(GetTypeName(request.Interface), GetTypeName(pi.PropertyType));
+                foreach (Type projection in _projectors[request.Interface])
                 {
-                    AddUsings(model, projection);
-                    model.Projections.Add(GetTypeName(projection));
+                    if(projection.GetProperty(pi.Name) is PropertyInfo projectionProperty)
+                    {
+                        AddUsings(model, projectionProperty.PropertyType);
+                        propertyModel.Interfaces.Add(GetTypeName(projection), GetTypeName(projectionProperty.PropertyType));
+                    }
+                }
+                model.Properties.Add(propertyModel);
+            }
+            foreach (Type projection in new[] { request.Interface }.Concat(_projectors[request.Interface]))
+            {
+                AddUsings(model, projection);
+                ClassModel projectionModel = new() 
+                { 
+                    ClassName = MakeBaseClassName(projection.Name).Replace(s_base, s_projection),
+                    Interfaces = new List<string>() 
+                    {
+                        GetTypeName(projection),
+                        GetTypeName(typeof(IProjector)),
+                        GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { request.Interface }))
+                            .Replace(GetTypeName(request.Interface), MakeBaseClassName(request.Interface.Name)) 
+                    },
+                    Parent = model,
+                    Interface = GetTypeName(projection),
+                };
+                foreach(PropertyInfo pi in projection.GetProperties())
+                {
+                    PropertyModel propertyModel = new()
+                    {
+                        Name = pi.Name,
+                        Type = GetTypeName(pi.PropertyType),
+                        IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
+                        IsReadOnly = !pi.CanWrite,
+                        IsProjection = _projectors.ContainsKey(pi.PropertyType) || _projections.ContainsKey(pi.PropertyType),
+                        IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
+                    };
+                    if (propertyModel.IsProjection)
+                    {
+                        propertyModel.Class = MakeBaseClassName((_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType).Name);
+                    }
+                    if (propertyModel.IsList)
+                    {
+                        Type itemType = pi.PropertyType.GetGenericArguments()[0];
+                        if (_projectors.ContainsKey(itemType) || _projections.ContainsKey(itemType))
+                        {
+                            propertyModel.IsProjection = true;
+                            propertyModel.IsNullable = false;
+                            propertyModel.ItemType = GetTypeName(itemType);
+                            propertyModel.Class = MakeBaseClassName((_projections.ContainsKey(itemType) ? _projections[itemType] : itemType).Name);
+                        }
+                        else
+                        {
+                            propertyModel.ItemType = GetTypeName(itemType);
+                        }
+                    }
+                    projectionModel.Properties.Add(propertyModel);
+                }
+                foreach (MethodInfo method in projection.GetMethods())
+                {
+                    if (!projection.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
+                    {
+                        MethodModel methodModel = new()
+                        {
+                            Name = method.Name,
+                            ReturnType = GetTypeName(method.ReturnType),
+                        };
+                        if (_projectors.ContainsKey(method.ReturnType) || _projections.ContainsKey(method.ReturnType))
+                        {
+                            methodModel.CastReturn = true;
+                        }
+                        foreach (ParameterInfo parameter in method.GetParameters())
+                        {
+                            ParameterModel parameterModel = new()
+                            {
+                                Name = parameter.Name,
+                                Type = GetTypeName(parameter.ParameterType),
+                            };
+                            if (_projectors.ContainsKey(parameter.ParameterType) || _projections.ContainsKey(parameter.ParameterType))
+                            {
+                                parameterModel.Class = MakeBaseClassName((_projections.ContainsKey(parameter.ParameterType) ? _projections[parameter.ParameterType] : parameter.ParameterType).Name);
+                            }
+                            methodModel.Parameters.Add(parameterModel);
+                        }
+                        projectionModel.Methods.Add(methodModel);
+                    }
+                }
+                model.Classes.Add(projectionModel);
+            }
+
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                if (!request.Interface.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
+                {
+                    MethodModel methodModel = new()
+                    {
+                        Name = method.Name,
+                    };
+                    if(_projectors.ContainsKey(method.ReturnType) || _projections.ContainsKey(method.ReturnType))
+                    {
+                        methodModel.ReturnType = MakeBaseClassName((_projections.ContainsKey(method.ReturnType) ? _projections[method.ReturnType] : method.ReturnType).Name);
+                    }
+                    else
+                    {
+                        methodModel.ReturnType = GetTypeName(method.ReturnType);
+                    }
+                    foreach (ParameterInfo parameter in method.GetParameters())
+                    {
+                        ParameterModel parameterModel = new()
+                        {
+                            Name = parameter.Name,
+                        };
+                        if (_projectors.ContainsKey(parameter.ParameterType) || _projections.ContainsKey(parameter.ParameterType))
+                        {
+                            parameterModel.Type = MakeBaseClassName((_projections.ContainsKey(parameter.ParameterType) ? _projections[parameter.ParameterType] : parameter.ParameterType).Name);
+                        }
+                        else
+                        {
+                            parameterModel.Type = GetTypeName(parameter.ParameterType);
+                        }
+                        methodModel.Parameters.Add(parameterModel);
+                    }
+                    model.Methods.Add(methodModel);
                 }
             }
+
+            model.IsAbstract = model.Methods.Count > 0;
 
             request.ResultName = model.ClassName;
 
@@ -250,7 +353,36 @@ public class CodeGenerator : IModelBuilder
 
     public void BuildControllerInterface(ClassModel model, string selector)
     {
-        throw new NotImplementedException();
+        if (_requests[int.Parse(selector)] is GeneratingRequest request)
+        {
+            model.Usings.Clear();
+            model.Methods.Clear();
+            model.NamespaceValue = request.Interface.Namespace ?? String.Empty;
+            model.ClassName = $"I{_contractNameCheck.Match(request.Interface.Name).Groups[1].Captures[0].Value}{s_controllerBase}";
+            _requests[int.Parse(selector)].ResultName = model.ClassName;
+            AddUsings(model, typeof(Task));
+            AddUsings(model, typeof(ExpectedOutputTypeAttribute));
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                AddUsings(model, method.ReturnType);
+                MethodModel mm = new MethodModel
+                {
+                    ReturnType = s_void,
+                    Name = method.Name,
+                    ExpectedOutputType = GetTypeName(method.ReturnType)
+                };
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    AddUsings(model, parameter.ParameterType);
+                    bool isNullable = new NullabilityInfoContext().Create(parameter).ReadState is NullabilityState.Nullable;
+                    mm.Parameters.Add(new ParameterModel { Name = parameter.Name!, Type = $"{parameter.ParameterType.Name}{(isNullable ? "?" : String.Empty)}" });
+                }
+                model.Methods.Add(mm);
+            }
+            model.Usings.Remove(model.NamespaceValue);
+            request.ResultName = model.ClassName;
+        }
+
     }
 
     public void BuildControllerProxy(ClassModel model, string selector)
@@ -293,7 +425,7 @@ public class CodeGenerator : IModelBuilder
                             Kind = RequestKind.ControllerInterface
                         });
                     }
-                    if (this.ControllerDirectory is { })
+                    if (false/*this.ControllerDirectory is { }*/)
                     {
                         res.Add($"/ControllerProxy?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
@@ -350,6 +482,73 @@ public class CodeGenerator : IModelBuilder
         }
         Console.WriteLine($"Total: {pos}");
         _queue.Clear();
+    }
+
+    private void CheckConsistency(Type projector, Type[]? projections)
+    {
+        if (projections is { })
+        {
+            foreach (Type projection in projections)
+            {
+                foreach (PropertyInfo projectionProperty in projection.GetProperties())
+                {
+                    PropertyInfo? projectorProperty = projector.GetProperty(projectionProperty.Name);
+
+                    if (projectorProperty is null)
+                    {
+                        throw new InvalidOperationException($"Projector type {projector} doesn't contain property {projectionProperty.Name} from projection type {projection}!");
+                    }
+                    bool projectorPropertyIsList = projectorProperty.PropertyType.IsGenericType
+                        && typeof(IList<>).IsAssignableFrom(projectorProperty.PropertyType.GetGenericTypeDefinition());
+                    bool projectionPropertyIsList = projectionProperty.PropertyType.IsGenericType
+                        && typeof(IList<>).IsAssignableFrom(projectionProperty.PropertyType.GetGenericTypeDefinition());
+                    if(projectorPropertyIsList != projectionPropertyIsList)
+                    {
+                        throw new InvalidOperationException($"The property {projectionProperty.Name} must be a list or not a list at both {projector} and {projection} types!");
+                    }
+                    if (
+                        new NullabilityInfoContext().Create(projectorProperty).ReadState != new NullabilityInfoContext().Create(projectionProperty).ReadState
+                    )
+                    {
+                        throw new InvalidOperationException($"The property {projectionProperty.Name} must have same nullability at both {projector} and {projection} types!");
+                    }
+                    Type projectorItemType;
+                    Type projectionItemType;
+                    if (projectionPropertyIsList)
+                    {
+                        projectorItemType = projectorProperty.PropertyType.GetGenericArguments()[0];
+                        projectionItemType = projectorProperty.PropertyType.GetGenericArguments()[0];
+                    }
+                    else
+                    {
+                        projectorItemType = projectorProperty.PropertyType;
+                        projectionItemType = projectorProperty.PropertyType;
+                    }
+                    if (
+                        (
+                            _projectors.TryGetValue(projectorItemType, out List<Type>? list) 
+                            && projectionItemType != projectorItemType 
+                            && !list.Contains(projectionItemType)
+                        )
+                        || (
+                            !_projectors.ContainsKey(projectorItemType)
+                            && projectorItemType != projectionItemType
+                        )
+                    )
+                    {
+                        throw new InvalidOperationException($"The properties {projectorProperty} and {projectionProperty} are inconsistent!");
+                    }
+                }
+                foreach(MethodInfo mi in projection.GetMethods())
+                {
+                    MethodInfo? projectorMethod = projector.GetMethod(mi.Name, mi.GetParameters().Select(p => p.ParameterType).ToArray());
+                    if(projectorMethod is null)
+                    {
+                        throw new InvalidOperationException($"Projector type {projector} doesn't contain method {mi} from projection type {projection}!");
+                    }
+                }
+            }
+        }
     }
 
     private string MakeBaseClassName(string interfaceName)

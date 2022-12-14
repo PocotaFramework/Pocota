@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
     <ProjectReference Include="..\PocotaCommon\PocotaCommonDebug.csproj" />
+    <ProjectReference Include="..\PocotaServer\PocotaServerDebug.csproj" />
   </ItemGroup>
 
 </Project>

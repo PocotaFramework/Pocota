@@ -15,15 +15,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsContractDebug", "Demo\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCommonDebug", "Pocota\PocotaCommon\PocotaCommonDebug.csproj", "{5DA45D60-CDA3-4F76-A3DA-11E8D710F62D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaCodeGeneratorDebug", "Pocota\PocotaCodeGenerator\PocotaCodeGeneratorDebug.csproj", "{C6D69A45-AE46-4703-B999-62C04D251A4A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCodeGeneratorDebug", "Pocota\PocotaCodeGenerator\PocotaCodeGeneratorDebug.csproj", "{C6D69A45-AE46-4703-B999-62C04D251A4A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaServerDebug", "Pocota\PocotaServer\PocotaServerDebug.csproj", "{9FAE1DAE-2B34-417A-B72D-3E18A477EA77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaServerDebug", "Pocota\PocotaServer\PocotaServerDebug.csproj", "{9FAE1DAE-2B34-417A-B72D-3E18A477EA77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsCodeGeneratorDebug", "Demo\Cats\CatsCodeGenerator\CatsCodeGeneratorDebug.csproj", "{B68D034A-380A-47D2-8AEC-6BC59FE4803E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsCodeGeneratorDebug", "Demo\Cats\CatsCodeGenerator\CatsCodeGeneratorDebug.csproj", "{B68D034A-380A-47D2-8AEC-6BC59FE4803E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsConnector", "Demo\Cats\CatsConnector\CatsConnector.csproj", "{1E0247E6-E4B2-4BE8-81D1-34C2B4346F1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsConnectorDebug", "Demo\Cats\CatsConnector\CatsConnectorDebug.csproj", "{1E0247E6-E4B2-4BE8-81D1-34C2B4346F1D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaClientDebug", "Pocota\PocotaClient\PocotaClientDebug.csproj", "{5AB06181-A446-4247-B034-31CD39463465}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaClientDebug", "Pocota\PocotaClient\PocotaClientDebug.csproj", "{5AB06181-A446-4247-B034-31CD39463465}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsServerBasesDebug", "Demo\Cats\CatsServerBases\CatsServerBasesDebug.csproj", "{E2939199-4242-41C8-85AA-AA4A93AC7AB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsClientMiscDebug", "Demo\Cats\CatsClientMisc\CatsClientMiscDebug.csproj", "{7882167F-4806-4665-92D8-495879BEC3FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{5AB06181-A446-4247-B034-31CD39463465}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5AB06181-A446-4247-B034-31CD39463465}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5AB06181-A446-4247-B034-31CD39463465}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2939199-4242-41C8-85AA-AA4A93AC7AB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2939199-4242-41C8-85AA-AA4A93AC7AB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2939199-4242-41C8-85AA-AA4A93AC7AB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2939199-4242-41C8-85AA-AA4A93AC7AB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7882167F-4806-4665-92D8-495879BEC3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7882167F-4806-4665-92D8-495879BEC3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7882167F-4806-4665-92D8-495879BEC3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7882167F-4806-4665-92D8-495879BEC3FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +89,8 @@ Global
 		{B68D034A-380A-47D2-8AEC-6BC59FE4803E} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 		{1E0247E6-E4B2-4BE8-81D1-34C2B4346F1D} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 		{5AB06181-A446-4247-B034-31CD39463465} = {394DFADD-F29C-419F-9405-BE3182FF4B0E}
+		{E2939199-4242-41C8-85AA-AA4A93AC7AB9} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
+		{7882167F-4806-4665-92D8-495879BEC3FF} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA791647-B939-4CAF-B462-B8812FB92EFA}

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
     <ProjectReference Include="..\..\..\Pocota\PocotaCommon\PocotaCommonDebug.csproj" />
+    <ProjectReference Include="..\..\..\Pocota\PocotaServer\PocotaServerDebug.csproj" />
     <ProjectReference Include="..\CatsCommon\CatsCommonDebug.csproj" />
   </ItemGroup>
 

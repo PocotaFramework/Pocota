@@ -1,0 +1,29 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+    static @Html.Raw($"{Model.ClassName}()")
+    {
+        Properties.Add(typeof(@Model.ClassName), new @Html.Raw($"Properties<PocoBase>()"));
+        @foreach (PropertyModel pm in Model.Properties)
+        {    
+    <text>        Properties[typeof(@Model.ClassName)].Add(
+                new @Html.Raw($"Property<PocoBase>(")
+                @Html.Raw("\"")@pm.Name@Html.Raw("\""), 
+                typeof(@Html.Raw(pm.Type.Trim('?'))),
+                @Html.Raw($"Get{pm.Name}Value"), 
+                @if (@pm.IsList){<text>                null</text>} else {<text>                @Html.Raw("Set" + pm.Name + "Value")</text>}, 
+                @Html.Raw($"target => ((IPoco)target).TouchProperty(\"{pm.Name}\")"), 
+                @if (!pm.IsNullable){<text>                false</text>} else {<text>                true</text>}, 
+                @if (@pm.IsReadOnly){<text>                true</text>} else {<text>                false</text>}, 
+                @if (@pm.IsList){<text>                true</text>} else {<text>                false</text>}
+            
+            )
+            @foreach(var entry in pm.Interfaces)
+            {
+                <text>            @Html.Raw($".AddPropertyType<{entry.Key.Trim('.')}, {entry.Value.Trim('?')}>()")
+</text>
+            }
+        );
+</text>
+        }
+    }

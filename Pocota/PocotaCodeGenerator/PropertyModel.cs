@@ -8,5 +8,8 @@ public class PropertyModel
     public bool IsNullable { get; internal set; } = false;
     public bool IsList { get; internal set; } = false;
     public bool IsProjector { get; internal set; } = false;
+    public bool IsProjection { get; internal set; } = false;
     public string? ItemType { get; internal set; } = null;
+    public string? Class { get; internal set; } = null;
+    public Dictionary<string, string> Interfaces { get; init; } = new();
 }

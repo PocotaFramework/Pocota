@@ -2,5 +2,5 @@
 
 public interface IProjection<T>
 {
-    T Source { get; }
+    T Projector { get; }
 }
