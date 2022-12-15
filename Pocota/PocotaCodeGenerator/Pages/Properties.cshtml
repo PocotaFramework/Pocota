@@ -1,0 +1,9 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    private @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name { get; @if(!pm.IsReadOnly && !pm.IsList) {<text>set; } = @Html.Raw($"default{(!pm.IsNullable ? "!" : string.Empty)}");</text>} else if(pm.IsList) {<text>init; } = new();</text>}
+
+</text>
+}

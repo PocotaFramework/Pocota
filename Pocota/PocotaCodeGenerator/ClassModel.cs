@@ -16,6 +16,11 @@ public class ClassModel : PageModel
     public List<string> Interfaces { get; init; } = new();
     public ClassModel? Parent { get; set; } = null;
     public string? Interface { get; set; } = null;
+    public bool IsClient { get; set; } = false;
+    public string ControllerInterface { get; set; } = null!;
+
+
+
 
     public void OnGet([FromServices] IModelBuilder modelBuilder)
     {

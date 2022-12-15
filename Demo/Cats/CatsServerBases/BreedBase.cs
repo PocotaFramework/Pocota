@@ -1,20 +1,22 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Model.BreedBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-
+using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using System;
+    
 namespace CatsCommon.Model;
 
 public class BreedBase: EntityBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class BreedProjection: IBreed, IProjector, IProjection<BreedBase>
     {
@@ -65,7 +67,7 @@ public class BreedBase: EntityBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -77,7 +79,7 @@ public class BreedBase: EntityBase, IProjector
                 typeof(String),
                 GetCodeValue, 
                 SetCodeValue, 
-                target => ((IPoco)target).TouchProperty("Code"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -90,7 +92,7 @@ public class BreedBase: EntityBase, IProjector
                 typeof(String),
                 GetGroupValue, 
                 SetGroupValue, 
-                target => ((IPoco)target).TouchProperty("Group"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -103,7 +105,7 @@ public class BreedBase: EntityBase, IProjector
                 typeof(String),
                 GetNameEngValue, 
                 SetNameEngValue, 
-                target => ((IPoco)target).TouchProperty("NameEng"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -116,7 +118,7 @@ public class BreedBase: EntityBase, IProjector
                 typeof(String),
                 GetNameNatValue, 
                 SetNameNatValue, 
-                target => ((IPoco)target).TouchProperty("NameNat"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -125,13 +127,6 @@ public class BreedBase: EntityBase, IProjector
         );
     }
 
-    
-    
-    private String _code = default!;
-    private String _group = default!;
-    private String? _nameEng = default;
-    private String? _nameNat = default;
-
 
     
     private BreedProjection? _asBreedProjection = null;
@@ -139,73 +134,13 @@ public class BreedBase: EntityBase, IProjector
     public BreedProjection AsBreedProjection => _asBreedProjection ??= new(this);
 
 
-
     
-    public virtual String Code
-    {
-        get => _code;
-        set
-        {
-            if(_code != value)
-            {
-                object oldValue = _code;
-                _code = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private String Code { get; set; } = default!;
+    private String Group { get; set; } = default!;
+    private String? NameEng { get; set; } = default;
+    private String? NameNat { get; set; } = default;
 
-    public virtual String Group
-    {
-        get => _group;
-        set
-        {
-            if(_group != value)
-            {
-                object oldValue = _group;
-                _group = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual String? NameEng
-    {
-        get => _nameEng;
-        set
-        {
-            if(_nameEng != value)
-            {
-                object? oldValue = _nameEng;
-                _nameEng = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual String? NameNat
-    {
-        get => _nameNat;
-        set
-        {
-            if(_nameNat != value)
-            {
-                object? oldValue = _nameNat;
-                _nameNat = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-
-
-    public BreedBase(IServiceProvider services) : base(services) 
-    { 
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(BreedBase)];
@@ -219,29 +154,6 @@ public class BreedBase: EntityBase, IProjector
         return null;
     }
 
-
-
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-
-
-    
 
 
 
@@ -288,7 +200,4 @@ public class BreedBase: EntityBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

@@ -1,20 +1,22 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Filters.CatteryFilterBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-
+using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using System;
+    
 namespace CatsCommon.Filters;
 
 public class CatteryFilterBase: EnvelopeBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class CatteryFilterProjection: ICatteryFilter, IProjector, IProjection<CatteryFilterBase>
     {
@@ -47,7 +49,7 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -59,7 +61,7 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
                 typeof(String),
                 GetSearchRegexValue, 
                 SetSearchRegexValue, 
-                target => ((IPoco)target).TouchProperty("SearchRegex"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -68,10 +70,6 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
         );
     }
 
-    
-    
-    private String? _searchRegex = default;
-
 
     
     private CatteryFilterProjection? _asCatteryFilterProjection = null;
@@ -79,28 +77,10 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
     public CatteryFilterProjection AsCatteryFilterProjection => _asCatteryFilterProjection ??= new(this);
 
 
-
     
-    public virtual String? SearchRegex
-    {
-        get => _searchRegex;
-        set
-        {
-            if(_searchRegex != value)
-            {
-                object? oldValue = _searchRegex;
-                _searchRegex = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private String? SearchRegex { get; set; } = default;
 
-
-
-    public CatteryFilterBase(IServiceProvider services) : base(services) 
-    { 
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(CatteryFilterBase)];
@@ -114,29 +94,6 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
         return null;
     }
 
-
-
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-
-
-    
 
 
 
@@ -156,7 +113,4 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

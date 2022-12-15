@@ -1,20 +1,22 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Model.CatteryBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-
+using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using System;
+    
 namespace CatsCommon.Model;
 
 public class CatteryBase: EnvelopeBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class CatteryProjection: ICattery, IProjector, IProjection<CatteryBase>
     {
@@ -53,7 +55,7 @@ public class CatteryBase: EnvelopeBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -65,7 +67,7 @@ public class CatteryBase: EnvelopeBase, IProjector
                 typeof(String),
                 GetNameEngValue, 
                 SetNameEngValue, 
-                target => ((IPoco)target).TouchProperty("NameEng"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -78,7 +80,7 @@ public class CatteryBase: EnvelopeBase, IProjector
                 typeof(String),
                 GetNameNatValue, 
                 SetNameNatValue, 
-                target => ((IPoco)target).TouchProperty("NameNat"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -87,11 +89,6 @@ public class CatteryBase: EnvelopeBase, IProjector
         );
     }
 
-    
-    
-    private String? _nameEng = default;
-    private String? _nameNat = default;
-
 
     
     private CatteryProjection? _asCatteryProjection = null;
@@ -99,43 +96,11 @@ public class CatteryBase: EnvelopeBase, IProjector
     public CatteryProjection AsCatteryProjection => _asCatteryProjection ??= new(this);
 
 
-
     
-    public virtual String? NameEng
-    {
-        get => _nameEng;
-        set
-        {
-            if(_nameEng != value)
-            {
-                object? oldValue = _nameEng;
-                _nameEng = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private String? NameEng { get; set; } = default;
+    private String? NameNat { get; set; } = default;
 
-    public virtual String? NameNat
-    {
-        get => _nameNat;
-        set
-        {
-            if(_nameNat != value)
-            {
-                object? oldValue = _nameNat;
-                _nameNat = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-
-
-    public CatteryBase(IServiceProvider services) : base(services) 
-    { 
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(CatteryBase)];
@@ -149,29 +114,6 @@ public class CatteryBase: EnvelopeBase, IProjector
         return null;
     }
 
-
-
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-
-
-    
 
 
 
@@ -200,7 +142,4 @@ public class CatteryBase: EnvelopeBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

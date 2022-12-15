@@ -2,10 +2,9 @@
 //------------------------------
 // Client implementation
 // CatsClient.ViewCatHeartBase
-// (Generated automatically 2022-12-14T18:56:50)
+// (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
-using CatsClient;
 using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
@@ -78,7 +77,7 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
 #endregion Projection classes;
 
     
-    static ViewCatHeartBase()
+    public static void InitProperties()
     {
         Properties.Add(typeof(ViewCatHeartBase), new Properties<PocoBase>());
         Properties[typeof(ViewCatHeartBase)].Add(
@@ -142,12 +141,16 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
     private Object _littersView = default!;
     private readonly ObservableCollection<LitterBase> _selectedLitters = new();
     private readonly List<LitterBase> _initial_selectedLitters = new();
-    private ViewCatHeartProjection? _asViewCatHeartProjection = null;
 
 
     
-    public ViewCatHeartProjection AsViewCatHeartProjection => As<ViewCatHeartProjection>();
+    private ViewCatHeartProjection? _asViewCatHeartProjection = null;
 
+    public ViewCatHeartProjection AsViewCatHeartProjection => _asViewCatHeartProjection ??= new(this);
+
+
+
+    
     public virtual EditKind EditKind
     {
         get => _editKind;
@@ -215,51 +218,20 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
     }
 
     
-    private static object? GetEditKindValue(PocoBase target)
-    {
-        return ((ViewCatHeartBase)target).EditKind;
-    }
-
-    private static void SetEditKindValue(PocoBase target, object? value)
-    {
-        ((ViewCatHeartBase)target).EditKind = (EditKind)value!;
-    }
-    private static object? GetCatValue(PocoBase target)
-    {
-        return ((ViewCatHeartBase)target).Cat;
-    }
-
-    private static void SetCatValue(PocoBase target, object? value)
-    {
-        ((ViewCatHeartBase)target).Cat = (CatBase)value!;
-    }
-    private static object? GetLittersViewValue(PocoBase target)
-    {
-        return ((ViewCatHeartBase)target).LittersView;
-    }
-
-    private static void SetLittersViewValue(PocoBase target, object? value)
-    {
-        ((ViewCatHeartBase)target).LittersView = (Object)value!;
-    }
-    private static object? GetSelectedLittersValue(PocoBase target)
-    {
-        return ((ViewCatHeartBase)target).SelectedLitters;
-    }
-
-
-
     public override Properties<PocoBase> GetProperties() => Properties[typeof(ViewCatHeartBase)];
 
     public override object? As(Type type)
     {
         if(type == typeof(ViewCatHeartProjection) || type == typeof(IViewCatHeart))
         {
-            _asViewCatHeartProjection ??= new(this);
-            return _asViewCatHeartProjection;
+            return AsViewCatHeartProjection;
         }
         return null;
     }
+
+    public abstract void LittersSelectionChanged(Object sender, EventArgs e);
+
+
 
     
     protected override bool IsCollectionChanged(string property)
@@ -313,27 +285,52 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
 
     protected virtual void SelectedLittersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.OldItems is { })
-        {
-            foreach (INotifyPocoChanged item in e.OldItems)
-            {
-                item.PocoChanged -= SelectedLittersPocoChanged;
-            }
-        }
-        if (e.NewItems is { })
-        {
-            foreach (INotifyPocoChanged item in e.NewItems)
-            {
-                item.PocoChanged += SelectedLittersPocoChanged;
-            }
-        }
+
         OnPocoChanged(_initial_selectedLitters, _selectedLitters, nameof(SelectedLitters));
         OnPropertyChanged(nameof(SelectedLitters));
     }
 
     
 
-    public abstract void LittersSelectionChanged(Object sender, EventArgs e);
+    
+    #region Properties accessors;
+
+    private static object? GetEditKindValue(PocoBase target)
+    {
+        return ((ViewCatHeartBase)target).EditKind;
+    }
+
+    private static void SetEditKindValue(PocoBase target, object? value)
+    {
+        ((ViewCatHeartBase)target).EditKind = (EditKind)value!;
+    }
+    private static object? GetCatValue(PocoBase target)
+    {
+        return ((ViewCatHeartBase)target).Cat;
+    }
+
+    private static void SetCatValue(PocoBase target, object? value)
+    {
+        ((ViewCatHeartBase)target).Cat = (CatBase)value!;
+    }
+    private static object? GetLittersViewValue(PocoBase target)
+    {
+        return ((ViewCatHeartBase)target).LittersView;
+    }
+
+    private static void SetLittersViewValue(PocoBase target, object? value)
+    {
+        ((ViewCatHeartBase)target).LittersView = (Object)value!;
+    }
+    private static object? GetSelectedLittersValue(PocoBase target)
+    {
+        return ((ViewCatHeartBase)target).SelectedLitters;
+    }
+
+
+    #endregion Properties accessors;
+
+
 
 }
 

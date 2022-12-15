@@ -1,0 +1,24 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+    public override @Html.Raw($"Properties<PocoBase>") GetProperties() => Properties[typeof(@Model.ClassName)];
+
+    public override object? As(Type type)
+    {
+        @foreach (ClassModel model1 in Model.Classes)
+        {
+            <text>        if(type == typeof(@Html.Raw(model1.ClassName)) || type == typeof(@Html.Raw(model1.Interface)))
+        {
+            return @Html.Raw($"As{model1.ClassName}");
+        }
+</text>
+        }
+        return null;
+    }
+
+    @foreach(MethodModel mm in Model.Methods)
+    {
+    <text>    public abstract @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})");
+</text>
+    }
+

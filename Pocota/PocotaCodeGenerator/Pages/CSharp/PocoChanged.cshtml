@@ -14,7 +14,9 @@
     string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
     <text>    protected virtual void @Html.Raw(pm.Name)CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.OldItems is { })
+        @if (pm.IsProjection)
+        {
+            <text>        if (e.OldItems is { })
         {
             foreach (INotifyPocoChanged item in e.OldItems)
             {
@@ -28,6 +30,9 @@
                 item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
             }
         }
+</text>
+        }
+
         @Html.Raw($"OnPocoChanged(_initial{fieldName}, {fieldName}, nameof({pm.Name}))");
         OnPropertyChanged(nameof(@pm.Name));
     }

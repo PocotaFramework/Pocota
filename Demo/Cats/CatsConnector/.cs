@@ -1,7 +1,7 @@
 //------------------------------
 // MVC Controller interface 
-// Cats.Contract.ICatsControllerBase
-// (Generated automatically 2022-12-15T18:05:06)
+// Cats.Contract.ICatsController
+// (Generated automatically 2022-12-15T18:54:21)
 //------------------------------
 
 using CatsCommon.Filters;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Cats.Contract;
 
-public interface ICatsControllerBase 
+public interface ICatsController 
 {
     [ExpectedOutputType(typeof(IList<ICatForListing>))]
     void FindCats(ICatFilter? filter);

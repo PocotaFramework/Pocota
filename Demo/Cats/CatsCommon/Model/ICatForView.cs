@@ -12,4 +12,5 @@ public interface ICatForView
     public string? Description { get; }
     public string? Title { get; }
     IList<ILitterForCat> Litters { get; }
+    IList<ILitterForCat> test(IList<ICat> cats);
 }

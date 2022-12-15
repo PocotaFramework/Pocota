@@ -1,20 +1,22 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Filters.LitterFilterBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
 using CatsCommon.Model;
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-
+    using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    
 namespace CatsCommon.Filters;
 
 public class LitterFilterBase: EnvelopeBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class LitterFilterProjection: ILitterFilter, IProjector, IProjection<LitterFilterBase>
     {
@@ -53,7 +55,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -65,7 +67,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector
                 typeof(CatBase),
                 GetFemaleValue, 
                 SetFemaleValue, 
-                target => ((IPoco)target).TouchProperty("Female"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -78,7 +80,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector
                 typeof(CatBase),
                 GetMaleValue, 
                 SetMaleValue, 
-                target => ((IPoco)target).TouchProperty("Male"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -87,11 +89,6 @@ public class LitterFilterBase: EnvelopeBase, IProjector
         );
     }
 
-    
-    
-    private CatBase _female = default!;
-    private CatBase _male = default!;
-
 
     
     private LitterFilterProjection? _asLitterFilterProjection = null;
@@ -99,59 +96,11 @@ public class LitterFilterBase: EnvelopeBase, IProjector
     public LitterFilterProjection AsLitterFilterProjection => _asLitterFilterProjection ??= new(this);
 
 
-
     
-    public virtual CatBase Female
-    {
-        get => _female;
-        set
-        {
-            if(_female != value)
-            {
-                object oldValue = _female;
-                if(_female is {})
-                {
-                    _female.PocoChanged -= FemalePocoChanged;
-                }
-                _female = value;
-                if(_female is {})
-                {
-                    _female.PocoChanged += FemalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private CatBase Female { get; set; } = default!;
+    private CatBase Male { get; set; } = default!;
 
-    public virtual CatBase Male
-    {
-        get => _male;
-        set
-        {
-            if(_male != value)
-            {
-                object oldValue = _male;
-                if(_male is {})
-                {
-                    _male.PocoChanged -= MalePocoChanged;
-                }
-                _male = value;
-                if(_male is {})
-                {
-                    _male.PocoChanged += MalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-
-
-    public LitterFilterBase(IServiceProvider services) : base(services) 
-    { 
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(LitterFilterBase)];
@@ -164,33 +113,6 @@ public class LitterFilterBase: EnvelopeBase, IProjector
         }
         return null;
     }
-
-
-
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-
-
-    
-    protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-
-    protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
 
 
 
@@ -220,7 +142,4 @@ public class LitterFilterBase: EnvelopeBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

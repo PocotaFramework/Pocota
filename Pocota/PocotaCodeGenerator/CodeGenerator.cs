@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.DocsRazorator;
+using Net.Leksi.Pocota.Client;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reflection;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Common;
@@ -12,7 +16,17 @@ public class CodeGenerator : IModelBuilder
     private const string s_base = "Base";
     private const string s_void = "void";
     private const string s_projection = "Projection";
-    private const string s_controllerBase = "ControllerBase";
+    private const string s_controller = "Controller";
+    private const string s_controllerProxy = "ControllerProxy";
+    private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
+    private const string s_systemReflection = "System.Reflection";
+    private const string s_template = "!Template";
+    private const string s_post = "Post";
+    private const string s_put = "Put";
+    private const string s_null = "null";
+    private const string s_get = "Get";
+    private const string s_delete = "Delete";
+    private const string s_string = "string";
 
     private readonly Dictionary<Type, List<Type>> _projectors = new();
     private readonly Dictionary<Type, Type> _projections = new();
@@ -20,6 +34,7 @@ public class CodeGenerator : IModelBuilder
     private readonly HashSet<Type> _queue = new();
     private readonly List<GeneratingRequest> _requests = new();
     private readonly Dictionary<Type, List<PrimaryKeyDefinition>> _keyDefinitions = new();
+    private readonly HashSet<string> _variables = new();
 
     private readonly Regex _contractNameCheck = new("^I(.+?)Contract$");
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
@@ -27,10 +42,8 @@ public class CodeGenerator : IModelBuilder
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
-    public string? ControllerDirectory { get; set; } = null;
-    public string? ServerBasesDirectory { get; set; } = null;
-    public string? ConnectorDirectory { get; set; } = null;
-    public string? ClientBasesDirectory { get; set; } = null;
+    public string? ServerGeneratedDirectory { get; set; } = null;
+    public string? ClientGeneratedDirectory { get; set; } = null;
 
     public void AddContract<T>()
     {
@@ -62,6 +75,7 @@ public class CodeGenerator : IModelBuilder
                 throw new InvalidOperationException($"Interface {attr.Projector} is already added!");
             }
             _queue.Add(attr.Projector);
+            _projections.TryAdd(attr.Projector, attr.Projector);
             if (attr.Projections is { })
             {
                 foreach (Type projection in attr.Projections)
@@ -151,199 +165,12 @@ public class CodeGenerator : IModelBuilder
 
     public void BuildClientImplementation(ClassModel model, string selector)
     {
-        if (_requests[int.Parse(selector)] is GeneratingRequest request && _projectors.ContainsKey(request.Interface))
-        {
-            model.Usings.Clear();
-            model.Methods.Clear();
-            model.Properties.Clear();
-            model.Classes.Clear();
+        BuildImplementation(model, selector, true);
+    }
 
-            AddUsings(model, request.Interface);
-            AddUsings(model, typeof(IProjector));
-            AddUsings(model, typeof(IProjection<>));
-            AddUsings(model, typeof(Client.PocoBase));
-            AddUsings(model, typeof(Properties<>));
-            AddUsings(model, typeof(Property<>));
-
-            model.ClassName = MakeBaseClassName(request.Interface.Name); 
-            model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
-            model.IsEntity = _keyDefinitions.ContainsKey(request.Interface);
-
-            foreach (PropertyInfo pi in request.Interface.GetProperties())
-            {
-                PropertyModel propertyModel = new() {
-                    Name = pi.Name,
-                    IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable
-                };
-                if (_projectors.ContainsKey(pi.PropertyType) || _projections.ContainsKey(pi.PropertyType))
-                {
-                    AddUsings(model, (_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType));
-                    propertyModel.IsProjector = true;
-                }
-                if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
-                {
-                    propertyModel.IsList = true;
-                    AddUsings(model, typeof(NotifyCollectionChangedEventArgs));
-                }
-                if (propertyModel.IsList)
-                {
-                    Type itemType = pi.PropertyType.GetGenericArguments()[0];
-                    AddUsings(model, typeof(ObservableCollection<>));
-                    AddUsings(model, (_projections.ContainsKey(itemType) ? _projections[itemType] : itemType));
-                    if (_projectors.ContainsKey(itemType) || _projections.ContainsKey(itemType))
-                    {
-                        propertyModel.IsProjector = true;
-                        propertyModel.IsNullable = false;
-                        propertyModel.ItemType = MakeBaseClassName((_projections.ContainsKey(itemType) ? _projections[itemType] : itemType).Name);
-                    }
-                    else
-                    {
-                        propertyModel.ItemType = GetTypeName(itemType);
-                    }
-                    propertyModel.Type = GetTypeName(typeof(ObservableCollection<object>)).Replace(GetTypeName(typeof(object)), propertyModel.ItemType);
-                }
-                else if(propertyModel.IsProjector)
-                {
-                    propertyModel.Type = MakeBaseClassName((_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType).Name);
-                }
-                else
-                {
-                    AddUsings(model, pi.PropertyType);
-                    propertyModel.Type = GetTypeName(pi.PropertyType);
-                }
-                propertyModel.Interfaces.Add(GetTypeName(request.Interface), GetTypeName(pi.PropertyType));
-                foreach (Type projection in _projectors[request.Interface])
-                {
-                    if(projection.GetProperty(pi.Name) is PropertyInfo projectionProperty)
-                    {
-                        AddUsings(model, projectionProperty.PropertyType);
-                        propertyModel.Interfaces.Add(GetTypeName(projection), GetTypeName(projectionProperty.PropertyType));
-                    }
-                }
-                model.Properties.Add(propertyModel);
-            }
-            foreach (Type projection in new[] { request.Interface }.Concat(_projectors[request.Interface]))
-            {
-                AddUsings(model, projection);
-                ClassModel projectionModel = new() 
-                { 
-                    ClassName = MakeBaseClassName(projection.Name).Replace(s_base, s_projection),
-                    Interfaces = new List<string>() 
-                    {
-                        GetTypeName(projection),
-                        GetTypeName(typeof(IProjector)),
-                        GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { request.Interface }))
-                            .Replace(GetTypeName(request.Interface), MakeBaseClassName(request.Interface.Name)) 
-                    },
-                    Parent = model,
-                    Interface = GetTypeName(projection),
-                };
-                foreach(PropertyInfo pi in projection.GetProperties())
-                {
-                    PropertyModel propertyModel = new()
-                    {
-                        Name = pi.Name,
-                        Type = GetTypeName(pi.PropertyType),
-                        IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
-                        IsReadOnly = !pi.CanWrite,
-                        IsProjection = _projectors.ContainsKey(pi.PropertyType) || _projections.ContainsKey(pi.PropertyType),
-                        IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
-                    };
-                    if (propertyModel.IsProjection)
-                    {
-                        propertyModel.Class = MakeBaseClassName((_projections.ContainsKey(pi.PropertyType) ? _projections[pi.PropertyType] : pi.PropertyType).Name);
-                    }
-                    if (propertyModel.IsList)
-                    {
-                        Type itemType = pi.PropertyType.GetGenericArguments()[0];
-                        if (_projectors.ContainsKey(itemType) || _projections.ContainsKey(itemType))
-                        {
-                            propertyModel.IsProjection = true;
-                            propertyModel.IsNullable = false;
-                            propertyModel.ItemType = GetTypeName(itemType);
-                            propertyModel.Class = MakeBaseClassName((_projections.ContainsKey(itemType) ? _projections[itemType] : itemType).Name);
-                        }
-                        else
-                        {
-                            propertyModel.ItemType = GetTypeName(itemType);
-                        }
-                    }
-                    projectionModel.Properties.Add(propertyModel);
-                }
-                foreach (MethodInfo method in projection.GetMethods())
-                {
-                    if (!projection.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
-                    {
-                        MethodModel methodModel = new()
-                        {
-                            Name = method.Name,
-                            ReturnType = GetTypeName(method.ReturnType),
-                        };
-                        if (_projectors.ContainsKey(method.ReturnType) || _projections.ContainsKey(method.ReturnType))
-                        {
-                            methodModel.CastReturn = true;
-                        }
-                        foreach (ParameterInfo parameter in method.GetParameters())
-                        {
-                            ParameterModel parameterModel = new()
-                            {
-                                Name = parameter.Name,
-                                Type = GetTypeName(parameter.ParameterType),
-                            };
-                            if (_projectors.ContainsKey(parameter.ParameterType) || _projections.ContainsKey(parameter.ParameterType))
-                            {
-                                parameterModel.Class = MakeBaseClassName((_projections.ContainsKey(parameter.ParameterType) ? _projections[parameter.ParameterType] : parameter.ParameterType).Name);
-                            }
-                            methodModel.Parameters.Add(parameterModel);
-                        }
-                        projectionModel.Methods.Add(methodModel);
-                    }
-                }
-                model.Classes.Add(projectionModel);
-            }
-
-            foreach (MethodInfo method in request.Interface.GetMethods())
-            {
-                if (!request.Interface.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
-                {
-                    MethodModel methodModel = new()
-                    {
-                        Name = method.Name,
-                    };
-                    if(_projectors.ContainsKey(method.ReturnType) || _projections.ContainsKey(method.ReturnType))
-                    {
-                        methodModel.ReturnType = MakeBaseClassName((_projections.ContainsKey(method.ReturnType) ? _projections[method.ReturnType] : method.ReturnType).Name);
-                    }
-                    else
-                    {
-                        methodModel.ReturnType = GetTypeName(method.ReturnType);
-                    }
-                    foreach (ParameterInfo parameter in method.GetParameters())
-                    {
-                        ParameterModel parameterModel = new()
-                        {
-                            Name = parameter.Name,
-                        };
-                        if (_projectors.ContainsKey(parameter.ParameterType) || _projections.ContainsKey(parameter.ParameterType))
-                        {
-                            parameterModel.Type = MakeBaseClassName((_projections.ContainsKey(parameter.ParameterType) ? _projections[parameter.ParameterType] : parameter.ParameterType).Name);
-                        }
-                        else
-                        {
-                            parameterModel.Type = GetTypeName(parameter.ParameterType);
-                        }
-                        methodModel.Parameters.Add(parameterModel);
-                    }
-                    model.Methods.Add(methodModel);
-                }
-            }
-
-            model.IsAbstract = model.Methods.Count > 0;
-
-            request.ResultName = model.ClassName;
-
-
-        }
+    public void BuildServerImplementation(ClassModel model, string selector)
+    {
+        BuildImplementation(model, selector, false);
     }
 
     public void BuildConnector(ClassModel baseModel, string selector)
@@ -358,7 +185,7 @@ public class CodeGenerator : IModelBuilder
             model.Usings.Clear();
             model.Methods.Clear();
             model.NamespaceValue = request.Interface.Namespace ?? String.Empty;
-            model.ClassName = $"I{_contractNameCheck.Match(request.Interface.Name).Groups[1].Captures[0].Value}{s_controllerBase}";
+            model.ClassName = MakeControllerInterfaceName(request.Interface);
             _requests[int.Parse(selector)].ResultName = model.ClassName;
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(ExpectedOutputTypeAttribute));
@@ -387,18 +214,144 @@ public class CodeGenerator : IModelBuilder
 
     public void BuildControllerProxy(ClassModel model, string selector)
     {
-        throw new NotImplementedException();
-    }
+        if (_requests[int.Parse(selector)] is GeneratingRequest request)
+        {
+            model.Usings.Clear();
+            model.Methods.Clear();
+            model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+            model.ClassName = MakeControllerProxyName(request.Interface);
+            request.ResultName = model.ClassName;
+            model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
+            model.Usings.Add(s_dependencyInjection);
+            model.Usings.Add(s_systemReflection);
+            model.Usings.Add(model.NamespaceValue);
+            AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(IPocoContext));
+            AddUsings(model, typeof(Task));
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                AttributeModel route = null!;
+                string routeValue = null;
+                _variables.Clear();
+                AddUsings(model, method.ReturnType);
+                MethodModel mm = new MethodModel
+                {
+                    ReturnType = s_void,
+                    Name = method.Name
+                };
+                foreach (var attr in method.GetCustomAttributes())
+                {
+                    AddUsings(model, attr.GetType());
+                    if (attr is RouteAttribute ra)
+                    {
+                        if (ra.Template is { })
+                        {
+                            routeValue = ra.Template;
+                        }
+                    }
+                    else
+                    {
+                        if (attr is AuthorizeAttribute aa)
+                        {
+                            AttributeModel am = new AttributeModel { Name = attr.GetType().Name };
+                            if (aa.Policy is { })
+                            {
+                                if (aa.Roles is null && aa.AuthenticationSchemes is null)
+                                {
+                                    am.Properties.Add($"!{nameof(aa.Policy)}", $"\"{aa.Policy}\"");
+                                }
+                                else
+                                {
+                                    am.Properties.Add(nameof(aa.Policy), $"\"{aa.Policy}\"");
+                                }
+                            }
+                            if (aa.AuthenticationSchemes is { })
+                            {
+                                am.Properties.Add(nameof(aa.AuthenticationSchemes), $"\"{aa.AuthenticationSchemes}\"");
+                            }
+                            if (aa.Roles is { })
+                            {
+                                am.Properties.Add(nameof(aa.Roles), $"\"{aa.Roles}\"");
+                            }
+                            mm.Attributes.Add(am);
+                        }
+                        else if (attr is HttpMethodAttribute methodAttribute)
+                        {
+                            AttributeModel am = new AttributeModel { Name = attr.GetType().Name };
+                            mm.HttpMethod = methodAttribute.HttpMethods.First();
+                            mm.HttpMethod = $"{mm.HttpMethod.Substring(0, 1)}{mm.HttpMethod.Substring(1).ToLower()}";
+                            mm.Attributes.Add(am);
+                        }
+                    }
 
-    public void BuildServerImplementation(ClassModel model, string selector)
-    {
-        throw new NotImplementedException();
+                }
+                if (routeValue is null)
+                {
+                    throw new InvalidOperationException($"Method {mm} has no [Route] attribute!");
+                }
+
+                AttributeModel am1 = new AttributeModel { Name = nameof(RouteAttribute) };
+                am1.Properties.Add(s_template, $"\"/{routeValue}\"");
+                route = am1;
+                mm.Attributes.Add(am1);
+
+                mm.HasBody = s_post.Equals(mm.HttpMethod) || s_put.Equals(mm.HttpMethod);
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    _variables.Add(parameter.Name!);
+
+                    AddUsings(model, parameter.ParameterType);
+
+                    bool isNullable = new NullabilityInfoContext().Create(parameter).WriteState is NullabilityState.Nullable;
+
+                    if (!mm.HasBody)
+                    {
+                        route.Properties[s_template] =
+                            $"{route.Properties[s_template].Substring(0, route.Properties[s_template].Length - 1)}/{{{parameter.Name!}{(isNullable ? "?" : String.Empty)}}}\"";
+                    }
+
+                    mm.Parameters.Add(new ParameterModel { Name = parameter.Name!, Type = $"{s_string}{(isNullable ? "?" : String.Empty)}" });
+
+                    if (parameter.ParameterType != typeof(string))
+                    {
+                        FilterModel fm = new FilterModel
+                        {
+                            Name = parameter.Name!,
+                            Type = $"{GetTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
+                            Variable = GetUniqueVariable(parameter.Name!),
+                            IsNullable = isNullable,
+                            IsConvertible = typeof(IConvertible).IsAssignableFrom(parameter.ParameterType)
+                        };
+                        mm.Filters.Add(fm);
+                        mm.CallParameters.Add(fm.Variable);
+                    }
+                    else
+                    {
+                        mm.CallParameters.Add(parameter.Name!);
+                    }
+                }
+                route.Properties[s_template] = Regex.Replace(route.Properties[s_template], "/+", "/");
+                mm.ControllerVariable = GetUniqueVariable(mm.ControllerVariable);
+                if (mm.Filters.Count > 0)
+                {
+                    AddUsings(model, typeof(JsonSerializerOptions));
+                    AddUsings(model, typeof(JsonSerializer));
+                    mm.JsonSerializerOptionsVariable = GetUniqueVariable(mm.JsonSerializerOptionsVariable);
+                }
+                mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
+                model.Methods.Add(mm);
+            }
+            model.Usings.Remove(model.NamespaceValue);
+        }
+
     }
 
     public async Task Generate()
     {
         _requests.Clear();
         int pos = 0;
+        int fails = 0;
+        int done = 0;
         await foreach (KeyValuePair<string, object> result in Generator.Generate(
             new object[] { new KeyValuePair<Type, object>(typeof(IModelBuilder), this) }
             ,
@@ -407,37 +360,37 @@ public class CodeGenerator : IModelBuilder
                 List<string> res = new();
                 if (_contracts.Contains(v))
                 {
-                    if (ConnectorDirectory is { })
+                    if (v.GetMethods().Count() > 0)
                     {
-                        res.Add($"/{ClientLanguage}/Connector?selector={_requests.Count}");
-                        _requests.Add(new GeneratingRequest
+                        if (ClientGeneratedDirectory is { })
                         {
-                            Interface = v,
-                            Kind = RequestKind.Connector
-                        });
-                    }
-                    if (ServerBasesDirectory is { })
-                    {
-                        res.Add($"/ControllerInterface?selector={_requests.Count}");
-                        _requests.Add(new GeneratingRequest
+                            res.Add($"/{ClientLanguage}/Connector?selector={_requests.Count}");
+                            _requests.Add(new GeneratingRequest
+                            {
+                                Interface = v,
+                                Kind = RequestKind.Connector
+                            });
+                        }
+                        if (ServerGeneratedDirectory is { })
                         {
-                            Interface = v,
-                            Kind = RequestKind.ControllerInterface
-                        });
-                    }
-                    if (false/*this.ControllerDirectory is { }*/)
-                    {
-                        res.Add($"/ControllerProxy?selector={_requests.Count}");
-                        _requests.Add(new GeneratingRequest
-                        {
-                            Interface = v,
-                            Kind = RequestKind.ControllerProxy
-                        });
+                            res.Add($"/ControllerInterface?selector={_requests.Count}");
+                            _requests.Add(new GeneratingRequest
+                            {
+                                Interface = v,
+                                Kind = RequestKind.ControllerInterface
+                            });
+                            res.Add($"/ControllerProxy?selector={_requests.Count}");
+                            _requests.Add(new GeneratingRequest
+                            {
+                                Interface = v,
+                                Kind = RequestKind.ControllerProxy
+                            });
+                        }
                     }
                 }
                 else if (_projectors.ContainsKey(v))
                 {
-                    if (ClientBasesDirectory is { })
+                    if (ClientGeneratedDirectory is { })
                     {
                         res.Add($"/{ClientLanguage}/ClientImplementation?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
@@ -446,7 +399,7 @@ public class CodeGenerator : IModelBuilder
                             Kind = RequestKind.ClientImplementation,
                         });
                     }
-                    if (ServerBasesDirectory is { })
+                    if (ServerGeneratedDirectory is { })
                     {
                         res.Add($"/ServerImplementation?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
@@ -463,25 +416,252 @@ public class CodeGenerator : IModelBuilder
             if (result.Value is Exception)
             {
                 Console.WriteLine("exception: " + result.Key + ", " + result.Value);
+                ++fails;
             }
             else
             {
-                string outputDirectory = _requests[pos].Kind switch
+                try
                 {
-                    RequestKind.ControllerProxy => this.ControllerDirectory!,
-                    RequestKind.ClientImplementation => ClientBasesDirectory!,
-                    RequestKind.Connector => ConnectorDirectory!,
-                    _ => ServerBasesDirectory!
-                };
-                string ext = ClientLanguage switch { _ => ".cs" };
-                string path = Path.Combine(outputDirectory, _requests[pos].ResultName + ext);
-                File.WriteAllText(path, result.Value.ToString());
-                Console.WriteLine($"{_requests[pos].Kind} generated: {path}");
+                    string outputDirectory = _requests[pos].Kind switch
+                    {
+                        RequestKind.ControllerProxy => Path.Combine(ServerGeneratedDirectory!, "Controllers"),
+                        RequestKind.ClientImplementation => ClientGeneratedDirectory!,
+                        RequestKind.Connector => ClientGeneratedDirectory!,
+                        _ => ServerGeneratedDirectory!
+                    };
+                    string ext = ClientLanguage switch { _ => ".cs" };
+                    if (!Directory.Exists(outputDirectory))
+                    {
+                        Directory.CreateDirectory(outputDirectory);
+                    }
+                    string path = Path.Combine(outputDirectory, _requests[pos].ResultName + ext);
+                    File.WriteAllText(path, result.Value.ToString());
+                    Console.WriteLine($"{_requests[pos].Kind} generated: {path}");
+                    ++done;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("exception: " + ex.Message);
+                    ++fails;
+                }
             }
             ++pos;
         }
-        Console.WriteLine($"Total: {pos}");
+        Console.WriteLine($"Total: {pos}, done: {done}, failed: {fails}");
         _queue.Clear();
+    }
+
+    private void BuildImplementation(ClassModel model, string selector, bool isClient)
+    {
+        if (_requests[int.Parse(selector)] is GeneratingRequest request && _projectors.ContainsKey(request.Interface))
+        {
+            model.Usings.Clear();
+            model.Methods.Clear();
+            model.Properties.Clear();
+            model.Classes.Clear();
+
+            model.ClassName = MakeBaseClassName(request.Interface);
+            model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+            model.IsEntity = _keyDefinitions.ContainsKey(request.Interface);
+            model.IsClient = isClient;
+
+            if (isClient)
+            {
+                if (model.IsEntity)
+                {
+                    AddUsings(model, typeof(Client.EntityBase));
+                    model.Interfaces.Add(GetTypeName(typeof(Client.EntityBase)));
+                }
+                else
+                {
+                    AddUsings(model, typeof(Client.EnvelopeBase));
+                    model.Interfaces.Add(GetTypeName(typeof(Client.EnvelopeBase)));
+                }
+            }
+            else
+            {
+                if (model.IsEntity)
+                {
+                    AddUsings(model, typeof(EntityBase));
+                    model.Interfaces.Add(GetTypeName(typeof(EntityBase)));
+                }
+                else
+                {
+                    AddUsings(model, typeof(EnvelopeBase));
+                    model.Interfaces.Add(GetTypeName(typeof(EnvelopeBase)));
+                }
+            }
+
+            AddUsings(model, request.Interface);
+            AddUsings(model, typeof(IProjector));
+
+            model.Interfaces.Add(GetTypeName(typeof(IProjector)));
+
+            AddUsings(model, typeof(IProjection<>));
+
+            if (isClient)
+            {
+                AddUsings(model, typeof(Client.PocoBase));
+            }
+            else
+            {
+                AddUsings(model, typeof(PocoBase));
+            }
+            AddUsings(model, typeof(Properties<>));
+            AddUsings(model, typeof(Property<>));
+
+            foreach (PropertyInfo pi in request.Interface.GetProperties())
+            {
+                PropertyModel propertyModel = new()
+                {
+                    Name = pi.Name,
+                    IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
+                    IsReadOnly = false
+                };
+                if (_projections.ContainsKey(pi.PropertyType))
+                {
+                    AddUsings(model, _projections[pi.PropertyType]);
+                    propertyModel.IsProjector = true;
+                }
+                if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
+                {
+                    propertyModel.IsList = true;
+                    if (isClient)
+                    {
+                        AddUsings(model, typeof(NotifyCollectionChangedEventArgs));
+                    }
+                }
+                if (propertyModel.IsList)
+                {
+                    Type itemType = pi.PropertyType.GetGenericArguments()[0];
+                    if (isClient)
+                    {
+                        AddUsings(model, typeof(ObservableCollection<>));
+                    }
+                    else
+                    {
+                        AddUsings(model, typeof(List<>));
+                    }
+                    if (_projections.ContainsKey(itemType))
+                    {
+                        AddUsings(model, _projections[itemType]);
+                        propertyModel.IsProjector = true;
+                        propertyModel.ItemType = MakeBaseClassName(_projections[itemType]);
+                    }
+                    else
+                    {
+                        AddUsings(model, itemType);
+                        propertyModel.ItemType = GetTypeName(itemType);
+                    }
+                    if (isClient)
+                    {
+                        propertyModel.Type = GetTypeName(typeof(ObservableCollection<object>)).Replace(GetTypeName(typeof(object)), propertyModel.ItemType);
+                    }
+                    else
+                    {
+                        propertyModel.Type = GetTypeName(typeof(List<object>)).Replace(GetTypeName(typeof(object)), propertyModel.ItemType);
+                    }
+                    propertyModel.IsNullable = false;
+                }
+                else if (propertyModel.IsProjector)
+                {
+                    propertyModel.Type = MakeBaseClassName(_projections[pi.PropertyType]);
+                }
+                else
+                {
+                    AddUsings(model, pi.PropertyType);
+                    propertyModel.Type = GetTypeName(pi.PropertyType);
+                }
+                propertyModel.Interfaces.Add(GetTypeName(request.Interface), GetTypeName(pi.PropertyType));
+                foreach (Type projection in _projectors[request.Interface])
+                {
+                    if (projection.GetProperty(pi.Name) is PropertyInfo projectionProperty)
+                    {
+                        AddUsings(model, projectionProperty.PropertyType);
+                        propertyModel.Interfaces.Add(GetTypeName(projection), GetTypeName(projectionProperty.PropertyType));
+                    }
+                }
+                model.Properties.Add(propertyModel);
+            }
+            foreach (Type projection in new[] { request.Interface }.Concat(_projectors[request.Interface]))
+            {
+                AddUsings(model, projection);
+                ClassModel projectionModel = new()
+                {
+                    ClassName = MakeBaseClassName(projection).Replace(s_base, s_projection),
+                    Interfaces = new List<string>()
+                    {
+                        GetTypeName(projection),
+                        GetTypeName(typeof(IProjector)),
+                        GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { request.Interface }))
+                            .Replace(GetTypeName(request.Interface), MakeBaseClassName(request.Interface))
+                    },
+                    Parent = model,
+                    Interface = GetTypeName(projection),
+                };
+                foreach (PropertyInfo pi in projection.GetProperties())
+                {
+                    PropertyModel propertyModel = new()
+                    {
+                        Name = pi.Name,
+                        Type = GetTypeName(pi.PropertyType),
+                        IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
+                        IsReadOnly = !pi.CanWrite,
+                        IsProjection = _projections.ContainsKey(pi.PropertyType),
+                        IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
+                    };
+                    if (propertyModel.IsProjection)
+                    {
+                        propertyModel.Class = MakeBaseClassName(_projections[pi.PropertyType]);
+                    }
+                    if (propertyModel.IsList)
+                    {
+                        Type itemType = pi.PropertyType.GetGenericArguments()[0];
+                        if (_projectors.ContainsKey(itemType) || _projections.ContainsKey(itemType))
+                        {
+                            propertyModel.IsProjection = true;
+                            propertyModel.ItemType = GetTypeName(itemType);
+                            propertyModel.Class = MakeBaseClassName(_projections[itemType]);
+                        }
+                        else
+                        {
+                            propertyModel.ItemType = GetTypeName(itemType);
+                        }
+                        propertyModel.IsNullable = false;
+                    }
+                    projectionModel.Properties.Add(propertyModel);
+                }
+                foreach (MethodInfo method in projection.GetMethods())
+                {
+                    if (!projection.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
+                    {
+                        MethodModel methodModel = new()
+                        {
+                            Name = method.Name,
+                            ReturnType = GetTypeName(method.ReturnType),
+                        };
+                        foreach (ParameterInfo parameter in method.GetParameters())
+                        {
+                            ParameterModel parameterModel = new()
+                            {
+                                Name = parameter.Name,
+                                Type = GetTypeName(parameter.ParameterType),
+                            };
+                            methodModel.Parameters.Add(parameterModel);
+                        }
+                        projectionModel.Methods.Add(methodModel);
+                        model.Methods.Add(methodModel);
+                    }
+                }
+                model.Classes.Add(projectionModel);
+            }
+
+            model.IsAbstract = model.Methods.Count > 0;
+
+            request.ResultName = model.ClassName;
+
+
+        }
     }
 
     private void CheckConsistency(Type projector, Type[]? projections)
@@ -502,7 +682,7 @@ public class CodeGenerator : IModelBuilder
                         && typeof(IList<>).IsAssignableFrom(projectorProperty.PropertyType.GetGenericTypeDefinition());
                     bool projectionPropertyIsList = projectionProperty.PropertyType.IsGenericType
                         && typeof(IList<>).IsAssignableFrom(projectionProperty.PropertyType.GetGenericTypeDefinition());
-                    if(projectorPropertyIsList != projectionPropertyIsList)
+                    if (projectorPropertyIsList != projectionPropertyIsList)
                     {
                         throw new InvalidOperationException($"The property {projectionProperty.Name} must be a list or not a list at both {projector} and {projection} types!");
                     }
@@ -526,8 +706,8 @@ public class CodeGenerator : IModelBuilder
                     }
                     if (
                         (
-                            _projectors.TryGetValue(projectorItemType, out List<Type>? list) 
-                            && projectionItemType != projectorItemType 
+                            _projectors.TryGetValue(projectorItemType, out List<Type>? list)
+                            && projectionItemType != projectorItemType
                             && !list.Contains(projectionItemType)
                         )
                         || (
@@ -539,21 +719,23 @@ public class CodeGenerator : IModelBuilder
                         throw new InvalidOperationException($"The properties {projectorProperty} and {projectionProperty} are inconsistent!");
                     }
                 }
-                foreach(MethodInfo mi in projection.GetMethods())
-                {
-                    MethodInfo? projectorMethod = projector.GetMethod(mi.Name, mi.GetParameters().Select(p => p.ParameterType).ToArray());
-                    if(projectorMethod is null)
-                    {
-                        throw new InvalidOperationException($"Projector type {projector} doesn't contain method {mi} from projection type {projection}!");
-                    }
-                }
             }
         }
     }
 
-    private string MakeBaseClassName(string interfaceName)
+    private string MakeBaseClassName(Type @interface)
     {
-        return $"{_interfaceNameCheck.Match(interfaceName).Groups[1].Captures[0].Value}{s_base}";
+        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_base}";
+    }
+
+    private string MakeControllerProxyName(Type @interface)
+    {
+        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controllerProxy}";
+    }
+
+    private string MakeControllerInterfaceName(Type @interface)
+    {
+        return $"I{_contractNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controller}";
     }
 
     private void AddUsings(ClassModel model, Type type)
@@ -591,4 +773,22 @@ public class CodeGenerator : IModelBuilder
             + '<' + String.Join(',', type.GetGenericArguments().Select(v => GetTypeName(v))) + '>';
     }
 
+    private string GetUniqueVariable(string initial)
+    {
+        if (!_variables.Contains(initial))
+        {
+            _variables.Add(initial);
+            return initial;
+        }
+        for (int i = 1; ; ++i)
+        {
+            if (!_variables.Contains(initial + i.ToString()))
+            {
+                initial += i.ToString();
+                _variables.Add(initial);
+                return initial;
+            }
+        }
+
+    }
 }

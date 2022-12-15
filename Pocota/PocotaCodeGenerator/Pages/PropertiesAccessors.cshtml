@@ -1,6 +1,8 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
+    @Html.Raw("#region Properties accessors");
+
     @foreach (PropertyModel pm in Model.Properties)
     {    
         <text>    private static object? @Html.Raw($"Get{pm.Name}Value(PocoBase target)")
@@ -18,3 +20,6 @@
         }
 </text>
     }
+
+    @Html.Raw("#endregion Properties accessors");
+

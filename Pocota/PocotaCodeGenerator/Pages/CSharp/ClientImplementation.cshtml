@@ -20,14 +20,7 @@ public @if (Model.IsAbstract)
 {
     <text>abstract </text>
 }
-class @Model.ClassName: @if(Model.IsEntity)
-{
-    <text>EntityBase</text>
-}
-else
-{
-    <text>EnvelopeBase</text>
-}, IProjector
+class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 
 @Html.Raw("#region Projection classes");
@@ -37,9 +30,11 @@ else
 }
 @Html.Raw("#endregion Projection classes");
 
-    @Html.Partial("StaticConstructor", Model)
+    @Html.Partial("InitProperties", Model)
     
     @Html.Partial("Fields", Model)
+
+    @Html.Partial("ProjectionsProperties", Model)
 
     @Html.Partial("Properties", Model)
 
@@ -53,33 +48,13 @@ else
         }
     }
 
-    @Html.Partial("StaticMethods", Model)
-
-    public override @Html.Raw($"Properties<PocoBase>") GetProperties() => Properties[typeof(@Model.ClassName)];
-
-    public override object? As(Type type)
-    {
-        @foreach (ClassModel model1 in Model.Classes)
-        {
-            <text>        if(type == typeof(@Html.Raw(model1.ClassName)) || type == typeof(@Html.Raw(model1.Interface)))
-        {
-            @Html.Raw($"_as{model1.ClassName}") ??= new(this);
-            return @Html.Raw($"_as{model1.ClassName}");
-        }
-</text>
-        }
-        return null;
-    }
+    @Html.Partial("Methods", Model)
 
     @Html.Partial("Collections", Model)
 
     @Html.Partial("PocoChanged", Model)
 
-    @foreach(MethodModel mm in Model.Methods)
-    {
-        <text>    public abstract @mm.ReturnType @mm.Name@Html.Raw("(")@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")));
-</text>
-    }
+    @Html.Partial("PropertiesAccessors", Model)
 
 }
 

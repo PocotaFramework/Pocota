@@ -1,23 +1,23 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Model.LitterBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
+using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using System;
+    using System.Collections.Generic;
+    
 namespace CatsCommon.Model;
 
 public class LitterBase: EntityBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class LitterProjection: ILitter, IProjector, IProjection<LitterBase>
     {
@@ -190,7 +190,7 @@ public class LitterBase: EntityBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -202,7 +202,7 @@ public class LitterBase: EntityBase, IProjector
                 typeof(Int32),
                 GetOrderValue, 
                 SetOrderValue, 
-                target => ((IPoco)target).TouchProperty("Order"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -216,7 +216,7 @@ public class LitterBase: EntityBase, IProjector
                 typeof(DateOnly),
                 GetDateValue, 
                 SetDateValue, 
-                target => ((IPoco)target).TouchProperty("Date"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -231,7 +231,7 @@ public class LitterBase: EntityBase, IProjector
                 typeof(CatBase),
                 GetFemaleValue, 
                 SetFemaleValue, 
-                target => ((IPoco)target).TouchProperty("Female"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -245,7 +245,7 @@ public class LitterBase: EntityBase, IProjector
                 typeof(CatBase),
                 GetMaleValue, 
                 SetMaleValue, 
-                target => ((IPoco)target).TouchProperty("Male"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -256,10 +256,10 @@ public class LitterBase: EntityBase, IProjector
         Properties[typeof(LitterBase)].Add(
                 new Property<PocoBase>(
                 "Cats", 
-                typeof(ObservableCollection<CatBase>),
+                typeof(List<CatBase>),
                 GetCatsValue, 
                 null, 
-                target => ((IPoco)target).TouchProperty("Cats"), 
+                null, 
                 false, 
                 false, 
                 true            
@@ -270,10 +270,10 @@ public class LitterBase: EntityBase, IProjector
         Properties[typeof(LitterBase)].Add(
                 new Property<PocoBase>(
                 "Strings", 
-                typeof(ObservableCollection<String>),
+                typeof(List<String>),
                 GetStringsValue, 
                 null, 
-                target => ((IPoco)target).TouchProperty("Strings"), 
+                null, 
                 false, 
                 false, 
                 true            
@@ -281,17 +281,6 @@ public class LitterBase: EntityBase, IProjector
             .AddPropertyType<ILitter, IList<String>>()
         );
     }
-
-    
-    
-    private Int32 _order = default!;
-    private DateOnly _date = default!;
-    private CatBase _female = default!;
-    private CatBase? _male = default;
-    private readonly ObservableCollection<CatBase> _cats = new();
-    private readonly List<CatBase> _initial_cats = new();
-    private ObservableCollection<String> _strings = default!;
-    private readonly List<String> _initial_strings = new();
 
 
     
@@ -306,103 +295,15 @@ public class LitterBase: EntityBase, IProjector
     public LitterWithCatsProjection AsLitterWithCatsProjection => _asLitterWithCatsProjection ??= new(this);
 
 
-
     
-    public virtual Int32 Order
-    {
-        get => _order;
-        set
-        {
-            if(_order != value)
-            {
-                object oldValue = _order;
-                _order = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private Int32 Order { get; set; } = default!;
+    private DateOnly Date { get; set; } = default!;
+    private CatBase Female { get; set; } = default!;
+    private CatBase? Male { get; set; } = default;
+    private List<CatBase> Cats { get; init; } = new();
+    private List<String> Strings { get; init; } = new();
 
-    public virtual DateOnly Date
-    {
-        get => _date;
-        set
-        {
-            if(_date != value)
-            {
-                object oldValue = _date;
-                _date = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual CatBase Female
-    {
-        get => _female;
-        set
-        {
-            if(_female != value)
-            {
-                object oldValue = _female;
-                if(_female is {})
-                {
-                    _female.PocoChanged -= FemalePocoChanged;
-                }
-                _female = value;
-                if(_female is {})
-                {
-                    _female.PocoChanged += FemalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual CatBase? Male
-    {
-        get => _male;
-        set
-        {
-            if(_male != value)
-            {
-                object? oldValue = _male;
-                if(_male is {})
-                {
-                    _male.PocoChanged -= MalePocoChanged;
-                }
-                _male = value;
-                if(_male is {})
-                {
-                    _male.PocoChanged += MalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual ObservableCollection<CatBase> Cats
-    {
-        get => _cats;
-        set => throw new NotImplementedException();
-    }
-
-    public virtual ObservableCollection<String> Strings
-    {
-        get => _strings;
-        set => throw new NotImplementedException();
-    }
-
-
-
-    public LitterBase(IServiceProvider services) : base(services) 
-    { 
-        _cats.CollectionChanged += CatsCollectionChanged;
-        _strings.CollectionChanged += StringsCollectionChanged;
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(LitterBase)];
@@ -430,99 +331,6 @@ public class LitterBase: EntityBase, IProjector
 
 
 
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            case "Cats":
-                return !Enumerable.SequenceEqual(
-                        _cats.OrderBy(o => o.GetHashCode()), 
-                        _initial_cats.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            case "Strings":
-                return !Enumerable.SequenceEqual(
-                        _strings.OrderBy(o => o.GetHashCode()), 
-                        _initial_strings.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-        for(int i = _cats.Count - 1; i >= 0; --i)
-        {
-            if (!_initial_cats.Contains(_cats[i]))
-            {
-                _cats.RemoveAt(i);
-            }
-        }
-        foreach(var item in _initial_cats)
-        {
-            if(!_cats.Contains(item))
-            {
-                _cats.Add(item);
-            }
-        }
-        for(int i = _strings.Count - 1; i >= 0; --i)
-        {
-            if (!_initial_strings.Contains(_strings[i]))
-            {
-                _strings.RemoveAt(i);
-            }
-        }
-        foreach(var item in _initial_strings)
-        {
-            if(!_strings.Contains(item))
-            {
-                _strings.Add(item);
-            }
-        }
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-        if(_modified is null || !_modified.ContainsKey("Cats"))
-        {
-            _initial_cats.Clear();
-            _initial_cats.AddRange(_cats);
-        }
-        if(_modified is null || !_modified.ContainsKey("Strings"))
-        {
-            _initial_strings.Clear();
-            _initial_strings.AddRange(_strings);
-        }
-    }
-
-
-    
-    protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-
-    protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-
-    protected virtual void CatsPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
-
-
-    protected virtual void CatsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-
-        OnPocoChanged(_initial_cats, _cats, nameof(Cats));
-        OnPropertyChanged(nameof(Cats));
-    }
-
-        protected virtual void StringsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-
-        OnPocoChanged(_initial_strings, _strings, nameof(Strings));
-        OnPropertyChanged(nameof(Strings));
-    }
-
-    
 
     
     #region Properties accessors;
@@ -577,7 +385,4 @@ public class LitterBase: EntityBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

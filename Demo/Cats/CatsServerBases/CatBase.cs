@@ -1,24 +1,24 @@
 
+
 //------------------------------
-// Client implementation
+// Server implementation
 // CatsCommon.Model.CatBase
 // (Generated automatically 2022-12-15T18:56:29)
 //------------------------------
 
 using CatsCommon;
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
+    using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using System;
+    using System.Collections.Generic;
+    
 namespace CatsCommon.Model;
 
 public abstract class CatBase: EntityBase, IProjector
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     public class CatProjection: ICat, IProjector, IProjection<CatBase>
     {
@@ -321,7 +321,7 @@ public abstract class CatBase: EntityBase, IProjector
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -333,7 +333,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(String),
                 GetNameNatValue, 
                 SetNameNatValue, 
-                target => ((IPoco)target).TouchProperty("NameNat"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -349,7 +349,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(String),
                 GetNameEngValue, 
                 SetNameEngValue, 
-                target => ((IPoco)target).TouchProperty("NameEng"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -365,7 +365,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(Gender),
                 GetGenderValue, 
                 SetGenderValue, 
-                target => ((IPoco)target).TouchProperty("Gender"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -380,7 +380,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(CatteryBase),
                 GetCatteryValue, 
                 SetCatteryValue, 
-                target => ((IPoco)target).TouchProperty("Cattery"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -396,7 +396,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(BreedBase),
                 GetBreedValue, 
                 SetBreedValue, 
-                target => ((IPoco)target).TouchProperty("Breed"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -412,7 +412,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(LitterBase),
                 GetLitterValue, 
                 SetLitterValue, 
-                target => ((IPoco)target).TouchProperty("Litter"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -428,7 +428,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(String),
                 GetExteriorValue, 
                 SetExteriorValue, 
-                target => ((IPoco)target).TouchProperty("Exterior"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -444,7 +444,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(String),
                 GetDescriptionValue, 
                 SetDescriptionValue, 
-                target => ((IPoco)target).TouchProperty("Description"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -459,7 +459,7 @@ public abstract class CatBase: EntityBase, IProjector
                 typeof(String),
                 GetTitleValue, 
                 SetTitleValue, 
-                target => ((IPoco)target).TouchProperty("Title"), 
+                null, 
                 true, 
                 false, 
                 false            
@@ -472,10 +472,10 @@ public abstract class CatBase: EntityBase, IProjector
         Properties[typeof(CatBase)].Add(
                 new Property<PocoBase>(
                 "Litters", 
-                typeof(ObservableCollection<LitterBase>),
+                typeof(List<LitterBase>),
                 GetLittersValue, 
                 null, 
-                target => ((IPoco)target).TouchProperty("Litters"), 
+                null, 
                 false, 
                 false, 
                 true            
@@ -484,20 +484,6 @@ public abstract class CatBase: EntityBase, IProjector
             .AddPropertyType<ICatForView, IList<ILitterForCat>>()
         );
     }
-
-    
-    
-    private String? _nameNat = default;
-    private String? _nameEng = default;
-    private Gender _gender = default!;
-    private CatteryBase _cattery = default!;
-    private BreedBase _breed = default!;
-    private LitterBase? _litter = default;
-    private String? _exterior = default;
-    private String? _description = default;
-    private String? _title = default;
-    private readonly ObservableCollection<LitterBase> _litters = new();
-    private readonly List<LitterBase> _initial_litters = new();
 
 
     
@@ -512,179 +498,19 @@ public abstract class CatBase: EntityBase, IProjector
     public CatForViewProjection AsCatForViewProjection => _asCatForViewProjection ??= new(this);
 
 
-
     
-    public virtual String? NameNat
-    {
-        get => _nameNat;
-        set
-        {
-            if(_nameNat != value)
-            {
-                object? oldValue = _nameNat;
-                _nameNat = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
+    
+    private String? NameNat { get; set; } = default;
+    private String? NameEng { get; set; } = default;
+    private Gender Gender { get; set; } = default!;
+    private CatteryBase Cattery { get; set; } = default!;
+    private BreedBase Breed { get; set; } = default!;
+    private LitterBase? Litter { get; set; } = default;
+    private String? Exterior { get; set; } = default;
+    private String? Description { get; set; } = default;
+    private String? Title { get; set; } = default;
+    private List<LitterBase> Litters { get; init; } = new();
 
-    public virtual String? NameEng
-    {
-        get => _nameEng;
-        set
-        {
-            if(_nameEng != value)
-            {
-                object? oldValue = _nameEng;
-                _nameEng = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual Gender Gender
-    {
-        get => _gender;
-        set
-        {
-            if(_gender != value)
-            {
-                object oldValue = _gender;
-                _gender = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual CatteryBase Cattery
-    {
-        get => _cattery;
-        set
-        {
-            if(_cattery != value)
-            {
-                object oldValue = _cattery;
-                if(_cattery is {})
-                {
-                    _cattery.PocoChanged -= CatteryPocoChanged;
-                }
-                _cattery = value;
-                if(_cattery is {})
-                {
-                    _cattery.PocoChanged += CatteryPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual BreedBase Breed
-    {
-        get => _breed;
-        set
-        {
-            if(_breed != value)
-            {
-                object oldValue = _breed;
-                if(_breed is {})
-                {
-                    _breed.PocoChanged -= BreedPocoChanged;
-                }
-                _breed = value;
-                if(_breed is {})
-                {
-                    _breed.PocoChanged += BreedPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual LitterBase? Litter
-    {
-        get => _litter;
-        set
-        {
-            if(_litter != value)
-            {
-                object? oldValue = _litter;
-                if(_litter is {})
-                {
-                    _litter.PocoChanged -= LitterPocoChanged;
-                }
-                _litter = value;
-                if(_litter is {})
-                {
-                    _litter.PocoChanged += LitterPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual String? Exterior
-    {
-        get => _exterior;
-        set
-        {
-            if(_exterior != value)
-            {
-                object? oldValue = _exterior;
-                _exterior = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual String? Description
-    {
-        get => _description;
-        set
-        {
-            if(_description != value)
-            {
-                object? oldValue = _description;
-                _description = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual String? Title
-    {
-        get => _title;
-        set
-        {
-            if(_title != value)
-            {
-                object? oldValue = _title;
-                _title = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual ObservableCollection<LitterBase> Litters
-    {
-        get => _litters;
-        set => throw new NotImplementedException();
-    }
-
-
-
-    public CatBase(IServiceProvider services) : base(services) 
-    { 
-        _litters.CollectionChanged += LittersCollectionChanged;
-    }
 
     
     public override Properties<PocoBase> GetProperties() => Properties[typeof(CatBase)];
@@ -713,69 +539,6 @@ public abstract class CatBase: EntityBase, IProjector
     public abstract IList<ILitterForCat> test(IList<ICat> cats);
 
 
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            case "Litters":
-                return !Enumerable.SequenceEqual(
-                        _litters.OrderBy(o => o.GetHashCode()), 
-                        _initial_litters.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-        for(int i = _litters.Count - 1; i >= 0; --i)
-        {
-            if (!_initial_litters.Contains(_litters[i]))
-            {
-                _litters.RemoveAt(i);
-            }
-        }
-        foreach(var item in _initial_litters)
-        {
-            if(!_litters.Contains(item))
-            {
-                _litters.Add(item);
-            }
-        }
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-        if(_modified is null || !_modified.ContainsKey("Litters"))
-        {
-            _initial_litters.Clear();
-            _initial_litters.AddRange(_litters);
-        }
-    }
-
-
-    
-    protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-
-    protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-
-    protected virtual void LitterPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-
-    protected virtual void LittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litters));
-
-
-    protected virtual void LittersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-
-        OnPocoChanged(_initial_litters, _litters, nameof(Litters));
-        OnPropertyChanged(nameof(Litters));
-    }
-
-    
 
     
     #region Properties accessors;
@@ -870,7 +633,4 @@ public abstract class CatBase: EntityBase, IProjector
     #endregion Properties accessors;
 
 
-
 }
-
-

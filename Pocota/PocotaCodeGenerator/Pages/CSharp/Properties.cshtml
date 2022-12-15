@@ -1,12 +1,6 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@foreach(ClassModel model1 in Model.Classes)
-{
-    <text>    public @model1.ClassName @Html.Raw($"As{model1.ClassName}") => @Html.Raw($"As<{model1.ClassName}>()");
-</text>
-}
-
 @foreach(PropertyModel pm in Model.Properties)
 {
     string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
@@ -15,7 +9,7 @@
         get => @fieldName;
     @if(!pm.IsReadOnly)
     {
-        if(pm.IsList && pm.IsProjector)
+        if(pm.IsList)
         {
             <text>        set => throw new NotImplementedException();
 </text>
