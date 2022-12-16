@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Pocota\PocotaAspNet\PocotaAspNetDebug.csproj" />
+    <ProjectReference Include="..\..\..\Pocota\PocotaServer\PocotaServerDebug.csproj" />
+    <ProjectReference Include="..\CatsServerGenerated\CatsServerGeneratedDebug.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota;
+﻿namespace Net.Leksi.Pocota.Server;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class ExpectedOutputTypeAttribute: Attribute

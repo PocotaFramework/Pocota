@@ -2,10 +2,10 @@
 
 namespace Net.Leksi.Pocota.Common;
 
-public interface IJsonSerializerConfigurator
+public interface IJsonSerializerConfiguration
 {
-    IJsonSerializerConfigurator At(Type targetType);
-    IJsonSerializerConfigurator At<TTarget>();
-    IJsonSerializerConfigurator AddJsonConverter(Type converterType);
-    IJsonSerializerConfigurator AddJsonConverter<TConverter>();
+    IJsonSerializerConfiguration At(Type targetType);
+    IJsonSerializerConfiguration At<TTarget>();
+    IJsonSerializerConfiguration AddJsonConverter(Type converterType);
+    IJsonSerializerConfiguration AddJsonConverter<TConverter>();
 }

@@ -1,0 +1,140 @@
+﻿@page
+@using Net.Leksi.Pocota.Common
+@model ClassModel
+//------------------------------
+// PrimaryKey implementation
+// @string.Join(".", new string[] { Model.NamespaceValue, Model.ClassName})
+// (Generated automatically @DateTime.Now.ToString("s"))
+//------------------------------
+
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+    </text>
+}
+
+namespace @Model.NamespaceValue;
+
+public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
+{
+    private static string[] s_names = new string[] { @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\""))) };
+
+    internal @Html.Raw(Model.ReferencedClass)? Source { get; init; }
+
+    @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+    {
+        string fieldName = $"_{pkm.Name.Substring(0, 1).ToLower()}{pkm.Name.Substring(1)}";
+        <text>    private @Html.Raw(pkm.Type) @fieldName = default!;
+</text>
+    }
+
+    public object? this[int index]
+    {
+        get => this[s_names[index]];
+        set => this[s_names[index]] = value;
+    }
+
+    public object? this[string name]
+    {
+        get 
+        {
+            switch(name)
+            {
+                @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+                {
+                    <text>                case @Html.Raw($"\"{pkm.Name}\""):
+                    return @pkm.Name;
+</text>
+                }
+                default:
+                    throw new @Html.Raw($"{nameof(IndexOutOfRangeException)}($\"{{name}}\")");
+            }
+        }
+        set 
+        {
+            switch(name)
+            {
+                @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+                {
+                    <text>                case @Html.Raw($"\"{pkm.Name}\""):
+                    @pkm.Name = @Html.Raw($"({pkm.Type})value!");
+                    break;
+</text>
+                }
+                default:
+                    throw new @Html.Raw($"{nameof(IndexOutOfRangeException)}($\"{{name}}\")");
+            }
+        }
+    }
+
+@foreach (PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+    {
+
+    }
+
+    @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+    {
+        string fieldName = $"_{pkm.Name.Substring(0, 1).ToLower()}{pkm.Name.Substring(1)}";
+        <text>    public @Html.Raw(pkm.Type) @pkm.Name
+    {
+        get {
+            @if(pkm.KeyReference is {})
+            {
+                <text>            if(Source is {})
+            {
+                return @Html.Raw($"(((IEntity)Source.{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
+            }
+            return @fieldName;
+</text>
+            }
+            else if(pkm.Property is {})
+            {
+                <text>            if(Source is {})
+            {
+                return @Html.Raw($"Source.{pkm.Property}");
+            }
+            return @fieldName;
+</text>
+            }
+            else
+            {
+            <text>           return @fieldName;
+</text>
+            }
+        }
+        set
+        {
+            @if(pkm.KeyReference is {})
+            {
+                <text>            if(Source is {})
+            {
+                @Html.Raw($"(((IEntity)Source.{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
+            }
+            @fieldName = value;
+</text>
+            }
+            else if(pkm.Property is {})
+            {
+                <text>            if(Source is {})
+            {
+                @Html.Raw($"Source.{pkm.Property}") = value;
+            }
+            @fieldName = value;
+</text>
+            }
+            else
+            {
+            <text>           @fieldName = value;
+</text>
+            }
+        }
+    }
+
+</text>
+    }
+
+    public @Html.Raw($"{Model.ClassName}({Model.ReferencedClass}? source)")
+    {
+        Source = source;
+    }
+}

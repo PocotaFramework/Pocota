@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-[AttributeUsage(AttributeTargets.Interface, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Interface | AttributeTargets.Class, AllowMultiple = true)]
 public class PocoAttribute: Attribute
 {
     public Type Projector { get; init; }

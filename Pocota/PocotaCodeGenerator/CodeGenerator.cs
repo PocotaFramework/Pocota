@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Net.Leksi.DocsRazorator;
-using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Server;
+using Net.Leksi.Pocota.Server.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -27,13 +29,14 @@ public class CodeGenerator : IModelBuilder
     private const string s_get = "Get";
     private const string s_delete = "Delete";
     private const string s_string = "string";
+    private const string s_primaryKey = "PrimaryKey";
 
     private readonly Dictionary<Type, List<Type>> _projectors = new();
     private readonly Dictionary<Type, Type> _projections = new();
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
     private readonly List<GeneratingRequest> _requests = new();
-    private readonly Dictionary<Type, List<PrimaryKeyDefinition>> _keyDefinitions = new();
+    private readonly Dictionary<Type, SortedDictionary<string, PrimaryKeyDefinition>> _keyDefinitions = new();
     private readonly HashSet<string> _variables = new();
 
     private readonly Regex _contractNameCheck = new("^I(.+?)Contract$");
@@ -144,12 +147,10 @@ public class CodeGenerator : IModelBuilder
                             {
                                 keyDefinition.KeyReference = match1.Groups[2].Captures[0].Value;
                             }
-                            if (!_keyDefinitions.TryGetValue(attr.Projector, out List<PrimaryKeyDefinition>? definitions))
+                            else
                             {
-                                definitions = new List<PrimaryKeyDefinition>();
-                                _keyDefinitions.Add(attr.Projector, definitions);
+                                keyDefinition!.Type = keyDefinition.Property.PropertyType;
                             }
-                            definitions.Add(keyDefinition);
                         }
                         else
                         {
@@ -157,6 +158,12 @@ public class CodeGenerator : IModelBuilder
                                 $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}!"
                                 );
                         }
+                        if (!_keyDefinitions.TryGetValue(attr.Projector, out SortedDictionary<string, PrimaryKeyDefinition>? definitions))
+                        {
+                            definitions = new SortedDictionary<string, PrimaryKeyDefinition>();
+                            _keyDefinitions.Add(attr.Projector, definitions);
+                        }
+                        definitions.Add(keyDefinition.Name, keyDefinition);
                     }
                 }
             }
@@ -165,12 +172,12 @@ public class CodeGenerator : IModelBuilder
 
     public void BuildClientImplementation(ClassModel model, string selector)
     {
-        BuildImplementation(model, selector, true);
+        BuildImplementation(model, selector, isClient: true);
     }
 
     public void BuildServerImplementation(ClassModel model, string selector)
     {
-        BuildImplementation(model, selector, false);
+        BuildImplementation(model, selector, isClient: false);
     }
 
     public void BuildConnector(ClassModel baseModel, string selector)
@@ -182,13 +189,15 @@ public class CodeGenerator : IModelBuilder
     {
         if (_requests[int.Parse(selector)] is GeneratingRequest request)
         {
-            model.Usings.Clear();
-            model.Methods.Clear();
-            model.NamespaceValue = request.Interface.Namespace ?? String.Empty;
+            InitClassModel(model, request);
+
             model.ClassName = MakeControllerInterfaceName(request.Interface);
-            _requests[int.Parse(selector)].ResultName = model.ClassName;
+            
+            request.ResultName = model.ClassName;
+            
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(ExpectedOutputTypeAttribute));
+            
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
                 AddUsings(model, method.ReturnType);
@@ -206,8 +215,8 @@ public class CodeGenerator : IModelBuilder
                 }
                 model.Methods.Add(mm);
             }
+
             model.Usings.Remove(model.NamespaceValue);
-            request.ResultName = model.ClassName;
         }
 
     }
@@ -216,18 +225,22 @@ public class CodeGenerator : IModelBuilder
     {
         if (_requests[int.Parse(selector)] is GeneratingRequest request)
         {
-            model.Usings.Clear();
-            model.Methods.Clear();
-            model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+            InitClassModel(model, request);
+
             model.ClassName = MakeControllerProxyName(request.Interface);
+
             request.ResultName = model.ClassName;
+
             model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
+
             model.Usings.Add(s_dependencyInjection);
             model.Usings.Add(s_systemReflection);
             model.Usings.Add(model.NamespaceValue);
+
             AddUsings(model, typeof(Controller));
-            AddUsings(model, typeof(IPocoContext));
+            AddUsings(model, typeof(Server.IPocoContext));
             AddUsings(model, typeof(Task));
+
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
                 AttributeModel route = null!;
@@ -341,34 +354,76 @@ public class CodeGenerator : IModelBuilder
                 mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
                 model.Methods.Add(mm);
             }
-            model.Usings.Remove(model.NamespaceValue);
         }
 
+    }
+
+    public void BuildPrimaryKey(ClassModel model, string selector)
+    {
+        if (_requests[int.Parse(selector)] is GeneratingRequest request)
+        {
+            InitClassModel(model, request);
+
+            model.ClassName = MakePrimaryKeyName(request.Interface);
+
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IPrimaryKey<>));
+
+            model.ReferencedClass = MakeBaseClassName(request.Interface);
+
+            model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), model.ReferencedClass));
+
+            foreach(string name in _keyDefinitions[request.Interface].Keys)
+            {
+                PrimaryKeyDefinition key = _keyDefinitions[request.Interface][name];
+
+                AddUsings(model, key.Type);
+                PrimaryKeyFieldModel pkm = new()
+                {
+                    Name = key.Name,
+                    Type = GetTypeName(key.Type),
+                    Property = key.Property?.Name,
+                    KeyReference = key.KeyReference,
+                };
+                if(key.KeyReference is { })
+                {
+                    AddUsings(model, typeof(IEntity));
+                    pkm.KeyType = MakePrimaryKeyName(key.Property!.PropertyType);
+                }
+                model.PrimaryKeys.Add(pkm);
+            }
+
+        }
     }
 
     public async Task Generate()
     {
         _requests.Clear();
+        CheckPrimaryKeys();
         int pos = 0;
         int fails = 0;
         int done = 0;
+        Type? contract = null;
         await foreach (KeyValuePair<string, object> result in Generator.Generate(
             new object[] { new KeyValuePair<Type, object>(typeof(IModelBuilder), this) }
             ,
-            _queue.SelectMany(v =>
+            _queue.SelectMany(@interface =>
             {
                 List<string> res = new();
-                if (_contracts.Contains(v))
+                if (_contracts.Contains(@interface))
                 {
-                    if (v.GetMethods().Count() > 0)
+                    contract = @interface;
+                    if (@interface.GetMethods().Count() > 0)
                     {
                         if (ClientGeneratedDirectory is { })
                         {
                             res.Add($"/{ClientLanguage}/Connector?selector={_requests.Count}");
                             _requests.Add(new GeneratingRequest
                             {
-                                Interface = v,
-                                Kind = RequestKind.Connector
+                                Interface = @interface,
+                                Kind = RequestKind.Connector,
+                                Contract = contract
                             });
                         }
                         if (ServerGeneratedDirectory is { })
@@ -376,27 +431,30 @@ public class CodeGenerator : IModelBuilder
                             res.Add($"/ControllerInterface?selector={_requests.Count}");
                             _requests.Add(new GeneratingRequest
                             {
-                                Interface = v,
-                                Kind = RequestKind.ControllerInterface
+                                Interface = @interface,
+                                Kind = RequestKind.ControllerInterface,
+                                Contract = contract
                             });
                             res.Add($"/ControllerProxy?selector={_requests.Count}");
                             _requests.Add(new GeneratingRequest
                             {
-                                Interface = v,
-                                Kind = RequestKind.ControllerProxy
+                                Interface = @interface,
+                                Kind = RequestKind.ControllerProxy,
+                                Contract = contract
                             });
                         }
                     }
                 }
-                else if (_projectors.ContainsKey(v))
+                else if (_projectors.ContainsKey(@interface))
                 {
                     if (ClientGeneratedDirectory is { })
                     {
                         res.Add($"/{ClientLanguage}/ClientImplementation?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
                         {
-                            Interface = v,
+                            Interface = @interface,
                             Kind = RequestKind.ClientImplementation,
+                            Contract = contract!
                         });
                     }
                     if (ServerGeneratedDirectory is { })
@@ -404,18 +462,30 @@ public class CodeGenerator : IModelBuilder
                         res.Add($"/ServerImplementation?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
                         {
-                            Interface = v,
+                            Interface = @interface,
                             Kind = RequestKind.ServerImplementation,
+                            Contract = contract!
                         });
+                        if (_keyDefinitions.ContainsKey(@interface))
+                        {
+                            res.Add($"/PrimaryKey?selector={_requests.Count}");
+                            _requests.Add(new GeneratingRequest
+                            {
+                                Interface = @interface,
+                                Kind = RequestKind.PrimaryKey,
+                                Contract = contract!
+                            });
+                        }
                     }
                 }
                 return res;
             })
         ))
         {
-            if (result.Value is Exception)
+            if (result.Value is Exception ex1)
             {
-                Console.WriteLine("exception: " + result.Key + ", " + result.Value);
+                string[]? stackTrace = ex1.StackTrace?.Split('\n');
+                Console.WriteLine($"exception: {result.Key}, {ex1.Message}{((stackTrace?.Length ?? 0) > 0 ? $"\n    {string.Join('\n', stackTrace?.Take(Math.Min(1, stackTrace?.Length ?? 0)) ?? new string[0])}" : string.Empty)}");
                 ++fails;
             }
             else
@@ -451,17 +521,36 @@ public class CodeGenerator : IModelBuilder
         _queue.Clear();
     }
 
+    private void CheckPrimaryKeys()
+    {
+        foreach (Type targetType in _keyDefinitions.Keys)
+        {
+            SortedDictionary<string, PrimaryKeyDefinition> definition = _keyDefinitions[targetType];
+            foreach (PrimaryKeyDefinition key in definition.Values)
+            {
+                if (key.KeyReference is { })
+                {
+                    if (
+                        !_keyDefinitions.ContainsKey(key.Property!.PropertyType)
+                        || !_keyDefinitions[key.Property.PropertyType].ContainsKey(key.KeyReference)
+                    )
+                    {
+                        throw new InvalidOperationException($"Key part {key.Property.DeclaringType}.{key.Property.Name}.{key.KeyReference} referenced by keyDefinition['{key.Name}']='{key.Property.Name}.{key.KeyReference}' for {nameof(targetType)}={targetType} is not defined!");
+                    }
+
+                    CycleFinder.CheckNoCycleAndSetAbsentTypes(_keyDefinitions, targetType, key);
+                }
+            }
+        }
+    }
+
     private void BuildImplementation(ClassModel model, string selector, bool isClient)
     {
         if (_requests[int.Parse(selector)] is GeneratingRequest request && _projectors.ContainsKey(request.Interface))
         {
-            model.Usings.Clear();
-            model.Methods.Clear();
-            model.Properties.Clear();
-            model.Classes.Clear();
+            InitClassModel(model, request);
 
             model.ClassName = MakeBaseClassName(request.Interface);
-            model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
             model.IsEntity = _keyDefinitions.ContainsKey(request.Interface);
             model.IsClient = isClient;
 
@@ -482,13 +571,14 @@ public class CodeGenerator : IModelBuilder
             {
                 if (model.IsEntity)
                 {
-                    AddUsings(model, typeof(EntityBase));
-                    model.Interfaces.Add(GetTypeName(typeof(EntityBase)));
+                    model.PrimaryKeyName = MakePrimaryKeyName(request.Interface);
+                    AddUsings(model, typeof(Server.EntityBase));
+                    model.Interfaces.Add(GetTypeName(typeof(Server.EntityBase)));
                 }
                 else
                 {
-                    AddUsings(model, typeof(EnvelopeBase));
-                    model.Interfaces.Add(GetTypeName(typeof(EnvelopeBase)));
+                    AddUsings(model, typeof(Server.EnvelopeBase));
+                    model.Interfaces.Add(GetTypeName(typeof(Server.EnvelopeBase)));
                 }
             }
 
@@ -586,6 +676,7 @@ public class CodeGenerator : IModelBuilder
             foreach (Type projection in new[] { request.Interface }.Concat(_projectors[request.Interface]))
             {
                 AddUsings(model, projection);
+                AddUsings(model, typeof(PocoAttribute));
                 ClassModel projectionModel = new()
                 {
                     ClassName = MakeBaseClassName(projection).Replace(s_base, s_projection),
@@ -664,6 +755,19 @@ public class CodeGenerator : IModelBuilder
         }
     }
 
+    private void InitClassModel(ClassModel model, GeneratingRequest request)
+    {
+        model.Contract = request.Contract;
+        model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+
+        FieldInfo fi = request.Kind.GetType().GetField(request.Kind.ToString())!;
+        DescriptionAttribute[]? attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+        if (attributes != null && attributes.Any())
+        {
+            model.Description = attributes.First().Description;
+        }
+    }
+
     private void CheckConsistency(Type projector, Type[]? projections)
     {
         if (projections is { })
@@ -730,12 +834,17 @@ public class CodeGenerator : IModelBuilder
 
     private string MakeControllerProxyName(Type @interface)
     {
-        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controllerProxy}";
+        return $"{_contractNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controllerProxy}";
     }
 
     private string MakeControllerInterfaceName(Type @interface)
     {
         return $"I{_contractNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controller}";
+    }
+
+    private string MakePrimaryKeyName(Type @interface)
+    {
+        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_primaryKey}";
     }
 
     private void AddUsings(ClassModel model, Type type)

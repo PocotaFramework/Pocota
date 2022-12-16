@@ -7,7 +7,7 @@
         {
 @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
 {
-    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>            case "@pm.Name":
                 return !Enumerable.SequenceEqual(
                         @Html.Raw($"{fieldName}.OrderBy(o => o.GetHashCode()),") 
@@ -25,7 +25,7 @@
     {
 @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
 {
-    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>@Html.Raw($"        for(int i = {fieldName}.Count - 1; i >= 0; --i)")
         {
 @Html.Raw($"            if (!_initial{fieldName}.Contains({fieldName}[i]))")
@@ -48,7 +48,7 @@
     {
 @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
 {
-    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>@Html.Raw($"        if(_modified is null || !_modified.ContainsKey(\"{pm.Name}\"))")
         {
 @Html.Raw($"            _initial{fieldName}.Clear();")
@@ -57,3 +57,4 @@
 </text>
 }
     }
+    

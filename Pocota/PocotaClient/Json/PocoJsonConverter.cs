@@ -277,7 +277,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
                     writer.WritePropertyName(Key);
                     JsonSerializer.Serialize<object[]?>(writer, new object[] { primaryKey });
                 }
-                if(context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || _core.IsEnvelope<T>())
+                if(context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || typeof(EnvelopeBase).IsAssignableFrom(typeof(T)))
                 {
                     Type actualType = value.GetType();
                     foreach(PropertyInfo pi in typeof(T).GetProperties())

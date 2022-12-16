@@ -18,8 +18,11 @@ public class ClassModel : PageModel
     public string? Interface { get; set; } = null;
     public bool IsClient { get; set; } = false;
     public string ControllerInterface { get; set; } = null!;
-
-
+    public string? ReferencedClass { get; set; } = null;
+    public List<PrimaryKeyFieldModel> PrimaryKeys { get; init; } = new();
+    public string? PrimaryKeyName { get; set; } = null;
+    public Type Contract { get; set; } = null;
+    public string? Description { get; set; } = null;
 
 
     public void OnGet([FromServices] IModelBuilder modelBuilder)
@@ -32,11 +35,11 @@ public class ClassModel : PageModel
         {
             modelBuilder.BuildControllerProxy(this, HttpContext.Request.Query["selector"][0]);
         }
-        else if (HttpContext.Request.Path.Equals($"/{(modelBuilder as CodeGenerator)!.ClientLanguage}/Connector"))
+        else if (HttpContext.Request.Path.Equals($"/{modelBuilder.ClientLanguage}/Connector"))
         {
             modelBuilder.BuildConnector(this, HttpContext.Request.Query["selector"][0]);
         }
-        else if (HttpContext.Request.Path.Equals($"/{(modelBuilder as CodeGenerator)!.ClientLanguage}/ClientImplementation"))
+        else if (HttpContext.Request.Path.Equals($"/{modelBuilder.ClientLanguage}/ClientImplementation"))
         {
             modelBuilder.BuildClientImplementation(this, HttpContext.Request.Query["selector"][0]);
         }
@@ -44,5 +47,10 @@ public class ClassModel : PageModel
         {
             modelBuilder.BuildServerImplementation(this, HttpContext.Request.Query["selector"][0]);
         }
+        else if (HttpContext.Request.Path.Equals("/PrimaryKey"))
+        {
+            modelBuilder.BuildPrimaryKey(this, HttpContext.Request.Query["selector"][0]);
+        }
+
     }
 }

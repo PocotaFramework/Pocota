@@ -18,7 +18,7 @@ internal class PocoJsonConverterFactory : JsonConverterFactory
 
     public override bool CanConvert(Type typeToConvert)
     {
-        if (PocotaCore.IsIList(typeToConvert))
+        if (IsIList(typeToConvert))
         {
             return _core.GetActualType(typeToConvert.GetGenericArguments()[0]) is Type;
         }
@@ -27,7 +27,7 @@ internal class PocoJsonConverterFactory : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        if (PocotaCore.IsIList(typeToConvert))
+        if (IsIList(typeToConvert))
         {
             return (JsonConverter?)Activator.CreateInstance(
                 typeof(ListJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
@@ -38,5 +38,10 @@ internal class PocoJsonConverterFactory : JsonConverterFactory
             typeof(PocoJsonConverter<>).MakeGenericType(new Type[] { typeToConvert }),
             new object[] { _services }
         );
+    }
+
+    private bool IsIList(Type type)
+    {
+        return type.IsGenericType && typeof(IList<>).MakeGenericType(type.GetGenericArguments()[0]).IsAssignableFrom(type);
     }
 }

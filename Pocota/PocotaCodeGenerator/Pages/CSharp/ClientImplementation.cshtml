@@ -1,12 +1,7 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common;
 @model ClassModel
-
-//------------------------------
-// Client implementation
-// @string.Join(".", new string[] { Model.NamespaceValue, Model.ClassName})
-// (Generated automatically @DateTime.Now.ToString("s"))
-//------------------------------
+@Html.Partial("HeaderComment", Model)
 
 @foreach (string usng in Model.Usings.OrderBy(v => v))
 {
@@ -26,7 +21,7 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 @Html.Raw("#region Projection classes");
 @foreach (ClassModel model in Model.Classes)
 {
-    @Html.Partial("Projection", model)
+     @Html.Partial("Projection", model) 
 }
 @Html.Raw("#endregion Projection classes");
 
@@ -42,7 +37,7 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     { 
         @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
         {
-            string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+            string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>        @Html.Raw($"{fieldName}.CollectionChanged += {pm.Name}CollectionChanged");
 </text>
         }

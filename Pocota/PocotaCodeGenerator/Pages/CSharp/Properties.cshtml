@@ -3,7 +3,7 @@
 
 @foreach(PropertyModel pm in Model.Properties)
 {
-    string fieldName = "_" + pm.Name.Substring(0, 1).ToLower() + pm.Name.Substring(1);
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
         get => @fieldName;

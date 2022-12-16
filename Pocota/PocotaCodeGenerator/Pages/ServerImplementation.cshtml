@@ -1,13 +1,7 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common
 @model ClassModel
-
-
-//------------------------------
-// Server implementation
-// @string.Join(".", new string[] { Model.NamespaceValue, Model.ClassName})
-// (Generated automatically @DateTime.Now.ToString("s"))
-//------------------------------
+@Html.Partial("HeaderComment", Model)
 
 @foreach (string usng in Model.Usings.OrderBy(v => v))
 {
@@ -21,14 +15,7 @@ public @if (Model.IsAbstract)
 {
     <text>abstract </text>
 }
-class @Model.ClassName: @if (Model.IsEntity)
-{
-    <text>EntityBase</text>
-}
-else
-{
-    <text>EnvelopeBase</text>
-}, IProjector
+class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 
     @Html.Raw("#region Projection classes");
@@ -44,6 +31,15 @@ else
     @Html.Partial("ProjectionsProperties", Model)
     
     @Html.Partial("Properties", Model)
+
+    public @Html.Raw($"{Model.ClassName}(IServiceProvider services) : base(services)") 
+    { 
+        @if (Model.IsEntity)
+        {
+            <text>        SetPrimaryKey(new @Html.Raw($"{Model.PrimaryKeyName}(this)"));
+</text>
+        }
+    }
 
     @Html.Partial("Methods", Model)
 

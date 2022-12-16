@@ -17,20 +17,16 @@ internal class PocotaCore: PocotaCoreBase, IPocota
     
     private readonly object _lockTypesMapping = new object();
 
-    public override Type PocoBaseType => typeof(PocoBase);
-
     internal static void Configure(
             IServiceCollection services,
-            Action<IServiceCollection> configurePocos,
-            Action<IJsonSerializerConfigurator> configureJson
+            Action<IServiceCollection> configureServices,
+            Action<IJsonSerializerConfiguration> configureJson
         )
     {
         PocotaCore core = new();
-        core._services = services;
-        configurePocos?.Invoke(core);
+        ServiceCollectionWrapper serviceDescriptors = new(services, core);
+        configureServices?.Invoke(serviceDescriptors);
         configureJson?.Invoke(core);
-        core._services = null;
-        core.Commit();
         services.AddSingleton<IPocota>(core);
         services.AddScoped<PocoJsonConverterFactory>();
         services.AddScoped<IPocoContext, PocoContext>();

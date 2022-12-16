@@ -3,8 +3,8 @@ using CatsClient;
 using Net.Leksi.Pocota.Common;
 
 CodeGenerator generator = new();
-generator.ServerGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsServerBases";
-generator.ClientGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsConnector";
+generator.ServerGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsServerGenerated";
+generator.ClientGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsClientGenerated";
 generator.AddContract<ICatsContract>();
 await generator.Generate();
 generator.ServerGeneratedDirectory = null;
