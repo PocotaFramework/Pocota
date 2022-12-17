@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Client Poco Implementation                               //
-// CatsCommon.Filters.LitterFilterBase                      //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Client Poco Implementation                              //
+// CatsCommon.Filters.LitterFilterBase                     //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using CatsCommon.Model;
@@ -12,7 +12,7 @@ using Net.Leksi.Pocota.Common;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterBase: EnvelopeBase, IProjector
+public class LitterFilterBase: EnvelopeBase, IProjector, IProjection<LitterFilterBase>
 {
 
 #region Projection classes;
@@ -21,34 +21,34 @@ public class LitterFilterBase: EnvelopeBase, IProjector
     public class LitterFilterProjection: ILitterFilter, IProjector, IProjection<LitterFilterBase>
     {
 
-        public LitterFilterBase Projector  { get; init; }
+        public  LitterFilterBase Source  { get; init; }
 
-        public ICat Female 
+        public virtual ICat Female 
         {
-            get => Projector.Female.As<ICat>()!;
-            set => Projector.Female = (CatBase)value;
+            get => Source.Female.As<ICat>()!;
+            set => Source.Female = (CatBase)value;
         }
 
-        public ICat Male 
+        public virtual ICat Male 
         {
-            get => Projector.Male.As<ICat>()!;
-            set => Projector.Male = (CatBase)value;
+            get => Source.Male.As<ICat>()!;
+            set => Source.Male = (CatBase)value;
         }
 
 
-        internal LitterFilterProjection(LitterFilterBase projector)
+        internal LitterFilterProjection(LitterFilterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -102,6 +102,8 @@ public class LitterFilterBase: EnvelopeBase, IProjector
 
 
 
+    public LitterFilterBase Source { get => this; }
+
     
     public virtual CatBase Female
     {
@@ -113,7 +115,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector
                 object oldValue = _female;
                 if(_female is {})
                 {
-                    _female.PocoChanged -= FemalePocoChanged;
+                            _female.PocoChanged -= FemalePocoChanged;
                 }
                 _female = value;
                 if(_female is {})
@@ -136,7 +138,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector
                 object oldValue = _male;
                 if(_male is {})
                 {
-                    _male.PocoChanged -= MalePocoChanged;
+                            _male.PocoChanged -= MalePocoChanged;
                 }
                 _male = value;
                 if(_male is {})

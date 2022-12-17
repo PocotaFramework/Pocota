@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartBase                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-16T18:40:09                                          //
+// at 2022-12-17T12:54:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -15,7 +15,7 @@ using System.Collections.Specialized;
 
 namespace CatsClient;
 
-public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
+public abstract class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHeartBase>
 {
 
 #region Projection classes;
@@ -25,52 +25,52 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
     {
         private readonly ProjectionList<LitterBase,ILitter> _selectedLitters;
 
-        public ViewCatHeartBase Projector  { get; init; }
+        public  ViewCatHeartBase Source  { get; init; }
 
-        public EditKind EditKind 
+        public virtual EditKind EditKind 
         {
-            get => Projector.EditKind!;
-            set => Projector.EditKind = value;
+            get => Source.EditKind!;
+            set => Source.EditKind = value;
         }
 
-        public ICatForView Cat 
+        public virtual ICatForView Cat 
         {
-            get => Projector.Cat.As<ICatForView>()!;
-            set => Projector.Cat = (CatBase)value;
+            get => Source.Cat.As<ICatForView>()!;
+            set => Source.Cat = (CatBase)value;
         }
 
-        public Object LittersView 
+        public virtual Object LittersView 
         {
-            get => Projector.LittersView!;
-            set => Projector.LittersView = value;
+            get => Source.LittersView!;
+            set => Source.LittersView = value;
         }
 
-        public IList<ILitter> SelectedLitters 
+        public virtual IList<ILitter> SelectedLitters 
         {
             get => _selectedLitters;
             set => throw new NotImplementedException();
         }
 
 
-        internal ViewCatHeartProjection(ViewCatHeartBase projector)
+        internal ViewCatHeartProjection(ViewCatHeartBase source)
         {
-            Projector = projector;
-            _selectedLitters = new(Projector.SelectedLitters);
+            Source = source;
+            _selectedLitters = new(Source.SelectedLitters);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
         public void LittersSelectionChanged(Object sender, EventArgs e)
         {
-            Projector.LittersSelectionChanged(sender, e);
+            Source.LittersSelectionChanged(sender, e);
         }
 
 
@@ -152,6 +152,8 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
 
 
 
+    public ViewCatHeartBase Source { get => this; }
+
     
     public virtual EditKind EditKind
     {
@@ -178,7 +180,7 @@ public abstract class ViewCatHeartBase: EnvelopeBase, IProjector
                 object oldValue = _cat;
                 if(_cat is {})
                 {
-                    _cat.PocoChanged -= CatPocoChanged;
+                            _cat.PocoChanged -= CatPocoChanged;
                 }
                 _cat = value;
                 if(_cat is {})

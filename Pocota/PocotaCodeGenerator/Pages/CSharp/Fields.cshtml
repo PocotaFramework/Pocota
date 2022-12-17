@@ -3,32 +3,35 @@
 
 @foreach(PropertyModel pm in Model.Properties)
 {
-    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    private </text>
-    if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+    if (Model.Source is null || (pm.IsList && (pm.IsProjector || pm.IsReadOnly)))
     {
-        <text>readonly </text>
-    }
-    <text>@Html.Raw(pm.Type)</text>
-    if (pm.IsNullable)
-    {
-        <text>?</text>
-    } 
-    <text> @fieldName</text>
-    if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
-    {
-        <text> = new()</text>
-    } 
-    else 
-    {
-        <text> = default</text>
-        if(!pm.IsNullable){<text>!</text>}
-    }
-    <text>;
+        string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+        <text>    private </text>
+        if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+        {
+            <text>readonly </text>
+        }
+        <text>@Html.Raw(pm.Type)</text>
+        if (pm.IsNullable)
+        {
+            <text>?</text>
+        } 
+        <text> @fieldName</text>
+        if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+        {
+            <text> = new()</text>
+        } 
+        else 
+        {
+            <text> = default</text>
+            if(!pm.IsNullable){<text>!</text>}
+        }
+        <text>;
 </text>
-    if (pm.IsList)
-    {
-        <text>    private readonly @Html.Raw($"List<{pm.ItemType}> _initial{fieldName} = new()");
+        if (pm.IsList)
+        {
+            <text>    private readonly @Html.Raw($"List<{pm.ItemType}> _initial{fieldName} = new()");
 </text>
+        }
     }
 }

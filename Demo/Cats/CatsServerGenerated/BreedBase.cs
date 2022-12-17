@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Server Poco Implementation                               //
-// CatsCommon.Model.BreedBase                               //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Server Poco Implementation                              //
+// CatsCommon.Model.BreedBase                              //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota;
@@ -13,7 +13,7 @@ using Net.Leksi.Pocota;
     
 namespace CatsCommon.Model;
 
-public class BreedBase: EntityBase, IProjector
+public class BreedBase: EntityBase, IProjector, IProjection<BreedBase>
 {
 
     #region Projection classes;
@@ -23,46 +23,46 @@ public class BreedBase: EntityBase, IProjector
     public class BreedProjection: IBreed, IProjector, IProjection<BreedBase>
     {
 
-        public BreedBase Projector  { get; init; }
+        public  BreedBase Source  { get; init; }
 
-        public String Code 
+        public virtual String Code 
         {
-            get => Projector.Code!;
-            set => Projector.Code = value;
+            get => Source.Code!;
+            set => Source.Code = value;
         }
 
-        public String Group 
+        public virtual String Group 
         {
-            get => Projector.Group!;
-            set => Projector.Group = value;
+            get => Source.Group!;
+            set => Source.Group = value;
         }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => Source.NameEng;
+            set => Source.NameEng = value;
         }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => Source.NameNat;
+            set => Source.NameNat = value;
         }
 
 
-        internal BreedProjection(BreedBase projector)
+        internal BreedProjection(BreedBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -137,11 +137,13 @@ public class BreedBase: EntityBase, IProjector
 
 
     
+    public BreedBase Source { get => this; }
+
     
-    public String Code { get; set; } = default!;
-    public String Group { get; set; } = default!;
-    public String? NameEng { get; set; } = default;
-    public String? NameNat { get; set; } = default;
+    public String        Code  { get; set; } = default!;            
+    public String        Group  { get; set; } = default!;            
+    public String?        NameEng  { get; set; } = default;            
+    public String?        NameNat  { get; set; } = default;            
 
 
     public BreedBase(IServiceProvider services) : base(services) 

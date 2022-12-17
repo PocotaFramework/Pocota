@@ -5,6 +5,7 @@ public class PocoAttribute: Attribute
 {
     public Type Projector { get; init; }
     public Type[]? Projections { get; set; }
+    public Type? Source { get; set; }
 
     public object[]? PrimaryKey { get; set; }
 

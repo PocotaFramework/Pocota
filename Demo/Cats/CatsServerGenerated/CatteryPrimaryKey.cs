@@ -1,7 +1,7 @@
 //------------------------------
 // PrimaryKey implementation
 // CatsCommon.Model.CatteryPrimaryKey
-// (Generated automatically 2022-12-16T18:40:09)
+// (Generated automatically 2022-12-17T12:54:33)
 //------------------------------
 
 using Net.Leksi.Pocota.Server.Generic;

@@ -1,14 +1,14 @@
-//////////////////////////////////////////////////////////////
-// Controller Proxy                                         //
-// Cats.Contract.CatsControllerProxy                        //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Controller Proxy                                        //
+// CatsContract.CatsControllerProxy                        //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
-using Cats.Contract;
 using CatsCommon.Filters;
 using CatsCommon.Model;
+using CatsContract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Server;
@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Cats.Contract;
+namespace CatsContract;
 
 public class CatsControllerProxy : Controller
 {

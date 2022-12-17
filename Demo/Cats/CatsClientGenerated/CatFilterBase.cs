@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Client Poco Implementation                               //
-// CatsCommon.Filters.CatFilterBase                         //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Client Poco Implementation                              //
+// CatsCommon.Filters.CatFilterBase                        //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using CatsCommon;
@@ -14,7 +14,7 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class CatFilterBase: EnvelopeBase, IProjector
+public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
 {
 
 #region Projection classes;
@@ -23,112 +23,112 @@ public class CatFilterBase: EnvelopeBase, IProjector
     public class CatFilterProjection: ICatFilter, IProjector, IProjection<CatFilterBase>
     {
 
-        public CatFilterBase Projector  { get; init; }
+        public  CatFilterBase Source  { get; init; }
 
-        public IBreed? Breed 
+        public virtual IBreed? Breed 
         {
-            get => Projector.Breed?.As<IBreed>();
-            set => Projector.Breed = (BreedBase?)value;
+            get => Source.Breed?.As<IBreed>();
+            set => Source.Breed = (BreedBase?)value;
         }
 
-        public ICattery? Cattery 
+        public virtual ICattery? Cattery 
         {
-            get => Projector.Cattery?.As<ICattery>();
-            set => Projector.Cattery = (CatteryBase?)value;
+            get => Source.Cattery?.As<ICattery>();
+            set => Source.Cattery = (CatteryBase?)value;
         }
 
-        public DateOnly? BornAfter 
+        public virtual DateOnly? BornAfter 
         {
-            get => Projector.BornAfter;
-            set => Projector.BornAfter = value;
+            get => Source.BornAfter;
+            set => Source.BornAfter = value;
         }
 
-        public DateOnly? BornBefore 
+        public virtual DateOnly? BornBefore 
         {
-            get => Projector.BornBefore;
-            set => Projector.BornBefore = value;
+            get => Source.BornBefore;
+            set => Source.BornBefore = value;
         }
 
-        public String? NameRegex 
+        public virtual String? NameRegex 
         {
-            get => Projector.NameRegex;
-            set => Projector.NameRegex = value;
+            get => Source.NameRegex;
+            set => Source.NameRegex = value;
         }
 
-        public Gender? Gender 
+        public virtual Gender? Gender 
         {
-            get => Projector.Gender;
-            set => Projector.Gender = value;
+            get => Source.Gender;
+            set => Source.Gender = value;
         }
 
-        public ICat? Child 
+        public virtual ICat? Child 
         {
-            get => Projector.Child?.As<ICat>();
-            set => Projector.Child = (CatBase?)value;
+            get => Source.Child?.As<ICat>();
+            set => Source.Child = (CatBase?)value;
         }
 
-        public ICat? Self 
+        public virtual ICat? Self 
         {
-            get => Projector.Self?.As<ICat>();
-            set => Projector.Self = (CatBase?)value;
+            get => Source.Self?.As<ICat>();
+            set => Source.Self = (CatBase?)value;
         }
 
-        public ICat? Mother 
+        public virtual ICat? Mother 
         {
-            get => Projector.Mother?.As<ICat>();
-            set => Projector.Mother = (CatBase?)value;
+            get => Source.Mother?.As<ICat>();
+            set => Source.Mother = (CatBase?)value;
         }
 
-        public ICat? Father 
+        public virtual ICat? Father 
         {
-            get => Projector.Father?.As<ICat>();
-            set => Projector.Father = (CatBase?)value;
+            get => Source.Father?.As<ICat>();
+            set => Source.Father = (CatBase?)value;
         }
 
-        public ICat? Ancestor 
+        public virtual ICat? Ancestor 
         {
-            get => Projector.Ancestor?.As<ICat>();
-            set => Projector.Ancestor = (CatBase?)value;
+            get => Source.Ancestor?.As<ICat>();
+            set => Source.Ancestor = (CatBase?)value;
         }
 
-        public ICat? Descendant 
+        public virtual ICat? Descendant 
         {
-            get => Projector.Descendant?.As<ICat>();
-            set => Projector.Descendant = (CatBase?)value;
+            get => Source.Descendant?.As<ICat>();
+            set => Source.Descendant = (CatBase?)value;
         }
 
-        public ILitter? Litter 
+        public virtual ILitter? Litter 
         {
-            get => Projector.Litter?.As<ILitter>();
-            set => Projector.Litter = (LitterBase?)value;
+            get => Source.Litter?.As<ILitter>();
+            set => Source.Litter = (LitterBase?)value;
         }
 
-        public String? ExteriorRegex 
+        public virtual String? ExteriorRegex 
         {
-            get => Projector.ExteriorRegex;
-            set => Projector.ExteriorRegex = value;
+            get => Source.ExteriorRegex;
+            set => Source.ExteriorRegex = value;
         }
 
-        public String? TitleRegex 
+        public virtual String? TitleRegex 
         {
-            get => Projector.TitleRegex;
-            set => Projector.TitleRegex = value;
+            get => Source.TitleRegex;
+            set => Source.TitleRegex = value;
         }
 
 
-        internal CatFilterProjection(CatFilterBase projector)
+        internal CatFilterProjection(CatFilterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -364,6 +364,8 @@ public class CatFilterBase: EnvelopeBase, IProjector
 
 
 
+    public CatFilterBase Source { get => this; }
+
     
     public virtual BreedBase? Breed
     {
@@ -375,7 +377,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _breed;
                 if(_breed is {})
                 {
-                    _breed.PocoChanged -= BreedPocoChanged;
+                            _breed.PocoChanged -= BreedPocoChanged;
                 }
                 _breed = value;
                 if(_breed is {})
@@ -398,7 +400,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _cattery;
                 if(_cattery is {})
                 {
-                    _cattery.PocoChanged -= CatteryPocoChanged;
+                            _cattery.PocoChanged -= CatteryPocoChanged;
                 }
                 _cattery = value;
                 if(_cattery is {})
@@ -481,7 +483,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _child;
                 if(_child is {})
                 {
-                    _child.PocoChanged -= ChildPocoChanged;
+                            _child.PocoChanged -= ChildPocoChanged;
                 }
                 _child = value;
                 if(_child is {})
@@ -504,7 +506,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _self;
                 if(_self is {})
                 {
-                    _self.PocoChanged -= SelfPocoChanged;
+                            _self.PocoChanged -= SelfPocoChanged;
                 }
                 _self = value;
                 if(_self is {})
@@ -527,7 +529,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _mother;
                 if(_mother is {})
                 {
-                    _mother.PocoChanged -= MotherPocoChanged;
+                            _mother.PocoChanged -= MotherPocoChanged;
                 }
                 _mother = value;
                 if(_mother is {})
@@ -550,7 +552,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _father;
                 if(_father is {})
                 {
-                    _father.PocoChanged -= FatherPocoChanged;
+                            _father.PocoChanged -= FatherPocoChanged;
                 }
                 _father = value;
                 if(_father is {})
@@ -573,7 +575,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _ancestor;
                 if(_ancestor is {})
                 {
-                    _ancestor.PocoChanged -= AncestorPocoChanged;
+                            _ancestor.PocoChanged -= AncestorPocoChanged;
                 }
                 _ancestor = value;
                 if(_ancestor is {})
@@ -596,7 +598,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _descendant;
                 if(_descendant is {})
                 {
-                    _descendant.PocoChanged -= DescendantPocoChanged;
+                            _descendant.PocoChanged -= DescendantPocoChanged;
                 }
                 _descendant = value;
                 if(_descendant is {})
@@ -619,7 +621,7 @@ public class CatFilterBase: EnvelopeBase, IProjector
                 object? oldValue = _litter;
                 if(_litter is {})
                 {
-                    _litter.PocoChanged -= LitterPocoChanged;
+                            _litter.PocoChanged -= LitterPocoChanged;
                 }
                 _litter = value;
                 if(_litter is {})

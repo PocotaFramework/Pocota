@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Client Poco Implementation                               //
-// CatsCommon.Model.LitterBase                              //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Client Poco Implementation                              //
+// CatsCommon.Model.LitterBase                             //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Client;
@@ -15,7 +15,7 @@ using System.Collections.Specialized;
 
 namespace CatsCommon.Model;
 
-public class LitterBase: EntityBase, IProjector
+public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
 {
 
 #region Projection classes;
@@ -25,57 +25,57 @@ public class LitterBase: EntityBase, IProjector
     {
         private readonly ProjectionList<CatBase,ICat> _cats;
 
-        public LitterBase Projector  { get; init; }
+        public  LitterBase Source  { get; init; }
 
-        public Int32 Order 
+        public virtual Int32 Order 
         {
-            get => Projector.Order!;
-            set => Projector.Order = value;
+            get => Source.Order!;
+            set => Source.Order = value;
         }
 
-        public DateOnly Date 
+        public virtual DateOnly Date 
         {
-            get => Projector.Date!;
-            set => Projector.Date = value;
+            get => Source.Date!;
+            set => Source.Date = value;
         }
 
-        public ICat Female 
+        public virtual ICat Female 
         {
-            get => Projector.Female.As<ICat>()!;
-            set => Projector.Female = (CatBase)value;
+            get => Source.Female.As<ICat>()!;
+            set => Source.Female = (CatBase)value;
         }
 
-        public ICat? Male 
+        public virtual ICat? Male 
         {
-            get => Projector.Male?.As<ICat>();
-            set => Projector.Male = (CatBase?)value;
+            get => Source.Male?.As<ICat>();
+            set => Source.Male = (CatBase?)value;
         }
 
-        public IList<ICat> Cats 
+        public virtual IList<ICat> Cats 
         {
             get => _cats;
         }
 
-        public IList<String> Strings 
+        public virtual IList<String> Strings 
         {
-            get => Projector.Strings!;
+            get => Source.Strings!;
         }
 
 
-        internal LitterProjection(LitterBase projector)
+        internal LitterProjection(LitterBase source)
         {
-            Projector = projector;
-            _cats = new(Projector.Cats);
+            Source = source;
+            _cats = new(Source.Cats);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -87,42 +87,42 @@ public class LitterBase: EntityBase, IProjector
     public class LitterForCatProjection: ILitterForCat, IProjector, IProjection<LitterBase>
     {
 
-        public LitterBase Projector  { get; init; }
+        public  LitterBase Source  { get; init; }
 
-        public Int32 Order 
+        public virtual Int32 Order 
         {
-            get => Projector.Order!;
+            get => Source.Order!;
         }
 
-        public DateOnly Date 
+        public virtual DateOnly Date 
         {
-            get => Projector.Date!;
+            get => Source.Date!;
         }
 
-        public ICatAsParent Female 
+        public virtual ICatAsParent Female 
         {
-            get => Projector.Female.As<ICatAsParent>()!;
+            get => Source.Female.As<ICatAsParent>()!;
         }
 
-        public ICatAsParent? Male 
+        public virtual ICatAsParent? Male 
         {
-            get => Projector.Male?.As<ICatAsParent>();
+            get => Source.Male?.As<ICatAsParent>();
         }
 
 
-        internal LitterForCatProjection(LitterBase projector)
+        internal LitterForCatProjection(LitterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -134,27 +134,27 @@ public class LitterBase: EntityBase, IProjector
     public class LitterForDateProjection: ILitterForDate, IProjector, IProjection<LitterBase>
     {
 
-        public LitterBase Projector  { get; init; }
+        public  LitterBase Source  { get; init; }
 
-        public DateOnly Date 
+        public virtual DateOnly Date 
         {
-            get => Projector.Date!;
+            get => Source.Date!;
         }
 
 
-        internal LitterForDateProjection(LitterBase projector)
+        internal LitterForDateProjection(LitterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -167,28 +167,28 @@ public class LitterBase: EntityBase, IProjector
     {
         private readonly ProjectionList<CatBase,ICatForListing> _cats;
 
-        public LitterBase Projector  { get; init; }
+        public  LitterBase Source  { get; init; }
 
-        public IList<ICatForListing> Cats 
+        public virtual IList<ICatForListing> Cats 
         {
             get => _cats;
         }
 
 
-        internal LitterWithCatsProjection(LitterBase projector)
+        internal LitterWithCatsProjection(LitterBase source)
         {
-            Projector = projector;
-            _cats = new(Projector.Cats);
+            Source = source;
+            _cats = new(Source.Cats);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -312,6 +312,8 @@ public class LitterBase: EntityBase, IProjector
 
 
 
+    public LitterBase Source { get => this; }
+
     
     public virtual Int32 Order
     {
@@ -353,7 +355,7 @@ public class LitterBase: EntityBase, IProjector
                 object oldValue = _female;
                 if(_female is {})
                 {
-                    _female.PocoChanged -= FemalePocoChanged;
+                            _female.PocoChanged -= FemalePocoChanged;
                 }
                 _female = value;
                 if(_female is {})
@@ -376,7 +378,7 @@ public class LitterBase: EntityBase, IProjector
                 object? oldValue = _male;
                 if(_male is {})
                 {
-                    _male.PocoChanged -= MalePocoChanged;
+                            _male.PocoChanged -= MalePocoChanged;
                 }
                 _male = value;
                 if(_male is {})

@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Server Poco Implementation                               //
-// CatsCommon.Filters.CatteryFilterBase                     //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Server Poco Implementation                              //
+// CatsCommon.Filters.CatteryFilterBase                    //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota;
@@ -13,7 +13,7 @@ using Net.Leksi.Pocota;
     
 namespace CatsCommon.Filters;
 
-public class CatteryFilterBase: EnvelopeBase, IProjector
+public class CatteryFilterBase: EnvelopeBase, IProjector, IProjection<CatteryFilterBase>
 {
 
     #region Projection classes;
@@ -23,28 +23,28 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
     public class CatteryFilterProjection: ICatteryFilter, IProjector, IProjection<CatteryFilterBase>
     {
 
-        public CatteryFilterBase Projector  { get; init; }
+        public  CatteryFilterBase Source  { get; init; }
 
-        public String? SearchRegex 
+        public virtual String? SearchRegex 
         {
-            get => Projector.SearchRegex;
-            set => Projector.SearchRegex = value;
+            get => Source.SearchRegex;
+            set => Source.SearchRegex = value;
         }
 
 
-        internal CatteryFilterProjection(CatteryFilterBase projector)
+        internal CatteryFilterProjection(CatteryFilterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -80,8 +80,10 @@ public class CatteryFilterBase: EnvelopeBase, IProjector
 
 
     
+    public CatteryFilterBase Source { get => this; }
+
     
-    public String? SearchRegex { get; set; } = default;
+    public String?        SearchRegex  { get; set; } = default;            
 
 
     public CatteryFilterBase(IServiceProvider services) : base(services) 

@@ -1,11 +1,12 @@
-//////////////////////////////////////////////////////////////
-// Client Poco Implementation                               //
-// CatsCommon.Model.CatBase                                 //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////
+// Client Poco Implementation                                    //
+// CatsCommon.Model.CatBase                                      //
+// Generated automatically from CatsContract.ICatsClientContract //
+// at 2022-12-17T12:54:33                                        //
+///////////////////////////////////////////////////////////////////
 
 
+using CatsClientMisc;
 using CatsCommon;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
@@ -16,7 +17,7 @@ using System.Collections.Specialized;
 
 namespace CatsCommon.Model;
 
-public abstract class CatBase: EntityBase, IProjector
+public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
 {
 
 #region Projection classes;
@@ -26,82 +27,83 @@ public abstract class CatBase: EntityBase, IProjector
     {
         private readonly ProjectionList<LitterBase,ILitter> _litters;
 
-        public CatBase Projector  { get; init; }
+        public  CatBase Source  { get; init; }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => Source.NameNat;
+            set => Source.NameNat = value;
         }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => Source.NameEng;
+            set => Source.NameEng = value;
         }
 
-        public Gender Gender 
+        public virtual Gender Gender 
         {
-            get => Projector.Gender!;
-            set => Projector.Gender = value;
+            get => Source.Gender!;
+            set => Source.Gender = value;
         }
 
-        public ICattery Cattery 
+        public virtual ICattery Cattery 
         {
-            get => Projector.Cattery.As<ICattery>()!;
-            set => Projector.Cattery = (CatteryBase)value;
+            get => Source.Cattery.As<ICattery>()!;
+            set => Source.Cattery = (CatteryBase)value;
         }
 
-        public IBreed Breed 
+        public virtual IBreed Breed 
         {
-            get => Projector.Breed.As<IBreed>()!;
-            set => Projector.Breed = (BreedBase)value;
+            get => Source.Breed.As<IBreed>()!;
+            set => Source.Breed = (BreedBase)value;
         }
 
-        public ILitter? Litter 
+        public virtual ILitter? Litter 
         {
-            get => Projector.Litter?.As<ILitter>();
-            set => Projector.Litter = (LitterBase?)value;
+            get => Source.Litter?.As<ILitter>();
+            set => Source.Litter = (LitterBase?)value;
         }
 
-        public String? Exterior 
+        public virtual String? Exterior 
         {
-            get => Projector.Exterior;
-            set => Projector.Exterior = value;
+            get => Source.Exterior;
+            set => Source.Exterior = value;
         }
 
-        public String? Description 
+        public virtual String? Description 
         {
-            get => Projector.Description;
-            set => Projector.Description = value;
+            get => Source.Description;
+            set => Source.Description = value;
         }
 
-        public String? Title 
+        public virtual String? Title 
         {
-            get => Projector.Title;
-            set => Projector.Title = value;
+            get => Source.Title;
+            set => Source.Title = value;
         }
 
-        public IList<ILitter> Litters 
+        public virtual IList<ILitter> Litters 
         {
             get => _litters;
+            set => throw new NotImplementedException();
         }
 
 
-        internal CatProjection(CatBase projector)
+        internal CatProjection(CatBase source)
         {
-            Projector = projector;
-            _litters = new(Projector.Litters);
+            Source = source;
+            _litters = new(Source.Litters);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -113,67 +115,67 @@ public abstract class CatBase: EntityBase, IProjector
     public class CatForListingProjection: ICatForListing, IProjector, IProjection<CatBase>
     {
 
-        public CatBase Projector  { get; init; }
+        public  CatBase Source  { get; init; }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
+            get => Source.NameNat;
         }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
+            get => Source.NameEng;
         }
 
-        public Gender Gender 
+        public virtual Gender Gender 
         {
-            get => Projector.Gender!;
+            get => Source.Gender!;
         }
 
-        public ICattery Cattery 
+        public virtual ICattery Cattery 
         {
-            get => Projector.Cattery.As<ICattery>()!;
+            get => Source.Cattery.As<ICattery>()!;
         }
 
-        public IBreed Breed 
+        public virtual IBreed Breed 
         {
-            get => Projector.Breed.As<IBreed>()!;
+            get => Source.Breed.As<IBreed>()!;
         }
 
-        public ILitterForCat? Litter 
+        public virtual ILitterForCat? Litter 
         {
-            get => Projector.Litter?.As<ILitterForCat>();
+            get => Source.Litter?.As<ILitterForCat>();
         }
 
-        public String? Exterior 
+        public virtual String? Exterior 
         {
-            get => Projector.Exterior;
+            get => Source.Exterior;
         }
 
-        public String? Description 
+        public virtual String? Description 
         {
-            get => Projector.Description;
+            get => Source.Description;
         }
 
-        public String? Title 
+        public virtual String? Title 
         {
-            get => Projector.Title;
+            get => Source.Title;
         }
 
 
-        internal CatForListingProjection(CatBase projector)
+        internal CatForListingProjection(CatBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -185,57 +187,57 @@ public abstract class CatBase: EntityBase, IProjector
     public class CatAsParentProjection: ICatAsParent, IProjector, IProjection<CatBase>
     {
 
-        public CatBase Projector  { get; init; }
+        public  CatBase Source  { get; init; }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
+            get => Source.NameNat;
         }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
+            get => Source.NameEng;
         }
 
-        public ICattery Cattery 
+        public virtual ICattery Cattery 
         {
-            get => Projector.Cattery.As<ICattery>()!;
+            get => Source.Cattery.As<ICattery>()!;
         }
 
-        public IBreed Breed 
+        public virtual IBreed Breed 
         {
-            get => Projector.Breed.As<IBreed>()!;
+            get => Source.Breed.As<IBreed>()!;
         }
 
-        public ILitterForDate? Litter 
+        public virtual ILitterForDate? Litter 
         {
-            get => Projector.Litter?.As<ILitterForDate>();
+            get => Source.Litter?.As<ILitterForDate>();
         }
 
-        public String? Exterior 
+        public virtual String? Exterior 
         {
-            get => Projector.Exterior;
+            get => Source.Exterior;
         }
 
-        public String? Title 
+        public virtual String? Title 
         {
-            get => Projector.Title;
+            get => Source.Title;
         }
 
 
-        internal CatAsParentProjection(CatBase projector)
+        internal CatAsParentProjection(CatBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -248,78 +250,78 @@ public abstract class CatBase: EntityBase, IProjector
     {
         private readonly ProjectionList<LitterBase,ILitterForCat> _litters;
 
-        public CatBase Projector  { get; init; }
+        public  CatBase Source  { get; init; }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
+            get => Source.NameNat;
         }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
+            get => Source.NameEng;
         }
 
-        public Gender Gender 
+        public virtual Gender Gender 
         {
-            get => Projector.Gender!;
+            get => Source.Gender!;
         }
 
-        public ICattery Cattery 
+        public virtual ICattery Cattery 
         {
-            get => Projector.Cattery.As<ICattery>()!;
+            get => Source.Cattery.As<ICattery>()!;
         }
 
-        public IBreed Breed 
+        public virtual IBreed Breed 
         {
-            get => Projector.Breed.As<IBreed>()!;
+            get => Source.Breed.As<IBreed>()!;
         }
 
-        public ILitterForCat? Litter 
+        public virtual ILitterForCat? Litter 
         {
-            get => Projector.Litter?.As<ILitterForCat>();
+            get => Source.Litter?.As<ILitterForCat>();
         }
 
-        public String? Exterior 
+        public virtual String? Exterior 
         {
-            get => Projector.Exterior;
+            get => Source.Exterior;
         }
 
-        public String? Description 
+        public virtual String? Description 
         {
-            get => Projector.Description;
+            get => Source.Description;
         }
 
-        public String? Title 
+        public virtual String? Title 
         {
-            get => Projector.Title;
+            get => Source.Title;
         }
 
-        public IList<ILitterForCat> Litters 
+        public virtual IList<ILitterForCat> Litters 
         {
             get => _litters;
         }
 
 
-        internal CatForViewProjection(CatBase projector)
+        internal CatForViewProjection(CatBase source)
         {
-            Projector = projector;
-            _litters = new(Projector.Litters);
+            Source = source;
+            _litters = new(Source.Litters);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
         public IList<ILitterForCat> test(IList<ICat> cats)
         {
-            object? result = Projector.test(cats);
+            object? result = Source.test(cats);
             return (IList<ILitterForCat>)result;
         }
 
@@ -492,15 +494,6 @@ public abstract class CatBase: EntityBase, IProjector
 
     
     
-    private String? _nameNat = default;
-    private String? _nameEng = default;
-    private Gender _gender = default!;
-    private CatteryBase _cattery = default!;
-    private BreedBase _breed = default!;
-    private LitterBase? _litter = default;
-    private String? _exterior = default;
-    private String? _description = default;
-    private String? _title = default;
     private readonly ObservableCollection<LitterBase> _litters = new();
     private readonly List<LitterBase> _initial_litters = new();
 
@@ -518,16 +511,18 @@ public abstract class CatBase: EntityBase, IProjector
 
 
 
+    public Cat Source { get; protected set; }
+
     
     public virtual String? NameNat
     {
-        get => _nameNat;
+        get => Source.NameNat;
         set
         {
-            if(_nameNat != value)
+            if(Source.NameNat != value)
             {
-                object? oldValue = _nameNat;
-                _nameNat = value;
+                object? oldValue = Source.NameNat;
+                Source.NameNat = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -536,13 +531,13 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual String? NameEng
     {
-        get => _nameEng;
+        get => Source.NameEng;
         set
         {
-            if(_nameEng != value)
+            if(Source.NameEng != value)
             {
-                object? oldValue = _nameEng;
-                _nameEng = value;
+                object? oldValue = Source.NameEng;
+                Source.NameEng = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -551,13 +546,13 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual Gender Gender
     {
-        get => _gender;
+        get => Source.Gender;
         set
         {
-            if(_gender != value)
+            if(Source.Gender != value)
             {
-                object oldValue = _gender;
-                _gender = value;
+                object oldValue = Source.Gender;
+                Source.Gender = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -566,20 +561,20 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual CatteryBase Cattery
     {
-        get => _cattery;
+        get => (Source.Cattery as IProjector)!.As<CatteryBase>()!;
         set
         {
-            if(_cattery != value)
+            if((Source.Cattery as IProjector)!.As<CatteryBase>() != value)
             {
-                object oldValue = _cattery;
-                if(_cattery is {})
+                object oldValue = (Source.Cattery as IProjector)!.As<CatteryBase>()!;
+                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
                 {
-                    _cattery.PocoChanged -= CatteryPocoChanged;
+                            (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged -= CatteryPocoChanged;
                 }
-                _cattery = value;
-                if(_cattery is {})
+                Source.Cattery = (value as IProjector)!.As<ICattery>()!;
+                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
                 {
-                    _cattery.PocoChanged += CatteryPocoChanged;
+                    (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged += CatteryPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -589,20 +584,20 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual BreedBase Breed
     {
-        get => _breed;
+        get => (Source.Breed as IProjector)!.As<BreedBase>()!;
         set
         {
-            if(_breed != value)
+            if((Source.Breed as IProjector)!.As<BreedBase>() != value)
             {
-                object oldValue = _breed;
-                if(_breed is {})
+                object oldValue = (Source.Breed as IProjector)!.As<BreedBase>()!;
+                if((Source.Breed as IProjector)!.As<BreedBase>() is {})
                 {
-                    _breed.PocoChanged -= BreedPocoChanged;
+                            (Source.Breed as IProjector)!.As<BreedBase>()!.PocoChanged -= BreedPocoChanged;
                 }
-                _breed = value;
-                if(_breed is {})
+                Source.Breed = (value as IProjector)!.As<IBreed>()!;
+                if((Source.Breed as IProjector)!.As<BreedBase>() is {})
                 {
-                    _breed.PocoChanged += BreedPocoChanged;
+                    (Source.Breed as IProjector)!.As<BreedBase>()!.PocoChanged += BreedPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -612,20 +607,20 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual LitterBase? Litter
     {
-        get => _litter;
+        get => (Source.Litter as IProjector)!.As<LitterBase>()!;
         set
         {
-            if(_litter != value)
+            if((Source.Litter as IProjector)!.As<LitterBase>() != value)
             {
-                object? oldValue = _litter;
-                if(_litter is {})
+                object? oldValue = (Source.Litter as IProjector)!.As<LitterBase>()!;
+                if((Source.Litter as IProjector)!.As<LitterBase>() is {})
                 {
-                    _litter.PocoChanged -= LitterPocoChanged;
+                            (Source.Litter as IProjector)!.As<LitterBase>()!.PocoChanged -= LitterPocoChanged;
                 }
-                _litter = value;
-                if(_litter is {})
+                Source.Litter = (value as IProjector)!.As<ILitter>()!;
+                if((Source.Litter as IProjector)!.As<LitterBase>() is {})
                 {
-                    _litter.PocoChanged += LitterPocoChanged;
+                    (Source.Litter as IProjector)!.As<LitterBase>()!.PocoChanged += LitterPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -635,13 +630,13 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual String? Exterior
     {
-        get => _exterior;
+        get => Source.Exterior;
         set
         {
-            if(_exterior != value)
+            if(Source.Exterior != value)
             {
-                object? oldValue = _exterior;
-                _exterior = value;
+                object? oldValue = Source.Exterior;
+                Source.Exterior = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -650,13 +645,13 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual String? Description
     {
-        get => _description;
+        get => Source.Description;
         set
         {
-            if(_description != value)
+            if(Source.Description != value)
             {
-                object? oldValue = _description;
-                _description = value;
+                object? oldValue = Source.Description;
+                Source.Description = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -665,13 +660,13 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual String? Title
     {
-        get => _title;
+        get => Source.Title;
         set
         {
-            if(_title != value)
+            if(Source.Title != value)
             {
-                object? oldValue = _title;
-                _title = value;
+                object? oldValue = Source.Title;
+                Source.Title = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -680,7 +675,7 @@ public abstract class CatBase: EntityBase, IProjector
 
     public virtual ObservableCollection<LitterBase> Litters
     {
-        get => _litters;
+        get => _litters!;
         set => throw new NotImplementedException();
     }
 

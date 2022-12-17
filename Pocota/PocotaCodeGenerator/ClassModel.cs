@@ -23,6 +23,8 @@ public class ClassModel : PageModel
     public string? PrimaryKeyName { get; set; } = null;
     public Type Contract { get; set; } = null;
     public string? Description { get; set; } = null;
+    public string? Source { get; set; } = null;
+    public string? BaseType { get; set; } = null;
 
 
     public void OnGet([FromServices] IModelBuilder modelBuilder)

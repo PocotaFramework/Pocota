@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Controller Interface                                     //
-// Cats.Contract.ICatsController                            //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Controller Interface                                    //
+// CatsContract.ICatsController                            //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using CatsCommon.Filters;
@@ -13,7 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Cats.Contract;
+namespace CatsContract;
 
 public interface ICatsController 
 {

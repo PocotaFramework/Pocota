@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Server Poco Implementation                               //
-// CatsCommon.Filters.CatFilterBase                         //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Server Poco Implementation                              //
+// CatsCommon.Filters.CatFilterBase                        //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using CatsCommon;
@@ -15,7 +15,7 @@ using CatsCommon;
     
 namespace CatsCommon.Filters;
 
-public class CatFilterBase: EnvelopeBase, IProjector
+public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
 {
 
     #region Projection classes;
@@ -25,112 +25,112 @@ public class CatFilterBase: EnvelopeBase, IProjector
     public class CatFilterProjection: ICatFilter, IProjector, IProjection<CatFilterBase>
     {
 
-        public CatFilterBase Projector  { get; init; }
+        public  CatFilterBase Source  { get; init; }
 
-        public IBreed? Breed 
+        public virtual IBreed? Breed 
         {
-            get => Projector.Breed?.As<IBreed>();
-            set => Projector.Breed = (BreedBase?)value;
+            get => Source.Breed?.As<IBreed>();
+            set => Source.Breed = (BreedBase?)value;
         }
 
-        public ICattery? Cattery 
+        public virtual ICattery? Cattery 
         {
-            get => Projector.Cattery?.As<ICattery>();
-            set => Projector.Cattery = (CatteryBase?)value;
+            get => Source.Cattery?.As<ICattery>();
+            set => Source.Cattery = (CatteryBase?)value;
         }
 
-        public DateOnly? BornAfter 
+        public virtual DateOnly? BornAfter 
         {
-            get => Projector.BornAfter;
-            set => Projector.BornAfter = value;
+            get => Source.BornAfter;
+            set => Source.BornAfter = value;
         }
 
-        public DateOnly? BornBefore 
+        public virtual DateOnly? BornBefore 
         {
-            get => Projector.BornBefore;
-            set => Projector.BornBefore = value;
+            get => Source.BornBefore;
+            set => Source.BornBefore = value;
         }
 
-        public String? NameRegex 
+        public virtual String? NameRegex 
         {
-            get => Projector.NameRegex;
-            set => Projector.NameRegex = value;
+            get => Source.NameRegex;
+            set => Source.NameRegex = value;
         }
 
-        public Gender? Gender 
+        public virtual Gender? Gender 
         {
-            get => Projector.Gender;
-            set => Projector.Gender = value;
+            get => Source.Gender;
+            set => Source.Gender = value;
         }
 
-        public ICat? Child 
+        public virtual ICat? Child 
         {
-            get => Projector.Child?.As<ICat>();
-            set => Projector.Child = (CatBase?)value;
+            get => Source.Child?.As<ICat>();
+            set => Source.Child = (CatBase?)value;
         }
 
-        public ICat? Self 
+        public virtual ICat? Self 
         {
-            get => Projector.Self?.As<ICat>();
-            set => Projector.Self = (CatBase?)value;
+            get => Source.Self?.As<ICat>();
+            set => Source.Self = (CatBase?)value;
         }
 
-        public ICat? Mother 
+        public virtual ICat? Mother 
         {
-            get => Projector.Mother?.As<ICat>();
-            set => Projector.Mother = (CatBase?)value;
+            get => Source.Mother?.As<ICat>();
+            set => Source.Mother = (CatBase?)value;
         }
 
-        public ICat? Father 
+        public virtual ICat? Father 
         {
-            get => Projector.Father?.As<ICat>();
-            set => Projector.Father = (CatBase?)value;
+            get => Source.Father?.As<ICat>();
+            set => Source.Father = (CatBase?)value;
         }
 
-        public ICat? Ancestor 
+        public virtual ICat? Ancestor 
         {
-            get => Projector.Ancestor?.As<ICat>();
-            set => Projector.Ancestor = (CatBase?)value;
+            get => Source.Ancestor?.As<ICat>();
+            set => Source.Ancestor = (CatBase?)value;
         }
 
-        public ICat? Descendant 
+        public virtual ICat? Descendant 
         {
-            get => Projector.Descendant?.As<ICat>();
-            set => Projector.Descendant = (CatBase?)value;
+            get => Source.Descendant?.As<ICat>();
+            set => Source.Descendant = (CatBase?)value;
         }
 
-        public ILitter? Litter 
+        public virtual ILitter? Litter 
         {
-            get => Projector.Litter?.As<ILitter>();
-            set => Projector.Litter = (LitterBase?)value;
+            get => Source.Litter?.As<ILitter>();
+            set => Source.Litter = (LitterBase?)value;
         }
 
-        public String? ExteriorRegex 
+        public virtual String? ExteriorRegex 
         {
-            get => Projector.ExteriorRegex;
-            set => Projector.ExteriorRegex = value;
+            get => Source.ExteriorRegex;
+            set => Source.ExteriorRegex = value;
         }
 
-        public String? TitleRegex 
+        public virtual String? TitleRegex 
         {
-            get => Projector.TitleRegex;
-            set => Projector.TitleRegex = value;
+            get => Source.TitleRegex;
+            set => Source.TitleRegex = value;
         }
 
 
-        internal CatFilterProjection(CatFilterBase projector)
+        internal CatFilterProjection(CatFilterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -348,22 +348,24 @@ public class CatFilterBase: EnvelopeBase, IProjector
 
 
     
+    public CatFilterBase Source { get => this; }
+
     
-    public BreedBase? Breed { get; set; } = default;
-    public CatteryBase? Cattery { get; set; } = default;
-    public DateOnly? BornAfter { get; set; } = default;
-    public DateOnly? BornBefore { get; set; } = default;
-    public String? NameRegex { get; set; } = default;
-    public Gender? Gender { get; set; } = default;
-    public CatBase? Child { get; set; } = default;
-    public CatBase? Self { get; set; } = default;
-    public CatBase? Mother { get; set; } = default;
-    public CatBase? Father { get; set; } = default;
-    public CatBase? Ancestor { get; set; } = default;
-    public CatBase? Descendant { get; set; } = default;
-    public LitterBase? Litter { get; set; } = default;
-    public String? ExteriorRegex { get; set; } = default;
-    public String? TitleRegex { get; set; } = default;
+    public BreedBase?        Breed  { get; set; } = default;            
+    public CatteryBase?        Cattery  { get; set; } = default;            
+    public DateOnly?        BornAfter  { get; set; } = default;            
+    public DateOnly?        BornBefore  { get; set; } = default;            
+    public String?        NameRegex  { get; set; } = default;            
+    public Gender?        Gender  { get; set; } = default;            
+    public CatBase?        Child  { get; set; } = default;            
+    public CatBase?        Self  { get; set; } = default;            
+    public CatBase?        Mother  { get; set; } = default;            
+    public CatBase?        Father  { get; set; } = default;            
+    public CatBase?        Ancestor  { get; set; } = default;            
+    public CatBase?        Descendant  { get; set; } = default;            
+    public LitterBase?        Litter  { get; set; } = default;            
+    public String?        ExteriorRegex  { get; set; } = default;            
+    public String?        TitleRegex  { get; set; } = default;            
 
 
     public CatFilterBase(IServiceProvider services) : base(services) 

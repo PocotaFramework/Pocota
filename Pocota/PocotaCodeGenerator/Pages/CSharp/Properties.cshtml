@@ -3,10 +3,13 @@
 
 @foreach(PropertyModel pm in Model.Properties)
 {
-    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
+    string fieldName = Model.Source is null || (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+        ? $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}"
+        : (!pm.IsProjector ? $"Source.{pm.Name}" : $"(Source.{pm.Name} as IProjector)!.As<{pm.Type}>()");
+    string claimSign = Model.Source is { } && pm.IsProjector ? "!" : string.Empty;
+    <text>    public @if(Model.BaseType is null){<text>virtual</text>} else {<text>override</text>} @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
-        get => @fieldName;
+        get => @Html.Raw(fieldName)@claimSign;
     @if(!pm.IsReadOnly)
     {
         if(pm.IsList)
@@ -18,23 +21,32 @@
         {
             <text>        set
         {
-            if(@fieldName != value)
+            if(@Html.Raw(fieldName) != value)
             {
-                @Html.Raw("object")@if (pm.IsNullable) {<text>?</text> } oldValue = @fieldName;
+                @Html.Raw("object")@if (pm.IsNullable) {<text>?</text> } oldValue = @Html.Raw(fieldName)@claimSign;
                 @if(pm.IsProjector)
                 {
-                    <text>                if(@fieldName is {})
+                    <text>                if(@Html.Raw(fieldName) is {})
                 {
-                    @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged;")
+                            @Html.Raw($"{fieldName}{claimSign}.PocoChanged -= {pm.Name}PocoChanged;")
                 }
 </text>   
                 }
-                @fieldName = value;
+                @if (Model.Source is null || !pm.IsProjector)
+                {
+                    <text>                @Html.Raw(fieldName) = value;
+</text>
+                }
+                else
+                {
+                        <text>                @Html.Raw($"Source.{pm.Name}") = @Html.Raw($"(value as IProjector)!.As<{pm.Class}>(){claimSign}");
+</text>
+                }
                 @if(pm.IsProjector)
                 {
-                    <text>                if(@fieldName is {})
+                    <text>                if(@Html.Raw(fieldName) is {})
                 {
-                    @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged;")
+                    @Html.Raw($"{fieldName}{claimSign}.PocoChanged += {pm.Name}PocoChanged;")
                 }
 </text>   
                 }

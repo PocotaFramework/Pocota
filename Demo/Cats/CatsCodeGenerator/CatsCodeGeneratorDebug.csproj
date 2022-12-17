@@ -11,6 +11,7 @@
     <ProjectReference Include="..\..\..\Pocota\PocotaCodeGenerator\PocotaCodeGeneratorDebug.csproj" />
     <ProjectReference Include="..\CatsClientMisc\CatsClientMiscDebug.csproj" />
     <ProjectReference Include="..\CatsContract\CatsContractDebug.csproj" />
+    <ProjectReference Include="..\CatsServerMisc\CatsServerMiscDebug.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartBase                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-16T18:40:09                                          //
+// at 2022-12-17T12:54:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -14,7 +14,7 @@ using System.Collections.Specialized;
 
 namespace CatsClient;
 
-public abstract class TracedPocosHeartBase: EnvelopeBase, IProjector
+public abstract class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedPocosHeartBase>
 {
 
 #region Projection classes;
@@ -23,33 +23,33 @@ public abstract class TracedPocosHeartBase: EnvelopeBase, IProjector
     public class TracedPocosHeartProjection: ITracedPocosHeart, IProjector, IProjection<TracedPocosHeartBase>
     {
 
-        public TracedPocosHeartBase Projector  { get; init; }
+        public  TracedPocosHeartBase Source  { get; init; }
 
-        public IList<Tuple<Type,Int32>> TracedPocos 
+        public virtual IList<Tuple<Type,Int32>> TracedPocos 
         {
-            get => Projector.TracedPocos!;
+            get => Source.TracedPocos!;
             set => throw new NotImplementedException();
         }
 
 
-        internal TracedPocosHeartProjection(TracedPocosHeartBase projector)
+        internal TracedPocosHeartProjection(TracedPocosHeartBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
         public void CollectGarbage()
         {
-            Projector.CollectGarbage();
+            Source.CollectGarbage();
         }
 
 
@@ -88,6 +88,8 @@ public abstract class TracedPocosHeartBase: EnvelopeBase, IProjector
     public TracedPocosHeartProjection AsTracedPocosHeartProjection => _asTracedPocosHeartProjection ??= new(this);
 
 
+
+    public TracedPocosHeartBase Source { get => this; }
 
     
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos

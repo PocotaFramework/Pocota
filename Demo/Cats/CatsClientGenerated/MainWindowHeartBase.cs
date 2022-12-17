@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartBase                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-16T18:40:09                                          //
+// at 2022-12-17T12:54:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -17,7 +17,7 @@ using System.Collections.Specialized;
 
 namespace CatsClient;
 
-public abstract class MainWindowHeartBase: EnvelopeBase, IProjector
+public abstract class MainWindowHeartBase: EnvelopeBase, IProjector, IProjection<MainWindowHeartBase>
 {
 
 #region Projection classes;
@@ -30,119 +30,119 @@ public abstract class MainWindowHeartBase: EnvelopeBase, IProjector
         private readonly ProjectionList<BreedBase,IBreed> _breeds;
         private readonly ProjectionList<CatBase,ICatForListing> _selectedCats;
 
-        public MainWindowHeartBase Projector  { get; init; }
+        public  MainWindowHeartBase Source  { get; init; }
 
-        public ICatFilter CatFilter 
+        public virtual ICatFilter CatFilter 
         {
-            get => Projector.CatFilter.As<ICatFilter>()!;
+            get => Source.CatFilter.As<ICatFilter>()!;
         }
 
-        public IList<ICatForListing> Cats 
+        public virtual IList<ICatForListing> Cats 
         {
             get => _cats;
         }
 
-        public IList<ICattery> Catteries 
+        public virtual IList<ICattery> Catteries 
         {
             get => _catteries;
         }
 
-        public IList<IBreed> Breeds 
+        public virtual IList<IBreed> Breeds 
         {
             get => _breeds;
         }
 
-        public TimeSpan GetCatsTimeSpent 
+        public virtual TimeSpan GetCatsTimeSpent 
         {
-            get => Projector.GetCatsTimeSpent!;
-            set => Projector.GetCatsTimeSpent = value;
+            get => Source.GetCatsTimeSpent!;
+            set => Source.GetCatsTimeSpent = value;
         }
 
-        public TimeSpan RenderingCatsTimeSpent 
+        public virtual TimeSpan RenderingCatsTimeSpent 
         {
-            get => Projector.RenderingCatsTimeSpent!;
-            set => Projector.RenderingCatsTimeSpent = value;
+            get => Source.RenderingCatsTimeSpent!;
+            set => Source.RenderingCatsTimeSpent = value;
         }
 
-        public Int32 BreedsCount 
+        public virtual Int32 BreedsCount 
         {
-            get => Projector.BreedsCount!;
+            get => Source.BreedsCount!;
         }
 
-        public Int32 CatteriesCount 
+        public virtual Int32 CatteriesCount 
         {
-            get => Projector.CatteriesCount!;
+            get => Source.CatteriesCount!;
         }
 
-        public List<IBreed> AllBreeds 
+        public virtual List<IBreed> AllBreeds 
         {
-            get => Projector.AllBreeds!;
+            get => Source.AllBreeds!;
         }
 
-        public List<ICattery> AllCatteries 
+        public virtual List<ICattery> AllCatteries 
         {
-            get => Projector.AllCatteries!;
+            get => Source.AllCatteries!;
         }
 
-        public Int32 AllBreedsCount 
+        public virtual Int32 AllBreedsCount 
         {
-            get => Projector.AllBreedsCount!;
+            get => Source.AllBreedsCount!;
         }
 
-        public Int32 AllCatteriesCount 
+        public virtual Int32 AllCatteriesCount 
         {
-            get => Projector.AllCatteriesCount!;
+            get => Source.AllCatteriesCount!;
         }
 
-        public Boolean IsCatSelected 
+        public virtual Boolean IsCatSelected 
         {
-            get => Projector.IsCatSelected!;
-            set => Projector.IsCatSelected = value;
+            get => Source.IsCatSelected!;
+            set => Source.IsCatSelected = value;
         }
 
-        public Object CatsView 
+        public virtual Object CatsView 
         {
-            get => Projector.CatsView!;
-            set => Projector.CatsView = value;
+            get => Source.CatsView!;
+            set => Source.CatsView = value;
         }
 
-        public IList<ICatForListing> SelectedCats 
+        public virtual IList<ICatForListing> SelectedCats 
         {
             get => _selectedCats;
             set => throw new NotImplementedException();
         }
 
 
-        internal MainWindowHeartProjection(MainWindowHeartBase projector)
+        internal MainWindowHeartProjection(MainWindowHeartBase source)
         {
-            Projector = projector;
-            _cats = new(Projector.Cats);
-            _catteries = new(Projector.Catteries);
-            _breeds = new(Projector.Breeds);
-            _selectedCats = new(Projector.SelectedCats);
+            Source = source;
+            _cats = new(Source.Cats);
+            _catteries = new(Source.Catteries);
+            _breeds = new(Source.Breeds);
+            _selectedCats = new(Source.SelectedCats);
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
         public void AcceptCatFilterChanges()
         {
-            Projector.AcceptCatFilterChanges();
+            Source.AcceptCatFilterChanges();
         }
         public void CatsSelectionChanged(Object sender, EventArgs e)
         {
-            Projector.CatsSelectionChanged(sender, e);
+            Source.CatsSelectionChanged(sender, e);
         }
         public ICatForListing test(IBreed breed)
         {
-            object? result = Projector.test(breed);
+            object? result = Source.test(breed);
             return (ICatForListing)result;
         }
 
@@ -382,6 +382,8 @@ public abstract class MainWindowHeartBase: EnvelopeBase, IProjector
 
 
 
+    public MainWindowHeartBase Source { get => this; }
+
     
     public virtual CatFilterBase CatFilter
     {
@@ -393,7 +395,7 @@ public abstract class MainWindowHeartBase: EnvelopeBase, IProjector
                 object oldValue = _catFilter;
                 if(_catFilter is {})
                 {
-                    _catFilter.PocoChanged -= CatFilterPocoChanged;
+                            _catFilter.PocoChanged -= CatFilterPocoChanged;
                 }
                 _catFilter = value;
                 if(_catFilter is {})

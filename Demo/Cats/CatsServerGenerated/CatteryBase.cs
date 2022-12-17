@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Server Poco Implementation                               //
-// CatsCommon.Model.CatteryBase                             //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Server Poco Implementation                              //
+// CatsCommon.Model.CatteryBase                            //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota;
@@ -13,7 +13,7 @@ using Net.Leksi.Pocota;
     
 namespace CatsCommon.Model;
 
-public class CatteryBase: EntityBase, IProjector
+public class CatteryBase: EntityBase, IProjector, IProjection<CatteryBase>
 {
 
     #region Projection classes;
@@ -23,34 +23,34 @@ public class CatteryBase: EntityBase, IProjector
     public class CatteryProjection: ICattery, IProjector, IProjection<CatteryBase>
     {
 
-        public CatteryBase Projector  { get; init; }
+        public  CatteryBase Source  { get; init; }
 
-        public String? NameEng 
+        public virtual String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => Source.NameEng;
+            set => Source.NameEng = value;
         }
 
-        public String? NameNat 
+        public virtual String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => Source.NameNat;
+            set => Source.NameNat = value;
         }
 
 
-        internal CatteryProjection(CatteryBase projector)
+        internal CatteryProjection(CatteryBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -99,9 +99,11 @@ public class CatteryBase: EntityBase, IProjector
 
 
     
+    public CatteryBase Source { get => this; }
+
     
-    public String? NameEng { get; set; } = default;
-    public String? NameNat { get; set; } = default;
+    public String?        NameEng  { get; set; } = default;            
+    public String?        NameNat  { get; set; } = default;            
 
 
     public CatteryBase(IServiceProvider services) : base(services) 

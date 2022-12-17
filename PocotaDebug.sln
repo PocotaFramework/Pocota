@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaAspNetDebug", "Pocota
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsServerDebug", "Demo\Cats\CatsServer\CatsServerDebug.csproj", "{22DF26B8-81C3-4A4C-8F4F-1AFDFB569780}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatsServerMiscDebug", "Demo\Cats\CatsServerMisc\CatsServerMiscDebug.csproj", "{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,10 @@ Global
 		{22DF26B8-81C3-4A4C-8F4F-1AFDFB569780}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22DF26B8-81C3-4A4C-8F4F-1AFDFB569780}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22DF26B8-81C3-4A4C-8F4F-1AFDFB569780}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +117,7 @@ Global
 		{546B77AF-1A51-4A29-86E5-078AF86DB775} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 		{FD100430-8531-4A26-A956-4A76EEE0012E} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 		{22DF26B8-81C3-4A4C-8F4F-1AFDFB569780} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
+		{DFF91A64-FCF9-4BBC-AFF5-178245C3F2BB} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA791647-B939-4CAF-B462-B8812FB92EFA}

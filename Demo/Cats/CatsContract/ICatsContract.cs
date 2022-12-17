@@ -3,7 +3,7 @@ using CatsCommon.Model;
 using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common;
 
-namespace Cats.Contract;
+namespace CatsContract;
 
 [Poco(
     typeof(ICat), 

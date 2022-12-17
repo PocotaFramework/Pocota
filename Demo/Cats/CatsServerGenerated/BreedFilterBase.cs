@@ -1,9 +1,9 @@
-//////////////////////////////////////////////////////////////
-// Server Poco Implementation                               //
-// CatsCommon.Filters.BreedFilterBase                       //
-// Generated automatically from Cats.Contract.ICatsContract //
-// at 2022-12-16T18:40:09                                   //
-//////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Server Poco Implementation                              //
+// CatsCommon.Filters.BreedFilterBase                      //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-17T12:54:33                                  //
+/////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota;
@@ -13,7 +13,7 @@ using Net.Leksi.Pocota;
     
 namespace CatsCommon.Filters;
 
-public class BreedFilterBase: EnvelopeBase, IProjector
+public class BreedFilterBase: EnvelopeBase, IProjector, IProjection<BreedFilterBase>
 {
 
     #region Projection classes;
@@ -23,28 +23,28 @@ public class BreedFilterBase: EnvelopeBase, IProjector
     public class BreedFilterProjection: IBreedFilter, IProjector, IProjection<BreedFilterBase>
     {
 
-        public BreedFilterBase Projector  { get; init; }
+        public  BreedFilterBase Source  { get; init; }
 
-        public String? SearchRegex 
+        public virtual String? SearchRegex 
         {
-            get => Projector.SearchRegex;
-            set => Projector.SearchRegex = value;
+            get => Source.SearchRegex;
+            set => Source.SearchRegex = value;
         }
 
 
-        internal BreedFilterProjection(BreedFilterBase projector)
+        internal BreedFilterProjection(BreedFilterBase source)
         {
-            Projector = projector;
+            Source = source;
         }
 
         public I As<I>()
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I)Source.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return Source.As(type);
         }
 
 
@@ -80,8 +80,10 @@ public class BreedFilterBase: EnvelopeBase, IProjector
 
 
     
+    public BreedFilterBase Source { get => this; }
+
     
-    public String? SearchRegex { get; set; } = default;
+    public String?        SearchRegex  { get; set; } = default;            
 
 
     public BreedFilterBase(IServiceProvider services) : base(services) 

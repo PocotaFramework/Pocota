@@ -3,7 +3,18 @@
 
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name { get; @if(!pm.IsReadOnly && !pm.IsList) {<text>set; } = @Html.Raw($"default{(!pm.IsNullable ? "!" : string.Empty)}");</text>} else if(pm.IsList) {<text>init; } = new();</text>}
+    <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>
+        }
+        @pm.Name @if (Model.Source is null)
+        {
+            <text> { get; @if (!pm.IsReadOnly && !pm.IsList)
+                {
+                    <text>set; } = @Html.Raw($"default{(!pm.IsNullable ? "!" : string.Empty)}");</text>
+                } else if(pm.IsList) {
+                    <text>init; } = new();</text>
+                }
+            </text>
+        }
 
 </text>
 }
