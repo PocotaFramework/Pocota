@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterBase                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-17T12:54:33                                  //
+// at 2022-12-19T17:40:44                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,22 +33,22 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
             set => Source.Order = value;
         }
 
+        public virtual ICat Female 
+        {
+            get => Source.Female!;
+            set => Source.Female = value;
+        }
+
         public virtual DateOnly Date 
         {
             get => Source.Date!;
             set => Source.Date = value;
         }
 
-        public virtual ICat Female 
-        {
-            get => Source.Female.As<ICat>()!;
-            set => Source.Female = (CatBase)value;
-        }
-
         public virtual ICat? Male 
         {
-            get => Source.Male?.As<ICat>();
-            set => Source.Male = (CatBase?)value;
+            get => Source.Male;
+            set => Source.Male = value;
         }
 
         public virtual IList<ICat> Cats 
@@ -94,19 +94,19 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
             get => Source.Order!;
         }
 
+        public virtual ICatAsParent Female 
+        {
+            get => Source.Female!;
+        }
+
         public virtual DateOnly Date 
         {
             get => Source.Date!;
         }
 
-        public virtual ICatAsParent Female 
-        {
-            get => Source.Female.As<ICatAsParent>()!;
-        }
-
         public virtual ICatAsParent? Male 
         {
-            get => Source.Male?.As<ICatAsParent>();
+            get => Source.Male;
         }
 
 
@@ -217,6 +217,20 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
         );
         Properties[typeof(LitterBase)].Add(
                 new Property<PocoBase>(
+                "Female", 
+                typeof(CatBase),
+                GetFemaleValue, 
+                SetFemaleValue, 
+                null, 
+                false, 
+                false, 
+                false            
+            )
+            .AddPropertyType<ILitter, ICat>()
+            .AddPropertyType<ILitterForCat, ICatAsParent>()
+        );
+        Properties[typeof(LitterBase)].Add(
+                new Property<PocoBase>(
                 "Date", 
                 typeof(DateOnly),
                 GetDateValue, 
@@ -229,20 +243,6 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
             .AddPropertyType<ILitter, DateOnly>()
             .AddPropertyType<ILitterForCat, DateOnly>()
             .AddPropertyType<ILitterForDate, DateOnly>()
-        );
-        Properties[typeof(LitterBase)].Add(
-                new Property<PocoBase>(
-                "Female", 
-                typeof(CatBase),
-                GetFemaleValue, 
-                SetFemaleValue, 
-                null, 
-                false, 
-                false, 
-                false            
-            )
-            .AddPropertyType<ILitter, ICat>()
-            .AddPropertyType<ILitterForCat, ICatAsParent>()
         );
         Properties[typeof(LitterBase)].Add(
                 new Property<PocoBase>(
@@ -305,8 +305,8 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
 
     
     public Int32        Order  { get; set; } = default!;            
-    public DateOnly        Date  { get; set; } = default!;            
     public CatBase        Female  { get; set; } = default!;            
+    public DateOnly        Date  { get; set; } = default!;            
     public CatBase?        Male  { get; set; } = default;            
     public List<CatBase>        Cats  { get; init; } = new();            
     public List<String>        Strings  { get; init; } = new();            
@@ -356,15 +356,6 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
     {
         ((LitterBase)target).Order = (Int32)value!;
     }
-    private static object? GetDateValue(PocoBase target)
-    {
-        return ((LitterBase)target).Date;
-    }
-
-    private static void SetDateValue(PocoBase target, object? value)
-    {
-        ((LitterBase)target).Date = (DateOnly)value!;
-    }
     private static object? GetFemaleValue(PocoBase target)
     {
         return ((LitterBase)target).Female;
@@ -373,6 +364,15 @@ public class LitterBase: EntityBase, IProjector, IProjection<LitterBase>
     private static void SetFemaleValue(PocoBase target, object? value)
     {
         ((LitterBase)target).Female = (CatBase)value!;
+    }
+    private static object? GetDateValue(PocoBase target)
+    {
+        return ((LitterBase)target).Date;
+    }
+
+    private static void SetDateValue(PocoBase target, object? value)
+    {
+        ((LitterBase)target).Date = (DateOnly)value!;
     }
     private static object? GetMaleValue(PocoBase target)
     {

@@ -1,5 +1,5 @@
 /////////////////////////////////////////////////////////////////////
-// Client Poco Implementation                                      //
+// Server Poco Implementation                                      //
 // CatsClient.ViewCatHeartBase                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
 // at 2022-12-19T17:40:44                                          //
@@ -7,18 +7,19 @@
 
 
 using CatsCommon.Model;
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
+    using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using Net.Leksi.Pocota.Server;
+    using System;
+    using System.Collections.Generic;
+    
 namespace CatsClient;
 
 public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHeartBase>
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     [Poco(typeof(IViewCatHeart))]
     public class ViewCatHeartProjection: IViewCatHeart, IProjector, IProjection<ViewCatHeartBase>
@@ -72,7 +73,7 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -84,7 +85,7 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
                 typeof(EditKind),
                 GetEditKindValue, 
                 SetEditKindValue, 
-                target => ((IPoco)target).TouchProperty("EditKind"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -97,7 +98,7 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
                 typeof(CatBase),
                 GetCatValue, 
                 SetCatValue, 
-                target => ((IPoco)target).TouchProperty("Cat"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -110,7 +111,7 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
                 typeof(Object),
                 GetLittersViewValue, 
                 SetLittersViewValue, 
-                target => ((IPoco)target).TouchProperty("LittersView"), 
+                null, 
                 false, 
                 false, 
                 false            
@@ -120,10 +121,10 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
         Properties[typeof(ViewCatHeartBase)].Add(
                 new Property<PocoBase>(
                 "SelectedLitters", 
-                typeof(ObservableCollection<LitterBase>),
+                typeof(List<LitterBase>),
                 GetSelectedLittersValue, 
                 null, 
-                target => ((IPoco)target).TouchProperty("SelectedLitters"), 
+                null, 
                 false, 
                 false, 
                 true            
@@ -132,14 +133,6 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
         );
     }
 
-    
-    
-    private EditKind _editKind = default!;
-    private CatBase _cat = default!;
-    private Object _littersView = default!;
-    private readonly ObservableCollection<LitterBase> _selectedLitters = new();
-    private readonly List<LitterBase> _initial_selectedLitters = new();
-
 
     
     private ViewCatHeartProjection? _asViewCatHeartProjection = null;
@@ -147,74 +140,18 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
     public ViewCatHeartProjection AsViewCatHeartProjection => _asViewCatHeartProjection ??= new(this);
 
 
-
+    
     public ViewCatHeartBase Source { get => this; }
 
     
-    public virtual EditKind EditKind
-    {
-        get => _editKind;
-        set
-        {
-            if(_editKind != value)
-            {
-                object oldValue = _editKind;
-                _editKind = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual CatBase Cat
-    {
-        get => _cat;
-        set
-        {
-            if(_cat != value)
-            {
-                object oldValue = _cat;
-                if(_cat is {})
-                {
-                            _cat.PocoChanged -= CatPocoChanged;
-                }
-                _cat = value;
-                if(_cat is {})
-                {
-                    _cat.PocoChanged += CatPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual Object LittersView
-    {
-        get => _littersView;
-        set
-        {
-            if(_littersView != value)
-            {
-                object oldValue = _littersView;
-                _littersView = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual ObservableCollection<LitterBase> SelectedLitters
-    {
-        get => _selectedLitters;
-        set => throw new NotImplementedException();
-    }
-
+    public EditKind        EditKind  { get; set; } = default!;            
+    public CatBase        Cat  { get; set; } = default!;            
+    public Object        LittersView  { get; set; } = default!;            
+    public List<LitterBase>        SelectedLitters  { get; init; } = new();            
 
 
     public ViewCatHeartBase(IServiceProvider services) : base(services) 
     { 
-        _selectedLitters.CollectionChanged += SelectedLittersCollectionChanged;
     }
 
     
@@ -231,65 +168,6 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
 
 
 
-
-    
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            case "SelectedLitters":
-                return !Enumerable.SequenceEqual(
-                        _selectedLitters.OrderBy(o => o.GetHashCode()), 
-                        _initial_selectedLitters.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-        for(int i = _selectedLitters.Count - 1; i >= 0; --i)
-        {
-            if (!_initial_selectedLitters.Contains(_selectedLitters[i]))
-            {
-                _selectedLitters.RemoveAt(i);
-            }
-        }
-        foreach(var item in _initial_selectedLitters)
-        {
-            if(!_selectedLitters.Contains(item))
-            {
-                _selectedLitters.Add(item);
-            }
-        }
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-        if(_modified is null || !_modified.ContainsKey("SelectedLitters"))
-        {
-            _initial_selectedLitters.Clear();
-            _initial_selectedLitters.AddRange(_selectedLitters);
-        }
-    }
-    
-
-    
-    protected virtual void CatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cat));
-
-    protected virtual void SelectedLittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedLitters));
-
-
-    protected virtual void SelectedLittersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-
-        OnPocoChanged(_initial_selectedLitters, _selectedLitters, nameof(SelectedLitters));
-        OnPropertyChanged(nameof(SelectedLitters));
-    }
-
-    
 
     
     #region Properties accessors;
@@ -330,7 +208,4 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
     #endregion Properties accessors;
 
 
-
 }
-
-

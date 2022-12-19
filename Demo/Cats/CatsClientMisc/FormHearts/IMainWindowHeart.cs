@@ -18,9 +18,6 @@ public interface IMainWindowHeart
     int AllBreedsCount { get; }
     int AllCatteriesCount { get; }
     bool IsCatSelected { get; set; }
-    void AcceptCatFilterChanges();
     object CatsView { get; set; }
     IList<ICatForListing> SelectedCats { get; set; }
-    void CatsSelectionChanged(object sender, EventArgs e);
-    ICatForListing test(IBreed breed);
 }

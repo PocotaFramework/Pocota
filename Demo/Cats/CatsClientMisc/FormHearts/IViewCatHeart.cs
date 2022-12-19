@@ -8,5 +8,4 @@ public interface IViewCatHeart
     ICatForView Cat { get; set; }
     object LittersView { get; set; }
     IList<ILitter> SelectedLitters { get; set; }
-    void LittersSelectionChanged(object sender, EventArgs e);
 }

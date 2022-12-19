@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterBase                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-17T12:54:33                                  //
+// at 2022-12-19T17:40:44                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -25,14 +25,14 @@ public class LitterFilterBase: EnvelopeBase, IProjector, IProjection<LitterFilte
 
         public virtual ICat Female 
         {
-            get => Source.Female.As<ICat>()!;
-            set => Source.Female = (CatBase)value;
+            get => Source.Female!;
+            set => Source.Female = value;
         }
 
         public virtual ICat Male 
         {
-            get => Source.Male.As<ICat>()!;
-            set => Source.Male = (CatBase)value;
+            get => Source.Male!;
+            set => Source.Male = value;
         }
 
 

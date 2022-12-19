@@ -1,23 +1,24 @@
 /////////////////////////////////////////////////////////////////////
-// Client Poco Implementation                                      //
+// Server Poco Implementation                                      //
 // CatsClient.TracedPocosHeartBase                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
 // at 2022-12-19T17:40:44                                          //
 /////////////////////////////////////////////////////////////////////
 
 
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
-using System;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-
+using Net.Leksi.Pocota;
+    using Net.Leksi.Pocota.Common;
+    using Net.Leksi.Pocota.Server;
+    using System;
+    using System.Collections.Generic;
+    
 namespace CatsClient;
 
 public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedPocosHeartBase>
 {
 
-#region Projection classes;
+    #region Projection classes;
+
 
     [Poco(typeof(ITracedPocosHeart))]
     public class TracedPocosHeartProjection: ITracedPocosHeart, IProjector, IProjection<TracedPocosHeartBase>
@@ -51,7 +52,7 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
 
 
     }
-#endregion Projection classes;
+    #endregion Projection classes;
 
     
     public static void InitProperties()
@@ -60,10 +61,10 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
         Properties[typeof(TracedPocosHeartBase)].Add(
                 new Property<PocoBase>(
                 "TracedPocos", 
-                typeof(ObservableCollection<Tuple<Type,Int32>>),
+                typeof(List<Tuple<Type,Int32>>),
                 GetTracedPocosValue, 
                 null, 
-                target => ((IPoco)target).TouchProperty("TracedPocos"), 
+                null, 
                 false, 
                 false, 
                 true            
@@ -72,11 +73,6 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
         );
     }
 
-    
-    
-    private ObservableCollection<Tuple<Type,Int32>> _tracedPocos = default!;
-    private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
-
 
     
     private TracedPocosHeartProjection? _asTracedPocosHeartProjection = null;
@@ -84,21 +80,15 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
     public TracedPocosHeartProjection AsTracedPocosHeartProjection => _asTracedPocosHeartProjection ??= new(this);
 
 
-
+    
     public TracedPocosHeartBase Source { get => this; }
 
     
-    public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
-    {
-        get => _tracedPocos;
-        set => throw new NotImplementedException();
-    }
-
+    public List<Tuple<Type,Int32>>        TracedPocos  { get; init; } = new();            
 
 
     public TracedPocosHeartBase(IServiceProvider services) : base(services) 
     { 
-        _tracedPocos.CollectionChanged += TracedPocosCollectionChanged;
     }
 
     
@@ -117,61 +107,6 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
 
 
     
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            case "TracedPocos":
-                return !Enumerable.SequenceEqual(
-                        _tracedPocos.OrderBy(o => o.GetHashCode()), 
-                        _initial_tracedPocos.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            default:
-                return false;
-        }
-    }
-
-    protected override void CancelCollectionsChanges()
-    {
-        for(int i = _tracedPocos.Count - 1; i >= 0; --i)
-        {
-            if (!_initial_tracedPocos.Contains(_tracedPocos[i]))
-            {
-                _tracedPocos.RemoveAt(i);
-            }
-        }
-        foreach(var item in _initial_tracedPocos)
-        {
-            if(!_tracedPocos.Contains(item))
-            {
-                _tracedPocos.Add(item);
-            }
-        }
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-        if(_modified is null || !_modified.ContainsKey("TracedPocos"))
-        {
-            _initial_tracedPocos.Clear();
-            _initial_tracedPocos.AddRange(_tracedPocos);
-        }
-    }
-    
-
-    
-
-    protected virtual void TracedPocosCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-
-        OnPocoChanged(_initial_tracedPocos, _tracedPocos, nameof(TracedPocos));
-        OnPropertyChanged(nameof(TracedPocos));
-    }
-
-    
-
-    
     #region Properties accessors;
 
     private static object? GetTracedPocosValue(PocoBase target)
@@ -183,7 +118,4 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
     #endregion Properties accessors;
 
 
-
 }
-
-

@@ -1,9 +1,9 @@
-///////////////////////////////////////////////////////////////////
-// Client Poco Implementation                                    //
-// CatsCommon.Model.CatBase                                      //
-// Generated automatically from CatsContract.ICatsClientContract //
-// at 2022-12-17T12:54:33                                        //
-///////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+// Client Poco Implementation                              //
+// CatsCommon.Model.CatBase                                //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-19T17:40:44                                  //
+/////////////////////////////////////////////////////////////
 
 
 using CatsClientMisc;
@@ -17,7 +17,7 @@ using System.Collections.Specialized;
 
 namespace CatsCommon.Model;
 
-public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
+public class CatBase: EntityBase, IProjector, IProjection<Cat>
 {
 
 #region Projection classes;
@@ -28,6 +28,12 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
         private readonly ProjectionList<LitterBase,ILitter> _litters;
 
         public  CatBase Source  { get; init; }
+
+        public virtual ICattery Cattery 
+        {
+            get => Source.Cattery!;
+            set => Source.Cattery = value;
+        }
 
         public virtual String? NameNat 
         {
@@ -47,22 +53,16 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             set => Source.Gender = value;
         }
 
-        public virtual ICattery Cattery 
-        {
-            get => Source.Cattery.As<ICattery>()!;
-            set => Source.Cattery = (CatteryBase)value;
-        }
-
         public virtual IBreed Breed 
         {
-            get => Source.Breed.As<IBreed>()!;
-            set => Source.Breed = (BreedBase)value;
+            get => Source.Breed!;
+            set => Source.Breed = value;
         }
 
         public virtual ILitter? Litter 
         {
-            get => Source.Litter?.As<ILitter>();
-            set => Source.Litter = (LitterBase?)value;
+            get => Source.Litter;
+            set => Source.Litter = value;
         }
 
         public virtual String? Exterior 
@@ -117,6 +117,11 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
 
         public  CatBase Source  { get; init; }
 
+        public virtual ICattery Cattery 
+        {
+            get => Source.Cattery!;
+        }
+
         public virtual String? NameNat 
         {
             get => Source.NameNat;
@@ -132,19 +137,14 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             get => Source.Gender!;
         }
 
-        public virtual ICattery Cattery 
-        {
-            get => Source.Cattery.As<ICattery>()!;
-        }
-
         public virtual IBreed Breed 
         {
-            get => Source.Breed.As<IBreed>()!;
+            get => Source.Breed!;
         }
 
         public virtual ILitterForCat? Litter 
         {
-            get => Source.Litter?.As<ILitterForCat>();
+            get => Source.Litter;
         }
 
         public virtual String? Exterior 
@@ -189,6 +189,11 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
 
         public  CatBase Source  { get; init; }
 
+        public virtual ICattery Cattery 
+        {
+            get => Source.Cattery!;
+        }
+
         public virtual String? NameNat 
         {
             get => Source.NameNat;
@@ -199,19 +204,14 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             get => Source.NameEng;
         }
 
-        public virtual ICattery Cattery 
-        {
-            get => Source.Cattery.As<ICattery>()!;
-        }
-
         public virtual IBreed Breed 
         {
-            get => Source.Breed.As<IBreed>()!;
+            get => Source.Breed!;
         }
 
         public virtual ILitterForDate? Litter 
         {
-            get => Source.Litter?.As<ILitterForDate>();
+            get => Source.Litter;
         }
 
         public virtual String? Exterior 
@@ -252,6 +252,11 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
 
         public  CatBase Source  { get; init; }
 
+        public virtual ICattery Cattery 
+        {
+            get => Source.Cattery!;
+        }
+
         public virtual String? NameNat 
         {
             get => Source.NameNat;
@@ -267,19 +272,14 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             get => Source.Gender!;
         }
 
-        public virtual ICattery Cattery 
-        {
-            get => Source.Cattery.As<ICattery>()!;
-        }
-
         public virtual IBreed Breed 
         {
-            get => Source.Breed.As<IBreed>()!;
+            get => Source.Breed!;
         }
 
         public virtual ILitterForCat? Litter 
         {
-            get => Source.Litter?.As<ILitterForCat>();
+            get => Source.Litter;
         }
 
         public virtual String? Exterior 
@@ -319,11 +319,6 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             return Source.As(type);
         }
 
-        public IList<ILitterForCat> test(IList<ICat> cats)
-        {
-            object? result = Source.test(cats);
-            return (IList<ILitterForCat>)result;
-        }
 
 
 
@@ -334,6 +329,22 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
     public static void InitProperties()
     {
         Properties.Add(typeof(CatBase), new Properties<PocoBase>());
+        Properties[typeof(CatBase)].Add(
+                new Property<PocoBase>(
+                "Cattery", 
+                typeof(CatteryBase),
+                GetCatteryValue, 
+                SetCatteryValue, 
+                target => ((IPoco)target).TouchProperty("Cattery"), 
+                false, 
+                false, 
+                false            
+            )
+            .AddPropertyType<ICat, ICattery>()
+            .AddPropertyType<ICatForListing, ICattery>()
+            .AddPropertyType<ICatAsParent, ICattery>()
+            .AddPropertyType<ICatForView, ICattery>()
+        );
         Properties[typeof(CatBase)].Add(
                 new Property<PocoBase>(
                 "NameNat", 
@@ -380,22 +391,6 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             .AddPropertyType<ICat, Gender>()
             .AddPropertyType<ICatForListing, Gender>()
             .AddPropertyType<ICatForView, Gender>()
-        );
-        Properties[typeof(CatBase)].Add(
-                new Property<PocoBase>(
-                "Cattery", 
-                typeof(CatteryBase),
-                GetCatteryValue, 
-                SetCatteryValue, 
-                target => ((IPoco)target).TouchProperty("Cattery"), 
-                false, 
-                false, 
-                false            
-            )
-            .AddPropertyType<ICat, ICattery>()
-            .AddPropertyType<ICatForListing, ICattery>()
-            .AddPropertyType<ICatAsParent, ICattery>()
-            .AddPropertyType<ICatForView, ICattery>()
         );
         Properties[typeof(CatBase)].Add(
                 new Property<PocoBase>(
@@ -514,6 +509,29 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
     public Cat Source { get; protected set; }
 
     
+    public virtual CatteryBase Cattery
+    {
+        get => (Source.Cattery as IProjector)!.As<CatteryBase>()!;
+        set
+        {
+            if((Source.Cattery as IProjector)!.As<CatteryBase>() != value)
+            {
+                object oldValue = (Source.Cattery as IProjector)!.As<CatteryBase>()!;
+                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
+                {
+                            (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged -= CatteryPocoChanged;
+                }
+                Source.Cattery = (value as IProjector)!.As<ICattery>()!;
+                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
+                {
+                    (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged += CatteryPocoChanged;
+                }
+                OnPocoChanged(oldValue, value);
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public virtual String? NameNat
     {
         get => Source.NameNat;
@@ -553,29 +571,6 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
             {
                 object oldValue = Source.Gender;
                 Source.Gender = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
-            }
-        }
-    }
-
-    public virtual CatteryBase Cattery
-    {
-        get => (Source.Cattery as IProjector)!.As<CatteryBase>()!;
-        set
-        {
-            if((Source.Cattery as IProjector)!.As<CatteryBase>() != value)
-            {
-                object oldValue = (Source.Cattery as IProjector)!.As<CatteryBase>()!;
-                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
-                {
-                            (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged -= CatteryPocoChanged;
-                }
-                Source.Cattery = (value as IProjector)!.As<ICattery>()!;
-                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
-                {
-                    (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged += CatteryPocoChanged;
-                }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -710,7 +705,6 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
         return null;
     }
 
-    public abstract IList<ILitterForCat> test(IList<ICat> cats);
 
 
 
@@ -780,6 +774,15 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
     
     #region Properties accessors;
 
+    private static object? GetCatteryValue(PocoBase target)
+    {
+        return ((CatBase)target).Cattery;
+    }
+
+    private static void SetCatteryValue(PocoBase target, object? value)
+    {
+        ((CatBase)target).Cattery = (CatteryBase)value!;
+    }
     private static object? GetNameNatValue(PocoBase target)
     {
         return ((CatBase)target).NameNat;
@@ -806,15 +809,6 @@ public abstract class CatBase: EntityBase, IProjector, IProjection<Cat>
     private static void SetGenderValue(PocoBase target, object? value)
     {
         ((CatBase)target).Gender = (Gender)value!;
-    }
-    private static object? GetCatteryValue(PocoBase target)
-    {
-        return ((CatBase)target).Cattery;
-    }
-
-    private static void SetCatteryValue(PocoBase target, object? value)
-    {
-        ((CatBase)target).Cattery = (CatteryBase)value!;
     }
     private static object? GetBreedValue(PocoBase target)
     {

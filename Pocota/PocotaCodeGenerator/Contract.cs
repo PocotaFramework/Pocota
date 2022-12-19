@@ -41,11 +41,11 @@ internal class Contract
         SortedDictionary<string, PrimaryKeyDefinition>? result = null;
         for(Contract? current = this; current is { }; current = current.BaseContract)
         {
-            if(current.KeyDefinitions[type] is { })
+            if(KeyDefinitions.TryGetValue(type, out Dictionary<string, PrimaryKeyDefinition>? dict))
             {
-                foreach(string name in current.KeyDefinitions[type].Keys)
+                foreach(string name in dict.Keys)
                 {
-                    (result ??= new SortedDictionary<string, PrimaryKeyDefinition>()).TryAdd(name, current.KeyDefinitions[type][name]);
+                    (result ??= new SortedDictionary<string, PrimaryKeyDefinition>()).TryAdd(name, dict[name]);
                 }
             }
         }

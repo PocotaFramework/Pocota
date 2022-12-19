@@ -1,8 +1,10 @@
-//------------------------------
-// PrimaryKey implementation
-// CatsCommon.Model.LitterPrimaryKey
-// (Generated automatically 2022-12-17T12:54:33)
-//------------------------------
+/////////////////////////////////////////////////////////////
+// Server Poco Primary Key                                 //
+// CatsCommon.Model.LitterPrimaryKey                       //
+// Generated automatically from CatsContract.ICatsContract //
+// at 2022-12-19T17:40:44                                  //
+/////////////////////////////////////////////////////////////
+
 
 using Net.Leksi.Pocota.Server;
     using Net.Leksi.Pocota.Server.Generic;

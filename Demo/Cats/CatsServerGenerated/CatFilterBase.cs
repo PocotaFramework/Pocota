@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterBase                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-17T12:54:33                                  //
+// at 2022-12-19T17:40:44                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -29,14 +29,14 @@ public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
 
         public virtual IBreed? Breed 
         {
-            get => Source.Breed?.As<IBreed>();
-            set => Source.Breed = (BreedBase?)value;
+            get => Source.Breed;
+            set => Source.Breed = value;
         }
 
         public virtual ICattery? Cattery 
         {
-            get => Source.Cattery?.As<ICattery>();
-            set => Source.Cattery = (CatteryBase?)value;
+            get => Source.Cattery;
+            set => Source.Cattery = value;
         }
 
         public virtual DateOnly? BornAfter 
@@ -65,44 +65,44 @@ public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
 
         public virtual ICat? Child 
         {
-            get => Source.Child?.As<ICat>();
-            set => Source.Child = (CatBase?)value;
+            get => Source.Child;
+            set => Source.Child = value;
         }
 
         public virtual ICat? Self 
         {
-            get => Source.Self?.As<ICat>();
-            set => Source.Self = (CatBase?)value;
+            get => Source.Self;
+            set => Source.Self = value;
         }
 
         public virtual ICat? Mother 
         {
-            get => Source.Mother?.As<ICat>();
-            set => Source.Mother = (CatBase?)value;
+            get => Source.Mother;
+            set => Source.Mother = value;
         }
 
         public virtual ICat? Father 
         {
-            get => Source.Father?.As<ICat>();
-            set => Source.Father = (CatBase?)value;
+            get => Source.Father;
+            set => Source.Father = value;
         }
 
         public virtual ICat? Ancestor 
         {
-            get => Source.Ancestor?.As<ICat>();
-            set => Source.Ancestor = (CatBase?)value;
+            get => Source.Ancestor;
+            set => Source.Ancestor = value;
         }
 
         public virtual ICat? Descendant 
         {
-            get => Source.Descendant?.As<ICat>();
-            set => Source.Descendant = (CatBase?)value;
+            get => Source.Descendant;
+            set => Source.Descendant = value;
         }
 
         public virtual ILitter? Litter 
         {
-            get => Source.Litter?.As<ILitter>();
-            set => Source.Litter = (LitterBase?)value;
+            get => Source.Litter;
+            set => Source.Litter = value;
         }
 
         public virtual String? ExteriorRegex 
