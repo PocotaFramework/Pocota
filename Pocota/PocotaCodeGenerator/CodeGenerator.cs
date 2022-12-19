@@ -34,14 +34,14 @@ public class CodeGenerator : IModelBuilder
     private const string s_primaryKey = "PrimaryKey";
     private const int s_stackTraceLength = 100;
 
-    private readonly Dictionary<Type, Type> _projections = new();
-    private readonly Dictionary<Type, ProjectorHolder> _projectors = new();
+    private readonly Dictionary<Type, ProjectorHolder> _projectorsByProjections = new();
+    private readonly Dictionary<Type, ProjectorHolder> _projectorsByType = new();
+    private readonly Dictionary<string, ProjectorHolder> _projectorsByName = new();
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
     private readonly List<GeneratingRequest> _requests = new();
     private readonly HashSet<string> _variables = new();
 
-    private readonly Regex _contractNameCheck = new("^I(.+?)Contract$");
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
@@ -57,166 +57,138 @@ public class CodeGenerator : IModelBuilder
 
     public void AddContract(Type contract)
     {
-        Stack<Type> stack = new();
-        Type? current = contract;
-        _queue.Add(contract);
-        bool running = true;
-        while (running)
+        if (!(contract.GetCustomAttributes<PocoContractAttribute>() is PocoContractAttribute contractAttribute))
         {
-            running = false;
-            if (current.GetInterfaces().Length > 1)
-            {
-                throw new InvalidOperationException($"Contract {current} cannot have more than one base intreface!");
-            }
-            stack.Push(current);
-            foreach (Type type in current.GetInterfaces())
-            {
-                current = type;
-                running = true;
-                break;
-            }
+            throw new InvalidOperationException($"Contract {contract} must have {typeof(PocoContractAttribute)}!");
         }
-        while (stack.Count > 0)
+        if (_contracts.Add(contract))
         {
-            Type contractItem = stack.Pop();
-            Match match = _contractNameCheck.Match(contractItem.Name);
-            if (!match.Success)
+            foreach (PocoAttribute attr in contract.GetCustomAttributes<PocoAttribute>())
             {
-                throw new InvalidOperationException($"Contract {contractItem} does not meet name condition: I{{Name}}Contract!");
-            }
-            if (_contracts.Add(contractItem))
-            {
-                foreach (PocoAttribute attr in contractItem.GetCustomAttributes<PocoAttribute>())
+                if (!attr.Projector.IsInterface)
                 {
-                    if (!attr.Projector.IsInterface)
+                    throw new InvalidOperationException($"Only interfaces allowed ({attr.Projector} from {contract})!");
+                }
+                if (!_projectorsByType.TryGetValue(attr.Projector, out ProjectorHolder? projector))
+                {
+                    projector = new() { Interface = attr.Projector, Contract = contract };
+                    if (attr.Name is { })
                     {
-                        throw new InvalidOperationException($"Only interfaces allowed but {attr.Projector.Name} is not one!");
-                    }
-                    if (attr.Projector.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
-                    {
-                        throw new InvalidOperationException($"Methods are not allowed at a projector {attr.Projector}!");
-                    }
-                    match = _interfaceNameCheck.Match(attr.Projector.Name);
-                    if (!match.Success)
-                    {
-                        throw new InvalidOperationException($"Interface {attr.Projector} does not meet name condition: I{{Name}}!");
-                    }
-                    if(!_projectors.TryGetValue(attr.Projector, out ProjectorHolder? projector))
-                    {
-                        projector = new() { Interface = attr.Projector, Contract = contractItem };
-                        _projectors.Add(attr.Projector, projector);
-                        _projections.Add(attr.Projector, attr.Projector);
-                        _queue.Add(attr.Projector);
+                        if (_projectorsByName.TryGetValue(attr.Name, out ProjectorHolder? other))
+                        {
+                            throw new InvalidOperationException($"Projector {attr.Projector} from {contract} has duplicate Name {attr.Name}: {other.Interface} from {other.Contract} has the same!");
+                        }
+                        projector.Name = attr.Name;
                     }
                     else
                     {
-                        if (!projector.Contract.IsAssignableFrom(contractItem))
+                        Match match = _interfaceNameCheck.Match(attr.Projector.Name);
+                        if (!match.Success)
                         {
-                            throw new InvalidOperationException($"Interface {attr.Projector} can be redefined only at an inheritor of {projector.Contract}!");
+                            throw new InvalidOperationException($"Projector {attr.Projector} has not assigned Name and does not meet name condition: I{{Name}}!");
                         }
+                        projector.Name = match.Groups[1].Captures[0].Value;
                     }
-                    if (attr.Projections is { })
+                    _projectorsByType.Add(attr.Projector, projector);
+                    _projectorsByProjections.Add(attr.Projector, projector);
+                    _queue.Add(attr.Projector);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Interface {attr.Projector} from {contract} is already defined at {projector.Contract}!");
+                }
+                if (attr.Projections is { })
+                {
+                    foreach (Type projection in attr.Projections)
                     {
-                        foreach (Type projection in attr.Projections)
+                        if (projection.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
                         {
-                            if (projection.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
+                            throw new InvalidOperationException($"Methods are not allowed at a projection {projection} of {projector.Interface} from {contract}!");
+                        }
+                        if (!projection.IsInterface)
+                        {
+                            throw new InvalidOperationException(
+                                $"Only interfaces allowed ({projection} of {attr.Projector} from {contract})!"
+                                );
+                        }
+                        if(!_projectorsByProjections.TryAdd(projection, projector))
+                        {
+                            throw new InvalidOperationException(
+                                $"The {projection} of {attr.Projector} from {contract} already has a projector {_projectorsByProjections[projection]} from {_projectorsByProjections[projection].Contract}!"
+                                );
+                        }
+                        projector.Projections.Add(projection);
+                    }
+                }
+                if (attr.PrimaryKey is { })
+                {
+                    PrimaryKeyDefinition? keyDefinition = null;
+
+                    for (int i = 0; i < attr.PrimaryKey.Length; ++i)
+                    {
+                        if (i % 2 == 0)
+                        {
+                            if (attr.PrimaryKey[i] is string name && _keyNameCheck.IsMatch(name))
                             {
-                                throw new InvalidOperationException($"Methods are not allowed at a projection {projection}!");
+                                keyDefinition = new PrimaryKeyDefinition { Name = name };
                             }
-                            if (!projection.IsInterface)
+                            else
                             {
                                 throw new InvalidOperationException(
-                                    $"Only interfaces allowed but {projection} is not one!"
+                                    $"Invalid primary key's field name {attr.PrimaryKey[i]} for projector {attr.Projector}!"
                                     );
                             }
-                            if(!_projections.TryAdd(projection, projector.Interface))
+                        }
+                        else
+                        {
+                            if (attr.PrimaryKey[i] is Type type)
                             {
-                                throw new InvalidOperationException(
-                                    $"The {projection} already has a projector: {_projections[projection]}!"
-                                    );
+                                keyDefinition!.Type = type;
                             }
-                            projector.Projections.Add(projection);
-                        }
-                    }
-                    if (attr.Source is { })
-                    {
-                        if (!attr.Projector.IsAssignableFrom(attr.Source))
-                        {
-                            throw new InvalidOperationException($"{nameof(attr.Projector)}={attr.Projector} must be assignable from {nameof(attr.Source)}={attr.Source} at {contract}!");
-                        }
-
-                        projector.Source = attr.Source;
-                    }
-                    if (attr.PrimaryKey is { })
-                    {
-                        PrimaryKeyDefinition? keyDefinition = null;
-
-                        for (int i = 0; i < attr.PrimaryKey.Length; ++i)
-                        {
-                            if (i % 2 == 0)
+                            else if (attr.PrimaryKey[i] is string path && _keyPathCheck.IsMatch(path))
                             {
-                                if (attr.PrimaryKey[i] is string name && _keyNameCheck.IsMatch(name))
+                                Match match1 = _keyPathCheck.Match(path);
+                                string propertyName = match1.Groups[1].Captures[0].Value;
+                                keyDefinition!.Property = attr.Projector.GetProperty(propertyName);
+                                if (keyDefinition!.Property is null)
                                 {
-                                    keyDefinition = new PrimaryKeyDefinition { Name = name };
+                                    throw new InvalidOperationException(
+                                        $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}, the property {propertyName} is absent!"
+                                        );
+                                }
+                                NullabilityInfoContext nullability = new();
+                                NullabilityInfo nullabilityInfo = nullability.Create(keyDefinition!.Property);
+                                if (nullabilityInfo.ReadState is NullabilityState.Nullable)
+                                {
+                                    throw new InvalidOperationException(
+                                        $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}, the property {propertyName} is nullable!"
+                                        );
+                                }
+                                if (match1.Groups[2].Captures.Count == 1)
+                                {
+                                    keyDefinition.KeyReference = match1.Groups[2].Captures[0].Value;
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException(
-                                        $"Invalid primary key's field name {attr.PrimaryKey[i]} for projector {attr.Projector}!"
-                                        );
+                                    keyDefinition!.Type = keyDefinition.Property.PropertyType;
                                 }
                             }
                             else
                             {
-                                if (attr.PrimaryKey[i] is Type type)
-                                {
-                                    keyDefinition!.Type = type;
-                                }
-                                else if (attr.PrimaryKey[i] is string path && _keyPathCheck.IsMatch(path))
-                                {
-                                    Match match1 = _keyPathCheck.Match(path);
-                                    string propertyName = match1.Groups[1].Captures[0].Value;
-                                    keyDefinition!.Property = attr.Projector.GetProperty(propertyName);
-                                    if (keyDefinition!.Property is null)
-                                    {
-                                        throw new InvalidOperationException(
-                                            $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}, the property {propertyName} is absent!"
-                                            );
-                                    }
-                                    NullabilityInfoContext nullability = new();
-                                    NullabilityInfo nullabilityInfo = nullability.Create(keyDefinition!.Property);
-                                    if (nullabilityInfo.ReadState is NullabilityState.Nullable)
-                                    {
-                                        throw new InvalidOperationException(
-                                            $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}, the property {propertyName} is nullable!"
-                                            );
-                                    }
-                                    if (match1.Groups[2].Captures.Count == 1)
-                                    {
-                                        keyDefinition.KeyReference = match1.Groups[2].Captures[0].Value;
-                                    }
-                                    else
-                                    {
-                                        keyDefinition!.Type = keyDefinition.Property.PropertyType;
-                                    }
-                                }
-                                else
-                                {
-                                    throw new InvalidOperationException(
-                                        $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}!"
-                                        );
-                                }
-                                if(!projector.KeysDefinitions.TryAdd(keyDefinition.Name, keyDefinition))
-                                {
-                                    throw new InvalidOperationException(
-                                        $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for projector {attr.Projector}!"
-                                        );
-                                }
+                                throw new InvalidOperationException(
+                                    $"Invalid primary key's definition {attr.PrimaryKey[i]} for projector {attr.Projector}!"
+                                    );
+                            }
+                            if(!projector.KeysDefinitions.TryAdd(keyDefinition.Name, keyDefinition))
+                            {
+                                throw new InvalidOperationException(
+                                    $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for projector {attr.Projector}!"
+                                    );
                             }
                         }
                     }
-
                 }
+
             }
         }
     }
@@ -449,7 +421,7 @@ public class CodeGenerator : IModelBuilder
 
             model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), model.ReferencedClass));
 
-            ProjectorHolder projector = _projectors[request.Interface];
+            ProjectorHolder projector = _projectorsByType[request.Interface];
 
             foreach (string name in projector.KeysDefinitions.Keys)
             {
@@ -476,7 +448,7 @@ public class CodeGenerator : IModelBuilder
 
     public async Task Generate()
     {
-        foreach (ProjectorHolder projector in _projectors.Values)
+        foreach (ProjectorHolder projector in _projectorsByType.Values)
         {
             CheckConsistency(projector);
             FindInheritance(projector);
@@ -495,24 +467,10 @@ public class CodeGenerator : IModelBuilder
                 List<string> res = new();
                 if (_contracts.Contains(@interface))
                 {
-                    Type current = @interface;
-                    bool running = true;
-                    int count = 0;
-                    while (running)
-                    {
-                        running = false;
-                        count += current.GetMethods().Where(x => !x.IsSpecialName).Count();
-                        if(count == 0)
-                        {
-                            foreach (Type type in current.GetInterfaces())
-                            {
-                                current = type;
-                                running = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (count > 0)
+                    if (
+                        @interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0 
+                        && !@interface.GetCustomAttribute<PocoContractAttribute>()!.IsClient
+                    )
                     {
                         if (ClientGeneratedDirectory is { })
                         {
@@ -542,7 +500,7 @@ public class CodeGenerator : IModelBuilder
                         }
                     }
                 }
-                else if (_projectors.TryGetValue(@interface, out ProjectorHolder? projector))
+                else if (_projectorsByType.TryGetValue(@interface, out ProjectorHolder? projector))
                 {
                     if (ClientGeneratedDirectory is { })
                     {
@@ -551,17 +509,20 @@ public class CodeGenerator : IModelBuilder
                         {
                             Interface = @interface,
                             Kind = RequestKind.ClientImplementation,
-                            Contract = _projectors[@interface]!.Contract
+                            Contract = projector.Contract
                         });
                     }
-                    if (ServerGeneratedDirectory is { })
+                    if (
+                        ServerGeneratedDirectory is { }
+                        && !projector.Contract.GetCustomAttribute<PocoContractAttribute>()!.IsClient
+                    )
                     {
                         res.Add($"/ServerImplementation?selector={_requests.Count}");
                         _requests.Add(new GeneratingRequest
                         {
                             Interface = @interface,
                             Kind = RequestKind.ServerImplementation,
-                            Contract = _projectors[@interface]!.Contract
+                            Contract = projector.Contract
                         });
                         if (projector.KeysDefinitions.Count > 0)
                         {
@@ -570,7 +531,7 @@ public class CodeGenerator : IModelBuilder
                             {
                                 Interface = @interface,
                                 Kind = RequestKind.PrimaryKey,
-                                Contract = _projectors[@interface]!.Contract
+                                Contract = projector.Contract
                             });
                         }
                     }
@@ -630,7 +591,7 @@ public class CodeGenerator : IModelBuilder
             running = false;
             foreach (Type type in current.GetInterfaces())
             {
-                if(_projectors.TryGetValue(type, out ProjectorHolder? other))
+                if(_projectorsByType.TryGetValue(type, out ProjectorHolder? other))
                 {
                     if(projectorBases > 0)
                     {
@@ -653,21 +614,6 @@ public class CodeGenerator : IModelBuilder
             now = stack.Pop();
             if (now.BaseProjector is { })
             {
-                if (
-                    now.Source is null && now.BaseProjector.Source is { }
-                    || now.Source is { } && now.BaseProjector.Source is null
-                )
-                {
-                    throw new InvalidOperationException($"{now.Interface} and {now.BaseProjector.Interface} must both have or both have not source!");
-                }
-                if (
-                    now.Source is { }
-                    && now.BaseProjector.Source is { }
-                    && !now.BaseProjector.Source.IsAssignableFrom(now.Source)
-                )
-                {
-                    throw new InvalidOperationException($"{now.BaseProjector.Source} must be assignable from {now.Source}!");
-                }
                 foreach (string name in now.BaseProjector.KeysDefinitions.Keys) 
                 {
                     now.KeysDefinitions.TryAdd(name, now.BaseProjector.KeysDefinitions[name]);
@@ -678,22 +624,22 @@ public class CodeGenerator : IModelBuilder
 
     private void CheckPrimaryKeys()
     {
-        foreach (Type targetType in _projectors.Keys)
+        foreach (Type targetType in _projectorsByType.Keys)
         {
-            ProjectorHolder projector = _projectors[targetType];
+            ProjectorHolder projector = _projectorsByType[targetType];
             foreach (PrimaryKeyDefinition key in projector.KeysDefinitions.Values)
             {
                 if (key.KeyReference is { })
                 {
                     if (
-                        !_projectors.TryGetValue(key.Property!.PropertyType, out ProjectorHolder? other)
+                        !_projectorsByType.TryGetValue(key.Property!.PropertyType, out ProjectorHolder? other)
                         || !other.KeysDefinitions.ContainsKey(key.KeyReference)
                     )
                     {
                         throw new InvalidOperationException($"Key part {key.Property.DeclaringType}.{key.Property.Name}.{key.KeyReference} referenced by keyDefinition['{key.Name}']='{key.Property.Name}.{key.KeyReference}' for {nameof(targetType)}={targetType} is not defined!");
                     }
 
-                    CycleFinder.CheckNoCycle(_projectors, targetType, key);
+                    CycleFinder.CheckNoCycle(_projectorsByType, targetType, key);
                     SetAbsentTypes(targetType, key);
                 }
             }
@@ -708,7 +654,7 @@ public class CodeGenerator : IModelBuilder
         {
             PrimaryKeyDefinition? keyDefinition = null;
             if (
-                _projectors.TryGetValue(item.Key, out ProjectorHolder? projector)
+                _projectorsByType.TryGetValue(item.Key, out ProjectorHolder? projector)
                 && projector.KeysDefinitions.TryGetValue(item.Value, out keyDefinition)
                 && keyDefinition.Type is { }
                 )
@@ -724,10 +670,10 @@ public class CodeGenerator : IModelBuilder
         }
         if (stack.TryPop(out var item1))
         {
-            Type type = _projectors[item1.Key!].KeysDefinitions[item1.Value].Type;
+            Type type = _projectorsByType[item1.Key!].KeysDefinitions[item1.Value].Type;
             while (stack.TryPop(out var item2))
             {
-                _projectors[item2.Key!].KeysDefinitions[item2.Value].Type = type;
+                _projectorsByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
             }
         }
     }
@@ -736,7 +682,7 @@ public class CodeGenerator : IModelBuilder
     {
         if (
             _requests[int.Parse(selector)] is GeneratingRequest request
-            && _projectors.TryGetValue(request.Interface, out ProjectorHolder? projector)
+            && _projectorsByType.TryGetValue(request.Interface, out ProjectorHolder? projector)
         )
         {
             InitClassModel(model, request);
@@ -778,20 +724,9 @@ public class CodeGenerator : IModelBuilder
 
             model.Interfaces.Add(GetTypeName(typeof(IProjector)));
 
-            if (projector.Source is { })
-            {
-                AddUsings(model, projector.Source);
-                string sourceProjection = GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { typeof(object) }))
-                        .Replace(GetTypeName(typeof(object)), GetTypeName(projector.Source));
-                model.Interfaces.Add(sourceProjection);
-                model.Source = $"public {GetTypeName(projector.Source)} Source {{ get; protected set; }}";
-            }
-            else
-            {
-                string sourceProjection = GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { typeof(object) }))
-                        .Replace(GetTypeName(typeof(object)), MakeBaseClassName(request.Interface));
-                model.Interfaces.Add(sourceProjection);
-            }
+            string sourceProjection = GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { typeof(object) }))
+                    .Replace(GetTypeName(typeof(object)), MakeBaseClassName(request.Interface));
+            model.Interfaces.Add(sourceProjection);
 
             AddUsings(model, typeof(IProjection<>));
 
@@ -814,9 +749,9 @@ public class CodeGenerator : IModelBuilder
                     IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                     IsReadOnly = false
                 };
-                if (_projections.ContainsKey(pi.PropertyType))
+                if (_projectorsByProjections.ContainsKey(pi.PropertyType))
                 {
-                    AddUsings(model, _projections[pi.PropertyType]);
+                    AddUsings(model, _projectorsByProjections[pi.PropertyType]);
                     propertyModel.IsProjector = true;
                     propertyModel.Class = GetTypeName(pi.PropertyType);
                 }
@@ -839,11 +774,11 @@ public class CodeGenerator : IModelBuilder
                     {
                         AddUsings(model, typeof(List<>));
                     }
-                    if (_projections.ContainsKey(itemType))
+                    if (_projectorsByProjections.ContainsKey(itemType))
                     {
-                        AddUsings(model, _projections[itemType]);
+                        AddUsings(model, _projectorsByProjections[itemType]);
                         propertyModel.IsProjector = true;
-                        propertyModel.ItemType = MakeBaseClassName(_projections[itemType]);
+                        propertyModel.ItemType = MakeBaseClassName(_projectorsByProjections[itemType]);
                     }
                     else
                     {
@@ -862,7 +797,7 @@ public class CodeGenerator : IModelBuilder
                 }
                 else if (propertyModel.IsProjector)
                 {
-                    propertyModel.Type = MakeBaseClassName(_projections[pi.PropertyType]);
+                    propertyModel.Type = MakeBaseClassName(_projectorsByProjections[pi.PropertyType]);
                 }
                 else
                 {
@@ -910,16 +845,16 @@ public class CodeGenerator : IModelBuilder
                     };
                     if (propertyModel.IsProjection)
                     {
-                        propertyModel.Class = MakeBaseClassName(_projections[pi.PropertyType]);
+                        propertyModel.Class = MakeBaseClassName(_projectorsByProjections[pi.PropertyType]);
                     }
                     if (propertyModel.IsList)
                     {
                         Type itemType = pi.PropertyType.GetGenericArguments()[0];
-                        if (_projections.ContainsKey(itemType))
+                        if (_projectorsByProjections.ContainsKey(itemType))
                         {
                             propertyModel.IsProjection = true;
                             propertyModel.ItemType = GetTypeName(itemType);
-                            propertyModel.Class = MakeBaseClassName(_projections[itemType]);
+                            propertyModel.Class = MakeBaseClassName(_projectorsByProjections[itemType]);
                         }
                         else
                         {

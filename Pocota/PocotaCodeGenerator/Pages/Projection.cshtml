@@ -11,14 +11,14 @@
 </text>
         }
 
-        public @if(Model.BaseType is {}){<text>new</text>} @Model.Parent!.ClassName Source  { get; init; }
+        public @Model.Parent!.ClassName Projector  { get; init; }
 
         @foreach(PropertyModel pm in Model.Properties)
         {
-            <text>        public @if(Model.BaseType is null){<text>virtual</text>} else {<text>override</text>} @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
+            <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if(!pm.IsList || !pm.IsProjection){
-                <text>@Html.Raw($"Source.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                <text>@Html.Raw($"Projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
             else {
@@ -35,7 +35,7 @@
                 }
                 else
                 {
-                    <text>            set => @Html.Raw($"Source.{pm.Name} = ")@if (pm.IsProjection) { <text>@Html.Raw($"({pm.Class}{(pm.IsNullable ? "?" : string.Empty)})")</text> }value;
+                    <text>            set => @Html.Raw($"Projector.{pm.Name} = ")@if (pm.IsProjection) { <text>@Html.Raw($"({pm.Class}{(pm.IsNullable ? "?" : string.Empty)})")</text> }value;
 </text>
                 }
             }
@@ -44,40 +44,36 @@
 </text>
         }
 
-        internal @Html.Raw($"{Model.ClassName}({Model.Parent!.ClassName} source)")
+        internal @Html.Raw($"{Model.ClassName}({Model.Parent!.ClassName} projector)")
         {
-            Source = source;
+            Projector = projector;
             @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.IsProjection))
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>            @fieldName = new(@Html.Raw($"Source.{pm.Name}"));
+                <text>            @fieldName = new(@Html.Raw($"Projector.{pm.Name}"));
 </text>
             }
         }
 
-        @if(Model.Source is null)
+        public I As<I>()
         {
-            <text>        public I As<I>()
-        {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
-        }
-</text>
+            return Projector.As(type);
         }
 
         @foreach(MethodModel mm in Model.Methods)
         {
-        string parameters = string.Join(", ", mm.Parameters.Select(p => p.Class is { } ? $"((IProjection<{p.Class}>){p.Name})?.Source!" : p.Name));
+        string parameters = string.Join(", ", mm.Parameters.Select(p => p.Class is { } ? $"((IProjection<{p.Class}>){p.Name})?.Projector!" : p.Name));
         <text>        public @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})")
         {
             @Html.Raw("")@if (!mm.ReturnType.Equals("void"))
             {
                 <text>object? result = </text>
-            }@Html.Raw($"Source.{mm.Name}({parameters})");
+            }@Html.Raw($"Projector.{mm.Name}({parameters})");
             @if (!mm.ReturnType.Equals("void"))
             {
                 <text>            return @Html.Raw($"({mm.ReturnType})result");

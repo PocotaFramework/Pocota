@@ -27,60 +27,60 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
     {
         private readonly ProjectionList<LitterBase,ILitter> _litters;
 
-        public  CatBase Source  { get; init; }
+        public  CatBase Projection  { get; init; }
 
         public virtual ICattery Cattery 
         {
-            get => Source.Cattery!;
-            set => Source.Cattery = value;
+            get => Projection.Cattery!;
+            set => Projection.Cattery = value;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
-            set => Source.NameNat = value;
+            get => Projection.NameNat;
+            set => Projection.NameNat = value;
         }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
-            set => Source.NameEng = value;
+            get => Projection.NameEng;
+            set => Projection.NameEng = value;
         }
 
         public virtual Gender Gender 
         {
-            get => Source.Gender!;
-            set => Source.Gender = value;
+            get => Projection.Gender!;
+            set => Projection.Gender = value;
         }
 
         public virtual IBreed Breed 
         {
-            get => Source.Breed!;
-            set => Source.Breed = value;
+            get => Projection.Breed!;
+            set => Projection.Breed = value;
         }
 
         public virtual ILitter? Litter 
         {
-            get => Source.Litter;
-            set => Source.Litter = value;
+            get => Projection.Litter;
+            set => Projection.Litter = value;
         }
 
         public virtual String? Exterior 
         {
-            get => Source.Exterior;
-            set => Source.Exterior = value;
+            get => Projection.Exterior;
+            set => Projection.Exterior = value;
         }
 
         public virtual String? Description 
         {
-            get => Source.Description;
-            set => Source.Description = value;
+            get => Projection.Description;
+            set => Projection.Description = value;
         }
 
         public virtual String? Title 
         {
-            get => Source.Title;
-            set => Source.Title = value;
+            get => Projection.Title;
+            set => Projection.Title = value;
         }
 
         public virtual IList<ILitter> Litters 
@@ -92,18 +92,18 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
         internal CatProjection(CatBase source)
         {
-            Source = source;
-            _litters = new(Source.Litters);
+            Projection = source;
+            _litters = new(Projection.Litters);
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -115,67 +115,67 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
     public class CatForListingProjection: ICatForListing, IProjector, IProjection<CatBase>
     {
 
-        public  CatBase Source  { get; init; }
+        public  CatBase Projection  { get; init; }
 
         public virtual ICattery Cattery 
         {
-            get => Source.Cattery!;
+            get => Projection.Cattery!;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
+            get => Projection.NameNat;
         }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
+            get => Projection.NameEng;
         }
 
         public virtual Gender Gender 
         {
-            get => Source.Gender!;
+            get => Projection.Gender!;
         }
 
         public virtual IBreed Breed 
         {
-            get => Source.Breed!;
+            get => Projection.Breed!;
         }
 
         public virtual ILitterForCat? Litter 
         {
-            get => Source.Litter;
+            get => Projection.Litter;
         }
 
         public virtual String? Exterior 
         {
-            get => Source.Exterior;
+            get => Projection.Exterior;
         }
 
         public virtual String? Description 
         {
-            get => Source.Description;
+            get => Projection.Description;
         }
 
         public virtual String? Title 
         {
-            get => Source.Title;
+            get => Projection.Title;
         }
 
 
         internal CatForListingProjection(CatBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -187,57 +187,57 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
     public class CatAsParentProjection: ICatAsParent, IProjector, IProjection<CatBase>
     {
 
-        public  CatBase Source  { get; init; }
+        public  CatBase Projection  { get; init; }
 
         public virtual ICattery Cattery 
         {
-            get => Source.Cattery!;
+            get => Projection.Cattery!;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
+            get => Projection.NameNat;
         }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
+            get => Projection.NameEng;
         }
 
         public virtual IBreed Breed 
         {
-            get => Source.Breed!;
+            get => Projection.Breed!;
         }
 
         public virtual ILitterForDate? Litter 
         {
-            get => Source.Litter;
+            get => Projection.Litter;
         }
 
         public virtual String? Exterior 
         {
-            get => Source.Exterior;
+            get => Projection.Exterior;
         }
 
         public virtual String? Title 
         {
-            get => Source.Title;
+            get => Projection.Title;
         }
 
 
         internal CatAsParentProjection(CatBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -250,51 +250,51 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
     {
         private readonly ProjectionList<LitterBase,ILitterForCat> _litters;
 
-        public  CatBase Source  { get; init; }
+        public  CatBase Projection  { get; init; }
 
         public virtual ICattery Cattery 
         {
-            get => Source.Cattery!;
+            get => Projection.Cattery!;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
+            get => Projection.NameNat;
         }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
+            get => Projection.NameEng;
         }
 
         public virtual Gender Gender 
         {
-            get => Source.Gender!;
+            get => Projection.Gender!;
         }
 
         public virtual IBreed Breed 
         {
-            get => Source.Breed!;
+            get => Projection.Breed!;
         }
 
         public virtual ILitterForCat? Litter 
         {
-            get => Source.Litter;
+            get => Projection.Litter;
         }
 
         public virtual String? Exterior 
         {
-            get => Source.Exterior;
+            get => Projection.Exterior;
         }
 
         public virtual String? Description 
         {
-            get => Source.Description;
+            get => Projection.Description;
         }
 
         public virtual String? Title 
         {
-            get => Source.Title;
+            get => Projection.Title;
         }
 
         public virtual IList<ILitterForCat> Litters 
@@ -305,18 +305,18 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
         internal CatForViewProjection(CatBase source)
         {
-            Source = source;
-            _litters = new(Source.Litters);
+            Projection = source;
+            _litters = new(Projection.Litters);
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -506,25 +506,25 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
 
 
-    public Cat Source { get; protected set; }
+    public Cat Projection { get; protected set; }
 
     
     public virtual CatteryBase Cattery
     {
-        get => (Source.Cattery as IProjector)!.As<CatteryBase>()!;
+        get => (Projection.Cattery as IProjector)!.As<CatteryBase>()!;
         set
         {
-            if((Source.Cattery as IProjector)!.As<CatteryBase>() != value)
+            if((Projection.Cattery as IProjector)!.As<CatteryBase>() != value)
             {
-                object oldValue = (Source.Cattery as IProjector)!.As<CatteryBase>()!;
-                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
+                object oldValue = (Projection.Cattery as IProjector)!.As<CatteryBase>()!;
+                if((Projection.Cattery as IProjector)!.As<CatteryBase>() is {})
                 {
-                            (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged -= CatteryPocoChanged;
+                            (Projection.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged -= CatteryPocoChanged;
                 }
-                Source.Cattery = (value as IProjector)!.As<ICattery>()!;
-                if((Source.Cattery as IProjector)!.As<CatteryBase>() is {})
+                Projection.Cattery = (value as IProjector)!.As<ICattery>()!;
+                if((Projection.Cattery as IProjector)!.As<CatteryBase>() is {})
                 {
-                    (Source.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged += CatteryPocoChanged;
+                    (Projection.Cattery as IProjector)!.As<CatteryBase>()!.PocoChanged += CatteryPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -534,13 +534,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual String? NameNat
     {
-        get => Source.NameNat;
+        get => Projection.NameNat;
         set
         {
-            if(Source.NameNat != value)
+            if(Projection.NameNat != value)
             {
-                object? oldValue = Source.NameNat;
-                Source.NameNat = value;
+                object? oldValue = Projection.NameNat;
+                Projection.NameNat = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -549,13 +549,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual String? NameEng
     {
-        get => Source.NameEng;
+        get => Projection.NameEng;
         set
         {
-            if(Source.NameEng != value)
+            if(Projection.NameEng != value)
             {
-                object? oldValue = Source.NameEng;
-                Source.NameEng = value;
+                object? oldValue = Projection.NameEng;
+                Projection.NameEng = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -564,13 +564,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual Gender Gender
     {
-        get => Source.Gender;
+        get => Projection.Gender;
         set
         {
-            if(Source.Gender != value)
+            if(Projection.Gender != value)
             {
-                object oldValue = Source.Gender;
-                Source.Gender = value;
+                object oldValue = Projection.Gender;
+                Projection.Gender = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -579,20 +579,20 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual BreedBase Breed
     {
-        get => (Source.Breed as IProjector)!.As<BreedBase>()!;
+        get => (Projection.Breed as IProjector)!.As<BreedBase>()!;
         set
         {
-            if((Source.Breed as IProjector)!.As<BreedBase>() != value)
+            if((Projection.Breed as IProjector)!.As<BreedBase>() != value)
             {
-                object oldValue = (Source.Breed as IProjector)!.As<BreedBase>()!;
-                if((Source.Breed as IProjector)!.As<BreedBase>() is {})
+                object oldValue = (Projection.Breed as IProjector)!.As<BreedBase>()!;
+                if((Projection.Breed as IProjector)!.As<BreedBase>() is {})
                 {
-                            (Source.Breed as IProjector)!.As<BreedBase>()!.PocoChanged -= BreedPocoChanged;
+                            (Projection.Breed as IProjector)!.As<BreedBase>()!.PocoChanged -= BreedPocoChanged;
                 }
-                Source.Breed = (value as IProjector)!.As<IBreed>()!;
-                if((Source.Breed as IProjector)!.As<BreedBase>() is {})
+                Projection.Breed = (value as IProjector)!.As<IBreed>()!;
+                if((Projection.Breed as IProjector)!.As<BreedBase>() is {})
                 {
-                    (Source.Breed as IProjector)!.As<BreedBase>()!.PocoChanged += BreedPocoChanged;
+                    (Projection.Breed as IProjector)!.As<BreedBase>()!.PocoChanged += BreedPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -602,20 +602,20 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual LitterBase? Litter
     {
-        get => (Source.Litter as IProjector)!.As<LitterBase>()!;
+        get => (Projection.Litter as IProjector)!.As<LitterBase>()!;
         set
         {
-            if((Source.Litter as IProjector)!.As<LitterBase>() != value)
+            if((Projection.Litter as IProjector)!.As<LitterBase>() != value)
             {
-                object? oldValue = (Source.Litter as IProjector)!.As<LitterBase>()!;
-                if((Source.Litter as IProjector)!.As<LitterBase>() is {})
+                object? oldValue = (Projection.Litter as IProjector)!.As<LitterBase>()!;
+                if((Projection.Litter as IProjector)!.As<LitterBase>() is {})
                 {
-                            (Source.Litter as IProjector)!.As<LitterBase>()!.PocoChanged -= LitterPocoChanged;
+                            (Projection.Litter as IProjector)!.As<LitterBase>()!.PocoChanged -= LitterPocoChanged;
                 }
-                Source.Litter = (value as IProjector)!.As<ILitter>()!;
-                if((Source.Litter as IProjector)!.As<LitterBase>() is {})
+                Projection.Litter = (value as IProjector)!.As<ILitter>()!;
+                if((Projection.Litter as IProjector)!.As<LitterBase>() is {})
                 {
-                    (Source.Litter as IProjector)!.As<LitterBase>()!.PocoChanged += LitterPocoChanged;
+                    (Projection.Litter as IProjector)!.As<LitterBase>()!.PocoChanged += LitterPocoChanged;
                 }
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
@@ -625,13 +625,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual String? Exterior
     {
-        get => Source.Exterior;
+        get => Projection.Exterior;
         set
         {
-            if(Source.Exterior != value)
+            if(Projection.Exterior != value)
             {
-                object? oldValue = Source.Exterior;
-                Source.Exterior = value;
+                object? oldValue = Projection.Exterior;
+                Projection.Exterior = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -640,13 +640,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual String? Description
     {
-        get => Source.Description;
+        get => Projection.Description;
         set
         {
-            if(Source.Description != value)
+            if(Projection.Description != value)
             {
-                object? oldValue = Source.Description;
-                Source.Description = value;
+                object? oldValue = Projection.Description;
+                Projection.Description = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }
@@ -655,13 +655,13 @@ public class CatBase: EntityBase, IProjector, IProjection<Cat>
 
     public virtual String? Title
     {
-        get => Source.Title;
+        get => Projection.Title;
         set
         {
-            if(Source.Title != value)
+            if(Projection.Title != value)
             {
-                object? oldValue = Source.Title;
-                Source.Title = value;
+                object? oldValue = Projection.Title;
+                Projection.Title = value;
                 OnPocoChanged(oldValue, value);
                 OnPropertyChanged();
             }

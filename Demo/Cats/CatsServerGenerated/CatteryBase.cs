@@ -23,34 +23,34 @@ public class CatteryBase: EntityBase, IProjector, IProjection<CatteryBase>
     public class CatteryProjection: ICattery, IProjector, IProjection<CatteryBase>
     {
 
-        public  CatteryBase Source  { get; init; }
+        public  CatteryBase Projection  { get; init; }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
-            set => Source.NameEng = value;
+            get => Projection.NameEng;
+            set => Projection.NameEng = value;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
-            set => Source.NameNat = value;
+            get => Projection.NameNat;
+            set => Projection.NameNat = value;
         }
 
 
         internal CatteryProjection(CatteryBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -99,7 +99,7 @@ public class CatteryBase: EntityBase, IProjector, IProjection<CatteryBase>
 
 
     
-    public CatteryBase Source { get => this; }
+    public CatteryBase Projection { get => this; }
 
     
     public String?        NameEng  { get; set; } = default;            

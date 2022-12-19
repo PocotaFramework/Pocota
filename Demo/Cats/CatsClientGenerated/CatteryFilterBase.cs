@@ -21,28 +21,28 @@ public class CatteryFilterBase: EnvelopeBase, IProjector, IProjection<CatteryFil
     public class CatteryFilterProjection: ICatteryFilter, IProjector, IProjection<CatteryFilterBase>
     {
 
-        public  CatteryFilterBase Source  { get; init; }
+        public  CatteryFilterBase Projection  { get; init; }
 
         public virtual String? SearchRegex 
         {
-            get => Source.SearchRegex;
-            set => Source.SearchRegex = value;
+            get => Projection.SearchRegex;
+            set => Projection.SearchRegex = value;
         }
 
 
         internal CatteryFilterProjection(CatteryFilterBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -82,7 +82,7 @@ public class CatteryFilterBase: EnvelopeBase, IProjector, IProjection<CatteryFil
 
 
 
-    public CatteryFilterBase Source { get => this; }
+    public CatteryFilterBase Projection { get => this; }
 
     
     public virtual String? SearchRegex

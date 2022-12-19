@@ -23,46 +23,46 @@ public class BreedBase: EntityBase, IProjector, IProjection<BreedBase>
     public class BreedProjection: IBreed, IProjector, IProjection<BreedBase>
     {
 
-        public  BreedBase Source  { get; init; }
+        public  BreedBase Projection  { get; init; }
 
         public virtual String Code 
         {
-            get => Source.Code!;
-            set => Source.Code = value;
+            get => Projection.Code!;
+            set => Projection.Code = value;
         }
 
         public virtual String Group 
         {
-            get => Source.Group!;
-            set => Source.Group = value;
+            get => Projection.Group!;
+            set => Projection.Group = value;
         }
 
         public virtual String? NameEng 
         {
-            get => Source.NameEng;
-            set => Source.NameEng = value;
+            get => Projection.NameEng;
+            set => Projection.NameEng = value;
         }
 
         public virtual String? NameNat 
         {
-            get => Source.NameNat;
-            set => Source.NameNat = value;
+            get => Projection.NameNat;
+            set => Projection.NameNat = value;
         }
 
 
         internal BreedProjection(BreedBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -137,7 +137,7 @@ public class BreedBase: EntityBase, IProjector, IProjection<BreedBase>
 
 
     
-    public BreedBase Source { get => this; }
+    public BreedBase Projection { get => this; }
 
     
     public String        Code  { get; set; } = default!;            

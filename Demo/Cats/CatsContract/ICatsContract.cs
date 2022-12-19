@@ -5,6 +5,8 @@ using Net.Leksi.Pocota.Common;
 
 namespace CatsContract;
 
+[PocoContract]
+
 [Poco(
     typeof(ICat), 
     Projections = new[] { typeof(ICatForListing), typeof(ICatAsParent), typeof(ICatForView) },

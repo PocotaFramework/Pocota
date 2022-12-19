@@ -23,28 +23,28 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
     public class TracedPocosHeartProjection: ITracedPocosHeart, IProjector, IProjection<TracedPocosHeartBase>
     {
 
-        public  TracedPocosHeartBase Source  { get; init; }
+        public  TracedPocosHeartBase Projection  { get; init; }
 
         public virtual IList<Tuple<Type,Int32>> TracedPocos 
         {
-            get => Source.TracedPocos!;
+            get => Projection.TracedPocos!;
             set => throw new NotImplementedException();
         }
 
 
         internal TracedPocosHeartProjection(TracedPocosHeartBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -85,7 +85,7 @@ public class TracedPocosHeartBase: EnvelopeBase, IProjector, IProjection<TracedP
 
 
 
-    public TracedPocosHeartBase Source { get => this; }
+    public TracedPocosHeartBase Projection { get => this; }
 
     
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos

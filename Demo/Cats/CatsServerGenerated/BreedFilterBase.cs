@@ -23,28 +23,28 @@ public class BreedFilterBase: EnvelopeBase, IProjector, IProjection<BreedFilterB
     public class BreedFilterProjection: IBreedFilter, IProjector, IProjection<BreedFilterBase>
     {
 
-        public  BreedFilterBase Source  { get; init; }
+        public  BreedFilterBase Projection  { get; init; }
 
         public virtual String? SearchRegex 
         {
-            get => Source.SearchRegex;
-            set => Source.SearchRegex = value;
+            get => Projection.SearchRegex;
+            set => Projection.SearchRegex = value;
         }
 
 
         internal BreedFilterProjection(BreedFilterBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -80,7 +80,7 @@ public class BreedFilterBase: EnvelopeBase, IProjector, IProjection<BreedFilterB
 
 
     
-    public BreedFilterBase Source { get => this; }
+    public BreedFilterBase Projection { get => this; }
 
     
     public String?        SearchRegex  { get; set; } = default;            

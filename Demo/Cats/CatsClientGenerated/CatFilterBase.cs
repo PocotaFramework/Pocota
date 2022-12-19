@@ -23,112 +23,112 @@ public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
     public class CatFilterProjection: ICatFilter, IProjector, IProjection<CatFilterBase>
     {
 
-        public  CatFilterBase Source  { get; init; }
+        public  CatFilterBase Projection  { get; init; }
 
         public virtual IBreed? Breed 
         {
-            get => Source.Breed;
-            set => Source.Breed = value;
+            get => Projection.Breed;
+            set => Projection.Breed = value;
         }
 
         public virtual ICattery? Cattery 
         {
-            get => Source.Cattery;
-            set => Source.Cattery = value;
+            get => Projection.Cattery;
+            set => Projection.Cattery = value;
         }
 
         public virtual DateOnly? BornAfter 
         {
-            get => Source.BornAfter;
-            set => Source.BornAfter = value;
+            get => Projection.BornAfter;
+            set => Projection.BornAfter = value;
         }
 
         public virtual DateOnly? BornBefore 
         {
-            get => Source.BornBefore;
-            set => Source.BornBefore = value;
+            get => Projection.BornBefore;
+            set => Projection.BornBefore = value;
         }
 
         public virtual String? NameRegex 
         {
-            get => Source.NameRegex;
-            set => Source.NameRegex = value;
+            get => Projection.NameRegex;
+            set => Projection.NameRegex = value;
         }
 
         public virtual Gender? Gender 
         {
-            get => Source.Gender;
-            set => Source.Gender = value;
+            get => Projection.Gender;
+            set => Projection.Gender = value;
         }
 
         public virtual ICat? Child 
         {
-            get => Source.Child;
-            set => Source.Child = value;
+            get => Projection.Child;
+            set => Projection.Child = value;
         }
 
         public virtual ICat? Self 
         {
-            get => Source.Self;
-            set => Source.Self = value;
+            get => Projection.Self;
+            set => Projection.Self = value;
         }
 
         public virtual ICat? Mother 
         {
-            get => Source.Mother;
-            set => Source.Mother = value;
+            get => Projection.Mother;
+            set => Projection.Mother = value;
         }
 
         public virtual ICat? Father 
         {
-            get => Source.Father;
-            set => Source.Father = value;
+            get => Projection.Father;
+            set => Projection.Father = value;
         }
 
         public virtual ICat? Ancestor 
         {
-            get => Source.Ancestor;
-            set => Source.Ancestor = value;
+            get => Projection.Ancestor;
+            set => Projection.Ancestor = value;
         }
 
         public virtual ICat? Descendant 
         {
-            get => Source.Descendant;
-            set => Source.Descendant = value;
+            get => Projection.Descendant;
+            set => Projection.Descendant = value;
         }
 
         public virtual ILitter? Litter 
         {
-            get => Source.Litter;
-            set => Source.Litter = value;
+            get => Projection.Litter;
+            set => Projection.Litter = value;
         }
 
         public virtual String? ExteriorRegex 
         {
-            get => Source.ExteriorRegex;
-            set => Source.ExteriorRegex = value;
+            get => Projection.ExteriorRegex;
+            set => Projection.ExteriorRegex = value;
         }
 
         public virtual String? TitleRegex 
         {
-            get => Source.TitleRegex;
-            set => Source.TitleRegex = value;
+            get => Projection.TitleRegex;
+            set => Projection.TitleRegex = value;
         }
 
 
         internal CatFilterProjection(CatFilterBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -364,7 +364,7 @@ public class CatFilterBase: EnvelopeBase, IProjector, IProjection<CatFilterBase>
 
 
 
-    public CatFilterBase Source { get => this; }
+    public CatFilterBase Projection { get => this; }
 
     
     public virtual BreedBase? Breed

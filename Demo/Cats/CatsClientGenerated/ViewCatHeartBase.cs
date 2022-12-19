@@ -25,24 +25,24 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
     {
         private readonly ProjectionList<LitterBase,ILitter> _selectedLitters;
 
-        public  ViewCatHeartBase Source  { get; init; }
+        public  ViewCatHeartBase Projection  { get; init; }
 
         public virtual EditKind EditKind 
         {
-            get => Source.EditKind!;
-            set => Source.EditKind = value;
+            get => Projection.EditKind!;
+            set => Projection.EditKind = value;
         }
 
         public virtual ICatForView Cat 
         {
-            get => Source.Cat!;
-            set => Source.Cat = value;
+            get => Projection.Cat!;
+            set => Projection.Cat = value;
         }
 
         public virtual Object LittersView 
         {
-            get => Source.LittersView!;
-            set => Source.LittersView = value;
+            get => Projection.LittersView!;
+            set => Projection.LittersView = value;
         }
 
         public virtual IList<ILitter> SelectedLitters 
@@ -54,18 +54,18 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
 
         internal ViewCatHeartProjection(ViewCatHeartBase source)
         {
-            Source = source;
-            _selectedLitters = new(Source.SelectedLitters);
+            Projection = source;
+            _selectedLitters = new(Projection.SelectedLitters);
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -148,7 +148,7 @@ public class ViewCatHeartBase: EnvelopeBase, IProjector, IProjection<ViewCatHear
 
 
 
-    public ViewCatHeartBase Source { get => this; }
+    public ViewCatHeartBase Projection { get => this; }
 
     
     public virtual EditKind EditKind

@@ -30,11 +30,11 @@ public class MainWindowHeartBase: EnvelopeBase, IProjector, IProjection<MainWind
         private readonly ProjectionList<BreedBase,IBreed> _breeds;
         private readonly ProjectionList<CatBase,ICatForListing> _selectedCats;
 
-        public  MainWindowHeartBase Source  { get; init; }
+        public  MainWindowHeartBase Projection  { get; init; }
 
         public virtual ICatFilter CatFilter 
         {
-            get => Source.CatFilter!;
+            get => Projection.CatFilter!;
         }
 
         public virtual IList<ICatForListing> Cats 
@@ -54,56 +54,56 @@ public class MainWindowHeartBase: EnvelopeBase, IProjector, IProjection<MainWind
 
         public virtual TimeSpan GetCatsTimeSpent 
         {
-            get => Source.GetCatsTimeSpent!;
-            set => Source.GetCatsTimeSpent = value;
+            get => Projection.GetCatsTimeSpent!;
+            set => Projection.GetCatsTimeSpent = value;
         }
 
         public virtual TimeSpan RenderingCatsTimeSpent 
         {
-            get => Source.RenderingCatsTimeSpent!;
-            set => Source.RenderingCatsTimeSpent = value;
+            get => Projection.RenderingCatsTimeSpent!;
+            set => Projection.RenderingCatsTimeSpent = value;
         }
 
         public virtual Int32 BreedsCount 
         {
-            get => Source.BreedsCount!;
+            get => Projection.BreedsCount!;
         }
 
         public virtual Int32 CatteriesCount 
         {
-            get => Source.CatteriesCount!;
+            get => Projection.CatteriesCount!;
         }
 
         public virtual List<IBreed> AllBreeds 
         {
-            get => Source.AllBreeds!;
+            get => Projection.AllBreeds!;
         }
 
         public virtual List<ICattery> AllCatteries 
         {
-            get => Source.AllCatteries!;
+            get => Projection.AllCatteries!;
         }
 
         public virtual Int32 AllBreedsCount 
         {
-            get => Source.AllBreedsCount!;
+            get => Projection.AllBreedsCount!;
         }
 
         public virtual Int32 AllCatteriesCount 
         {
-            get => Source.AllCatteriesCount!;
+            get => Projection.AllCatteriesCount!;
         }
 
         public virtual Boolean IsCatSelected 
         {
-            get => Source.IsCatSelected!;
-            set => Source.IsCatSelected = value;
+            get => Projection.IsCatSelected!;
+            set => Projection.IsCatSelected = value;
         }
 
         public virtual Object CatsView 
         {
-            get => Source.CatsView!;
-            set => Source.CatsView = value;
+            get => Projection.CatsView!;
+            set => Projection.CatsView = value;
         }
 
         public virtual IList<ICatForListing> SelectedCats 
@@ -115,21 +115,21 @@ public class MainWindowHeartBase: EnvelopeBase, IProjector, IProjection<MainWind
 
         internal MainWindowHeartProjection(MainWindowHeartBase source)
         {
-            Source = source;
-            _cats = new(Source.Cats);
-            _catteries = new(Source.Catteries);
-            _breeds = new(Source.Breeds);
-            _selectedCats = new(Source.SelectedCats);
+            Projection = source;
+            _cats = new(Projection.Cats);
+            _catteries = new(Projection.Catteries);
+            _breeds = new(Projection.Breeds);
+            _selectedCats = new(Projection.SelectedCats);
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -369,7 +369,7 @@ public class MainWindowHeartBase: EnvelopeBase, IProjector, IProjection<MainWind
 
 
 
-    public MainWindowHeartBase Source { get => this; }
+    public MainWindowHeartBase Projection { get => this; }
 
     
     public virtual CatFilterBase CatFilter

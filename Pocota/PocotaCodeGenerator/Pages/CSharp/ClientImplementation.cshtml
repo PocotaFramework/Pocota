@@ -31,17 +31,6 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     @Html.Partial("ProjectionsProperties", Model)
 
-    @if(Model.Source is {})
-    {
-        <text>    @Html.Raw(Model.Source)
-</text>
-    }
-    else
-    {
-        <text>    @Html.Raw($"public {Model.ClassName} Source {{ get => this; }}")
-</text>
-    }
-
     @Html.Partial("Properties", Model)
 
     public @Html.Raw($"{Model.ClassName}(IServiceProvider services) : base(services)") 

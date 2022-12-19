@@ -23,34 +23,34 @@ public class LitterFilterBase: EnvelopeBase, IProjector, IProjection<LitterFilte
     public class LitterFilterProjection: ILitterFilter, IProjector, IProjection<LitterFilterBase>
     {
 
-        public  LitterFilterBase Source  { get; init; }
+        public  LitterFilterBase Projection  { get; init; }
 
         public virtual ICat Female 
         {
-            get => Source.Female!;
-            set => Source.Female = value;
+            get => Projection.Female!;
+            set => Projection.Female = value;
         }
 
         public virtual ICat Male 
         {
-            get => Source.Male!;
-            set => Source.Male = value;
+            get => Projection.Male!;
+            set => Projection.Male = value;
         }
 
 
         internal LitterFilterProjection(LitterFilterBase source)
         {
-            Source = source;
+            Projection = source;
         }
 
         public I As<I>()
         {
-            return (I)Source.As(typeof(I))!;
+            return (I)Projection.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Source.As(type);
+            return Projection.As(type);
         }
 
 
@@ -99,7 +99,7 @@ public class LitterFilterBase: EnvelopeBase, IProjector, IProjection<LitterFilte
 
 
     
-    public LitterFilterBase Source { get => this; }
+    public LitterFilterBase Projection { get => this; }
 
     
     public CatBase        Female  { get; set; } = default!;            
