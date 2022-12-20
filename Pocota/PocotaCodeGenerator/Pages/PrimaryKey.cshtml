@@ -6,7 +6,7 @@
 @foreach (string usng in Model.Usings.OrderBy(v => v))
 {
     <text>using @usng;
-    </text>
+</text>
 }
 
 namespace @Model.NamespaceValue;
@@ -129,8 +129,25 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
 
+    public @Html.Raw("IEnumerable<string>") Names => s_names.Select(n => n);
+
+    public @Html.Raw("IEnumerable<object>") Items => s_names.Select(n => this[n]);
+
+
+
     public @Html.Raw($"{Model.ClassName}({Model.ReferencedClass}? source)")
     {
         Source = source;
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is @Model.ClassName other && Enumerable.SequenceEqual(Items, other.Items);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(@Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(p => p.Name))));
+    }
+
 }

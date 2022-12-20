@@ -20,4 +20,7 @@ public interface IMainWindowHeart
     bool IsCatSelected { get; set; }
     object CatsView { get; set; }
     IList<ICatForListing> SelectedCats { get; set; }
+    void AcceptCatFilterChanges();
+    void CatsSelectionChanged(object sender, EventArgs e);
+    ICatForListing test(IBreed breed);
 }

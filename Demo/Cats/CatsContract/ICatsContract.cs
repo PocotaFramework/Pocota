@@ -5,7 +5,7 @@ using Net.Leksi.Pocota.Common;
 
 namespace CatsContract;
 
-[PocoContract]
+[PocoContract("Cats")]
 
 [Poco(
     typeof(ICat), 

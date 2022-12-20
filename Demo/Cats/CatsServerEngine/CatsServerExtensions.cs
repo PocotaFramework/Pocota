@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using CatsContract;
+using CatsServerDebug.Converters;
+using CatsServerEngineDebug.ControllersImpl;
+using CatsServerEngineDebug.Converters;
+using Microsoft.AspNetCore.Http.Features;
 using Net.Leksi.Pocota.Asp;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
@@ -15,7 +19,18 @@ public static class CatsServerExtensions
             configureJson: JsonConfigurator.Configure
         );
 
-        
+        services.AddScoped<IStorage>(serviceProvider => new Storage(
+            serviceProvider,
+            connectionString)
+        );
+
+
+        services.AddTransient<ICatsController, CatsController>();
+        services.AddTransient<IBuilder, Builder>();
+
+        services.AddSingleton<GenderConverter>();
+        services.AddSingleton<DateOnlyConverter>();
+
         services.AddControllers();
 
 
@@ -30,7 +45,7 @@ public static class CatsServerExtensions
             if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
             {
                 start = DateTime.Parse(context.Request.Headers[Constants.RequestStartTimeHeaderName][0]);
-                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} started: {start.ToString("O")}");
+                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} started: {start:O}");
             }
             var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
             if (syncIOFeature != null)
@@ -41,7 +56,7 @@ public static class CatsServerExtensions
             if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
             {
                 DateTime stop = DateTime.Now;
-                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} done: {stop.ToString("o")}, elapsed: {stop - start}");
+                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} done: {stop:o}, elapsed: {stop - start}");
             }
         });
 

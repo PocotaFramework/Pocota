@@ -2,20 +2,20 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-19T17:40:44                                  //
+// at 2022-12-20T14:53:23                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Server.Generic;
-    using System;
-    
+using System;
+
 namespace CatsCommon.Model;
 
-public class BreedPrimaryKey: IPrimaryKey<BreedBase>
+public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 {
     private static string[] s_names = new string[] { "IdBreed", "IdGroup" };
 
-    internal BreedBase? Source { get; init; }
+    internal BreedPoco? Source { get; init; }
 
     private String _idBreed = default!;
     private String _idGroup = default!;
@@ -96,8 +96,25 @@ public class BreedPrimaryKey: IPrimaryKey<BreedBase>
     }
 
 
-    public BreedPrimaryKey(BreedBase? source)
+    public IEnumerable<string> Names => s_names.Select(n => n);
+
+    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+
+
+
+    public BreedPrimaryKey(BreedPoco? source)
     {
         Source = source;
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is BreedPrimaryKey other && Enumerable.SequenceEqual(Items, other.Items);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IdBreed, IdGroup);
+    }
+
 }

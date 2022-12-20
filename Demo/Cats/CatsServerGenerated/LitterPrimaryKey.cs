@@ -2,21 +2,21 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-19T17:40:44                                  //
+// at 2022-12-20T14:53:23                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Server;
-    using Net.Leksi.Pocota.Server.Generic;
-    using System;
-    
+using Net.Leksi.Pocota.Server.Generic;
+using System;
+
 namespace CatsCommon.Model;
 
-public class LitterPrimaryKey: IPrimaryKey<LitterBase>
+public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IPrimaryKey<ILitterForCat>, IPrimaryKey<ILitterForDate>, IPrimaryKey<ILitterWithCats>
 {
     private static string[] s_names = new string[] { "IdFemale", "IdFemaleCattery", "IdLitter" };
 
-    internal LitterBase? Source { get; init; }
+    internal LitterPoco? Source { get; init; }
 
     private Int32 _idFemale = default!;
     private Int32 _idFemaleCattery = default!;
@@ -122,8 +122,25 @@ public class LitterPrimaryKey: IPrimaryKey<LitterBase>
     }
 
 
-    public LitterPrimaryKey(LitterBase? source)
+    public IEnumerable<string> Names => s_names.Select(n => n);
+
+    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+
+
+
+    public LitterPrimaryKey(LitterPoco? source)
     {
         Source = source;
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is LitterPrimaryKey other && Enumerable.SequenceEqual(Items, other.Items);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IdFemale, IdFemaleCattery, IdLitter);
+    }
+
 }

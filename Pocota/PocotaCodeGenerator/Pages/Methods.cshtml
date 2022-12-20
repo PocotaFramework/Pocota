@@ -3,7 +3,12 @@
 
     public override @Html.Raw($"Properties<PocoBase>") GetProperties() => Properties[typeof(@Model.ClassName)];
 
-    public override object? As(Type type)
+    public I? @Html.Raw("As<I>()")
+    {
+        return (I)As(typeof(I));
+    }
+
+    public object? As(Type type)
     {
         @foreach (ClassModel model1 in Model.Classes)
         {

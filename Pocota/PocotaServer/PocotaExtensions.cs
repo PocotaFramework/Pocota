@@ -10,7 +10,7 @@ public static class PocotaExtensions
         Action<IJsonSerializerConfiguration>? configureJson
     )
     {
-        Pocota.Configure(services, configureServices, configureJson);
+        PocotaCore.Configure(services, configureServices, configureJson);
         return services;
     }
 

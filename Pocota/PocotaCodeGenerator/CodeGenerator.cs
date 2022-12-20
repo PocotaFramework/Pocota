@@ -17,7 +17,7 @@ namespace Net.Leksi.Pocota.Common;
 
 public class CodeGenerator : IModelBuilder
 {
-    private const string s_base = "Base";
+    private const string s_poco = "Poco";
     private const string s_void = "void";
     private const string s_projection = "Projection";
     private const string s_controller = "Controller";
@@ -57,12 +57,13 @@ public class CodeGenerator : IModelBuilder
 
     public void AddContract(Type contract)
     {
-        if (!(contract.GetCustomAttributes<PocoContractAttribute>() is PocoContractAttribute contractAttribute))
+        if (!(contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute contractAttribute))
         {
             throw new InvalidOperationException($"Contract {contract} must have {typeof(PocoContractAttribute)}!");
         }
         if (_contracts.Add(contract))
         {
+            _queue.Add(contract);
             foreach (PocoAttribute attr in contract.GetCustomAttributes<PocoAttribute>())
             {
                 if (!attr.Projector.IsInterface)
@@ -417,11 +418,17 @@ public class CodeGenerator : IModelBuilder
 
             AddUsings(model, typeof(IPrimaryKey<>));
 
-            model.ReferencedClass = MakeBaseClassName(request.Interface);
+            model.ReferencedClass = MakePocoClassName(request.Interface);
 
             model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), model.ReferencedClass));
+            model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), GetTypeName(request.Interface)));
 
             ProjectorHolder projector = _projectorsByType[request.Interface];
+
+            foreach(Type projection in projector.Projections)
+            {
+                model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), GetTypeName(projection)));
+            }
 
             foreach (string name in projector.KeysDefinitions.Keys)
             {
@@ -687,7 +694,7 @@ public class CodeGenerator : IModelBuilder
         {
             InitClassModel(model, request);
 
-            model.ClassName = MakeBaseClassName(request.Interface);
+            model.ClassName = MakePocoClassName(request.Interface);
             model.IsEntity = projector.KeysDefinitions.Count > 0;
             model.IsClient = isClient;
 
@@ -724,10 +731,6 @@ public class CodeGenerator : IModelBuilder
 
             model.Interfaces.Add(GetTypeName(typeof(IProjector)));
 
-            string sourceProjection = GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { typeof(object) }))
-                    .Replace(GetTypeName(typeof(object)), MakeBaseClassName(request.Interface));
-            model.Interfaces.Add(sourceProjection);
-
             AddUsings(model, typeof(IProjection<>));
 
             if (isClient)
@@ -751,7 +754,7 @@ public class CodeGenerator : IModelBuilder
                 };
                 if (_projectorsByProjections.ContainsKey(pi.PropertyType))
                 {
-                    AddUsings(model, _projectorsByProjections[pi.PropertyType]);
+                    AddUsings(model, _projectorsByProjections[pi.PropertyType].Interface);
                     propertyModel.IsProjector = true;
                     propertyModel.Class = GetTypeName(pi.PropertyType);
                 }
@@ -776,9 +779,9 @@ public class CodeGenerator : IModelBuilder
                     }
                     if (_projectorsByProjections.ContainsKey(itemType))
                     {
-                        AddUsings(model, _projectorsByProjections[itemType]);
+                        AddUsings(model, _projectorsByProjections[itemType].Interface);
                         propertyModel.IsProjector = true;
-                        propertyModel.ItemType = MakeBaseClassName(_projectorsByProjections[itemType]);
+                        propertyModel.ItemType = MakePocoClassName(_projectorsByProjections[itemType].Interface);
                     }
                     else
                     {
@@ -797,7 +800,7 @@ public class CodeGenerator : IModelBuilder
                 }
                 else if (propertyModel.IsProjector)
                 {
-                    propertyModel.Type = MakeBaseClassName(_projectorsByProjections[pi.PropertyType]);
+                    propertyModel.Type = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
                 }
                 else
                 {
@@ -821,13 +824,13 @@ public class CodeGenerator : IModelBuilder
                 AddUsings(model, typeof(PocoAttribute));
                 ClassModel projectionModel = new()
                 {
-                    ClassName = MakeBaseClassName(projection).Replace(s_base, s_projection),
+                    ClassName = MakeProjectionClassName(projection),
                     Interfaces = new List<string>()
                     {
                         GetTypeName(projection),
                         GetTypeName(typeof(IProjector)),
                         GetTypeName(typeof(IProjection<>).MakeGenericType(new[] { typeof(object) }))
-                            .Replace(GetTypeName(typeof(object)), MakeBaseClassName(request.Interface))
+                            .Replace(GetTypeName(typeof(object)), MakePocoClassName(request.Interface))
                     },
                     Parent = model,
                     Interface = GetTypeName(projection),
@@ -840,12 +843,12 @@ public class CodeGenerator : IModelBuilder
                         Type = GetTypeName(pi.PropertyType),
                         IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                         IsReadOnly = !pi.CanWrite,
-                        IsProjection = projector.Projections.Contains(pi.PropertyType),
+                        IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
                         IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
                     };
                     if (propertyModel.IsProjection)
                     {
-                        propertyModel.Class = MakeBaseClassName(_projectorsByProjections[pi.PropertyType]);
+                        propertyModel.Class = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
                     }
                     if (propertyModel.IsList)
                     {
@@ -854,7 +857,7 @@ public class CodeGenerator : IModelBuilder
                         {
                             propertyModel.IsProjection = true;
                             propertyModel.ItemType = GetTypeName(itemType);
-                            propertyModel.Class = MakeBaseClassName(_projectorsByProjections[itemType]);
+                            propertyModel.Class = MakePocoClassName(_projectorsByProjections[itemType].Interface);
                         }
                         else
                         {
@@ -937,47 +940,33 @@ public class CodeGenerator : IModelBuilder
                 {
                     throw new InvalidOperationException($"The property {projectionProperty.Name} must have same nullability at both {projector} and {projection} types!");
                 }
-                Type projectorItemType;
-                Type projectionItemType;
-                if (projectionPropertyIsList)
-                {
-                    projectorItemType = projectorProperty.PropertyType.GetGenericArguments()[0];
-                    projectionItemType = projectionProperty.PropertyType.GetGenericArguments()[0];
-                }
-                else
-                {
-                    projectorItemType = projectorProperty.PropertyType;
-                    projectionItemType = projectionProperty.PropertyType;
-                }
-                //if (
-                //    _projectors.TryGetValue(projectorItemType, out ProjectorHolder? other)
-                //    && !other.Projections.Contains(projectionItemType)
-                //)
-                //{
-                //    throw new InvalidOperationException($"The properties {projectorProperty}({projector}) and {projectionProperty}({other}) are inconsistent!");
-                //}
             }
         }
     }
 
-    private string MakeBaseClassName(Type @interface)
+    private string MakePocoClassName(Type @interface)
     {
-        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_base}";
+        return $"{_projectorsByType[@interface].Name}{s_poco}";
+    }
+
+    private string MakeProjectionClassName(Type @interface)
+    {
+        return $"{_projectorsByProjections[@interface].Name}{@interface.Name}{s_projection}";
     }
 
     private string MakeControllerProxyName(Type @interface)
     {
-        return $"{_contractNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controllerProxy}";
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controllerProxy}";
     }
 
     private string MakeControllerInterfaceName(Type @interface)
     {
-        return $"I{_contractNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_controller}";
+        return $"I{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
     }
 
     private string MakePrimaryKeyName(Type @interface)
     {
-        return $"{_interfaceNameCheck.Match(@interface.Name).Groups[1].Captures[0].Value}{s_primaryKey}";
+        return $"{_projectorsByType[@interface].Name}{s_primaryKey}";
     }
 
     private void AddUsings(ClassModel model, Type type)

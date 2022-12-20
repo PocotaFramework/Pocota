@@ -24,7 +24,7 @@ internal class PocotaCore: PocotaCoreBase, IPocota
         )
     {
         PocotaCore core = new();
-        ServiceCollectionWrapper serviceDescriptors = new(services, core);
+        ServiceCollectionWrapper serviceDescriptors = new(core);
         configureServices?.Invoke(serviceDescriptors);
         configureJson?.Invoke(core);
         services.AddSingleton<IPocota>(core);

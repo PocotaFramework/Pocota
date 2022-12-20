@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Net.Leksi.Pocota.Client;
 
-public abstract class PocoBase : IPoco, IProjector
+public abstract class PocoBase : IPoco
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -415,11 +415,4 @@ public abstract class PocoBase : IPoco, IProjector
         }
         return true;
     }
-
-    public I As<I>()
-    {
-        return (I)As(typeof(I))!;
-    }
-
-    public abstract object? As(Type type);
 }

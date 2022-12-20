@@ -2,8 +2,8 @@
 
 namespace Net.Leksi.Pocota;
 
-public abstract class PocoBase: IProjector
-{
+public abstract class PocoBase
+{ 
     protected readonly IServiceProvider _services;
 
     public static Dictionary<Type, Properties<PocoBase>> Properties { get; private set; } = new();
@@ -12,13 +12,6 @@ public abstract class PocoBase: IProjector
     {
         _services= services;
     }
-
-    public I? As<I>()
-    {
-        return (I)As(typeof(I))!;
-    }
-
-    public abstract object? As(Type type);
 
     public abstract Properties<PocoBase> GetProperties();
 }

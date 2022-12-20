@@ -7,13 +7,13 @@ internal class ServicesConfigurator
 {
     internal static void Configure(IServiceCollection services)
     {
-        services.AddTransient<BreedBase>();
+        services.AddTransient<BreedPoco>();
         services.AddTransient<Cat>();
-        services.AddTransient<CatteryBase>();
-        services.AddTransient<LitterBase>();
-        services.AddTransient<BreedFilterBase>();
-        services.AddTransient<CatteryFilterBase>();
-        services.AddTransient<CatFilterBase>();
-        services.AddTransient<LitterFilterBase>();
+        services.AddTransient<CatteryPoco>();
+        services.AddTransient<LitterPoco>();
+        services.AddTransient<BreedFilterPoco>();
+        services.AddTransient<CatteryFilterPoco>();
+        services.AddTransient<CatFilterPoco>();
+        services.AddTransient<LitterFilterPoco>();
     }
 }

@@ -1,9 +1,9 @@
-/////////////////////////////////////////////////////////////
-// Controller Proxy                                        //
-// CatsContract.CatsControllerProxy                        //
-// Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-17T12:54:33                                  //
-/////////////////////////////////////////////////////////////
+//////////////////////////////////////
+// Controller Proxy                 //
+// CatsContract.CatsControllerProxy //
+// Generated automatically from     //
+// at 2022-12-20T14:53:23           //
+//////////////////////////////////////
 
 
 using CatsCommon.Filters;

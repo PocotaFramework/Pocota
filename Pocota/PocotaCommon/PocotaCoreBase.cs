@@ -6,8 +6,6 @@ namespace Net.Leksi.Pocota.Common;
 public abstract class PocotaCoreBase: IJsonSerializerConfiguration
 {
     internal readonly Dictionary<Type, Type> _actualTypes = new();
-    internal readonly HashSet<Type> _envelopes = new();
-    protected readonly Dictionary<Type, List<Type>> _actualTypesRev = new();
 
     protected IServiceCollection? _services = null;
 
@@ -15,17 +13,20 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
     private readonly HashSet<Type> _currentJsonCoverterTargets = new();
     private bool _calledAt = false;
 
+    internal IServiceCollection? Services => _services;
+
     public Type? GetActualType(Type type)
     {
         if (_actualTypes.TryGetValue(type, out Type? result))
         {
             return result;
         }
-        if (_actualTypesRev.ContainsKey(type))
-        {
-            return type;
-        }
         return null;
+    }
+
+    public static bool IsIList(Type type)
+    {
+        return type.IsGenericType && typeof(IList<>).MakeGenericType(type.GetGenericArguments()).IsAssignableFrom(type);
     }
 
     IJsonSerializerConfiguration IJsonSerializerConfiguration.At(Type targetType)
@@ -105,6 +106,41 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         return null;
     }
 
-
-
+    internal void AddServiceDescriptor(ServiceDescriptor item)
+    {
+        if (item.ImplementationType!.IsAbstract)
+        {
+            throw new ArgumentException($"{item.ImplementationType} is abstract!");
+        }
+        if (item.Lifetime is not ServiceLifetime.Transient)
+        {
+            throw new ArgumentException($"Only {ServiceLifetime.Transient} lifetime is allowed for Pocos!");
+        }
+        Type pocoType;
+        for (pocoType = item.ImplementationType; pocoType.BaseType is { } && typeof(IProjector).IsAssignableFrom(pocoType); pocoType = pocoType.BaseType)
+        {
+            if (!typeof(IProjector).IsAssignableFrom(pocoType.BaseType))
+            {
+                break;
+            }
+        }
+        _actualTypes.Add(item.ImplementationType, pocoType);
+        _services!.Add(new ServiceDescriptor(pocoType, item.ImplementationType, ServiceLifetime.Transient));
+        foreach (Type type in pocoType.GetNestedTypes())
+        {
+            if (typeof(IProjector).IsAssignableFrom(type))
+            {
+                Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjector) && !type.IsGenericType).FirstOrDefault();
+                if (@interface is { })
+                {
+                    _actualTypes.Add(@interface, pocoType);
+                    _services.Add(new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>
+                    {
+                        IProjector poco = (serviceProvider.GetRequiredService(pocoType) as IProjector)!;
+                        return poco.As(@interface)!;
+                    }, ServiceLifetime.Transient));
+                }
+            }
+        }
+    }
 }

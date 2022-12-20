@@ -2,21 +2,21 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-19T17:40:44                                  //
+// at 2022-12-20T14:53:23                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Server;
-    using Net.Leksi.Pocota.Server.Generic;
-    using System;
-    
+using Net.Leksi.Pocota.Server.Generic;
+using System;
+
 namespace CatsCommon.Model;
 
-public class CatPrimaryKey: IPrimaryKey<CatBase>
+public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey<ICatForListing>, IPrimaryKey<ICatAsParent>, IPrimaryKey<ICatForView>
 {
     private static string[] s_names = new string[] { "IdCat", "IdCattery" };
 
-    internal CatBase? Source { get; init; }
+    internal CatPoco? Source { get; init; }
 
     private Int32 _idCat = default!;
     private Int32 _idCattery = default!;
@@ -89,8 +89,25 @@ public class CatPrimaryKey: IPrimaryKey<CatBase>
     }
 
 
-    public CatPrimaryKey(CatBase? source)
+    public IEnumerable<string> Names => s_names.Select(n => n);
+
+    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+
+
+
+    public CatPrimaryKey(CatPoco? source)
     {
         Source = source;
     }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is CatPrimaryKey other && Enumerable.SequenceEqual(Items, other.Items);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(IdCat, IdCattery);
+    }
+
 }

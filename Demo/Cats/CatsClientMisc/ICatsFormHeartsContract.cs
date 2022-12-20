@@ -2,7 +2,7 @@
 
 namespace CatsClient;
 
-[PocoContract(IsClient = true)]
+[PocoContract("CatsFormHearts", IsClient = true)]
 
 [Poco(typeof(IViewCatHeart))]
 [Poco(typeof(IMainWindowHeart))]

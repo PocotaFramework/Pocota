@@ -2,14 +2,9 @@
 
 namespace CatsServerEngine;
 
-public class Cat : CatBase
+public class Cat : CatPoco
 {
     public Cat(IServiceProvider services) : base(services)
     {
-    }
-
-    public override IList<ILitterForCat> test(IList<ICat> cats)
-    {
-        throw new NotImplementedException();
     }
 }

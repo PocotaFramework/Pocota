@@ -1,23 +1,22 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.ConstrainedExecution;
 
 namespace Net.Leksi.Pocota.Common;
 
 public class ServiceCollectionWrapper : IServiceCollection
 {
-    private readonly IServiceCollection _services;
     private readonly PocotaCoreBase _core;
 
-    public ServiceDescriptor this[int index] { get => ((IList<ServiceDescriptor>)_services)[index]; set => ((IList<ServiceDescriptor>)_services)[index] = value; }
+    public ServiceDescriptor this[int index] { get => ((IList<ServiceDescriptor>)_core.Services!)[index]; set => ((IList<ServiceDescriptor>)_core.Services!)[index] = value; }
 
-    public int Count => _services.Count;
+    public int Count => _core.Services!.Count;
 
-    public bool IsReadOnly => _services.IsReadOnly;
+    public bool IsReadOnly => _core.Services!.IsReadOnly;
 
-    public ServiceCollectionWrapper(IServiceCollection services, PocotaCoreBase core)
+    public ServiceCollectionWrapper(PocotaCoreBase core)
     {
-        _services = services;
         _core = core;
     }
 
@@ -25,69 +24,56 @@ public class ServiceCollectionWrapper : IServiceCollection
     {
         if(item.ImplementationType is { } && typeof(IProjector).IsAssignableFrom(item.ImplementationType))
         {
-            if (item.ImplementationType.IsAbstract)
-            {
-                throw new ArgumentException($"{item.ImplementationType} is abstract!");
-            }
-            for(Type cur = item.ImplementationType; cur.BaseType is { } && typeof(IProjector).IsAssignableFrom(cur); cur = cur.BaseType)
-            {
-                foreach (Type type in cur.GetNestedTypes())
-                {
-                    if (typeof(IProjector).IsAssignableFrom(type) && type.GetCustomAttribute<PocoAttribute>() is PocoAttribute pocoAttribute)
-                    {
-                        Console.WriteLine($"{type}, {pocoAttribute.Projector}");
-                    }
-                }
-            }
+            _core.AddServiceDescriptor(item);
         }
         else
         {
-            _services.Add(item);
+            _core.Services!.Add(item);
         }
     }
 
     public void Clear()
     {
-        _services.Clear();
+        _core.Services!.Clear();
     }
 
     public bool Contains(ServiceDescriptor item)
     {
-        return _services.Contains(item);
+        return _core.Services!.Contains(item);
     }
 
     public void CopyTo(ServiceDescriptor[] array, int arrayIndex)
     {
-        _services.CopyTo(array, arrayIndex);
+        _core.Services!.CopyTo(array, arrayIndex);
     }
 
     public IEnumerator<ServiceDescriptor> GetEnumerator()
     {
-        return _services.GetEnumerator();
+        return _core.Services!.GetEnumerator();
     }
 
     public int IndexOf(ServiceDescriptor item)
     {
-        return _services.IndexOf(item);
+        return _core.Services!.IndexOf(item);
     }
 
     public void Insert(int index, ServiceDescriptor item)
     {
-        _services.Insert(index, item);
+        _core.Services!.Insert(index, item);
     }
 
     public bool Remove(ServiceDescriptor item)
     {
-        return _services.Remove(item);
+        return _core.Services!.Remove(item);
     }
 
     public void RemoveAt(int index)
     {
-        _services.RemoveAt(index);
+        _core.Services!.RemoveAt(index);
     }
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return ((IEnumerable)_services).GetEnumerator();
+        return ((IEnumerable)_core.Services!).GetEnumerator();
     }
 }
