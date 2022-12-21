@@ -2,10 +2,11 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
 using System;
 
@@ -15,10 +16,20 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 {
     private static string[] s_names = new string[] { "IdBreed", "IdGroup" };
 
-    internal BreedPoco? Source { get; init; }
+    private readonly IServiceProvider _services;
+    private readonly WeakReference _source = new(null);
 
     private String _idBreed = default!;
     private String _idGroup = default!;
+
+    public IProjector? Source 
+    { 
+        get => (IProjector?)_source.Target; 
+        internal set 
+        {
+            _source.Target = value;
+        }
+    }
 
     public object? this[int index]
     {
@@ -59,18 +70,19 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     public String IdBreed
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return Source.Code;
+                return ((BreedPoco)_source.Target).Code;
             }
             return _idBreed;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                Source.Code = value;
+                ((BreedPoco)_source.Target).Code = value;
             }
             _idBreed = value;
         }
@@ -78,18 +90,19 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     public String IdGroup
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return Source.Group;
+                return ((BreedPoco)_source.Target).Group;
             }
             return _idGroup;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                Source.Group = value;
+                ((BreedPoco)_source.Target).Group = value;
             }
             _idGroup = value;
         }
@@ -98,13 +111,13 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
-    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+    public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
 
 
-    public BreedPrimaryKey(BreedPoco? source)
+    public BreedPrimaryKey(IServiceProvider services)
     {
-        Source = source;
+        _services = services;
     }
 
     public override bool Equals(object? obj)
@@ -115,6 +128,34 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
     public override int GetHashCode()
     {
         return HashCode.Combine(IdBreed, IdGroup);
+    }
+
+
+    public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
+    {
+        if(other is not BreedPrimaryKey)
+        {
+            throw new ArgumentException($"{nameof(other)} must be the BreedPrimaryKey!");
+        }
+        foreach(string name in s_names)
+        {
+            other[name] = this[name];
+        }
+    }
+
+    public bool TryGetPresets(string property, Dictionary<string, object> presets)
+    {
+        presets.Clear();
+        switch(property)
+        {
+            case "Code":
+                presets.Add(string.Empty, IdBreed);
+                return true;
+            case "Group":
+                presets.Add(string.Empty, IdGroup);
+                return true;
+        }
+        return false;
     }
 
 }

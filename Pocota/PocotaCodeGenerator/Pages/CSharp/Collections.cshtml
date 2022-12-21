@@ -1,6 +1,8 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
+@Html.Raw("#region Collections");
+
     protected override bool IsCollectionChanged(string property)
     {
         switch(property)
@@ -58,3 +60,4 @@
 }
     }
     
+@Html.Raw("#endregion Collections");

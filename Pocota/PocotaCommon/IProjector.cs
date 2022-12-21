@@ -2,6 +2,6 @@
 
 public interface IProjector
 {
-    I? As<I>();
+    I? As<I>() where I : class;
     object? As(Type type);
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client.Context;
+using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
 using System.Collections;
@@ -38,6 +39,7 @@ public abstract class PocoBase : IPoco
 
     private readonly Dictionary<PocoTraversalContext, int> _populaters = new(ReferenceEqualityComparer.Instance);
     private readonly PocoContext _pocoContext;
+    protected readonly PocotaCore _pocota;
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
     private ConditionalWeakTable<object, string>? _antiCycleTokens = null;
@@ -53,10 +55,6 @@ public abstract class PocoBase : IPoco
     protected readonly object _lock = new();
 
     protected readonly IServiceProvider _services;
-
-    public static Dictionary<Type, Properties<PocoBase>> Properties { get; private set; } = new();
-
-    public abstract Properties<PocoBase> GetProperties();
 
     internal abstract bool IsEnvelope { get; }
 
@@ -89,6 +87,7 @@ public abstract class PocoBase : IPoco
     public PocoBase(IServiceProvider services)
     {
         _services = services;
+        _pocota = _services.GetRequiredService<PocotaCore>();
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _pocoContext.PocoInstantiated(this);
     }
@@ -125,7 +124,7 @@ public abstract class PocoBase : IPoco
                     _cancellingChanges = true;
                     foreach (var entry in _modified)
                     {
-                        if (GetProperties()[entry.Key] is Property<PocoBase> property && !property.IsCollection)
+                        if (_pocota.GetProperties(GetType())?[entry.Key] is Property property && !property.IsCollection)
                         {
                             property.SetValue(this, entry.Value);
                         }
@@ -298,7 +297,7 @@ public abstract class PocoBase : IPoco
                         {
                             _modified = new Dictionary<string, object?>();
                         }
-                        if (GetProperties()[property!]!.IsCollection)
+                        if (_pocota.GetProperties(GetType())![property!].IsCollection)
                         {
                             if (IsCollectionChanged(property!))
                             {
@@ -384,9 +383,9 @@ public abstract class PocoBase : IPoco
         if (!_antiCycleTokens.TryGetValue(antiCycleToken, out var _))
         {
             _antiCycleTokens.Add(antiCycleToken, string.Empty);
-            if(GetProperties().GetProperties(@interface) is IEnumerable<Property<PocoBase>> properties)
+            if(_pocota.GetProperties(@interface) is IDictionary<string, Property> properties)
             {
-                return properties.All(p =>
+                return properties.Values.All(p =>
                 {
                     if (_populatedProperties.Contains(p.Name))
                     {

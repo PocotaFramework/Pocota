@@ -1,4 +1,6 @@
 ﻿using Net.Leksi.Pocota.Builder;
+using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.Pocota.Traversal;
 using Net.Leksi.Pocota.Traversal.Builder;
 using System.Data.Common;
@@ -11,6 +13,7 @@ public class PocoContext : IPocoContext
 {
     private readonly PocotaCore _core;
     private readonly IServiceProvider _services;
+    private readonly HashSet<IPrimaryKey> _cache = new();
 
     public IServiceProvider Services => _services;
 
@@ -105,6 +108,28 @@ public class PocoContext : IPocoContext
             return context;
         }
         return null;
+    }
+
+    internal T FindOrCreateEntity<T>(IPrimaryKey<T> key) where T : class
+    {
+        if(key.Items.Any(v => v == default))
+        {
+            throw new ArgumentException($"Not all fields at {nameof(key)} are set!");
+        }
+        if (_cache.TryGetValue(key, out IPrimaryKey? cachedKey))
+        {
+            if (cachedKey.Source is { })
+            {
+                return cachedKey.Source.As<T>()!;
+            }
+            _cache.Remove(key);
+
+        }
+        T result = _services.GetRequiredService<T>();
+        IPrimaryKey newKey = ((IEntity)((IProjector)result).As(_core.GetActualType(typeof(T))!)!).PrimaryKey;
+        newKey.Assign(key);
+        _cache.Add(newKey);
+        return result;
     }
 
     internal object? GetProbePlaceholder(Type type)

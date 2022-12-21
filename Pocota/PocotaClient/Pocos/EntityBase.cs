@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Json;
+using Net.Leksi.Pocota.Common;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -93,16 +94,19 @@ public abstract class EntityBase : PocoBase, IEntity
                         ((IPoco)this).CancelChanges();
                         foreach(var pair in _deferredOverwritings)
                         {
-                            if (!GetProperties()[pair.Key]!.IsCollection)
+                            if(_pocota.GetProperties(GetType())?[pair.Key] is Property property)
                             {
-                                GetProperties()[pair.Key]!.SetValue(this, pair.Value.Item2);
-                            }
-                            else if(pair.Value.Item2 is IList src && GetProperties()[pair.Key]!.GetValue(this) is IList dst)
-                            {
-                                dst.Clear();
-                                foreach(var item in src)
+                                if (!property.IsCollection)
                                 {
-                                    dst.Add(item);
+                                    property.SetValue(this, pair.Value.Item2);
+                                }
+                                else if (pair.Value.Item2 is IList src && property.GetValue(this) is IList dst)
+                                {
+                                    dst.Clear();
+                                    foreach (var item in src)
+                                    {
+                                        dst.Add(item);
+                                    }
                                 }
                             }
                         }

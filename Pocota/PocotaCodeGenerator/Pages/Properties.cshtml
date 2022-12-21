@@ -1,9 +1,24 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
+@Html.Raw("#region Properties");
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name { get; @if(!pm.IsReadOnly && !pm.IsList) {<text>set; } = @Html.Raw($"default{(!pm.IsNullable ? "!" : string.Empty)}");</text>} else if(pm.IsList) {<text>init; } = new();</text>}
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+    <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name 
+    { 
+        get => @fieldName; 
+        @if(!pm.IsReadOnly && !pm.IsList) 
+        {
+            <text>        set
+        {
+            @fieldName = value;
+            @Html.Raw($"_loaded{fieldName}") = true;
+        }
+</text> 
+        }
+    }
 
 </text>
 }
+@Html.Raw("#endregion Properties");

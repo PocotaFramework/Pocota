@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class BreedFilterPoco: EnvelopeBase, IProjector
+public class BreedFilterPoco: EnvelopeBase, IPoco, IProjector
 {
 
 #region Projection classes;
@@ -34,14 +34,14 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -51,11 +51,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
 #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(BreedFilterPoco), new Properties<PocoBase>());
-        Properties[typeof(BreedFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "SearchRegex", 
                 typeof(String),
                 GetSearchRegexValue, 
@@ -68,20 +68,29 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
             .AddPropertyType<IBreedFilter, String>()
         );
     }
+#endregion Init Properties;
 
     
     
+#region Fields;
+
     private String? _searchRegex = default;
 
+#endregion Fields;
+
 
     
+#region Projection Properties;
+
     private BreedFilterIBreedFilterProjection? _asBreedFilterIBreedFilterProjection = null;
 
     public BreedFilterIBreedFilterProjection AsBreedFilterIBreedFilterProjection => _asBreedFilterIBreedFilterProjection ??= new(this);
 
+#endregion Projection Properties;
 
 
     
+#region Properties;
     public virtual String? SearchRegex
     {
         get => _searchRegex;
@@ -97,6 +106,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
         }
     }
 
+#endregion Properties;
 
 
     public BreedFilterPoco(IServiceProvider services) : base(services) 
@@ -104,14 +114,13 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(BreedFilterPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(BreedFilterIBreedFilterProjection) || type == typeof(IBreedFilter))
         {
@@ -121,9 +130,12 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
+#region Collections;
+
     protected override bool IsCollectionChanged(string property)
     {
         switch(property)
@@ -141,25 +153,31 @@ public class BreedFilterPoco: EnvelopeBase, IProjector
     {
     }
     
-
-    
-
+#endregion Collections;
 
 
     
-    #region Properties accessors;
+#region Poco Changed;
 
-    private static object? GetSearchRegexValue(PocoBase target)
+
+
+#endregion Poco Changed;
+
+
+    
+#region Properties Accessors;
+
+    private static object? GetSearchRegexValue(object target)
     {
         return ((BreedFilterPoco)target).SearchRegex;
     }
 
-    private static void SetSearchRegexValue(PocoBase target, object? value)
+    private static void SetSearchRegexValue(object target, object? value)
     {
         ((BreedFilterPoco)target).SearchRegex = (String)value!;
     }
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 

@@ -417,6 +417,8 @@ public class CodeGenerator : IModelBuilder
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IPrimaryKey<>));
+            AddUsings(model, typeof(WeakReference));
+            AddUsings(model, typeof(IProjector));
 
             model.ReferencedClass = MakePocoClassName(request.Interface);
 
@@ -710,6 +712,8 @@ public class CodeGenerator : IModelBuilder
                     AddUsings(model, typeof(Client.EnvelopeBase));
                     model.Interfaces.Add(GetTypeName(typeof(Client.EnvelopeBase)));
                 }
+                AddUsings(model, typeof(Client.IPoco));
+                model.Interfaces.Add(GetTypeName(typeof(Client.IPoco)));
             }
             else
             {
@@ -724,6 +728,7 @@ public class CodeGenerator : IModelBuilder
                     AddUsings(model, typeof(Server.EnvelopeBase));
                     model.Interfaces.Add(GetTypeName(typeof(Server.EnvelopeBase)));
                 }
+                model.Interfaces.Add(GetTypeName(typeof(Server.IPoco)));
             }
 
             AddUsings(model, request.Interface);
@@ -741,8 +746,7 @@ public class CodeGenerator : IModelBuilder
             {
                 AddUsings(model, typeof(PocoBase));
             }
-            AddUsings(model, typeof(Properties<>));
-            AddUsings(model, typeof(Property<>));
+            AddUsings(model, typeof(Property));
 
             foreach (PropertyInfo pi in request.Interface.GetProperties())
             {
@@ -820,6 +824,7 @@ public class CodeGenerator : IModelBuilder
             }
             foreach (Type projection in new[] { request.Interface }.Concat(projector.Projections))
             {
+                
                 AddUsings(model, projection);
                 AddUsings(model, typeof(PocoAttribute));
                 ClassModel projectionModel = new()

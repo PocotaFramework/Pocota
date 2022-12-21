@@ -51,11 +51,11 @@ public class BuildingScript
             {
                 handler.Invoke(args);
             }
-            if(args.KeyRing is { })
+            if(args.PrimaryKey is { })
             {
                 if(!SetValue(args.PathSelector!, args, null))
                 {
-                    foreach (string key in args.KeyRing.Names.Where(name => args.KeyRing[name] == default))
+                    foreach (string key in args.PrimaryKey.Names.Where(name => args.PrimaryKey[name] == default))
                     {
                         string keyPath = Regex.Replace($"{args.PathSelector}/{key}", "/+", "/");
                         if (!SetValue(keyPath, args, key))
@@ -63,7 +63,7 @@ public class BuildingScript
                             success = false;
                             break;
                         }
-                        if (args.KeyRing[key] == default)
+                        if (args.PrimaryKey[key] == default)
                         {
                             args.Skip();
                             break;
@@ -129,7 +129,7 @@ public class BuildingScript
                 {
                     if (args.IsKeyRequest)
                     {
-                        args.KeyRing[key!] = args.DataReader![fieldName];
+                        args.PrimaryKey[key!] = args.DataReader![fieldName];
                     }
                     else
                     {

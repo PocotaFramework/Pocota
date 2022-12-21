@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Client.Core;
 
-internal class PocotaCore: PocotaCoreBase, IPocota
+public class PocotaCore: PocotaCoreBase, IPocota
 {
     private readonly ConditionalWeakTable<JsonSerializerOptions, PocoTraversalContext> _pocoJsonContexts = new();
     private readonly ConditionalWeakTable<object, object[]> _attachedPrimaryKeys = new();

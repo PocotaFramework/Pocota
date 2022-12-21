@@ -2,10 +2,11 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using System;
@@ -16,10 +17,20 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 {
     private static string[] s_names = new string[] { "IdCat", "IdCattery" };
 
-    internal CatPoco? Source { get; init; }
+    private readonly IServiceProvider _services;
+    private readonly WeakReference _source = new(null);
 
     private Int32 _idCat = default!;
     private Int32 _idCattery = default!;
+
+    public IProjector? Source 
+    { 
+        get => (IProjector?)_source.Target; 
+        internal set 
+        {
+            _source.Target = value;
+        }
+    }
 
     public object? this[int index]
     {
@@ -60,7 +71,8 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 
     public Int32 IdCat
     {
-        get {
+        get 
+        {
            return _idCat;
         }
         set
@@ -71,33 +83,37 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 
     public Int32 IdCattery
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return (((IEntity)Source.Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery;
+                return (((IEntity)((CatPoco)_source.Target).Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery;
             }
             return _idCattery;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                (((IEntity)Source.Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
+                (((IEntity)((CatPoco)_source.Target).Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
             }
-            _idCattery = value;
+            else 
+            {
+                _idCattery = value;
+            }
         }
     }
 
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
-    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+    public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
 
 
-    public CatPrimaryKey(CatPoco? source)
+    public CatPrimaryKey(IServiceProvider services)
     {
-        Source = source;
+        _services = services;
     }
 
     public override bool Equals(object? obj)
@@ -108,6 +124,31 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     public override int GetHashCode()
     {
         return HashCode.Combine(IdCat, IdCattery);
+    }
+
+
+    public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
+    {
+        if(other is not CatPrimaryKey)
+        {
+            throw new ArgumentException($"{nameof(other)} must be the CatPrimaryKey!");
+        }
+        foreach(string name in s_names)
+        {
+            other[name] = this[name];
+        }
+    }
+
+    public bool TryGetPresets(string property, Dictionary<string, object> presets)
+    {
+        presets.Clear();
+        switch(property)
+        {
+            case "Cattery":
+                presets.Add("IdCattery", IdCattery);
+                return true;
+        }
+        return false;
     }
 
 }

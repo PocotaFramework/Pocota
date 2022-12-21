@@ -15,13 +15,23 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
     private static string[] s_names = new string[] { @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\""))) };
 
-    internal @Html.Raw(Model.ReferencedClass)? Source { get; init; }
+    private readonly IServiceProvider _services;
+    private readonly WeakReference _source = new(null);
 
     @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
     {
         string fieldName = $"_{pkm.Name.Substring(0, 1).ToLower()}{pkm.Name.Substring(1)}";
         <text>    private @Html.Raw(pkm.Type) @fieldName = default!;
 </text>
+    }
+
+    public IProjector? Source 
+    { 
+        get => (IProjector?)_source.Target; 
+        internal set 
+        {
+            _source.Target = value;
+        }
     }
 
     public object? this[int index]
@@ -73,21 +83,22 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         string fieldName = $"_{pkm.Name.Substring(0, 1).ToLower()}{pkm.Name.Substring(1)}";
         <text>    public @Html.Raw(pkm.Type) @pkm.Name
     {
-        get {
+        get 
+        {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(Source is {})
+                <text>            if(_source.Target is {})
             {
-                return @Html.Raw($"(((IEntity)Source.{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
+                return @Html.Raw($"(((IEntity)(({Model.ReferencedClass})_source.Target).{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
             }
             return @fieldName;
 </text>
             }
             else if(pkm.Property is {})
             {
-                <text>            if(Source is {})
+            <text>            if(_source.Target is {})
             {
-                return @Html.Raw($"Source.{pkm.Property}");
+                return @Html.Raw($"(({Model.ReferencedClass})_source.Target).{pkm.Property}");
             }
             return @fieldName;
 </text>
@@ -102,18 +113,21 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(Source is {})
+                <text>            if(_source.Target is {})
             {
-                @Html.Raw($"(((IEntity)Source.{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
+                @Html.Raw($"(((IEntity)(({Model.ReferencedClass})_source.Target).{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
             }
-            @fieldName = value;
+            else 
+            {
+                @fieldName = value;
+            }
 </text>
             }
             else if(pkm.Property is {})
             {
-                <text>            if(Source is {})
+                <text>            if(_source.Target is {})
             {
-                @Html.Raw($"Source.{pkm.Property}") = value;
+                @Html.Raw($"(({Model.ReferencedClass})_source.Target).{pkm.Property}") = value;
             }
             @fieldName = value;
 </text>
@@ -131,13 +145,13 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     public @Html.Raw("IEnumerable<string>") Names => s_names.Select(n => n);
 
-    public @Html.Raw("IEnumerable<object>") Items => s_names.Select(n => this[n]);
+    public @Html.Raw("IEnumerable<object?>") Items => s_names.Select(n => this[n]);
 
 
 
-    public @Html.Raw($"{Model.ClassName}({Model.ReferencedClass}? source)")
+    public @Html.Raw($"{Model.ClassName}(IServiceProvider services)")
     {
-        Source = source;
+        _services = services;
     }
 
     public override bool Equals(object? obj)
@@ -148,6 +162,47 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     public override int GetHashCode()
     {
         return HashCode.Combine(@Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(p => p.Name))));
+    }
+
+
+    public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
+    {
+        if(other is not @Html.Raw(Model.ClassName))
+        {
+            throw new ArgumentException($"{nameof(other)} must be the @Html.Raw(Model.ClassName)!");
+        }
+        foreach(string name in s_names)
+        {
+            other[name] = this[name];
+        }
+    }
+
+    public @Html.Raw("bool TryGetPresets(string property, Dictionary<string, object> presets)")
+    {
+        presets.Clear();
+        switch(property)
+        {
+            @foreach (string? property in Model.PrimaryKeys.Where(p => p.Property is {}).Select(p => p.Property).Distinct())
+            {
+                <text>            case @Html.Raw($"\"{property!}\""):
+                @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys.Where(p => property!.Equals(p.Property)))
+                {
+                    if(pkm.KeyReference is {})
+                    {
+                        <text>                presets.Add("@pkm.KeyReference", @pkm.Name);
+</text>
+                    }
+                    else 
+                    {
+                        <text>                presets.Add(string.Empty, @pkm.Name);
+</text>
+                    }
+                }
+                return true;
+</text>
+            }
+        }
+        return false;
     }
 
 }

@@ -2,10 +2,11 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatteryPrimaryKey                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
 using System;
 
@@ -15,9 +16,19 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 {
     private static string[] s_names = new string[] { "IdCattery" };
 
-    internal CatteryPoco? Source { get; init; }
+    private readonly IServiceProvider _services;
+    private readonly WeakReference _source = new(null);
 
     private Int32 _idCattery = default!;
+
+    public IProjector? Source 
+    { 
+        get => (IProjector?)_source.Target; 
+        internal set 
+        {
+            _source.Target = value;
+        }
+    }
 
     public object? this[int index]
     {
@@ -53,7 +64,8 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 
     public Int32 IdCattery
     {
-        get {
+        get 
+        {
            return _idCattery;
         }
         set
@@ -65,13 +77,13 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
-    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+    public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
 
 
-    public CatteryPrimaryKey(CatteryPoco? source)
+    public CatteryPrimaryKey(IServiceProvider services)
     {
-        Source = source;
+        _services = services;
     }
 
     public override bool Equals(object? obj)
@@ -82,6 +94,28 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
     public override int GetHashCode()
     {
         return HashCode.Combine(IdCattery);
+    }
+
+
+    public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
+    {
+        if(other is not CatteryPrimaryKey)
+        {
+            throw new ArgumentException($"{nameof(other)} must be the CatteryPrimaryKey!");
+        }
+        foreach(string name in s_names)
+        {
+            other[name] = this[name];
+        }
+    }
+
+    public bool TryGetPresets(string property, Dictionary<string, object> presets)
+    {
+        presets.Clear();
+        switch(property)
+        {
+        }
+        return false;
     }
 
 }

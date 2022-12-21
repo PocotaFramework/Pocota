@@ -2,18 +2,17 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
-using Net.Leksi.Pocota;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Model;
 
-public class CatteryPoco: EntityBase, IProjector
+public class CatteryPoco: EntityBase, IPoco, IProjector
 {
     public static readonly Type PrimaryKeyType = typeof(CatteryPrimaryKey);
     
@@ -44,14 +43,14 @@ public class CatteryPoco: EntityBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -61,29 +60,29 @@ public class CatteryPoco: EntityBase, IProjector
     #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(CatteryPoco), new Properties<PocoBase>());
-        Properties[typeof(CatteryPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameEng", 
                 typeof(String),
                 GetNameEngValue, 
                 SetNameEngValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("NameEng"), 
                 true, 
                 false, 
                 false            
             )
             .AddPropertyType<ICattery, String>()
         );
-        Properties[typeof(CatteryPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameNat", 
                 typeof(String),
                 GetNameNatValue, 
                 SetNameNatValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("NameNat"), 
                 true, 
                 false, 
                 false            
@@ -91,34 +90,69 @@ public class CatteryPoco: EntityBase, IProjector
             .AddPropertyType<ICattery, String>()
         );
     }
+#endregion Init Properties;
 
 
     
+#region Fields;
+
+    private String? _nameEng = default;
+    private bool _loaded_nameEng = false;
+    private String? _nameNat = default;
+    private bool _loaded_nameNat = false;
+
+#endregion Fields;
+
+    
+    
+#region Projection Properties;
+
     private CatteryICatteryProjection? _asCatteryICatteryProjection = null;
 
     public CatteryICatteryProjection AsCatteryICatteryProjection => _asCatteryICatteryProjection ??= new(this);
 
+#endregion Projection Properties;
 
     
     
-    public String? NameEng { get; set; } = default;
-    public String? NameNat { get; set; } = default;
+#region Properties;
+    public String? NameEng 
+    { 
+        get => _nameEng; 
+        set
+        {
+            _nameEng = value;
+            _loaded_nameEng = true;
+        }
+    }
+
+    public String? NameNat 
+    { 
+        get => _nameNat; 
+        set
+        {
+            _nameNat = value;
+            _loaded_nameNat = true;
+        }
+    }
+
+#endregion Properties;
 
 
     public CatteryPoco(IServiceProvider services) : base(services) 
     { 
-        SetPrimaryKey(new CatteryPrimaryKey(this));
+        _primaryKey = new CatteryPrimaryKey(services);
+        (_primaryKey as CatteryPrimaryKey)!.Source = this;
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(CatteryPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(CatteryICatteryProjection) || type == typeof(ICattery))
         {
@@ -128,31 +162,86 @@ public class CatteryPoco: EntityBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
-    #region Properties accessors;
+#region IPoco;
 
-    private static object? GetNameEngValue(PocoBase target)
+    void IPoco.Clear()
+    {
+        _loaded_nameEng = false;
+        _loaded_nameNat = false;
+    }
+
+    bool IPoco.IsLoaded(Type @interface)
+    {
+        if(@interface == typeof(ICattery))
+        {
+            return _loaded_nameEng
+                && _loaded_nameNat
+            ;
+        }
+        return false;
+    }
+
+    bool IPoco.IsLoaded<T>()
+    {
+        return ((IPoco)this).IsLoaded(typeof(T));
+    }
+
+    bool IPoco.IsPropertySet(string property)
+    {
+        switch(property)
+        {
+            case "NameEng":
+                return _loaded_nameEng;
+            case "NameNat":
+                return _loaded_nameNat;
+            default:
+                return false;
+        }
+    }
+
+    void IPoco.TouchProperty(string property)
+    {
+        switch(property)
+        {
+            case "NameEng":
+                _loaded_nameEng = true;
+                break;
+            case "NameNat":
+                _loaded_nameNat = true;
+                break;
+        }
+    }
+
+#endregion IPoco;
+
+
+    
+#region Properties Accessors;
+
+    private static object? GetNameEngValue(object target)
     {
         return ((CatteryPoco)target).NameEng;
     }
 
-    private static void SetNameEngValue(PocoBase target, object? value)
+    private static void SetNameEngValue(object target, object? value)
     {
         ((CatteryPoco)target).NameEng = (String)value!;
     }
-    private static object? GetNameNatValue(PocoBase target)
+    private static object? GetNameNatValue(object target)
     {
         return ((CatteryPoco)target).NameNat;
     }
 
-    private static void SetNameNatValue(PocoBase target, object? value)
+    private static void SetNameNatValue(object target, object? value)
     {
         ((CatteryPoco)target).NameNat = (String)value!;
     }
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 }

@@ -149,7 +149,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
                 if (!done)
                 {
                     PocoBase poco = (result as PocoBase)!;
-                    Property<PocoBase>? property = poco.GetProperties()[propertyName];
+                    Property? property = _core.GetProperties(GetType())?[propertyName];
 
                     if (property is { })
                     {

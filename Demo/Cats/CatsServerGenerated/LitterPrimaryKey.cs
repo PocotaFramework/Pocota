@@ -2,10 +2,11 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using System;
@@ -16,11 +17,21 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 {
     private static string[] s_names = new string[] { "IdFemale", "IdFemaleCattery", "IdLitter" };
 
-    internal LitterPoco? Source { get; init; }
+    private readonly IServiceProvider _services;
+    private readonly WeakReference _source = new(null);
 
     private Int32 _idFemale = default!;
     private Int32 _idFemaleCattery = default!;
     private Int32 _idLitter = default!;
+
+    public IProjector? Source 
+    { 
+        get => (IProjector?)_source.Target; 
+        internal set 
+        {
+            _source.Target = value;
+        }
+    }
 
     public object? this[int index]
     {
@@ -66,56 +77,65 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 
     public Int32 IdFemale
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return (((IEntity)Source.Female).PrimaryKey as CatPrimaryKey)!.IdCat;
+                return (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCat;
             }
             return _idFemale;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                (((IEntity)Source.Female).PrimaryKey as CatPrimaryKey)!.IdCat = value;
+                (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCat = value;
             }
-            _idFemale = value;
+            else 
+            {
+                _idFemale = value;
+            }
         }
     }
 
     public Int32 IdFemaleCattery
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return (((IEntity)Source.Female).PrimaryKey as CatPrimaryKey)!.IdCattery;
+                return (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCattery;
             }
             return _idFemaleCattery;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                (((IEntity)Source.Female).PrimaryKey as CatPrimaryKey)!.IdCattery = value;
+                (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCattery = value;
             }
-            _idFemaleCattery = value;
+            else 
+            {
+                _idFemaleCattery = value;
+            }
         }
     }
 
     public Int32 IdLitter
     {
-        get {
-            if(Source is {})
+        get 
+        {
+            if(_source.Target is {})
             {
-                return Source.Order;
+                return ((LitterPoco)_source.Target).Order;
             }
             return _idLitter;
         }
         set
         {
-            if(Source is {})
+            if(_source.Target is {})
             {
-                Source.Order = value;
+                ((LitterPoco)_source.Target).Order = value;
             }
             _idLitter = value;
         }
@@ -124,13 +144,13 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
-    public IEnumerable<object> Items => s_names.Select(n => this[n]);
+    public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
 
 
-    public LitterPrimaryKey(LitterPoco? source)
+    public LitterPrimaryKey(IServiceProvider services)
     {
-        Source = source;
+        _services = services;
     }
 
     public override bool Equals(object? obj)
@@ -141,6 +161,35 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     public override int GetHashCode()
     {
         return HashCode.Combine(IdFemale, IdFemaleCattery, IdLitter);
+    }
+
+
+    public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
+    {
+        if(other is not LitterPrimaryKey)
+        {
+            throw new ArgumentException($"{nameof(other)} must be the LitterPrimaryKey!");
+        }
+        foreach(string name in s_names)
+        {
+            other[name] = this[name];
+        }
+    }
+
+    public bool TryGetPresets(string property, Dictionary<string, object> presets)
+    {
+        presets.Clear();
+        switch(property)
+        {
+            case "Female":
+                presets.Add("IdCat", IdFemale);
+                presets.Add("IdCattery", IdFemaleCattery);
+                return true;
+            case "Order":
+                presets.Add(string.Empty, IdLitter);
+                return true;
+        }
+        return false;
     }
 
 }

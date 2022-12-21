@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,7 +14,7 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class CatFilterPoco: EnvelopeBase, IProjector
+public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 {
 
 #region Projection classes;
@@ -120,14 +120,14 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -137,11 +137,11 @@ public class CatFilterPoco: EnvelopeBase, IProjector
 #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(CatFilterPoco), new Properties<PocoBase>());
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Breed", 
                 typeof(BreedPoco),
                 GetBreedValue, 
@@ -153,8 +153,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, IBreed>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Cattery", 
                 typeof(CatteryPoco),
                 GetCatteryValue, 
@@ -166,8 +166,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICattery>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "BornAfter", 
                 typeof(DateOnly),
                 GetBornAfterValue, 
@@ -179,8 +179,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, DateOnly>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "BornBefore", 
                 typeof(DateOnly),
                 GetBornBeforeValue, 
@@ -192,8 +192,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, DateOnly>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameRegex", 
                 typeof(String),
                 GetNameRegexValue, 
@@ -205,8 +205,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, String>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Gender", 
                 typeof(Gender),
                 GetGenderValue, 
@@ -218,8 +218,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, Gender>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Child", 
                 typeof(CatPoco),
                 GetChildValue, 
@@ -231,8 +231,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Self", 
                 typeof(CatPoco),
                 GetSelfValue, 
@@ -244,8 +244,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Mother", 
                 typeof(CatPoco),
                 GetMotherValue, 
@@ -257,8 +257,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Father", 
                 typeof(CatPoco),
                 GetFatherValue, 
@@ -270,8 +270,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Ancestor", 
                 typeof(CatPoco),
                 GetAncestorValue, 
@@ -283,8 +283,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Descendant", 
                 typeof(CatPoco),
                 GetDescendantValue, 
@@ -296,8 +296,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ICat>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Litter", 
                 typeof(LitterPoco),
                 GetLitterValue, 
@@ -309,8 +309,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, ILitter>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "ExteriorRegex", 
                 typeof(String),
                 GetExteriorRegexValue, 
@@ -322,8 +322,8 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ICatFilter, String>()
         );
-        Properties[typeof(CatFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "TitleRegex", 
                 typeof(String),
                 GetTitleRegexValue, 
@@ -336,9 +336,12 @@ public class CatFilterPoco: EnvelopeBase, IProjector
             .AddPropertyType<ICatFilter, String>()
         );
     }
+#endregion Init Properties;
 
     
     
+#region Fields;
+
     private BreedPoco? _breed = default;
     private CatteryPoco? _cattery = default;
     private DateOnly? _bornAfter = default;
@@ -355,15 +358,21 @@ public class CatFilterPoco: EnvelopeBase, IProjector
     private String? _exteriorRegex = default;
     private String? _titleRegex = default;
 
+#endregion Fields;
+
 
     
+#region Projection Properties;
+
     private CatFilterICatFilterProjection? _asCatFilterICatFilterProjection = null;
 
     public CatFilterICatFilterProjection AsCatFilterICatFilterProjection => _asCatFilterICatFilterProjection ??= new(this);
 
+#endregion Projection Properties;
 
 
     
+#region Properties;
     public virtual BreedPoco? Breed
     {
         get => _breed;
@@ -661,6 +670,7 @@ public class CatFilterPoco: EnvelopeBase, IProjector
         }
     }
 
+#endregion Properties;
 
 
     public CatFilterPoco(IServiceProvider services) : base(services) 
@@ -668,14 +678,13 @@ public class CatFilterPoco: EnvelopeBase, IProjector
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(CatFilterPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(CatFilterICatFilterProjection) || type == typeof(ICatFilter))
         {
@@ -685,9 +694,12 @@ public class CatFilterPoco: EnvelopeBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
+#region Collections;
+
     protected override bool IsCollectionChanged(string property)
     {
         switch(property)
@@ -705,8 +717,12 @@ public class CatFilterPoco: EnvelopeBase, IProjector
     {
     }
     
+#endregion Collections;
+
 
     
+#region Poco Changed;
+
     protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
 
     protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
@@ -727,147 +743,149 @@ public class CatFilterPoco: EnvelopeBase, IProjector
 
 
 
+#endregion Poco Changed;
+
 
     
-    #region Properties accessors;
+#region Properties Accessors;
 
-    private static object? GetBreedValue(PocoBase target)
+    private static object? GetBreedValue(object target)
     {
         return ((CatFilterPoco)target).Breed;
     }
 
-    private static void SetBreedValue(PocoBase target, object? value)
+    private static void SetBreedValue(object target, object? value)
     {
         ((CatFilterPoco)target).Breed = (BreedPoco)value!;
     }
-    private static object? GetCatteryValue(PocoBase target)
+    private static object? GetCatteryValue(object target)
     {
         return ((CatFilterPoco)target).Cattery;
     }
 
-    private static void SetCatteryValue(PocoBase target, object? value)
+    private static void SetCatteryValue(object target, object? value)
     {
         ((CatFilterPoco)target).Cattery = (CatteryPoco)value!;
     }
-    private static object? GetBornAfterValue(PocoBase target)
+    private static object? GetBornAfterValue(object target)
     {
         return ((CatFilterPoco)target).BornAfter;
     }
 
-    private static void SetBornAfterValue(PocoBase target, object? value)
+    private static void SetBornAfterValue(object target, object? value)
     {
         ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
     }
-    private static object? GetBornBeforeValue(PocoBase target)
+    private static object? GetBornBeforeValue(object target)
     {
         return ((CatFilterPoco)target).BornBefore;
     }
 
-    private static void SetBornBeforeValue(PocoBase target, object? value)
+    private static void SetBornBeforeValue(object target, object? value)
     {
         ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
     }
-    private static object? GetNameRegexValue(PocoBase target)
+    private static object? GetNameRegexValue(object target)
     {
         return ((CatFilterPoco)target).NameRegex;
     }
 
-    private static void SetNameRegexValue(PocoBase target, object? value)
+    private static void SetNameRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).NameRegex = (String)value!;
     }
-    private static object? GetGenderValue(PocoBase target)
+    private static object? GetGenderValue(object target)
     {
         return ((CatFilterPoco)target).Gender;
     }
 
-    private static void SetGenderValue(PocoBase target, object? value)
+    private static void SetGenderValue(object target, object? value)
     {
         ((CatFilterPoco)target).Gender = (Gender)value!;
     }
-    private static object? GetChildValue(PocoBase target)
+    private static object? GetChildValue(object target)
     {
         return ((CatFilterPoco)target).Child;
     }
 
-    private static void SetChildValue(PocoBase target, object? value)
+    private static void SetChildValue(object target, object? value)
     {
         ((CatFilterPoco)target).Child = (CatPoco)value!;
     }
-    private static object? GetSelfValue(PocoBase target)
+    private static object? GetSelfValue(object target)
     {
         return ((CatFilterPoco)target).Self;
     }
 
-    private static void SetSelfValue(PocoBase target, object? value)
+    private static void SetSelfValue(object target, object? value)
     {
         ((CatFilterPoco)target).Self = (CatPoco)value!;
     }
-    private static object? GetMotherValue(PocoBase target)
+    private static object? GetMotherValue(object target)
     {
         return ((CatFilterPoco)target).Mother;
     }
 
-    private static void SetMotherValue(PocoBase target, object? value)
+    private static void SetMotherValue(object target, object? value)
     {
         ((CatFilterPoco)target).Mother = (CatPoco)value!;
     }
-    private static object? GetFatherValue(PocoBase target)
+    private static object? GetFatherValue(object target)
     {
         return ((CatFilterPoco)target).Father;
     }
 
-    private static void SetFatherValue(PocoBase target, object? value)
+    private static void SetFatherValue(object target, object? value)
     {
         ((CatFilterPoco)target).Father = (CatPoco)value!;
     }
-    private static object? GetAncestorValue(PocoBase target)
+    private static object? GetAncestorValue(object target)
     {
         return ((CatFilterPoco)target).Ancestor;
     }
 
-    private static void SetAncestorValue(PocoBase target, object? value)
+    private static void SetAncestorValue(object target, object? value)
     {
         ((CatFilterPoco)target).Ancestor = (CatPoco)value!;
     }
-    private static object? GetDescendantValue(PocoBase target)
+    private static object? GetDescendantValue(object target)
     {
         return ((CatFilterPoco)target).Descendant;
     }
 
-    private static void SetDescendantValue(PocoBase target, object? value)
+    private static void SetDescendantValue(object target, object? value)
     {
         ((CatFilterPoco)target).Descendant = (CatPoco)value!;
     }
-    private static object? GetLitterValue(PocoBase target)
+    private static object? GetLitterValue(object target)
     {
         return ((CatFilterPoco)target).Litter;
     }
 
-    private static void SetLitterValue(PocoBase target, object? value)
+    private static void SetLitterValue(object target, object? value)
     {
         ((CatFilterPoco)target).Litter = (LitterPoco)value!;
     }
-    private static object? GetExteriorRegexValue(PocoBase target)
+    private static object? GetExteriorRegexValue(object target)
     {
         return ((CatFilterPoco)target).ExteriorRegex;
     }
 
-    private static void SetExteriorRegexValue(PocoBase target, object? value)
+    private static void SetExteriorRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).ExteriorRegex = (String)value!;
     }
-    private static object? GetTitleRegexValue(PocoBase target)
+    private static object? GetTitleRegexValue(object target)
     {
         return ((CatFilterPoco)target).TitleRegex;
     }
 
-    private static void SetTitleRegexValue(PocoBase target, object? value)
+    private static void SetTitleRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).TitleRegex = (String)value!;
     }
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 

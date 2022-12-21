@@ -34,6 +34,8 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     @Html.Partial("InitProperties", Model)
 
+    @Html.Partial("Fields", Model)
+    
     @Html.Partial("ProjectionsProperties", Model)
     
     @Html.Partial("Properties", Model)
@@ -42,12 +44,15 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     { 
         @if (Model.IsEntity)
         {
-            <text>        SetPrimaryKey(new @Html.Raw($"{Model.PrimaryKeyName}(this)"));
+            <text>        _primaryKey = new @Html.Raw($"{Model.PrimaryKeyName}(services)");
+        (_primaryKey as @Html.Raw(Model.PrimaryKeyName))!.Source = this;
 </text>
         }
     }
 
     @Html.Partial("Methods", Model)
+
+    @Html.Partial("IPoco", Model)
 
     @Html.Partial("PropertiesAccessors", Model)
 }

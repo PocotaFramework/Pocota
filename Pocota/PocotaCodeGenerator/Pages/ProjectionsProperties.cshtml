@@ -1,6 +1,8 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
+@Html.Raw("#region Projection Properties");
+
 @foreach(ClassModel model1 in Model.Classes)
 {
     <text>    private @model1.ClassName? @Html.Raw($"_as{model1.ClassName}") = null;
@@ -13,3 +15,4 @@
 </text>
 }
 
+@Html.Raw("#endregion Projection Properties");

@@ -13,6 +13,11 @@ public class PocotaCore: PocotaCoreBase
     private readonly Dictionary<Type, object> _probePlaceholders = new();
     private readonly Dictionary<Type, object> _skipPlaceholders = new();
 
+    public bool IsEntity(Type type)
+    {
+        return typeof(IEntity).IsAssignableFrom(GetActualType(type));
+    }
+
     internal static void Configure(
             IServiceCollection services,
             Action<IServiceCollection>? configureServices = null,
@@ -44,6 +49,10 @@ public class PocotaCore: PocotaCoreBase
         services.AddTransient<PocoTraversalConverterFactory>();
         services.AddTransient<BuildingContext>();
         services.AddTransient<BuildingScript>();
+        //foreach (ServiceDescriptor item in services)
+        //{
+        //    Console.WriteLine(item);
+        //}
     }
 
     internal void AddPocoJsonContext(JsonSerializerOptions options, PocoTraversalContext context)

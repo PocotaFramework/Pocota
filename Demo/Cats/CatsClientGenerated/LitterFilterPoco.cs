@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using Net.Leksi.Pocota.Common;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterPoco: EnvelopeBase, IProjector
+public class LitterFilterPoco: EnvelopeBase, IPoco, IProjector
 {
 
 #region Projection classes;
@@ -40,14 +40,14 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -57,11 +57,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
 #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(LitterFilterPoco), new Properties<PocoBase>());
-        Properties[typeof(LitterFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Female", 
                 typeof(CatPoco),
                 GetFemaleValue, 
@@ -73,8 +73,8 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
             )
             .AddPropertyType<ILitterFilter, ICat>()
         );
-        Properties[typeof(LitterFilterPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Male", 
                 typeof(CatPoco),
                 GetMaleValue, 
@@ -87,21 +87,30 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
             .AddPropertyType<ILitterFilter, ICat>()
         );
     }
+#endregion Init Properties;
 
     
     
+#region Fields;
+
     private CatPoco _female = default!;
     private CatPoco _male = default!;
 
+#endregion Fields;
+
 
     
+#region Projection Properties;
+
     private LitterFilterILitterFilterProjection? _asLitterFilterILitterFilterProjection = null;
 
     public LitterFilterILitterFilterProjection AsLitterFilterILitterFilterProjection => _asLitterFilterILitterFilterProjection ??= new(this);
 
+#endregion Projection Properties;
 
 
     
+#region Properties;
     public virtual CatPoco Female
     {
         get => _female;
@@ -148,6 +157,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
         }
     }
 
+#endregion Properties;
 
 
     public LitterFilterPoco(IServiceProvider services) : base(services) 
@@ -155,14 +165,13 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(LitterFilterPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(LitterFilterILitterFilterProjection) || type == typeof(ILitterFilter))
         {
@@ -172,9 +181,12 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
+#region Collections;
+
     protected override bool IsCollectionChanged(string property)
     {
         switch(property)
@@ -192,38 +204,44 @@ public class LitterFilterPoco: EnvelopeBase, IProjector
     {
     }
     
+#endregion Collections;
+
 
     
+#region Poco Changed;
+
     protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
 
     protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
 
 
 
+#endregion Poco Changed;
+
 
     
-    #region Properties accessors;
+#region Properties Accessors;
 
-    private static object? GetFemaleValue(PocoBase target)
+    private static object? GetFemaleValue(object target)
     {
         return ((LitterFilterPoco)target).Female;
     }
 
-    private static void SetFemaleValue(PocoBase target, object? value)
+    private static void SetFemaleValue(object target, object? value)
     {
         ((LitterFilterPoco)target).Female = (CatPoco)value!;
     }
-    private static object? GetMaleValue(PocoBase target)
+    private static object? GetMaleValue(object target)
     {
         return ((LitterFilterPoco)target).Male;
     }
 
-    private static void SetMaleValue(PocoBase target, object? value)
+    private static void SetMaleValue(object target, object? value)
     {
         ((LitterFilterPoco)target).Male = (CatPoco)value!;
     }
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 

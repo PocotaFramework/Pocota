@@ -1,7 +1,8 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@foreach(PropertyModel pm in Model.Properties)
+@Html.Raw("#region Properties");
+@foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
@@ -49,3 +50,4 @@
 
 </text>
 }
+@Html.Raw("#endregion Properties");

@@ -84,7 +84,7 @@ public class BuildingEventArgs: EventArgs
     }
     public bool KeyOnly => _keyOnly;
 
-    public IPrimaryKey KeyRing { get; internal set; } = null!;
+    public IPrimaryKey PrimaryKey { get; internal set; } = null!;
 
     public bool IsNullable { get; internal set; } = true;
     public Type PropertyType { get; internal set; } = null!;

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace CatsCommon.Model;
 
-public class BreedPoco: EntityBase, IProjector
+public class BreedPoco: EntityBase, IPoco, IProjector
 {
 
 #region Projection classes;
@@ -52,14 +52,14 @@ public class BreedPoco: EntityBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -69,11 +69,11 @@ public class BreedPoco: EntityBase, IProjector
 #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(BreedPoco), new Properties<PocoBase>());
-        Properties[typeof(BreedPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Code", 
                 typeof(String),
                 GetCodeValue, 
@@ -85,8 +85,8 @@ public class BreedPoco: EntityBase, IProjector
             )
             .AddPropertyType<IBreed, String>()
         );
-        Properties[typeof(BreedPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Group", 
                 typeof(String),
                 GetGroupValue, 
@@ -98,8 +98,8 @@ public class BreedPoco: EntityBase, IProjector
             )
             .AddPropertyType<IBreed, String>()
         );
-        Properties[typeof(BreedPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameEng", 
                 typeof(String),
                 GetNameEngValue, 
@@ -111,8 +111,8 @@ public class BreedPoco: EntityBase, IProjector
             )
             .AddPropertyType<IBreed, String>()
         );
-        Properties[typeof(BreedPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameNat", 
                 typeof(String),
                 GetNameNatValue, 
@@ -125,23 +125,32 @@ public class BreedPoco: EntityBase, IProjector
             .AddPropertyType<IBreed, String>()
         );
     }
+#endregion Init Properties;
 
     
     
+#region Fields;
+
     private String _code = default!;
     private String _group = default!;
     private String? _nameEng = default;
     private String? _nameNat = default;
 
+#endregion Fields;
+
 
     
+#region Projection Properties;
+
     private BreedIBreedProjection? _asBreedIBreedProjection = null;
 
     public BreedIBreedProjection AsBreedIBreedProjection => _asBreedIBreedProjection ??= new(this);
 
+#endregion Projection Properties;
 
 
     
+#region Properties;
     public virtual String Code
     {
         get => _code;
@@ -202,6 +211,7 @@ public class BreedPoco: EntityBase, IProjector
         }
     }
 
+#endregion Properties;
 
 
     public BreedPoco(IServiceProvider services) : base(services) 
@@ -209,14 +219,13 @@ public class BreedPoco: EntityBase, IProjector
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(BreedPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(BreedIBreedProjection) || type == typeof(IBreed))
         {
@@ -226,9 +235,12 @@ public class BreedPoco: EntityBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
+#region Collections;
+
     protected override bool IsCollectionChanged(string property)
     {
         switch(property)
@@ -246,52 +258,58 @@ public class BreedPoco: EntityBase, IProjector
     {
     }
     
-
-    
-
+#endregion Collections;
 
 
     
-    #region Properties accessors;
+#region Poco Changed;
 
-    private static object? GetCodeValue(PocoBase target)
+
+
+#endregion Poco Changed;
+
+
+    
+#region Properties Accessors;
+
+    private static object? GetCodeValue(object target)
     {
         return ((BreedPoco)target).Code;
     }
 
-    private static void SetCodeValue(PocoBase target, object? value)
+    private static void SetCodeValue(object target, object? value)
     {
         ((BreedPoco)target).Code = (String)value!;
     }
-    private static object? GetGroupValue(PocoBase target)
+    private static object? GetGroupValue(object target)
     {
         return ((BreedPoco)target).Group;
     }
 
-    private static void SetGroupValue(PocoBase target, object? value)
+    private static void SetGroupValue(object target, object? value)
     {
         ((BreedPoco)target).Group = (String)value!;
     }
-    private static object? GetNameEngValue(PocoBase target)
+    private static object? GetNameEngValue(object target)
     {
         return ((BreedPoco)target).NameEng;
     }
 
-    private static void SetNameEngValue(PocoBase target, object? value)
+    private static void SetNameEngValue(object target, object? value)
     {
         ((BreedPoco)target).NameEng = (String)value!;
     }
-    private static object? GetNameNatValue(PocoBase target)
+    private static object? GetNameNatValue(object target)
     {
         return ((BreedPoco)target).NameNat;
     }
 
-    private static void SetNameNatValue(PocoBase target, object? value)
+    private static void SetNameNatValue(object target, object? value)
     {
         ((BreedPoco)target).NameNat = (String)value!;
     }
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 

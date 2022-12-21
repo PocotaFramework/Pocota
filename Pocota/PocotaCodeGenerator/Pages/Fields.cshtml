@@ -27,12 +27,8 @@
         if(!pm.IsNullable){<text>!</text>}
     }
     <text>;
+    private bool @Html.Raw($"_loaded{fieldName}") = false;
 </text>
-    if (pm.IsList)
-    {
-        <text>    private readonly @Html.Raw($"List<{pm.ItemType}> _initial{fieldName} = new()");
-</text>
-    }
 }
 
 @Html.Raw("#endregion Fields");

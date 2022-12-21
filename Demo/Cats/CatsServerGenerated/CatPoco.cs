@@ -2,12 +2,11 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-20T14:53:23                                  //
+// at 2022-12-21T18:50:10                                  //
 /////////////////////////////////////////////////////////////
 
 
 using CatsCommon;
-using Net.Leksi.Pocota;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System;
@@ -15,7 +14,7 @@ using System.Collections.Generic;
 
 namespace CatsCommon.Model;
 
-public class CatPoco: EntityBase, IProjector
+public class CatPoco: EntityBase, IPoco, IProjector
 {
     public static readonly Type PrimaryKeyType = typeof(CatPrimaryKey);
     
@@ -96,14 +95,14 @@ public class CatPoco: EntityBase, IProjector
             _litters = new(Projector.Litters);
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -167,14 +166,14 @@ public class CatPoco: EntityBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -228,14 +227,14 @@ public class CatPoco: EntityBase, IProjector
             Projector = projector;
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -306,14 +305,14 @@ public class CatPoco: EntityBase, IProjector
             _litters = new(Projector.Litters);
         }
 
-        public I As<I>()
+        I? IProjector.As<I>() where I : class
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
 
@@ -323,16 +322,16 @@ public class CatPoco: EntityBase, IProjector
     #endregion Projection classes;
 
     
-    public static void InitProperties()
+#region Init Properties;
+    public static void InitProperties(List<Property> properties)
     {
-        Properties.Add(typeof(CatPoco), new Properties<PocoBase>());
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Cattery", 
                 typeof(CatteryPoco),
                 GetCatteryValue, 
                 SetCatteryValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Cattery"), 
                 false, 
                 false, 
                 false            
@@ -342,13 +341,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, ICattery>()
             .AddPropertyType<ICatForView, ICattery>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameNat", 
                 typeof(String),
                 GetNameNatValue, 
                 SetNameNatValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("NameNat"), 
                 true, 
                 false, 
                 false            
@@ -358,13 +357,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, String>()
             .AddPropertyType<ICatForView, String>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "NameEng", 
                 typeof(String),
                 GetNameEngValue, 
                 SetNameEngValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("NameEng"), 
                 true, 
                 false, 
                 false            
@@ -374,13 +373,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, String>()
             .AddPropertyType<ICatForView, String>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Gender", 
                 typeof(Gender),
                 GetGenderValue, 
                 SetGenderValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Gender"), 
                 false, 
                 false, 
                 false            
@@ -389,13 +388,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatForListing, Gender>()
             .AddPropertyType<ICatForView, Gender>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Breed", 
                 typeof(BreedPoco),
                 GetBreedValue, 
                 SetBreedValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Breed"), 
                 false, 
                 false, 
                 false            
@@ -405,13 +404,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, IBreed>()
             .AddPropertyType<ICatForView, IBreed>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Litter", 
                 typeof(LitterPoco),
                 GetLitterValue, 
                 SetLitterValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Litter"), 
                 true, 
                 false, 
                 false            
@@ -421,13 +420,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, ILitterForDate>()
             .AddPropertyType<ICatForView, ILitterForCat>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Exterior", 
                 typeof(String),
                 GetExteriorValue, 
                 SetExteriorValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Exterior"), 
                 true, 
                 false, 
                 false            
@@ -437,13 +436,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, String>()
             .AddPropertyType<ICatForView, String>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Description", 
                 typeof(String),
                 GetDescriptionValue, 
                 SetDescriptionValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Description"), 
                 true, 
                 false, 
                 false            
@@ -452,13 +451,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatForListing, String>()
             .AddPropertyType<ICatForView, String>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Title", 
                 typeof(String),
                 GetTitleValue, 
                 SetTitleValue, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Title"), 
                 true, 
                 false, 
                 false            
@@ -468,13 +467,13 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatAsParent, String>()
             .AddPropertyType<ICatForView, String>()
         );
-        Properties[typeof(CatPoco)].Add(
-                new Property<PocoBase>(
+        properties.Add(
+                new Property(
                 "Litters", 
                 typeof(List<LitterPoco>),
                 GetLittersValue, 
                 null, 
-                null, 
+                target => ((IPoco)target).TouchProperty("Litters"), 
                 false, 
                 false, 
                 true            
@@ -483,9 +482,39 @@ public class CatPoco: EntityBase, IProjector
             .AddPropertyType<ICatForView, IList<ILitterForCat>>()
         );
     }
+#endregion Init Properties;
 
 
     
+#region Fields;
+
+    private CatteryPoco _cattery = default!;
+    private bool _loaded_cattery = false;
+    private String? _nameNat = default;
+    private bool _loaded_nameNat = false;
+    private String? _nameEng = default;
+    private bool _loaded_nameEng = false;
+    private Gender _gender = default!;
+    private bool _loaded_gender = false;
+    private BreedPoco _breed = default!;
+    private bool _loaded_breed = false;
+    private LitterPoco? _litter = default;
+    private bool _loaded_litter = false;
+    private String? _exterior = default;
+    private bool _loaded_exterior = false;
+    private String? _description = default;
+    private bool _loaded_description = false;
+    private String? _title = default;
+    private bool _loaded_title = false;
+    private readonly List<LitterPoco> _litters = new();
+    private bool _loaded_litters = false;
+
+#endregion Fields;
+
+    
+    
+#region Projection Properties;
+
     private CatICatProjection? _asCatICatProjection = null;
     private CatICatForListingProjection? _asCatICatForListingProjection = null;
     private CatICatAsParentProjection? _asCatICatAsParentProjection = null;
@@ -496,35 +525,123 @@ public class CatPoco: EntityBase, IProjector
     public CatICatAsParentProjection AsCatICatAsParentProjection => _asCatICatAsParentProjection ??= new(this);
     public CatICatForViewProjection AsCatICatForViewProjection => _asCatICatForViewProjection ??= new(this);
 
+#endregion Projection Properties;
 
     
     
-    public CatteryPoco Cattery { get; set; } = default!;
-    public String? NameNat { get; set; } = default;
-    public String? NameEng { get; set; } = default;
-    public Gender Gender { get; set; } = default!;
-    public BreedPoco Breed { get; set; } = default!;
-    public LitterPoco? Litter { get; set; } = default;
-    public String? Exterior { get; set; } = default;
-    public String? Description { get; set; } = default;
-    public String? Title { get; set; } = default;
-    public List<LitterPoco> Litters { get; init; } = new();
+#region Properties;
+    public CatteryPoco Cattery 
+    { 
+        get => _cattery; 
+        set
+        {
+            _cattery = value;
+            _loaded_cattery = true;
+        }
+    }
+
+    public String? NameNat 
+    { 
+        get => _nameNat; 
+        set
+        {
+            _nameNat = value;
+            _loaded_nameNat = true;
+        }
+    }
+
+    public String? NameEng 
+    { 
+        get => _nameEng; 
+        set
+        {
+            _nameEng = value;
+            _loaded_nameEng = true;
+        }
+    }
+
+    public Gender Gender 
+    { 
+        get => _gender; 
+        set
+        {
+            _gender = value;
+            _loaded_gender = true;
+        }
+    }
+
+    public BreedPoco Breed 
+    { 
+        get => _breed; 
+        set
+        {
+            _breed = value;
+            _loaded_breed = true;
+        }
+    }
+
+    public LitterPoco? Litter 
+    { 
+        get => _litter; 
+        set
+        {
+            _litter = value;
+            _loaded_litter = true;
+        }
+    }
+
+    public String? Exterior 
+    { 
+        get => _exterior; 
+        set
+        {
+            _exterior = value;
+            _loaded_exterior = true;
+        }
+    }
+
+    public String? Description 
+    { 
+        get => _description; 
+        set
+        {
+            _description = value;
+            _loaded_description = true;
+        }
+    }
+
+    public String? Title 
+    { 
+        get => _title; 
+        set
+        {
+            _title = value;
+            _loaded_title = true;
+        }
+    }
+
+    public List<LitterPoco> Litters 
+    { 
+        get => _litters; 
+    }
+
+#endregion Properties;
 
 
     public CatPoco(IServiceProvider services) : base(services) 
     { 
-        SetPrimaryKey(new CatPrimaryKey(this));
+        _primaryKey = new CatPrimaryKey(services);
+        (_primaryKey as CatPrimaryKey)!.Source = this;
     }
 
     
-    public override Properties<PocoBase> GetProperties() => Properties[typeof(CatPoco)];
-
-    public I? As<I>()
+#region Methods;
+    I? IProjector.As<I>() where I : class
     {
-        return (I)As(typeof(I));
+        return (I?)((IProjector)this).As(typeof(I));
     }
 
-    public object? As(Type type)
+    object? IProjector.As(Type type)
     {
         if(type == typeof(CatICatProjection) || type == typeof(ICat))
         {
@@ -546,99 +663,248 @@ public class CatPoco: EntityBase, IProjector
     }
 
 
+#endregion Methods;
 
 
     
-    #region Properties accessors;
+#region IPoco;
 
-    private static object? GetCatteryValue(PocoBase target)
+    void IPoco.Clear()
+    {
+        _loaded_cattery = false;
+        _loaded_nameNat = false;
+        _loaded_nameEng = false;
+        _loaded_gender = false;
+        _loaded_breed = false;
+        _loaded_litter = false;
+        _loaded_exterior = false;
+        _loaded_description = false;
+        _loaded_title = false;
+        _loaded_litters = false;
+    }
+
+    bool IPoco.IsLoaded(Type @interface)
+    {
+        if(@interface == typeof(ICat))
+        {
+            return _loaded_cattery
+                && _loaded_nameNat
+                && _loaded_nameEng
+                && _loaded_gender
+                && _loaded_breed
+                && _loaded_litter
+                && _loaded_exterior
+                && _loaded_description
+                && _loaded_title
+                && _loaded_litters
+            ;
+        }
+        if(@interface == typeof(ICatForListing))
+        {
+            return _loaded_cattery
+                && _loaded_nameNat
+                && _loaded_nameEng
+                && _loaded_gender
+                && _loaded_breed
+                && _loaded_litter
+                && _loaded_exterior
+                && _loaded_description
+                && _loaded_title
+            ;
+        }
+        if(@interface == typeof(ICatAsParent))
+        {
+            return _loaded_cattery
+                && _loaded_nameNat
+                && _loaded_nameEng
+                && _loaded_breed
+                && _loaded_litter
+                && _loaded_exterior
+                && _loaded_title
+            ;
+        }
+        if(@interface == typeof(ICatForView))
+        {
+            return _loaded_cattery
+                && _loaded_nameNat
+                && _loaded_nameEng
+                && _loaded_gender
+                && _loaded_breed
+                && _loaded_litter
+                && _loaded_exterior
+                && _loaded_description
+                && _loaded_title
+                && _loaded_litters
+            ;
+        }
+        return false;
+    }
+
+    bool IPoco.IsLoaded<T>()
+    {
+        return ((IPoco)this).IsLoaded(typeof(T));
+    }
+
+    bool IPoco.IsPropertySet(string property)
+    {
+        switch(property)
+        {
+            case "Cattery":
+                return _loaded_cattery;
+            case "NameNat":
+                return _loaded_nameNat;
+            case "NameEng":
+                return _loaded_nameEng;
+            case "Gender":
+                return _loaded_gender;
+            case "Breed":
+                return _loaded_breed;
+            case "Litter":
+                return _loaded_litter;
+            case "Exterior":
+                return _loaded_exterior;
+            case "Description":
+                return _loaded_description;
+            case "Title":
+                return _loaded_title;
+            case "Litters":
+                return _loaded_litters;
+            default:
+                return false;
+        }
+    }
+
+    void IPoco.TouchProperty(string property)
+    {
+        switch(property)
+        {
+            case "Cattery":
+                _loaded_cattery = true;
+                break;
+            case "NameNat":
+                _loaded_nameNat = true;
+                break;
+            case "NameEng":
+                _loaded_nameEng = true;
+                break;
+            case "Gender":
+                _loaded_gender = true;
+                break;
+            case "Breed":
+                _loaded_breed = true;
+                break;
+            case "Litter":
+                _loaded_litter = true;
+                break;
+            case "Exterior":
+                _loaded_exterior = true;
+                break;
+            case "Description":
+                _loaded_description = true;
+                break;
+            case "Title":
+                _loaded_title = true;
+                break;
+            case "Litters":
+                _loaded_litters = true;
+                break;
+        }
+    }
+
+#endregion IPoco;
+
+
+    
+#region Properties Accessors;
+
+    private static object? GetCatteryValue(object target)
     {
         return ((CatPoco)target).Cattery;
     }
 
-    private static void SetCatteryValue(PocoBase target, object? value)
+    private static void SetCatteryValue(object target, object? value)
     {
         ((CatPoco)target).Cattery = (CatteryPoco)value!;
     }
-    private static object? GetNameNatValue(PocoBase target)
+    private static object? GetNameNatValue(object target)
     {
         return ((CatPoco)target).NameNat;
     }
 
-    private static void SetNameNatValue(PocoBase target, object? value)
+    private static void SetNameNatValue(object target, object? value)
     {
         ((CatPoco)target).NameNat = (String)value!;
     }
-    private static object? GetNameEngValue(PocoBase target)
+    private static object? GetNameEngValue(object target)
     {
         return ((CatPoco)target).NameEng;
     }
 
-    private static void SetNameEngValue(PocoBase target, object? value)
+    private static void SetNameEngValue(object target, object? value)
     {
         ((CatPoco)target).NameEng = (String)value!;
     }
-    private static object? GetGenderValue(PocoBase target)
+    private static object? GetGenderValue(object target)
     {
         return ((CatPoco)target).Gender;
     }
 
-    private static void SetGenderValue(PocoBase target, object? value)
+    private static void SetGenderValue(object target, object? value)
     {
         ((CatPoco)target).Gender = (Gender)value!;
     }
-    private static object? GetBreedValue(PocoBase target)
+    private static object? GetBreedValue(object target)
     {
         return ((CatPoco)target).Breed;
     }
 
-    private static void SetBreedValue(PocoBase target, object? value)
+    private static void SetBreedValue(object target, object? value)
     {
         ((CatPoco)target).Breed = (BreedPoco)value!;
     }
-    private static object? GetLitterValue(PocoBase target)
+    private static object? GetLitterValue(object target)
     {
         return ((CatPoco)target).Litter;
     }
 
-    private static void SetLitterValue(PocoBase target, object? value)
+    private static void SetLitterValue(object target, object? value)
     {
         ((CatPoco)target).Litter = (LitterPoco)value!;
     }
-    private static object? GetExteriorValue(PocoBase target)
+    private static object? GetExteriorValue(object target)
     {
         return ((CatPoco)target).Exterior;
     }
 
-    private static void SetExteriorValue(PocoBase target, object? value)
+    private static void SetExteriorValue(object target, object? value)
     {
         ((CatPoco)target).Exterior = (String)value!;
     }
-    private static object? GetDescriptionValue(PocoBase target)
+    private static object? GetDescriptionValue(object target)
     {
         return ((CatPoco)target).Description;
     }
 
-    private static void SetDescriptionValue(PocoBase target, object? value)
+    private static void SetDescriptionValue(object target, object? value)
     {
         ((CatPoco)target).Description = (String)value!;
     }
-    private static object? GetTitleValue(PocoBase target)
+    private static object? GetTitleValue(object target)
     {
         return ((CatPoco)target).Title;
     }
 
-    private static void SetTitleValue(PocoBase target, object? value)
+    private static void SetTitleValue(object target, object? value)
     {
         ((CatPoco)target).Title = (String)value!;
     }
-    private static object? GetLittersValue(PocoBase target)
+    private static object? GetLittersValue(object target)
     {
         return ((CatPoco)target).Litters;
     }
 
 
-    #endregion Properties accessors;
+#endregion Properties Accessors;
 
 
 }

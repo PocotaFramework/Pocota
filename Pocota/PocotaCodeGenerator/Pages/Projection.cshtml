@@ -54,14 +54,14 @@
             }
         }
 
-        public I As<I>()
+        I? @Html.Raw("IProjector.As<I>() where I : class")
         {
-            return (I)Projector.As(typeof(I))!;
+            return (I?)((IProjector)Projector).As(typeof(I))!;
         }
 
-        public object? As(Type type) 
+        object? IProjector.As(Type type) 
         {
-            return Projector.As(type);
+            return ((IProjector)Projector).As(type);
         }
 
         @foreach(MethodModel mm in Model.Methods)
