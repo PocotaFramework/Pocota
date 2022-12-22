@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota;
+﻿namespace Net.Leksi.Pocota.Server;
 
 public interface IValueConverter
 {

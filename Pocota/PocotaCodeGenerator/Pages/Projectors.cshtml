@@ -1,0 +1,30 @@
+﻿@using Net.Leksi.Pocota.Common;
+@using System.Text.RegularExpressions;
+@model ClassModel
+
+@Html.Raw("#region Projectors")
+
+@{
+    int i = 0;
+    Regex regexInterface = new Regex("^IProjection<([^>]+)>$");
+    string indention = ViewData.ContainsKey("projections") ? "    " : string.Empty;
+}
+@foreach (Match match in Model.Interfaces.Select(v => regexInterface.Match(v)).Where(v => v.Success))
+{
+    string type = match.Groups[1].Captures[0].Value;
+    @if (i == 0)
+    {
+        <text>    @Html.Raw(indention)public @type Projector @Html.Raw(ViewData.ContainsKey("projections") ? "{ get; init; }" : "=> this;")
+    @Html.Raw(indention)IProjector IProjection.Projector => Projector;
+
+</text>    
+    }
+    else
+    {
+        <text>    @Html.Raw(indention)@type @Html.Raw($"{match.Groups[0].Value}.Projector => Projector.As<{type}>()!");
+</text>    
+    }
+    ++i;
+}
+
+@Html.Raw("#endregion Projectors");

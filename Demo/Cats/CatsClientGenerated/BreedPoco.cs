@@ -2,25 +2,36 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 
 namespace CatsCommon.Model;
 
-public class BreedPoco: EntityBase, IPoco, IProjector
+public class BreedPoco: EntityBase, IPoco, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
 {
 
-#region Projection classes;
+#region Projection classes
 
-    public class BreedIBreedProjection: IBreed, IProjector, IProjection<BreedPoco>
+    public class BreedIBreedProjection: IBreed, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
     {
 
-        public BreedPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public BreedPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        IBreed IProjection<IBreed>.Projector => Projector.As<IBreed>()!;
+
+#endregion Projectors;
+
+
 
         public String Code 
         {
@@ -52,24 +63,24 @@ public class BreedPoco: EntityBase, IPoco, IProjector
             Projector = projector;
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
 
 
 
     }
-#endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -129,7 +140,7 @@ public class BreedPoco: EntityBase, IPoco, IProjector
 
     
     
-#region Fields;
+#region Fields
 
     private String _code = default!;
     private String _group = default!;
@@ -140,17 +151,29 @@ public class BreedPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Projection Properties;
+#region Projection Properties
 
     private BreedIBreedProjection? _asBreedIBreedProjection = null;
 
-    public BreedIBreedProjection AsBreedIBreedProjection => _asBreedIBreedProjection ??= new(this);
+    private BreedIBreedProjection AsBreedIBreedProjection => _asBreedIBreedProjection ??= new(this);
 
 #endregion Projection Properties;
 
 
     
-#region Properties;
+#region Projectors
+
+    public BreedPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    IBreed IProjection<IBreed>.Projector => Projector.As<IBreed>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public virtual String Code
     {
         get => _code;
@@ -219,15 +242,15 @@ public class BreedPoco: EntityBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(BreedIBreedProjection) || type == typeof(IBreed))
+        if(type == typeof(IBreed))
         {
             return AsBreedIBreedProjection;
         }
@@ -239,7 +262,7 @@ public class BreedPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Collections;
+#region Collections
 
     protected override bool IsCollectionChanged(string property)
     {
@@ -262,7 +285,7 @@ public class BreedPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Poco Changed;
+#region Poco Changed
 
 
 
@@ -270,7 +293,7 @@ public class BreedPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetCodeValue(object target)
     {
@@ -280,7 +303,9 @@ public class BreedPoco: EntityBase, IPoco, IProjector
     private static void SetCodeValue(object target, object? value)
     {
         ((BreedPoco)target).Code = (String)value!;
+
     }
+
     private static object? GetGroupValue(object target)
     {
         return ((BreedPoco)target).Group;
@@ -289,7 +314,9 @@ public class BreedPoco: EntityBase, IPoco, IProjector
     private static void SetGroupValue(object target, object? value)
     {
         ((BreedPoco)target).Group = (String)value!;
+
     }
+
     private static object? GetNameEngValue(object target)
     {
         return ((BreedPoco)target).NameEng;
@@ -298,7 +325,9 @@ public class BreedPoco: EntityBase, IPoco, IProjector
     private static void SetNameEngValue(object target, object? value)
     {
         ((BreedPoco)target).NameEng = (String)value!;
+
     }
+
     private static object? GetNameNatValue(object target)
     {
         return ((BreedPoco)target).NameNat;
@@ -307,7 +336,9 @@ public class BreedPoco: EntityBase, IPoco, IProjector
     private static void SetNameNatValue(object target, object? value)
     {
         ((BreedPoco)target).NameNat = (String)value!;
+
     }
+
 
 #endregion Properties Accessors;
 

@@ -1,0 +1,545 @@
+﻿<Window x:Class="CatsClient.ViewCat"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CatsClient"
+        mc:Ignorable="d"
+        Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <local:BindingProxy x:Key="TrueIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}"/>
+        <local:BindingProxy x:Key="TrueIfNotEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
+        <local:BindingProxy x:Key="TrueIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
+        <local:BindingProxy x:Key="VisibleIfNotReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
+        <local:BindingProxy x:Key="VisibleIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfReadOnly}"/>
+        <local:BindingProxy x:Key="VisibleIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfEditInline}"/>
+        <local:BindingProxy x:Key="VisibleIfNotEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotEditInline}"/>
+        <local:BindingProxy x:Key="CatteriesProxy" Data="{Binding Catteries}"/>
+        <local:BindingProxy x:Key="BreedsProxy" Data="{Binding Breeds}"/>
+        <local:BindingProxy x:Key="MotherProxy" Data="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
+        <local:BindingProxy x:Key="FatherProxy" Data="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
+        <local:BindingProxy x:Key="GendersProxy" Data="{Binding Path=Genders, Mode=OneWay}"/>
+    </Window.Resources>
+    <Window.Title>
+        <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="Title">
+            <Binding Path="Heart.Cat" Mode="OneWay" />
+            <Binding Path="Heart.EditKind" Mode="OneWay" />
+        </MultiBinding>
+    </Window.Title>
+    <DockPanel LastChildFill="True">
+        <Grid DockPanel.Dock="Top" x:Name="Grid">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasMother}"/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasMother}"/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasFather}"/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasFather}"/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasMother}"/>
+                <RowDefinition Height="{Binding Path=Heart.Cat, Converter={local:ViewCatConverter}, Mode=OneWay, ConverterParameter=VisibleIfHasMother}"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="9">
+                <ComboBox ItemsSource="{Binding EditKinds}"
+                    SelectedItem="{Binding Path=Heart.EditKind, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={local:EditKindConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Text="{Binding Heart.Cat, Converter={local:PocoStateConverter}, Mode=OneWay}" Margin="10,0,0,0"/>
+                <Button Margin="10,0,0,0" Command="{local:CancelChangesCommand}"
+                        Content="⎌">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                            <Binding Path="Heart.Cat" Mode="OneWay"/>
+                            <Binding Path="Data" Source="{StaticResource TrueIfEditInline}" Mode="OneWay"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                    <Button.ToolTip>
+                        <TextBlock>Отменить изменения</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+                <Button Margin="10,0,0,0" 
+                        Content="⟳">
+                    <Button.ToolTip>
+                        <TextBlock>Обновить</TextBlock>
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+            <TextBlock Text="Имя" Grid.Column="0" Grid.Row="1"/>
+            <TextBox Text="{Binding Heart.Cat.NameNat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="2"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                     />
+
+            <TextBlock Text="Name" Grid.Column="1" Grid.Row="1"/>
+            <TextBox Text="{Binding Heart.Cat.NameEng, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="2"
+                     IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}" 
+                     />
+
+            <TextBlock Text="Порода" Grid.Column="2" Grid.Row="1"/>
+            <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="2">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Heart.Cat.Breed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfNotReadOnly}}"
+                          />
+                <TextBox Text="{Binding Path=Heart.Cat.Breed.NameNat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                        />
+            </StackPanel>
+
+            <TextBlock Text="Breed" Grid.Column="3" Grid.Row="1"/>
+            <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="2">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Heart.Cat.Breed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfNotReadOnly}}"
+                          />
+                <TextBox Text="{Binding Path=Heart.Cat.Breed.NameEng, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                         />
+            </StackPanel>
+
+            <TextBlock Text="Питомник" Grid.Column="4" Grid.Row="1"/>
+            <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="2">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Heart.Cat.Cattery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfNotReadOnly}}"
+                          />
+                <TextBox Text="{Binding Path=Heart.Cat.Cattery.NameNat, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                         />
+            </StackPanel>
+
+            <TextBlock Text="Cattery" Grid.Column="5" Grid.Row="1"/>
+            <StackPanel Orientation="Vertical" Grid.Column="5" Grid.Row="2">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Heart.Cat.Cattery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfNotReadOnly}}"
+                          />
+                <TextBox Text="{Binding Path=Heart.Cat.Cattery.NameEng, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                         />
+            </StackPanel>
+
+            <TextBlock Text="Пол" Grid.Column="6" Grid.Row="1"/>
+            <StackPanel Orientation="Vertical" Grid.Column="6" Grid.Row="2">
+                <ComboBox ItemsSource="{Binding Genders}"
+                    SelectedItem="{Binding Path=Heart.Cat.Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data, Source={StaticResource VisibleIfNotReadOnly}}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox Text="{Binding Path=Heart.Cat.Gender, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={local:GenderConverter}}"
+                        IsReadOnly="True"
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfReadOnly}}"
+                         />
+            </StackPanel>
+            <TextBlock Text="Эктерьер" Grid.Column="7" Grid.Row="1"/>
+            <TextBox Text="{Binding Heart.Cat.Exterior, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="7" Grid.Row="2"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                     />
+            <TextBlock Text="Титул" Grid.Column="8" Grid.Row="1"/>
+            <TextBox Text="{Binding Heart.Cat.Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="8" Grid.Row="2"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                     />
+
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="9">
+                <TextBlock Text="Мать "/>
+                <TextBlock>
+                    <Hyperlink x:Name="MotherViewLink" Command="{Binding ViewMotherCommand}" CommandParameter="{Binding Heart.Cat.Litter.Female}">
+                        [Просмотр]
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+            <TextBox Text="{Binding Data.NameNat, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="4"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+
+            <TextBox Text="{Binding Data.NameEng, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="4"
+                     IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}" 
+                     />
+
+            <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="4">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Data.Breed, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Breed.NameNat, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                        />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="4">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Data.Breed, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Breed.NameEng, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="4">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Data.Cattery, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Cattery.NameNat, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="5" Grid.Row="4">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Data.Cattery, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Cattery.NameEng, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="6" Grid.Row="4">
+                <ComboBox  ItemsSource="{Binding Genders}"
+                    SelectedItem="{Binding Path=Data.Gender, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox Text="{Binding Path=Data.Gender, Source={StaticResource MotherProxy}, Converter={local:GenderConverter}}"
+                        IsReadOnly="True"
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfReadOnly}}"
+                         />
+            </StackPanel>
+            <TextBox Text="{Binding Data.Exterior, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="7" Grid.Row="4"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+            <TextBox Text="{Binding Data.Title, Source={StaticResource MotherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="8" Grid.Row="4"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="9">
+                <TextBlock Text="Отец "/>
+                <TextBlock>
+                    <Hyperlink x:Name="FatherViewLink" Command="{Binding ViewFatherCommand}" CommandParameter="{Binding Data, Source={StaticResource FatherProxy}}">
+                        [Просмотр]
+                    </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+
+            <TextBox Text="{Binding Data.NameNat, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="0" Grid.Row="6"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+
+            <TextBox Text="{Binding Data.NameEng, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" Grid.Row="6"
+                     IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}" 
+                     />
+
+            <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="6">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Data.Breed, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.NameNat, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                        />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="3" Grid.Row="6">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Data.Breed, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Breeds}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Breed.NameEng, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="4" Grid.Row="6">
+                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Data.Cattery, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Cattery.NameNat, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+
+            <StackPanel Orientation="Vertical" Grid.Column="5" Grid.Row="6">
+                <ComboBox DisplayMemberPath="NameEng" SelectedItem="{Binding Path=Data.Cattery, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Catteries}" 
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                          />
+                <TextBox Text="{Binding Path=Data.Cattery.NameEng, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                         />
+            </StackPanel>
+            <StackPanel Orientation="Vertical" Grid.Column="6" Grid.Row="6">
+                <ComboBox  ItemsSource="{Binding Genders}"
+                    SelectedItem="{Binding Path=Data.Gender, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                    >
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBox Text="{Binding Path=Data.Gender, Source={StaticResource FatherProxy}, Converter={local:GenderConverter}}"
+                        IsReadOnly="True"
+                         />
+            </StackPanel>
+            <TextBox Text="{Binding Data.Exterior, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="7" Grid.Row="6"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+            <TextBox Text="{Binding Data.Title, Source={StaticResource FatherProxy}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="8" Grid.Row="6"
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"
+                     />
+
+            <TextBlock Text="Помёт" Grid.Column="0" Grid.Row="7"/>
+            <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="8">
+                <TextBox Text="{Binding Path=Heart.Cat.Litter.Order, Mode=OneWay}" IsReadOnly="True"/>
+            </StackPanel>
+            <TextBlock Text="Дата рождения" Grid.Column="1" Grid.Row="7"/>
+            <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="8">
+                <DatePicker x:Name="BirthDatePicker" SelectedDate="{Binding Path=Heart.Cat.Litter.Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}" 
+                    Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}"
+                    />
+                <TextBox Text="{Binding Path=Heart.Cat.Litter.Date, Mode=OneWay, Converter={local:DateOnlyConverter}}" IsReadOnly="True"
+                        Visibility="{Binding Data, Source={StaticResource VisibleIfNotEditInline}}"
+                         />
+            </StackPanel>
+        </Grid>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Однопомётники "/>
+            </StackPanel>
+            <DataGrid x:Name="SameLitterCatsDataGrid" ItemsSource="{Binding Heart.Cat.Litter.Cats}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}" 
+                  AutoGenerateColumns="False">
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="Breed.NameNat" >
+                        <TextBlock Text="{Binding Breed.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Breed.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Breed, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
+                            />
+                            <TextBox Text="{Binding Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Gender" >
+                        <TextBlock Text="{Binding Gender, Converter={local:GenderConverter}}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Gender">
+                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                            SelectedItem="{Binding Path=Gender, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Cattery.NameNat" >
+                        <TextBlock Text="{Binding Cattery.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Cattery.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
+                            />
+                            <TextBox Text="{Binding Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Порода" CellTemplate="{StaticResource Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Breed.NameNat}" />
+                    <DataGridTemplateColumn Header="Питомник" CellTemplate="{StaticResource Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Cattery.NameNat}" />
+                    <DataGridTextColumn Header="Имя" Binding="{Binding NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTemplateColumn Header="Пол" CellTemplate="{StaticResource Gender}" CellEditingTemplate="{StaticResource Editing.Gender}" />
+                    <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Титул" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <StatusBar DockPanel.Dock="Bottom" Width="auto">
+        </StatusBar>
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Помёты "/>
+                <TextBlock Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}">
+                    <Hyperlink Command="{Binding AddLitterCommand}" CommandParameter="{Binding Heart.Cat}">[Добавить]</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+            <DataGrid x:Name="LittersDataGrid" ItemsSource="{Binding Heart.LittersView}" 
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                  AutoGenerateColumns="False">
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="Date" >
+                        <TextBlock Text="{Binding Date}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Date">
+                        <DatePicker SelectedDate="{Binding Path=Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Female.Litter.Date" >
+                        <TextBlock Text="{Binding Female.Litter.Date}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Female.Litter.Date">
+                        <DatePicker SelectedDate="{Binding Path=Female.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Male.Litter.Date" >
+                        <TextBlock Text="{Binding Male.Litter.Date}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Male.Litter.Date">
+                        <DatePicker SelectedDate="{Binding Path=Male.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Female.Cattery.NameNat" >
+                        <TextBlock Text="{Binding Female.Cattery.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Female.Cattery.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
+                            />
+                            <TextBox Text="{Binding Female.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Male.Cattery.NameNat" >
+                        <TextBlock Text="{Binding Male.Cattery.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Male.Cattery.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
+                            />
+                            <TextBox Text="{Binding Male.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Female.Breed.NameNat" >
+                        <TextBlock Text="{Binding Female.Breed.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Female.Breed.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Breed, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
+                            />
+                            <TextBox Text="{Binding Female.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Male.Breed.NameNat" >
+                        <TextBlock Text="{Binding Male.Breed.NameNat}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Male.Breed.NameNat">
+                        <StackPanel>
+                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Breed, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
+                            />
+                            <TextBox Text="{Binding Male.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Female.Gender" >
+                        <TextBlock Text="{Binding Female.Gender, Converter={local:GenderConverter}}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Female.Gender">
+                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                            SelectedItem="{Binding Path=Female.Gender, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </DataTemplate>
+                    <DataTemplate x:Key="Male.Gender" >
+                        <TextBlock Text="{Binding Male.Gender, Converter={local:GenderConverter}}" />
+                    </DataTemplate>
+                    <DataTemplate x:Key="Editing.Male.Gender">
+                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                            SelectedItem="{Binding Path=Male.Gender, UpdateSourceTrigger=PropertyChanged}"
+                            >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </DataTemplate>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Номер" Binding="{Binding Order}" IsReadOnly="True"/>
+                    <DataGridTemplateColumn Header="Дата" CellTemplate="{StaticResource Date}" CellEditingTemplate="{StaticResource Editing.Date}" >
+                        <DataGridTemplateColumn.IsReadOnly>
+                            <MultiBinding Converter="{local:MultipleAndConverter}">
+                                <Binding Path="Data" Source="{StaticResource TrueIfReadOnly}"/>
+                            </MultiBinding>
+                        </DataGridTemplateColumn.IsReadOnly>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Самка:Порода" CellTemplate="{StaticResource Female.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Breed.NameNat}" />
+                    <DataGridTemplateColumn Header="Самка:Питомник" CellTemplate="{StaticResource Female.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Cattery.NameNat}" />
+                    <DataGridTemplateColumn Header="Самка:Дата рождения" CellTemplate="{StaticResource Female.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Female.Litter.Date}" />
+                    <DataGridTextColumn Header="Самка:Имя" Binding="{Binding Female.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Name" Binding="{Binding Female.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTemplateColumn Header="Самка:Пол" CellTemplate="{StaticResource Female.Gender}" CellEditingTemplate="{StaticResource Editing.Female.Gender}" />
+                    <DataGridTextColumn Header="Самка:Экстерьер" Binding="{Binding Female.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Титул" Binding="{Binding Female.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTemplateColumn Header="Самец:Порода" CellTemplate="{StaticResource Male.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Breed.NameNat}" />
+                    <DataGridTemplateColumn Header="Самец:Питомник" CellTemplate="{StaticResource Male.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Cattery.NameNat}" />
+                    <DataGridTemplateColumn Header="Самец:Дата рождения" CellTemplate="{StaticResource Male.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Male.Litter.Date}" />
+                    <DataGridTextColumn Header="Самец:Имя" Binding="{Binding Male.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Name" Binding="{Binding Male.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTemplateColumn Header="Самец:Пол" CellTemplate="{StaticResource Male.Gender}" CellEditingTemplate="{StaticResource Editing.Male.Gender}" />
+                    <DataGridTextColumn Header="Самец:Экстерьер" Binding="{Binding Male.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Титул" Binding="{Binding Male.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                </DataGrid.Columns>
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="SetParent" IsEnabled="{Binding Data, Source={StaticResource TrueIfEditInline}}" Click="MenuItem_Click">
+                            <MenuItem.Header>
+                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="SetParentHeader">
+                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem x:Name="ShowParent" Click="MenuItem_Click">
+                            <MenuItem.Header>
+                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentHeader">
+                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.Header>
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentIsEnabled">
+                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                        <MenuItem x:Name="AsLitter" Click="MenuItem_Click" Header="Использовать в фильтре">
+                            <MenuItem.IsEnabled>
+                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="AsLitterIsEnabled">
+                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.IsEnabled>
+                        </MenuItem>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+        </StackPanel>
+
+    </DockPanel>
+</Window>

@@ -2,29 +2,40 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-21T18:50:10                                          //
+// at 2022-12-22T18:29:21                                          //
 /////////////////////////////////////////////////////////////////////
 
 
 using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace CatsClient;
 
-public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
+public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
 {
 
-#region Projection classes;
+#region Projection classes
 
-    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, IProjector, IProjection<ViewCatHeartPoco>
+    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
     {
         private readonly ProjectionList<LitterPoco,ILitter> _selectedLitters;
 
-        public ViewCatHeartPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public ViewCatHeartPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        IViewCatHeart IProjection<IViewCatHeart>.Projector => Projector.As<IViewCatHeart>()!;
+
+#endregion Projectors;
+
+
 
         public EditKind EditKind 
         {
@@ -57,14 +68,14 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
             _selectedLitters = new(Projector.SelectedLitters);
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
         public void LittersSelectionChanged(Object sender, EventArgs e)
@@ -75,10 +86,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     }
-#endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -138,7 +149,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
     
     
-#region Fields;
+#region Fields
 
     private EditKind _editKind = default!;
     private CatPoco _cat = default!;
@@ -150,17 +161,29 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Projection Properties;
+#region Projection Properties
 
     private ViewCatHeartIViewCatHeartProjection? _asViewCatHeartIViewCatHeartProjection = null;
 
-    public ViewCatHeartIViewCatHeartProjection AsViewCatHeartIViewCatHeartProjection => _asViewCatHeartIViewCatHeartProjection ??= new(this);
+    private ViewCatHeartIViewCatHeartProjection AsViewCatHeartIViewCatHeartProjection => _asViewCatHeartIViewCatHeartProjection ??= new(this);
 
 #endregion Projection Properties;
 
 
     
-#region Properties;
+#region Projectors
+
+    public ViewCatHeartPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    IViewCatHeart IProjection<IViewCatHeart>.Projector => Projector.As<IViewCatHeart>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public virtual EditKind EditKind
     {
         get => _editKind;
@@ -229,15 +252,15 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(ViewCatHeartIViewCatHeartProjection) || type == typeof(IViewCatHeart))
+        if(type == typeof(IViewCatHeart))
         {
             return AsViewCatHeartIViewCatHeartProjection;
         }
@@ -250,7 +273,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Collections;
+#region Collections
 
     protected override bool IsCollectionChanged(string property)
     {
@@ -298,7 +321,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Poco Changed;
+#region Poco Changed
 
     protected virtual void CatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cat));
 
@@ -317,7 +340,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetEditKindValue(object target)
     {
@@ -327,7 +350,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
     private static void SetEditKindValue(object target, object? value)
     {
         ((ViewCatHeartPoco)target).EditKind = (EditKind)value!;
+
     }
+
     private static object? GetCatValue(object target)
     {
         return ((ViewCatHeartPoco)target).Cat;
@@ -335,8 +360,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetCatValue(object target, object? value)
     {
-        ((ViewCatHeartPoco)target).Cat = (CatPoco)value!;
+        ((ViewCatHeartPoco)target).Cat = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetLittersViewValue(object target)
     {
         return ((ViewCatHeartPoco)target).LittersView;
@@ -345,11 +372,14 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjector
     private static void SetLittersViewValue(object target, object? value)
     {
         ((ViewCatHeartPoco)target).LittersView = (Object)value!;
+
     }
+
     private static object? GetSelectedLittersValue(object target)
     {
         return ((ViewCatHeartPoco)target).SelectedLitters;
     }
+
 
 
 #endregion Properties Accessors;

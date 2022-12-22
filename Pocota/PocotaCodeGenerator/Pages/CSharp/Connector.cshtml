@@ -1,0 +1,77 @@
+﻿@page
+@using Net.Leksi.Pocota.Client;
+@using Net.Leksi.Pocota.Common;
+@model ClassModel
+@Html.Partial("HeaderComment", Model)
+
+@foreach(string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+
+namespace @Model.NamespaceValue;
+
+public class @Model.ClassName : @typeof(Connector).Name
+{
+    public @Model.ClassName@Html.Raw("(IServiceProvider services) : base(services) { }")
+
+    @foreach (MethodModel mm in Model.Methods)
+    {
+        foreach(AttributeModel am in mm.Attributes)
+        {
+            <text>    [@Html.Raw(am.ToString())]
+</text>
+        }
+        <text>    public async @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw("Async(")@Html.Raw(
+            string.Join(
+                ", ", 
+                mm.Parameters.Select(v => $"{(!string.IsNullOrEmpty(v.Attribute) ? v.Attribute : string.Empty)}{v.Type} {v.Name}")
+        ))) 
+    {
+        try 
+        {
+            IPocoContext @mm.PocoContextVariable = _services.GetRequiredService<IPocoContext>();
+            JsonSerializerOptions @mm.JsonSerializerOptionsVariable = 
+                    @mm.PocoContextVariable@Html.Raw(".")BindJsonSerializerOptions(@mm.Parameters.Last().Name@Html.Raw("?.")RequestJsonSerializerOptions, JsonSerializerOptionsKind.@mm.SerializerOptionsKind);      
+            @foreach(FilterModel fm in mm.Filters)
+            {
+                <text>            if (@fm.Name is { })
+            {
+                @mm.PocoContextVariable@Html.Raw(".")AddJsonConverters<@fm.Type>(@mm.JsonSerializerOptionsVariable);
+            }
+</text>
+            }
+            @foreach(FilterModel fm in mm.Filters)
+            {
+                <text>            @fm.Type1 @fm.Variable = @fm.Name is null 
+                    ? "null" 
+                    : HttpUtility.UrlEncode(JsonSerializer.Serialize<@fm.Type>(@fm.Name, @mm.JsonSerializerOptionsVariable));
+</text>
+            }
+            string @mm.QueryVariable = @Html.Raw(mm.QueryString);
+            @mm.Parameters.Last().Name!@Html.Raw(".")HttpRequest = new(HttpMethod.@mm.HttpMethod, query);
+            @if(mm.HasBody)
+            {
+                <text>            @mm.Parameters.Last().Name!@Html.Raw(".HttpRequest.Content") = new MultipartContent();
+                @for(int i = 0; i < mm.CallParameters.Count; ++i)
+                {
+                    <text>            {
+                StringContent @mm.StringContentVariable = new(@mm.CallParameters[i] is null ? "null" : @mm.CallParameters[i].ToString());
+                @mm.Parameters.Last().Name@Html.Raw(".HttpRequest.")Headers.Add("ContentType", "application/json");
+                ((MultipartFormDataContent)@mm.Parameters.Last().Name@Html.Raw(".HttpRequest.Content")).Add(@mm.StringContentVariable, @Html.Raw($"\"{@mm.Parameters[i].Name}\""));
+            }
+</text>
+                }
+</text>
+            }
+            await @Html.Raw($"GetResponseAsync{(mm.IsEnumerable ? "Enumerator" : string.Empty)}<{mm.DeserilizedType}>(")@mm.Parameters.Last().Name!);
+        }
+        catch(Exception){
+            throw;
+        }
+    }
+
+</text>
+    }
+}

@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -85,17 +85,17 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is CatPoco obj && obj.Cattery is IEntity entity)
             {
-                return (((IEntity)((CatPoco)_source.Target).Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery;
+                return (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery;
             }
             return _idCattery;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is CatPoco obj && obj.Cattery is IEntity entity)
             {
-                (((IEntity)((CatPoco)_source.Target).Cattery).PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
+                (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
             }
             else 
             {
@@ -105,11 +105,15 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     }
 
 
+    public Type SourceType => typeof(CatPoco);
+
+    public bool IsAssigned => IdCat != default(Int32) && IdCattery != default(Int32);
+
     public IEnumerable<string> Names => s_names.Select(n => n);
 
     public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
-
+    public IEnumerable<string> NotAssignedFields => GetNotAssignedFields();
 
     public CatPrimaryKey(IServiceProvider services)
     {
@@ -129,13 +133,17 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 
     public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
     {
+        if(!other.IsAssigned)
+        {
+            throw new ArgumentException($"{nameof(other)} must be assigned!");
+        }
         if(other is not CatPrimaryKey)
         {
             throw new ArgumentException($"{nameof(other)} must be the CatPrimaryKey!");
         }
         foreach(string name in s_names)
         {
-            other[name] = this[name];
+            this[name] = other[name];
         }
     }
 
@@ -149,6 +157,20 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
                 return true;
         }
         return false;
+    }
+
+    private IEnumerable<string> GetNotAssignedFields()
+    {
+        if (IdCat == default(Int32))
+        {
+            yield return "IdCat";
+        }
+
+        if (IdCattery == default(Int32))
+        {
+            yield return "IdCattery";
+        }
+
     }
 
 }

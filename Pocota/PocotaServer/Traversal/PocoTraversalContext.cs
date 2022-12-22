@@ -1,11 +1,8 @@
-﻿using Net.Leksi.Pocota.Builder;
-using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Server;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
-namespace Net.Leksi.Pocota.Traversal;
+namespace Net.Leksi.Pocota.Server;
 
 internal class PocoTraversalContext : IPocoTraversalContext
 {
@@ -18,7 +15,7 @@ internal class PocoTraversalContext : IPocoTraversalContext
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
 
-    private HashSet<object[]>? _highLevelListObjects;
+    private HashSet<IPrimaryKey>? _highLevelListObjects;
 
     private BuildingContext? _buildingContext = null;
 
@@ -112,35 +109,30 @@ internal class PocoTraversalContext : IPocoTraversalContext
         return !set.Add(propertyInfo);
     }
 
-    internal object[]? EncodeKeyRing<T>(IPrimaryKey primaryKey) where T : class
+    internal object[]? EncodePrimaryKey<T>(IPrimaryKey primaryKey) where T : class
     {
-        return null;
-        //if (primaryKey is null)
-        //{
-        //    throw new ArgumentNullException(nameof(primaryKey));
-        //}
-        //if (!typeof(T).IsAssignableFrom(primaryKey.SourceType))
-        //{
-        //    throw new ArgumentException(nameof(primaryKey));
-        //}
-        //string reference = GetReference(typeof(T), out bool alreadyExists);
-        //if (alreadyExists)
-        //{
-        //    return new object[] { primaryKey.Items, reference };
-        //}
-        //return new object[] { primaryKey.Items, reference, new object[] { typeof(T).ToString(), primaryKey.SourceType.ToString() } };
+        if (primaryKey is null)
+        {
+            throw new ArgumentNullException(nameof(primaryKey));
+        }
+        string reference = GetReference(typeof(T), out bool alreadyExists);
+        if (alreadyExists)
+        {
+            return new object[] { primaryKey.Items.ToArray(), reference };
+        }
+        return new object[] { primaryKey.Items.ToArray(), reference, new object[] { typeof(T).ToString(), primaryKey.SourceType.ToString() } };
     }
 
     internal bool IsHighLevelListUnique(IPrimaryKey primaryKey)
     {
-        //if (HighLevelListUniqueness)
-        //{
-        //    if(_highLevelListObjects is null)
-        //    {
-        //        _highLevelListObjects = new HashSet<object[]>(ObjectArrayEqualityComparer.Instance);
-        //    }
-        //    return _highLevelListObjects.Add(primaryKey.Items);
-        //}
+        if (HighLevelListUniqueness)
+        {
+            if (_highLevelListObjects is null)
+            {
+                _highLevelListObjects = new HashSet<IPrimaryKey>();
+            }
+            return _highLevelListObjects.Add(primaryKey);
+        }
         return true;
     }
 }

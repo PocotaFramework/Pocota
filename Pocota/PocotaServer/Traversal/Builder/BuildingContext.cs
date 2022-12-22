@@ -1,10 +1,7 @@
-﻿using Net.Leksi.Pocota.Server;
-using Net.Leksi.Pocota.Traversal;
-using Net.Leksi.Pocota.Traversal.Builder;
-using System.Data.Common;
+﻿using System.Data.Common;
 using System.Text.RegularExpressions;
 
-namespace Net.Leksi.Pocota.Builder;
+namespace Net.Leksi.Pocota.Server;
 
 internal class BuildingContext
 {
@@ -15,7 +12,7 @@ internal class BuildingContext
 
     internal TreeWalkerBufferWriter? BufferWriter { get; set; }
 
-    internal Dictionary<string, object> PresetKeys { get; init; } = new();
+    internal Dictionary<string, object> Presets { get; init; } = new();
 
     internal string? Name { get; set; } = null;
 

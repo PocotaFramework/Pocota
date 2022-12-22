@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -79,17 +79,17 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
             {
-                return (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCat;
+                return (entity.PrimaryKey as CatPrimaryKey)!.IdCat;
             }
             return _idFemale;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
             {
-                (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCat = value;
+                (entity.PrimaryKey as CatPrimaryKey)!.IdCat = value;
             }
             else 
             {
@@ -102,17 +102,17 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
             {
-                return (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCattery;
+                return (entity.PrimaryKey as CatPrimaryKey)!.IdCattery;
             }
             return _idFemaleCattery;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
             {
-                (((IEntity)((LitterPoco)_source.Target).Female).PrimaryKey as CatPrimaryKey)!.IdCattery = value;
+                (entity.PrimaryKey as CatPrimaryKey)!.IdCattery = value;
             }
             else 
             {
@@ -125,28 +125,32 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj)
             {
-                return ((LitterPoco)_source.Target).Order;
+                return obj.Order;
             }
             return _idLitter;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is LitterPoco obj)
             {
-                ((LitterPoco)_source.Target).Order = value;
+                obj.Order = value;
             }
             _idLitter = value;
         }
     }
 
 
+    public Type SourceType => typeof(LitterPoco);
+
+    public bool IsAssigned => IdFemale != default(Int32) && IdFemaleCattery != default(Int32) && IdLitter != default(Int32);
+
     public IEnumerable<string> Names => s_names.Select(n => n);
 
     public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
-
+    public IEnumerable<string> NotAssignedFields => GetNotAssignedFields();
 
     public LitterPrimaryKey(IServiceProvider services)
     {
@@ -166,13 +170,17 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 
     public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
     {
+        if(!other.IsAssigned)
+        {
+            throw new ArgumentException($"{nameof(other)} must be assigned!");
+        }
         if(other is not LitterPrimaryKey)
         {
             throw new ArgumentException($"{nameof(other)} must be the LitterPrimaryKey!");
         }
         foreach(string name in s_names)
         {
-            other[name] = this[name];
+            this[name] = other[name];
         }
     }
 
@@ -190,6 +198,25 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
                 return true;
         }
         return false;
+    }
+
+    private IEnumerable<string> GetNotAssignedFields()
+    {
+        if (IdFemale == default(Int32))
+        {
+            yield return "IdFemale";
+        }
+
+        if (IdFemaleCattery == default(Int32))
+        {
+            yield return "IdFemaleCattery";
+        }
+
+        if (IdLitter == default(Int32))
+        {
+            yield return "IdLitter";
+        }
+
     }
 
 }

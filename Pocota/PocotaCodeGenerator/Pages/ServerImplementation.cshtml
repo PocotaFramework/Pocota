@@ -24,19 +24,21 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     
 
-    @Html.Raw("#region Projection classes");
+@Html.Raw("#region Projection classes")
 
     @foreach (ClassModel model in Model.Classes)
     {
         @Html.Partial("Projection", model)
     }
-    @Html.Raw("#endregion Projection classes");
+@Html.Raw("#endregion Projection classes")
 
     @Html.Partial("InitProperties", Model)
 
     @Html.Partial("Fields", Model)
     
     @Html.Partial("ProjectionsProperties", Model)
+    
+    @Html.Partial("Projectors", Model)
     
     @Html.Partial("Properties", Model)
 

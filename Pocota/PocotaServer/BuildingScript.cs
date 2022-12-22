@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Builder;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace Net.Leksi.Pocota;
+namespace Net.Leksi.Pocota.Server;
 
 public class BuildingScript
 {
@@ -55,7 +53,7 @@ public class BuildingScript
             {
                 if(!SetValue(args.PathSelector!, args, null))
                 {
-                    foreach (string key in args.PrimaryKey.Names.Where(name => args.PrimaryKey[name] == default))
+                    foreach (string key in args.PrimaryKey.NotAssignedFields)
                     {
                         string keyPath = Regex.Replace($"{args.PathSelector}/{key}", "/+", "/");
                         if (!SetValue(keyPath, args, key))
@@ -63,7 +61,7 @@ public class BuildingScript
                             success = false;
                             break;
                         }
-                        if (args.PrimaryKey[key] == default)
+                        if (args.PrimaryKey.NotAssignedFields.Contains(key))
                         {
                             args.Skip();
                             break;

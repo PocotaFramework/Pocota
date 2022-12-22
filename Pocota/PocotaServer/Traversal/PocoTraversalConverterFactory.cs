@@ -1,10 +1,7 @@
-﻿using Net.Leksi.Pocota.Builder;
-using Net.Leksi.Pocota.Json;
-using Net.Leksi.Pocota.Server;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Net.Leksi.Pocota.Traversal;
+namespace Net.Leksi.Pocota.Server;
 
 internal class PocoTraversalConverterFactory : JsonConverterFactory
 {

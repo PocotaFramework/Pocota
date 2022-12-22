@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatteryPrimaryKey                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -75,11 +75,15 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
     }
 
 
+    public Type SourceType => typeof(CatteryPoco);
+
+    public bool IsAssigned => IdCattery != default(Int32);
+
     public IEnumerable<string> Names => s_names.Select(n => n);
 
     public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
-
+    public IEnumerable<string> NotAssignedFields => GetNotAssignedFields();
 
     public CatteryPrimaryKey(IServiceProvider services)
     {
@@ -99,13 +103,17 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 
     public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
     {
+        if(!other.IsAssigned)
+        {
+            throw new ArgumentException($"{nameof(other)} must be assigned!");
+        }
         if(other is not CatteryPrimaryKey)
         {
             throw new ArgumentException($"{nameof(other)} must be the CatteryPrimaryKey!");
         }
         foreach(string name in s_names)
         {
-            other[name] = this[name];
+            this[name] = other[name];
         }
     }
 
@@ -116,6 +124,15 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
         {
         }
         return false;
+    }
+
+    private IEnumerable<string> GetNotAssignedFields()
+    {
+        if (IdCattery == default(Int32))
+        {
+            yield return "IdCattery";
+        }
+
     }
 
 }

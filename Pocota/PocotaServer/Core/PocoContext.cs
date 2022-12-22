@@ -1,8 +1,5 @@
-﻿using Net.Leksi.Pocota.Builder;
-using Net.Leksi.Pocota.Common;
+﻿using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
-using Net.Leksi.Pocota.Traversal;
-using Net.Leksi.Pocota.Traversal.Builder;
 using System.Data.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -112,9 +109,9 @@ public class PocoContext : IPocoContext
 
     internal T FindOrCreateEntity<T>(IPrimaryKey<T> key) where T : class
     {
-        if(key.Items.Any(v => v == default))
+        if(!key.IsAssigned)
         {
-            throw new ArgumentException($"Not all fields at {nameof(key)} are set!");
+            throw new ArgumentException($"{nameof(key)} must be assigned!");
         }
         if (_cache.TryGetValue(key, out IPrimaryKey? cachedKey))
         {
@@ -126,7 +123,7 @@ public class PocoContext : IPocoContext
 
         }
         T result = _services.GetRequiredService<T>();
-        IPrimaryKey newKey = ((IEntity)((IProjector)result).As(_core.GetActualType(typeof(T))!)!).PrimaryKey;
+        IPrimaryKey newKey = ((IEntity)((IProjection)result).Projector).PrimaryKey;
         newKey.Assign(key);
         _cache.Add(newKey);
         return result;

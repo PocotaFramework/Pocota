@@ -1,11 +1,9 @@
-﻿using Net.Leksi.Pocota.Server;
-using Net.Leksi.Pocota.Server.Generic;
-using Net.Leksi.Pocota.Traversal;
+﻿using Net.Leksi.Pocota.Server.Generic;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Net.Leksi.Pocota.Json;
+namespace Net.Leksi.Pocota.Server;
 
 internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 {
@@ -210,7 +208,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             if (_hasKey && primaryKey is { })
             {
                 writer.WritePropertyName(PocoTraversalConverterFactory.Key);
-                JsonSerializer.Serialize<object[]?>(writer, context.EncodeKeyRing<T>(primaryKey!));
+                JsonSerializer.Serialize<object[]?>(writer, context.EncodePrimaryKey<T>(primaryKey!));
             }
         }
         foreach (PropertyInfo pi in typeof(T).GetProperties())

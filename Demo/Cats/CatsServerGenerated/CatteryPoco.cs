@@ -2,28 +2,39 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Model;
 
-public class CatteryPoco: EntityBase, IPoco, IProjector
+public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
 {
     public static readonly Type PrimaryKeyType = typeof(CatteryPrimaryKey);
     
 
-    #region Projection classes;
+#region Projection classes
 
 
-    public class CatteryICatteryProjection: ICattery, IProjector, IProjection<CatteryPoco>
+    public class CatteryICatteryProjection: ICattery, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
 
-        public CatteryPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public CatteryPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        ICattery IProjection<ICattery>.Projector => Projector.As<ICattery>()!;
+
+#endregion Projectors;
+
+
 
         public String? NameEng 
         {
@@ -43,24 +54,24 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
             Projector = projector;
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
 
 
 
     }
-    #endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -94,7 +105,7 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Fields;
+#region Fields
 
     private String? _nameEng = default;
     private bool _loaded_nameEng = false;
@@ -105,17 +116,29 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
 
     
     
-#region Projection Properties;
+#region Projection Properties
 
     private CatteryICatteryProjection? _asCatteryICatteryProjection = null;
 
-    public CatteryICatteryProjection AsCatteryICatteryProjection => _asCatteryICatteryProjection ??= new(this);
+    private CatteryICatteryProjection AsCatteryICatteryProjection => _asCatteryICatteryProjection ??= new(this);
 
 #endregion Projection Properties;
 
     
     
-#region Properties;
+#region Projectors
+
+    public CatteryPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    ICattery IProjection<ICattery>.Projector => Projector.As<ICattery>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public String? NameEng 
     { 
         get => _nameEng; 
@@ -146,15 +169,15 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(CatteryICatteryProjection) || type == typeof(ICattery))
+        if(type == typeof(ICattery))
         {
             return AsCatteryICatteryProjection;
         }
@@ -166,7 +189,7 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
 
 
     
-#region IPoco;
+#region IPoco
 
     void IPoco.Clear()
     {
@@ -220,7 +243,7 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetNameEngValue(object target)
     {
@@ -230,7 +253,9 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
     private static void SetNameEngValue(object target, object? value)
     {
         ((CatteryPoco)target).NameEng = (String)value!;
+
     }
+
     private static object? GetNameNatValue(object target)
     {
         return ((CatteryPoco)target).NameNat;
@@ -239,7 +264,9 @@ public class CatteryPoco: EntityBase, IPoco, IProjector
     private static void SetNameNatValue(object target, object? value)
     {
         ((CatteryPoco)target).NameNat = (String)value!;
+
     }
+
 
 #endregion Properties Accessors;
 

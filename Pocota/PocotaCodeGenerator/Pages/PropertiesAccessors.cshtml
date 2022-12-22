@@ -1,7 +1,7 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@Html.Raw("#region Properties Accessors");
+@Html.Raw("#region Properties Accessors")
 
     @foreach (PropertyModel pm in Model.Properties)
     {    
@@ -14,10 +14,21 @@
         {
             <text>    private static void @Html.Raw($"Set{pm.Name}Value(object target, object? value)")
     {
-        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = ({pm.Type})value!");
+            @if(pm.IsProjector)
+            {
+                <text>        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = ({pm.Type})(value as IProjection)?.Projector!");
+</text>
+            }
+            else 
+            {
+                <text>        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = ({pm.Type})value!");
+</text>
+            }
+
     }
 </text>
         }
+
 </text>
     }
 

@@ -7,7 +7,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
-namespace Net.Leksi.Pocota.Client.Http;
+namespace Net.Leksi.Pocota.Client;
 
 public class Connector
 {

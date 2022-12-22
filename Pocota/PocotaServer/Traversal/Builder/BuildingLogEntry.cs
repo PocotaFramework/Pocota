@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota.Builder;
+﻿namespace Net.Leksi.Pocota.Server;
 
 internal class BuildingLogEntry
 {

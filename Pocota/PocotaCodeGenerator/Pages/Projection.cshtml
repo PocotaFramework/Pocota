@@ -10,7 +10,8 @@
 </text>
         }
 
-        public @Model.Parent!.ClassName Projector  { get; init; }
+        @Html.Partial("Projectors", Model, new ViewDataDictionary(ViewData) {{"projections", "yes"}})
+
 
         @foreach(PropertyModel pm in Model.Properties)
         {
@@ -54,14 +55,14 @@
             }
         }
 
-        I? @Html.Raw("IProjector.As<I>() where I : class")
+        public I? @Html.Raw("As<I>() where I : class")
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
         @foreach(MethodModel mm in Model.Methods)

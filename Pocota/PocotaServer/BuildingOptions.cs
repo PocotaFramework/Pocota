@@ -1,7 +1,7 @@
 ﻿using System.Data.Common;
 using System.Text.Json;
 
-namespace Net.Leksi.Pocota;
+namespace Net.Leksi.Pocota.Server;
 
 public class BuildingOptions
 {

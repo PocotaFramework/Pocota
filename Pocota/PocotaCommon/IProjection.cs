@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public interface IProjection<T>
+public interface IProjection
 {
-    T Projector { get; }
+    IProjector Projector { get; }
 }

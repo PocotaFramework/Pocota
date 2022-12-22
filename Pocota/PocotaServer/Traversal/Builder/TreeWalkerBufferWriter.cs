@@ -1,12 +1,7 @@
 ﻿using System.Buffers;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
-[assembly: InternalsVisibleTo("Net.Leksi.Pocota.UnitTests")]
-
-namespace Net.Leksi.Pocota.Builder;
+namespace Net.Leksi.Pocota.Server;
 
 
 internal class TreeWalkerBufferWriter : IBufferWriter<byte>

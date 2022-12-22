@@ -2,29 +2,40 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
 using CatsCommon;
 using CatsCommon.Model;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Filters;
 
-public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
+public class CatFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
 {
     
 
-    #region Projection classes;
+#region Projection classes
 
 
-    public class CatFilterICatFilterProjection: ICatFilter, IProjector, IProjection<CatFilterPoco>
+    public class CatFilterICatFilterProjection: ICatFilter, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
     {
 
-        public CatFilterPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public CatFilterPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        ICatFilter IProjection<ICatFilter>.Projector => Projector.As<ICatFilter>()!;
+
+#endregion Projectors;
+
+
 
         public IBreed? Breed 
         {
@@ -122,24 +133,24 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
             Projector = projector;
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
 
 
 
     }
-    #endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -342,7 +353,7 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Fields;
+#region Fields
 
     private BreedPoco? _breed = default;
     private bool _loaded_breed = false;
@@ -379,17 +390,29 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     
     
-#region Projection Properties;
+#region Projection Properties
 
     private CatFilterICatFilterProjection? _asCatFilterICatFilterProjection = null;
 
-    public CatFilterICatFilterProjection AsCatFilterICatFilterProjection => _asCatFilterICatFilterProjection ??= new(this);
+    private CatFilterICatFilterProjection AsCatFilterICatFilterProjection => _asCatFilterICatFilterProjection ??= new(this);
 
 #endregion Projection Properties;
 
     
     
-#region Properties;
+#region Projectors
+
+    public CatFilterPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    ICatFilter IProjection<ICatFilter>.Projector => Projector.As<ICatFilter>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public BreedPoco? Breed 
     { 
         get => _breed; 
@@ -548,15 +571,15 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(CatFilterICatFilterProjection) || type == typeof(ICatFilter))
+        if(type == typeof(ICatFilter))
         {
             return AsCatFilterICatFilterProjection;
         }
@@ -568,7 +591,7 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region IPoco;
+#region IPoco
 
     void IPoco.Clear()
     {
@@ -713,7 +736,7 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetBreedValue(object target)
     {
@@ -722,8 +745,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetBreedValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Breed = (BreedPoco)value!;
+        ((CatFilterPoco)target).Breed = (BreedPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetCatteryValue(object target)
     {
         return ((CatFilterPoco)target).Cattery;
@@ -731,8 +756,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetCatteryValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Cattery = (CatteryPoco)value!;
+        ((CatFilterPoco)target).Cattery = (CatteryPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetBornAfterValue(object target)
     {
         return ((CatFilterPoco)target).BornAfter;
@@ -741,7 +768,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetBornAfterValue(object target, object? value)
     {
         ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
+
     }
+
     private static object? GetBornBeforeValue(object target)
     {
         return ((CatFilterPoco)target).BornBefore;
@@ -750,7 +779,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetBornBeforeValue(object target, object? value)
     {
         ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
+
     }
+
     private static object? GetNameRegexValue(object target)
     {
         return ((CatFilterPoco)target).NameRegex;
@@ -759,7 +790,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetNameRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).NameRegex = (String)value!;
+
     }
+
     private static object? GetGenderValue(object target)
     {
         return ((CatFilterPoco)target).Gender;
@@ -768,7 +801,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetGenderValue(object target, object? value)
     {
         ((CatFilterPoco)target).Gender = (Gender)value!;
+
     }
+
     private static object? GetChildValue(object target)
     {
         return ((CatFilterPoco)target).Child;
@@ -776,8 +811,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetChildValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Child = (CatPoco)value!;
+        ((CatFilterPoco)target).Child = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetSelfValue(object target)
     {
         return ((CatFilterPoco)target).Self;
@@ -785,8 +822,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetSelfValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Self = (CatPoco)value!;
+        ((CatFilterPoco)target).Self = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetMotherValue(object target)
     {
         return ((CatFilterPoco)target).Mother;
@@ -794,8 +833,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetMotherValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Mother = (CatPoco)value!;
+        ((CatFilterPoco)target).Mother = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetFatherValue(object target)
     {
         return ((CatFilterPoco)target).Father;
@@ -803,8 +844,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetFatherValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Father = (CatPoco)value!;
+        ((CatFilterPoco)target).Father = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetAncestorValue(object target)
     {
         return ((CatFilterPoco)target).Ancestor;
@@ -812,8 +855,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetAncestorValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Ancestor = (CatPoco)value!;
+        ((CatFilterPoco)target).Ancestor = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetDescendantValue(object target)
     {
         return ((CatFilterPoco)target).Descendant;
@@ -821,8 +866,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetDescendantValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Descendant = (CatPoco)value!;
+        ((CatFilterPoco)target).Descendant = (CatPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetLitterValue(object target)
     {
         return ((CatFilterPoco)target).Litter;
@@ -830,8 +877,10 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
 
     private static void SetLitterValue(object target, object? value)
     {
-        ((CatFilterPoco)target).Litter = (LitterPoco)value!;
+        ((CatFilterPoco)target).Litter = (LitterPoco)(value as IProjection)?.Projector!;
+
     }
+
     private static object? GetExteriorRegexValue(object target)
     {
         return ((CatFilterPoco)target).ExteriorRegex;
@@ -840,7 +889,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetExteriorRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).ExteriorRegex = (String)value!;
+
     }
+
     private static object? GetTitleRegexValue(object target)
     {
         return ((CatFilterPoco)target).TitleRegex;
@@ -849,7 +900,9 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetTitleRegexValue(object target, object? value)
     {
         ((CatFilterPoco)target).TitleRegex = (String)value!;
+
     }
+
 
 #endregion Properties Accessors;
 

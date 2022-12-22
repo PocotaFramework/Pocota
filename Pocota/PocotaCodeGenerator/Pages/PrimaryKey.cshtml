@@ -87,18 +87,18 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(_source.Target is {})
+                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
             {
-                return @Html.Raw($"(((IEntity)(({Model.ReferencedClass})_source.Target).{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
+                return @Html.Raw($"(entity.PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
             }
             return @fieldName;
 </text>
             }
             else if(pkm.Property is {})
             {
-            <text>            if(_source.Target is {})
+            <text>            if(_source.Target is @Model.ReferencedClass obj)
             {
-                return @Html.Raw($"(({Model.ReferencedClass})_source.Target).{pkm.Property}");
+                return @Html.Raw($"obj.{pkm.Property}");
             }
             return @fieldName;
 </text>
@@ -113,9 +113,9 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(_source.Target is {})
+                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
             {
-                @Html.Raw($"(((IEntity)(({Model.ReferencedClass})_source.Target).{pkm.Property}).PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
+                @Html.Raw($"(entity.PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
             }
             else 
             {
@@ -125,9 +125,9 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             else if(pkm.Property is {})
             {
-                <text>            if(_source.Target is {})
+                <text>            if(_source.Target is @Model.ReferencedClass obj)
             {
-                @Html.Raw($"(({Model.ReferencedClass})_source.Target).{pkm.Property}") = value;
+                @Html.Raw($"obj.{pkm.Property}") = value;
             }
             @fieldName = value;
 </text>
@@ -143,11 +143,15 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
 
+    public Type SourceType => typeof(@Model.ReferencedClass);
+
+    public bool IsAssigned => @Html.Raw(string.Join(" && ", Model.PrimaryKeys.Select(pkm => $"{pkm.Name} != default({pkm.Type})")));
+
     public @Html.Raw("IEnumerable<string>") Names => s_names.Select(n => n);
 
     public @Html.Raw("IEnumerable<object?>") Items => s_names.Select(n => this[n]);
 
-
+    public @Html.Raw("IEnumerable<string>") NotAssignedFields => GetNotAssignedFields();
 
     public @Html.Raw($"{Model.ClassName}(IServiceProvider services)")
     {
@@ -167,13 +171,17 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
     {
+        if(!other.IsAssigned)
+        {
+            throw new ArgumentException($"{nameof(other)} must be assigned!");
+        }
         if(other is not @Html.Raw(Model.ClassName))
         {
             throw new ArgumentException($"{nameof(other)} must be the @Html.Raw(Model.ClassName)!");
         }
         foreach(string name in s_names)
         {
-            other[name] = this[name];
+            this[name] = other[name];
         }
     }
 
@@ -203,6 +211,19 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
             }
         }
         return false;
+    }
+
+    private IEnumerable<string> GetNotAssignedFields()
+    {
+        @foreach (PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
+        {
+            <text>        if (@pkm.Name == default(@Html.Raw(pkm.Type)))
+        {
+            yield return "@pkm.Name";
+        }
+
+</text>
+        }
     }
 
 }

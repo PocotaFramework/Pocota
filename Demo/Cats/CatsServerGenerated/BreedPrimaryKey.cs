@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -72,17 +72,17 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is BreedPoco obj)
             {
-                return ((BreedPoco)_source.Target).Code;
+                return obj.Code;
             }
             return _idBreed;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is BreedPoco obj)
             {
-                ((BreedPoco)_source.Target).Code = value;
+                obj.Code = value;
             }
             _idBreed = value;
         }
@@ -92,28 +92,32 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
     {
         get 
         {
-            if(_source.Target is {})
+            if(_source.Target is BreedPoco obj)
             {
-                return ((BreedPoco)_source.Target).Group;
+                return obj.Group;
             }
             return _idGroup;
         }
         set
         {
-            if(_source.Target is {})
+            if(_source.Target is BreedPoco obj)
             {
-                ((BreedPoco)_source.Target).Group = value;
+                obj.Group = value;
             }
             _idGroup = value;
         }
     }
 
 
+    public Type SourceType => typeof(BreedPoco);
+
+    public bool IsAssigned => IdBreed != default(String) && IdGroup != default(String);
+
     public IEnumerable<string> Names => s_names.Select(n => n);
 
     public IEnumerable<object?> Items => s_names.Select(n => this[n]);
 
-
+    public IEnumerable<string> NotAssignedFields => GetNotAssignedFields();
 
     public BreedPrimaryKey(IServiceProvider services)
     {
@@ -133,13 +137,17 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     public void Assign(Net.Leksi.Pocota.Server.IPrimaryKey other)
     {
+        if(!other.IsAssigned)
+        {
+            throw new ArgumentException($"{nameof(other)} must be assigned!");
+        }
         if(other is not BreedPrimaryKey)
         {
             throw new ArgumentException($"{nameof(other)} must be the BreedPrimaryKey!");
         }
         foreach(string name in s_names)
         {
-            other[name] = this[name];
+            this[name] = other[name];
         }
     }
 
@@ -156,6 +164,20 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
                 return true;
         }
         return false;
+    }
+
+    private IEnumerable<string> GetNotAssignedFields()
+    {
+        if (IdBreed == default(String))
+        {
+            yield return "IdBreed";
+        }
+
+        if (IdGroup == default(String))
+        {
+            yield return "IdGroup";
+        }
+
     }
 
 }

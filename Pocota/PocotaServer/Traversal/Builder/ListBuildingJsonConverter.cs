@@ -1,10 +1,8 @@
-﻿using Net.Leksi.Pocota.Server;
-using Net.Leksi.Pocota.Traversal;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Net.Leksi.Pocota.Builder;
+namespace Net.Leksi.Pocota.Server;
 
 internal class ListBuildingJsonConverter<T> : JsonConverter<T> where T : class
 {

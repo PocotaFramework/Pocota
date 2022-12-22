@@ -44,7 +44,10 @@ public static class CatsServerExtensions
             DateTime start = DateTime.Now;
             if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
             {
-                start = DateTime.Parse(context.Request.Headers[Constants.RequestStartTimeHeaderName][0]);
+                if(!DateTime.TryParse(context.Request.Headers[Constants.RequestStartTimeHeaderName][0], out start))
+                {
+                    start = DateTime.Now;
+                }
                 Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} started: {start:O}");
             }
             var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();

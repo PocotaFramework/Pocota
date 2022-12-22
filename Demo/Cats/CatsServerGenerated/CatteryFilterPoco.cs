@@ -2,27 +2,38 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-21T18:50:10                                  //
+// at 2022-12-22T18:29:21                                  //
 /////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Filters;
 
-public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
+public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
     
 
-    #region Projection classes;
+#region Projection classes
 
 
-    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjector, IProjection<CatteryFilterPoco>
+    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
     {
 
-        public CatteryFilterPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public CatteryFilterPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        ICatteryFilter IProjection<ICatteryFilter>.Projector => Projector.As<ICatteryFilter>()!;
+
+#endregion Projectors;
+
+
 
         public String? SearchRegex 
         {
@@ -36,24 +47,24 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
             Projector = projector;
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
 
 
 
     }
-    #endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -74,7 +85,7 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Fields;
+#region Fields
 
     private String? _searchRegex = default;
     private bool _loaded_searchRegex = false;
@@ -83,17 +94,29 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
 
     
     
-#region Projection Properties;
+#region Projection Properties
 
     private CatteryFilterICatteryFilterProjection? _asCatteryFilterICatteryFilterProjection = null;
 
-    public CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection => _asCatteryFilterICatteryFilterProjection ??= new(this);
+    private CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection => _asCatteryFilterICatteryFilterProjection ??= new(this);
 
 #endregion Projection Properties;
 
     
     
-#region Properties;
+#region Projectors
+
+    public CatteryFilterPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    ICatteryFilter IProjection<ICatteryFilter>.Projector => Projector.As<ICatteryFilter>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public String? SearchRegex 
     { 
         get => _searchRegex; 
@@ -112,15 +135,15 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(CatteryFilterICatteryFilterProjection) || type == typeof(ICatteryFilter))
+        if(type == typeof(ICatteryFilter))
         {
             return AsCatteryFilterICatteryFilterProjection;
         }
@@ -132,7 +155,7 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region IPoco;
+#region IPoco
 
     void IPoco.Clear()
     {
@@ -179,7 +202,7 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetSearchRegexValue(object target)
     {
@@ -189,7 +212,9 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjector
     private static void SetSearchRegexValue(object target, object? value)
     {
         ((CatteryFilterPoco)target).SearchRegex = (String)value!;
+
     }
+
 
 #endregion Properties Accessors;
 

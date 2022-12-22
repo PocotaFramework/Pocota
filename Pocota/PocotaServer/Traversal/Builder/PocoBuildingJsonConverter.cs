@@ -1,19 +1,13 @@
 ﻿using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
-using Net.Leksi.Pocota.Traversal;
 using System.Data.Common;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Net.Leksi.Pocota.Builder;
+namespace Net.Leksi.Pocota.Server;
 
 internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 {
-    private static Type? s_actualType = null;
-    private static readonly object s_lock = new();
-
     private readonly IServiceProvider _services;
     private readonly object? _probe;
     private readonly object? _skip;
@@ -29,16 +23,6 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _probe = _pocoContext.GetProbePlaceholder<T>();
         _skip = _pocoContext.GetSkipPlaceholder<T>();
-        if(s_actualType is null)
-        {
-            lock (s_lock)
-            {
-                if (s_actualType is null)
-                {
-                    s_actualType = _core.GetActualType(typeof(T))!;
-                }
-            }
-        }
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -101,11 +85,11 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             if (_isEntity)
             {
                 primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
-                foreach (string name in context.BuildingContext.PresetKeys.Keys)
+                foreach (string name in context.BuildingContext.Presets.Keys)
                 {
-                    primaryKey![name] = context.BuildingContext.PresetKeys[name];
+                    primaryKey![name] = context.BuildingContext.Presets[name];
                 }
-                context.BuildingContext.PresetKeys.Clear();
+                context.BuildingContext.Presets.Clear();
 
             }
 
@@ -183,7 +167,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
             if (
                 !object.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
-                && (_isEntity && (primaryKey is null || primaryKey.Items.Any(v => v == default)))
+                && (_isEntity && !primaryKey!.IsAssigned)
             )
             {
                 context.BuildingContext.UpdateLogEntry(
@@ -252,38 +236,42 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 if (_isEntity)
                 {
                     writer.WritePropertyName(PocoTraversalConverterFactory.Key);
-                    JsonSerializer.Serialize<object[]?>(writer, context.EncodeKeyRing<T>(primaryKey!));
+                    JsonSerializer.Serialize<object[]?>(writer, context.EncodePrimaryKey<T>(primaryKey!));
                 }
             }
-            if ((_isEntity || !alreadyExists) && !((IPoco)value).IsLoaded<T>() && !context.BuildingContext.BuildingEventArgs.KeyOnly)
+            IPoco poco = (IPoco)((IProjection)value).Projector;
+            if ((_isEntity || !alreadyExists) && !poco.IsLoaded<T>() && !context.BuildingContext.BuildingEventArgs.KeyOnly)
             {
-                PocoBase poco = (value as PocoBase)!;
                 string? prevPropertyName = null;
 
                 foreach (Property property in _core.GetProperties(typeof(T))!.Values)
                 {
                     context.Target = null;
 
-                    //PropertyInfo actualPropertyInfo = s_actualType.GetProperty(property.Name);
-
                     Type propertyType = property.PropertyType(typeof(T))!;
 
                     object? propertyValue = property.GetValue(poco);
 
-                    if (!((IPoco)value).IsPropertySet(property.Name))
+                    if (!poco.IsPropertySet(property.Name))
                     {
                         context.BuildingContext.BuildingEventArgs.IsNullable = property.IsNullable;
                         bool isPoco = _core.GetActualType(propertyType) is { };
                         bool isPocoWithKey = _core.IsEntity(propertyType);
                         bool isNewPocoList = false;
                         Type typeForSerialization = propertyType;
-                        primaryKey!.TryGetPresets(property.Name, context.BuildingContext.PresetKeys);
-                        if (!isPocoWithKey)
+                        primaryKey!.TryGetPresets(property.Name, context.BuildingContext.Presets);
+                        if (isPocoWithKey)
                         {
-                            bool isSetFromKey = context.BuildingContext.PresetKeys.TryGetValue(string.Empty, out propertyValue);
-                            property.SetValue(poco, propertyValue);
-                            context.BuildingContext.PresetKeys.Clear();
-                            if (!isSetFromKey)
+                            propertyValue = _pocoContext.GetProbePlaceholder(propertyType);
+                        }
+                        else {
+                            bool isSetFromPresets = context.BuildingContext.Presets.TryGetValue(string.Empty, out propertyValue);
+                            if (isSetFromPresets)
+                            { 
+                                property.SetValue(poco, propertyValue); 
+                            }
+                            context.BuildingContext.Presets.Clear();
+                            if (!isSetFromPresets)
                             {
                                 if (!isPoco || propertyValue is null || !context.TestReference(propertyValue))
                                 {
@@ -393,8 +381,6 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                         }
                         if (propertyValue is { })
                         {
-                            //Console.WriteLine($"reflecion: typeForSerialization: {typeForSerialization}, itemType: {context.ItemType}");
-                            //Console.WriteLine($"property: typeForSerialization: {(property.IsCollection ? property.Type : property.PropertyType(typeof(T)))}, itemType: {property.ItemType(typeof(T))}");
                             JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
                             if (isPoco)
                             {

@@ -1,7 +1,7 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@Html.Raw("#region Projection Properties");
+@Html.Raw("#region Projection Properties")
 
 @foreach(ClassModel model1 in Model.Classes)
 {
@@ -11,7 +11,7 @@
 
 @foreach(ClassModel model1 in Model.Classes)
 {
-    <text>    public @model1.ClassName @Html.Raw($"As{model1.ClassName}") => @Html.Raw($"_as{model1.ClassName}") ??= new(this);
+    <text>    private @model1.ClassName @Html.Raw($"As{model1.ClassName}") => @Html.Raw($"_as{model1.ClassName}") ??= new(this);
 </text>
 }
 

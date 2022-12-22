@@ -1,17 +1,17 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@Html.Raw("#region Methods");
-    I? @Html.Raw("IProjector.As<I>() where I : class")
+@Html.Raw("#region Methods")
+    public I? @Html.Raw("As<I>() where I : class")
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
         @foreach (ClassModel model1 in Model.Classes)
         {
-            <text>        if(type == typeof(@Html.Raw(model1.ClassName)) || type == typeof(@Html.Raw(model1.Interface)))
+            <text>        if(type == typeof(@Html.Raw(model1.Interface)))
         {
             return @Html.Raw($"As{model1.ClassName}");
         }

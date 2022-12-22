@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace Net.Leksi.Pocota.Traversal.Builder;
+namespace Net.Leksi.Pocota.Server;
 
 internal class SpinnerHolder
 {

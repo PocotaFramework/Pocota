@@ -2,27 +2,38 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-21T18:50:10                                          //
+// at 2022-12-22T18:29:21                                          //
 /////////////////////////////////////////////////////////////////////
 
 
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace CatsClient;
 
-public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
+public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
 {
 
-#region Projection classes;
+#region Projection classes
 
-    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IProjector, IProjection<TracedPocosHeartPoco>
+    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
     {
 
-        public TracedPocosHeartPoco Projector  { get; init; }
+        
+#region Projectors
+
+        public TracedPocosHeartPoco Projector { get; init; }
+        IProjector IProjection.Projector => Projector;
+
+        ITracedPocosHeart IProjection<ITracedPocosHeart>.Projector => Projector.As<ITracedPocosHeart>()!;
+
+#endregion Projectors;
+
+
 
         public IList<Tuple<Type,Int32>> TracedPocos 
         {
@@ -36,14 +47,14 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
             Projector = projector;
         }
 
-        I? IProjector.As<I>() where I : class
+        public I? As<I>() where I : class
         {
-            return (I?)((IProjector)Projector).As(typeof(I))!;
+            return (I?)Projector.As(typeof(I))!;
         }
 
-        object? IProjector.As(Type type) 
+        public object? As(Type type) 
         {
-            return ((IProjector)Projector).As(type);
+            return Projector.As(type);
         }
 
         public void CollectGarbage()
@@ -54,10 +65,10 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     }
-#endregion Projection classes;
+#endregion Projection classes
 
     
-#region Init Properties;
+#region Init Properties
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
@@ -78,7 +89,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
     
     
-#region Fields;
+#region Fields
 
     private ObservableCollection<Tuple<Type,Int32>> _tracedPocos = default!;
     private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
@@ -87,17 +98,29 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Projection Properties;
+#region Projection Properties
 
     private TracedPocosHeartITracedPocosHeartProjection? _asTracedPocosHeartITracedPocosHeartProjection = null;
 
-    public TracedPocosHeartITracedPocosHeartProjection AsTracedPocosHeartITracedPocosHeartProjection => _asTracedPocosHeartITracedPocosHeartProjection ??= new(this);
+    private TracedPocosHeartITracedPocosHeartProjection AsTracedPocosHeartITracedPocosHeartProjection => _asTracedPocosHeartITracedPocosHeartProjection ??= new(this);
 
 #endregion Projection Properties;
 
 
     
-#region Properties;
+#region Projectors
+
+    public TracedPocosHeartPoco Projector => this;
+    IProjector IProjection.Projector => Projector;
+
+    ITracedPocosHeart IProjection<ITracedPocosHeart>.Projector => Projector.As<ITracedPocosHeart>()!;
+
+#endregion Projectors;
+
+    
+    
+#region Properties
+
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
     {
         get => _tracedPocos;
@@ -113,15 +136,15 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
     }
 
     
-#region Methods;
-    I? IProjector.As<I>() where I : class
+#region Methods
+    public I? As<I>() where I : class
     {
-        return (I?)((IProjector)this).As(typeof(I));
+        return (I?)As(typeof(I));
     }
 
-    object? IProjector.As(Type type)
+    public object? As(Type type)
     {
-        if(type == typeof(TracedPocosHeartITracedPocosHeartProjection) || type == typeof(ITracedPocosHeart))
+        if(type == typeof(ITracedPocosHeart))
         {
             return AsTracedPocosHeartITracedPocosHeartProjection;
         }
@@ -134,7 +157,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Collections;
+#region Collections
 
     protected override bool IsCollectionChanged(string property)
     {
@@ -182,7 +205,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Poco Changed;
+#region Poco Changed
 
 
     protected virtual void TracedPocosCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -197,12 +220,13 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjector
 
 
     
-#region Properties Accessors;
+#region Properties Accessors
 
     private static object? GetTracedPocosValue(object target)
     {
         return ((TracedPocosHeartPoco)target).TracedPocos;
     }
+
 
 
 #endregion Properties Accessors;

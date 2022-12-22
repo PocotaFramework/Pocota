@@ -1,9 +1,6 @@
-﻿using Net.Leksi.Pocota.Builder;
-using Net.Leksi.Pocota.Server;
-using Net.Leksi.Pocota.Traversal.Builder;
-using System.Data.Common;
+﻿using System.Data.Common;
 
-namespace Net.Leksi.Pocota;
+namespace Net.Leksi.Pocota.Server;
 
 public class BuildingEventArgs: EventArgs
 {

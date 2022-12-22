@@ -22,5 +22,4 @@ public interface IMainWindowHeart
     IList<ICatForListing> SelectedCats { get; set; }
     void AcceptCatFilterChanges();
     void CatsSelectionChanged(object sender, EventArgs e);
-    ICatForListing test(IBreed breed);
 }

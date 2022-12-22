@@ -3,7 +3,6 @@ using CatsCommon.Filters;
 using CatsCommon.Model;
 using CatsServerDebug.Converters;
 using CatsServerEngineDebug.Converters;
-using Net.Leksi.Pocota;
 using Net.Leksi.Pocota.Server;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
