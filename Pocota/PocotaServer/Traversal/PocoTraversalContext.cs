@@ -109,20 +109,6 @@ internal class PocoTraversalContext : IPocoTraversalContext
         return !set.Add(propertyInfo);
     }
 
-    internal object[]? EncodePrimaryKey<T>(IPrimaryKey primaryKey) where T : class
-    {
-        if (primaryKey is null)
-        {
-            throw new ArgumentNullException(nameof(primaryKey));
-        }
-        string reference = GetReference(typeof(T), out bool alreadyExists);
-        if (alreadyExists)
-        {
-            return new object[] { primaryKey.Items.ToArray(), reference };
-        }
-        return new object[] { primaryKey.Items.ToArray(), reference, new object[] { typeof(T).ToString(), primaryKey.SourceType.ToString() } };
-    }
-
     internal bool IsHighLevelListUnique(IPrimaryKey primaryKey)
     {
         if (HighLevelListUniqueness)

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -20,29 +20,20 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Bree
 #region Projection classes
 
 
-    public class BreedFilterIBreedFilterProjection: IBreedFilter, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
+    public class BreedFilterIBreedFilterProjection: IBreedFilter, IPoco, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
     {
 
-        
-#region Projectors
-
-        public BreedFilterPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        IBreedFilter IProjection<IBreedFilter>.Projector => Projector.As<IBreedFilter>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public String? SearchRegex 
         {
-            get => Projector.SearchRegex;
-            set => Projector.SearchRegex = value;
+            get => ((BreedFilterPoco)Projector).SearchRegex;
+            set => ((BreedFilterPoco)Projector).SearchRegex = value;
         }
 
 
-        internal BreedFilterIBreedFilterProjection(BreedFilterPoco projector)
+        internal BreedFilterIBreedFilterProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -58,7 +49,45 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Bree
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<BreedFilterPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 #endregion Projection classes
@@ -104,18 +133,9 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Bree
 
     
     
-#region Projectors
-
-    public BreedFilterPoco Projector => this;
-    IProjector IProjection.Projector => Projector;
-
-    IBreedFilter IProjection<IBreedFilter>.Projector => Projector.As<IBreedFilter>()!;
-
-#endregion Projectors;
-
-    
-    
 #region Properties
+
+    public IProjection Projector => this;
 
     public String? SearchRegex 
     { 
@@ -147,7 +167,21 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Bree
         {
             return AsBreedFilterIBreedFilterProjection;
         }
+        if(type == typeof(BreedFilterPoco))
+        {
+            return this;
+        }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is IProjection<BreedFilterPoco> other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
 

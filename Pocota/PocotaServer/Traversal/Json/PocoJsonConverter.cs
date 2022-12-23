@@ -9,7 +9,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 {
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
-    private readonly bool _hasKey;
+    private readonly bool _isEntity;
     private readonly PocoContext _pocoContext;
     private readonly Type _actualType;
 
@@ -17,7 +17,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     {
         _services = services;
         _core = _services.GetRequiredService<PocotaCore>();
-        _hasKey = typeof(IEntity).IsAssignableFrom(typeof(T));
+        _isEntity = _core.IsEntity(typeof(T));
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _actualType = _core.GetActualType(typeof(T))!;
     }
@@ -181,7 +181,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         context.IsHighLevel = false;
 
 
-        if (_hasKey)
+        if (_isEntity)
         {
             primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
             if (primaryKey is { })
@@ -198,19 +198,22 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         if (alreadyExists)
         {
 
-            writer.WritePropertyName(PocoTraversalConverterFactory.Ref);
-            writer.WriteStringValue(reference);
+            writer.WriteString(PocoTraversalConverterFactory.Ref, reference);
         }
         else
         {
-            writer.WritePropertyName(PocoTraversalConverterFactory.Id);
-            writer.WriteStringValue(reference);
-            if (_hasKey && primaryKey is { })
+            writer.WriteString(PocoTraversalConverterFactory.Id, reference);
+            if (_isEntity)
             {
                 writer.WritePropertyName(PocoTraversalConverterFactory.Key);
-                JsonSerializer.Serialize<object[]?>(writer, context.EncodePrimaryKey<T>(primaryKey!));
+                JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
+                string classReference = context.GetReference(_actualType, out bool isClassFound);
+                writer.WriteString(PocoTraversalConverterFactory.Class, isClassFound ? classReference : _actualType.ToString());
             }
         }
+        string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
+        writer.WriteString(PocoTraversalConverterFactory.Interface, isInterfaceFound ? interfaceReference : typeof(T).ToString());
+
         foreach (PropertyInfo pi in typeof(T).GetProperties())
         {
             PropertyInfo actualPropertyInfo = value!.GetType().GetProperty(pi.Name)!;

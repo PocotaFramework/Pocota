@@ -20,7 +20,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
     {
         if(targetType == typeof(GridLength))
         {
-            CatPoco? cat = (value as IProjection<CatPoco>)?.Projector;
+            ICat? cat = (value as IProjection<ICat>)?.As<ICat>();
 
             if ("VisibleIfHasMother".Equals(parameter))
             {
@@ -37,7 +37,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
     {
         if ("Title".Equals(parameter))
         {
-            if (values.Length == 2 && values[0] is IProjection<CatPoco> cat && values[1] is EditKind editKind)
+            if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat && values[1] is EditKind editKind)
             {
                 return $"{(editKind is EditKind.ReadOnly ? "Просмотр" : "Редактирование")}: {cat.NameNat} ({cat.Litter?.Date}, {GenderConverter.Converter.Convert(cat.Gender, typeof(string), null, CultureInfo.CurrentCulture)}, {cat.Cattery.NameNat}), {PocoStateConverter.Converter.Convert(((IPoco)cat).PocoState, typeof(string), null, CultureInfo.CurrentCulture)}";
             }
@@ -45,7 +45,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
         }
         else if ("SetParentHeader".Equals(parameter))
         {
-            if (values.Length == 2 && values[0] is IProjection<CatPoco> projection && projection.Projector is CatPoco cat1 && values[1] is ICollection<IProjection<LitterPoco>> selection)
+            if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat1 && values[1] is ICollection<IProjection<LitterPoco>> selection)
             {
                 string parent;
                 if (cat1.Gender is CatsCommon.Gender.Female || cat1.Gender is CatsCommon.Gender.FemaleCastrate)
@@ -62,27 +62,27 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
         }
         else if ("ShowParentHeader".Equals(parameter))
         {
-            if (values.Length == 2 && values[0] is IProjection<CatPoco> projection && projection.Projector is CatPoco cat1 && values[1] is ICollection<IProjection<LitterPoco>> selection)
+            if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat1 && values[1] is ICollection<IProjection<ILitter>> selection)
             {
                 string parent;
-                HashSet<CatPoco> set = new(ReferenceEqualityComparer.Instance);
+                HashSet<ICat> set = new(ReferenceEqualityComparer.Instance);
                 if (cat1.Gender is CatsCommon.Gender.Female || cat1.Gender is CatsCommon.Gender.FemaleCastrate)
                 {
                     parent = "отца";
-                    foreach (IProjection<LitterPoco> litter in selection)
+                    foreach (IProjection<ILitter> litter in selection)
                     {
-                        if (litter.Projector.Male is { })
+                        if (litter.As<ILitter>()!.Male is { })
                         {
-                            set.Add(litter.Projector.Male);
+                            set.Add(litter.As<ILitter>()!.Male!);
                         }
                     }
                 }
                 else
                 {
                     parent = "матери";
-                    foreach (IProjection<LitterPoco> litter in selection)
+                    foreach (IProjection<ILitter> litter in selection)
                     {
-                        set.Add(litter.Projector.Male);
+                        set.Add(litter.As<ILitter>()!.Male!);
                     }
                 }
                 return $"Просмотр {parent} (выбрано: {set.Count})";
@@ -91,13 +91,13 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
         }
         else if ("ShowParentIsEnabled".Equals(parameter))
         {
-            if (values.Length == 2 && values[0] is IProjection<CatPoco> projection && projection.Projector is CatPoco cat1 && values[1] is ICollection<IProjection<LitterPoco>> selection)
+            if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat1 && values[1] is ICollection<IProjection<ILitter>> selection)
             {
                 if (cat1.Gender is CatsCommon.Gender.Female || cat1.Gender is CatsCommon.Gender.FemaleCastrate)
                 {
-                    foreach (IProjection<LitterPoco> litter in selection)
+                    foreach (IProjection<ILitter> litter in selection)
                     {
-                        if (litter.Projector.Male is { })
+                        if (litter.As<ILitter>()!.Male is { })
                         {
                             return true;
                         }
@@ -105,7 +105,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
                 }
                 else
                 {
-                    foreach (IProjection<LitterPoco> litter in selection)
+                    foreach (IProjection<ILitter> litter in selection)
                     {
                         return true;
                     }
@@ -115,7 +115,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
         }
         else if ("AsLitterIsEnabled".Equals(parameter))
         {
-            if (values.Length == 2 && values[0] is IProjection<CatPoco> projection && projection.Projector is CatPoco cat1 && values[1] is ICollection<IProjection<LitterPoco>> selection)
+            if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat1 && values[1] is ICollection<IProjection<ILitter>> selection)
             {
                 return selection.Count == 1;
             }

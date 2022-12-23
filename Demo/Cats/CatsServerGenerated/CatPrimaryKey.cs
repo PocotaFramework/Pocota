@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -23,9 +23,9 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     private Int32 _idCat = default!;
     private Int32 _idCattery = default!;
 
-    public IProjector? Source 
+    public IProjection? Source 
     { 
-        get => (IProjector?)_source.Target; 
+        get => (IProjection?)_source.Target; 
         internal set 
         {
             _source.Target = value;

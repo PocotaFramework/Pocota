@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -22,9 +22,9 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
     private String _idBreed = default!;
     private String _idGroup = default!;
 
-    public IProjector? Source 
+    public IProjection? Source 
     { 
-        get => (IProjector?)_source.Target; 
+        get => (IProjection?)_source.Target; 
         internal set 
         {
             _source.Target = value;

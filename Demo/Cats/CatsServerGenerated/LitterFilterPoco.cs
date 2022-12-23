@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -20,35 +20,26 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 #region Projection classes
 
 
-    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+    public class LitterFilterILitterFilterProjection: ILitterFilter, IPoco, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
 
-        
-#region Projectors
-
-        public LitterFilterPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        ILitterFilter IProjection<ILitterFilter>.Projector => Projector.As<ILitterFilter>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public ICat Female 
         {
-            get => ((IProjector)Projector.Female).As<ICat>()!;
-            set => Projector.Female = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)Projector).Female).As<ICat>()!;
+            set => ((LitterFilterPoco)Projector).Female = (CatPoco)value;
         }
 
         public ICat Male 
         {
-            get => ((IProjector)Projector.Male).As<ICat>()!;
-            set => Projector.Male = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)Projector).Male).As<ICat>()!;
+            set => ((LitterFilterPoco)Projector).Male = (CatPoco)value;
         }
 
 
-        internal LitterFilterILitterFilterProjection(LitterFilterPoco projector)
+        internal LitterFilterILitterFilterProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -64,7 +55,45 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 #endregion Projection classes
@@ -125,18 +154,9 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     
     
-#region Projectors
-
-    public LitterFilterPoco Projector => this;
-    IProjector IProjection.Projector => Projector;
-
-    ILitterFilter IProjection<ILitterFilter>.Projector => Projector.As<ILitterFilter>()!;
-
-#endregion Projectors;
-
-    
-    
 #region Properties
+
+    public IProjection Projector => this;
 
     public CatPoco Female 
     { 
@@ -178,7 +198,21 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
         {
             return AsLitterFilterILitterFilterProjection;
         }
+        if(type == typeof(LitterFilterPoco))
+        {
+            return this;
+        }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
 

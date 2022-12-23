@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:22                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -23,77 +23,65 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
 #region Projection classes
 
 
-    public class CatICatProjection: ICat, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatProjection: ICat, IPoco, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
         private readonly ProjectionList<LitterPoco,ILitter> _litters;
 
-        
-#region Projectors
-
-        public CatPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        ICat IProjection<ICat>.Projector => Projector.As<ICat>()!;
-        ICatForListing IProjection<ICatForListing>.Projector => Projector.As<ICatForListing>()!;
-        ICatAsParent IProjection<ICatAsParent>.Projector => Projector.As<ICatAsParent>()!;
-        ICatForView IProjection<ICatForView>.Projector => Projector.As<ICatForView>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public ICattery Cattery 
         {
-            get => ((IProjector)Projector.Cattery).As<ICattery>()!;
-            set => Projector.Cattery = (CatteryPoco)value;
+            get => ((IProjection)((CatPoco)Projector).Cattery).As<ICattery>()!;
+            set => ((CatPoco)Projector).Cattery = (CatteryPoco)value;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => ((CatPoco)Projector).NameNat;
+            set => ((CatPoco)Projector).NameNat = value;
         }
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => ((CatPoco)Projector).NameEng;
+            set => ((CatPoco)Projector).NameEng = value;
         }
 
         public Gender Gender 
         {
-            get => Projector.Gender!;
-            set => Projector.Gender = value;
+            get => ((CatPoco)Projector).Gender!;
+            set => ((CatPoco)Projector).Gender = value;
         }
 
         public IBreed Breed 
         {
-            get => ((IProjector)Projector.Breed).As<IBreed>()!;
-            set => Projector.Breed = (BreedPoco)value;
+            get => ((IProjection)((CatPoco)Projector).Breed).As<IBreed>()!;
+            set => ((CatPoco)Projector).Breed = (BreedPoco)value;
         }
 
         public ILitter? Litter 
         {
-            get => ((IProjector?)Projector.Litter)?.As<ILitter>();
-            set => Projector.Litter = (LitterPoco?)value;
+            get => ((IProjection?)((CatPoco)Projector).Litter)?.As<ILitter>();
+            set => ((CatPoco)Projector).Litter = (LitterPoco?)value;
         }
 
         public String? Exterior 
         {
-            get => Projector.Exterior;
-            set => Projector.Exterior = value;
+            get => ((CatPoco)Projector).Exterior;
+            set => ((CatPoco)Projector).Exterior = value;
         }
 
         public String? Description 
         {
-            get => Projector.Description;
-            set => Projector.Description = value;
+            get => ((CatPoco)Projector).Description;
+            set => ((CatPoco)Projector).Description = value;
         }
 
         public String? Title 
         {
-            get => Projector.Title;
-            set => Projector.Title = value;
+            get => ((CatPoco)Projector).Title;
+            set => ((CatPoco)Projector).Title = value;
         }
 
         public IList<ILitter> Litters 
@@ -103,10 +91,10 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
-        internal CatICatProjection(CatPoco projector)
+        internal CatICatProjection(IProjection projector)
         {
             Projector = projector;
-            _litters = new(Projector.Litters);
+            _litters = new(((CatPoco)Projector).Litters);
         }
 
         public I? As<I>() where I : class
@@ -120,75 +108,101 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 
-    public class CatICatForListingProjection: ICatForListing, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatForListingProjection: ICatForListing, IPoco, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
-        
-#region Projectors
-
-        public CatPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        ICat IProjection<ICat>.Projector => Projector.As<ICat>()!;
-        ICatForListing IProjection<ICatForListing>.Projector => Projector.As<ICatForListing>()!;
-        ICatAsParent IProjection<ICatAsParent>.Projector => Projector.As<ICatAsParent>()!;
-        ICatForView IProjection<ICatForView>.Projector => Projector.As<ICatForView>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public ICattery Cattery 
         {
-            get => ((IProjector)Projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)((CatPoco)Projector).Cattery).As<ICattery>()!;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
+            get => ((CatPoco)Projector).NameNat;
         }
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
+            get => ((CatPoco)Projector).NameEng;
         }
 
         public Gender Gender 
         {
-            get => Projector.Gender!;
+            get => ((CatPoco)Projector).Gender!;
         }
 
         public IBreed Breed 
         {
-            get => ((IProjector)Projector.Breed).As<IBreed>()!;
+            get => ((IProjection)((CatPoco)Projector).Breed).As<IBreed>()!;
         }
 
         public ILitterForCat? Litter 
         {
-            get => ((IProjector?)Projector.Litter)?.As<ILitterForCat>();
+            get => ((IProjection?)((CatPoco)Projector).Litter)?.As<ILitterForCat>();
         }
 
         public String? Exterior 
         {
-            get => Projector.Exterior;
+            get => ((CatPoco)Projector).Exterior;
         }
 
         public String? Description 
         {
-            get => Projector.Description;
+            get => ((CatPoco)Projector).Description;
         }
 
         public String? Title 
         {
-            get => Projector.Title;
+            get => ((CatPoco)Projector).Title;
         }
 
 
-        internal CatICatForListingProjection(CatPoco projector)
+        internal CatICatForListingProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -204,65 +218,91 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 
-    public class CatICatAsParentProjection: ICatAsParent, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatAsParentProjection: ICatAsParent, IPoco, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
-        
-#region Projectors
-
-        public CatPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        ICat IProjection<ICat>.Projector => Projector.As<ICat>()!;
-        ICatForListing IProjection<ICatForListing>.Projector => Projector.As<ICatForListing>()!;
-        ICatAsParent IProjection<ICatAsParent>.Projector => Projector.As<ICatAsParent>()!;
-        ICatForView IProjection<ICatForView>.Projector => Projector.As<ICatForView>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public ICattery Cattery 
         {
-            get => ((IProjector)Projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)((CatPoco)Projector).Cattery).As<ICattery>()!;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
+            get => ((CatPoco)Projector).NameNat;
         }
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
+            get => ((CatPoco)Projector).NameEng;
         }
 
         public IBreed Breed 
         {
-            get => ((IProjector)Projector.Breed).As<IBreed>()!;
+            get => ((IProjection)((CatPoco)Projector).Breed).As<IBreed>()!;
         }
 
         public ILitterForDate? Litter 
         {
-            get => ((IProjector?)Projector.Litter)?.As<ILitterForDate>();
+            get => ((IProjection?)((CatPoco)Projector).Litter)?.As<ILitterForDate>();
         }
 
         public String? Exterior 
         {
-            get => Projector.Exterior;
+            get => ((CatPoco)Projector).Exterior;
         }
 
         public String? Title 
         {
-            get => Projector.Title;
+            get => ((CatPoco)Projector).Title;
         }
 
 
-        internal CatICatAsParentProjection(CatPoco projector)
+        internal CatICatAsParentProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -278,72 +318,98 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 
-    public class CatICatForViewProjection: ICatForView, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatForViewProjection: ICatForView, IPoco, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
         private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
 
-        
-#region Projectors
-
-        public CatPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        ICat IProjection<ICat>.Projector => Projector.As<ICat>()!;
-        ICatForListing IProjection<ICatForListing>.Projector => Projector.As<ICatForListing>()!;
-        ICatAsParent IProjection<ICatAsParent>.Projector => Projector.As<ICatAsParent>()!;
-        ICatForView IProjection<ICatForView>.Projector => Projector.As<ICatForView>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public ICattery Cattery 
         {
-            get => ((IProjector)Projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)((CatPoco)Projector).Cattery).As<ICattery>()!;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
+            get => ((CatPoco)Projector).NameNat;
         }
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
+            get => ((CatPoco)Projector).NameEng;
         }
 
         public Gender Gender 
         {
-            get => Projector.Gender!;
+            get => ((CatPoco)Projector).Gender!;
         }
 
         public IBreed Breed 
         {
-            get => ((IProjector)Projector.Breed).As<IBreed>()!;
+            get => ((IProjection)((CatPoco)Projector).Breed).As<IBreed>()!;
         }
 
         public ILitterForCat? Litter 
         {
-            get => ((IProjector?)Projector.Litter)?.As<ILitterForCat>();
+            get => ((IProjection?)((CatPoco)Projector).Litter)?.As<ILitterForCat>();
         }
 
         public String? Exterior 
         {
-            get => Projector.Exterior;
+            get => ((CatPoco)Projector).Exterior;
         }
 
         public String? Description 
         {
-            get => Projector.Description;
+            get => ((CatPoco)Projector).Description;
         }
 
         public String? Title 
         {
-            get => Projector.Title;
+            get => ((CatPoco)Projector).Title;
         }
 
         public IList<ILitterForCat> Litters 
@@ -352,10 +418,10 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
-        internal CatICatForViewProjection(CatPoco projector)
+        internal CatICatForViewProjection(IProjection projector)
         {
             Projector = projector;
-            _litters = new(Projector.Litters);
+            _litters = new(((CatPoco)Projector).Litters);
         }
 
         public I? As<I>() where I : class
@@ -369,7 +435,45 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 #endregion Projection classes
@@ -582,21 +686,9 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
 
     
     
-#region Projectors
-
-    public CatPoco Projector => this;
-    IProjector IProjection.Projector => Projector;
-
-    ICat IProjection<ICat>.Projector => Projector.As<ICat>()!;
-    ICatForListing IProjection<ICatForListing>.Projector => Projector.As<ICatForListing>()!;
-    ICatAsParent IProjection<ICatAsParent>.Projector => Projector.As<ICatAsParent>()!;
-    ICatForView IProjection<ICatForView>.Projector => Projector.As<ICatForView>()!;
-
-#endregion Projectors;
-
-    
-    
 #region Properties
+
+    public IProjection Projector => this;
 
     public CatteryPoco Cattery 
     { 
@@ -715,19 +807,45 @@ public class CatPoco: EntityBase, IPoco, IProjection, IProjection<CatPoco>, IPro
         {
             return AsCatICatProjection;
         }
+        if(type == typeof(CatPoco))
+        {
+            return this;
+        }
         if(type == typeof(ICatForListing))
         {
             return AsCatICatForListingProjection;
+        }
+        if(type == typeof(CatPoco))
+        {
+            return this;
         }
         if(type == typeof(ICatAsParent))
         {
             return AsCatICatAsParentProjection;
         }
+        if(type == typeof(CatPoco))
+        {
+            return this;
+        }
         if(type == typeof(ICatForView))
         {
             return AsCatICatForViewProjection;
         }
+        if(type == typeof(CatPoco))
+        {
+            return this;
+        }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is IProjection<CatPoco> other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
 

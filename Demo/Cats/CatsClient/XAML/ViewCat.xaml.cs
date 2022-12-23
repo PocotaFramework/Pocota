@@ -63,20 +63,20 @@ public partial class ViewCat : Window
             switch (item.Name)
             {
                 case "AsLitter":
-                    _services.GetRequiredService<MainWindow>().Heart.CatFilter.Litter = (((CollectionView)Heart.LittersView).CurrentItem as IProjection<LitterPoco>)!.As<ILitter>();
+                    _services.GetRequiredService<MainWindow>().Heart.CatFilter.Litter = (((CollectionView)Heart.LittersView).CurrentItem as ILitter);
                     break;
                 case "SetParent":
                     break;
                 case "ShowParent":
                     HashSet<ICat> set = new(ReferenceEqualityComparer.Instance);
-                    foreach (IProjection<LitterPoco> litter in Heart.SelectedLitters)
+                    foreach (ILitter litter in Heart.SelectedLitters)
                     {
                         ICat? cat = null;
-                        if (litter.Projector.Female == Heart.Cat)
+                        if (Heart.Cat.Equals(litter.Female))
                         {
-                            cat = litter.Projector.Male;
+                            cat = ((IProjection<ICat>?)litter.Male)?.As<ICat>();
                         }
-                        else if (litter.Male == Heart.Cat)
+                        else if (Heart.Cat.Equals(litter.Male))
                         {
                             cat = litter.Female;
                         }
@@ -86,7 +86,7 @@ public partial class ViewCat : Window
                             set.Add(cat);
                         }
                     }
-                    foreach(CatBase cat in set)
+                    foreach(ICat cat in set)
                     {
                         ViewCatCommand command = _services.GetRequiredService<ViewCatCommand>();
                         if (command.CanExecute(cat))

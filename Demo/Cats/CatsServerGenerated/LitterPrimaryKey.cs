@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -24,9 +24,9 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     private Int32 _idFemaleCattery = default!;
     private Int32 _idLitter = default!;
 
-    public IProjector? Source 
+    public IProjection? Source 
     { 
-        get => (IProjector?)_source.Target; 
+        get => (IProjection?)_source.Target; 
         internal set 
         {
             _source.Target = value;

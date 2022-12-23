@@ -2,28 +2,32 @@
 using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
-using System.Collections;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Net.Leksi.Pocota.Client.Json;
 
-internal class PocoJsonConverter<T> : JsonConverter<T>
+internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 {
     internal const string Key = "$key";
     internal const string Id = "$id";
     internal const string Ref = "$ref";
+    internal const string Class = "$cl";
+    internal const string Interface = "$in";
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
     private readonly PocoContext _pocoContext;
+    private readonly ImmutableDictionary<string, Property>? _properties;
 
     public PocoJsonConverter(IServiceProvider services)
     {
         _services = services;
-        _core = (_services.GetRequiredService<IPocota>() as PocotaCore)!;
+        _core = _services.GetRequiredService<PocotaCore>();
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
+        _properties = _core.GetProperties(typeof(T));
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -50,6 +54,10 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
             context!.Target = null;
 
             string? reference = null;
+
+            List<string>? key = null;
+            string? @class = null;
+            string? @interface = null;
 
             while (reader.Read())
             {
@@ -86,54 +94,60 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
                         }
                         done = true;
                     }
+                    else if (propertyName.Equals(Class))
+                    {
+                        string? val = JsonSerializer.Deserialize<string>(ref reader);
+                        if(string.IsNullOrEmpty(val) || !val.StartsWith("#"))
+                        {
+                            throw new JsonException("Invalid class reference");
+                        }
+                        string[] parts = val.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        if(parts.Length > 1)
+                        {
+                            @class = parts[1];
+                            context.AddReference(parts[0], @class);
+                        }
+                        else
+                        {
+                            @class = (string?)context.ResolveReference(parts[0]);
+                            if(@class is null)
+                            {
+                                throw new JsonException("Invalid class reference");
+                            }
+                        }
+                        done = true;
+                    }
+                    else if (propertyName.Equals(Interface))
+                    {
+                        string? val = JsonSerializer.Deserialize<string>(ref reader);
+                        if (string.IsNullOrEmpty(val) || !val.StartsWith("#"))
+                        {
+                            throw new JsonException("Invalid interface reference");
+                        }
+                        string[] parts = val.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                        if (parts.Length > 1)
+                        {
+                            @interface = parts[1];
+                            context.AddReference(parts[0], @interface);
+                        }
+                        else
+                        {
+                            @interface = (string?)context.ResolveReference(parts[0]);
+                            if (@interface is null)
+                            {
+                                throw new JsonException("Invalid interface reference");
+                            }
+                        }
+                        done = true;
+                    }
                     else if (propertyName.Equals(Key))
                     {
-                        string[] selector = null!;
                         object[]? parts = JsonSerializer.Deserialize<object[]>(ref reader);
                         if (parts is { } && parts.Length > 0)
                         {
-                            if (parts.Length > 1)
-                            {
-                                string selectorReference = ((JsonElement)parts[1]).ToString();
-                                if (parts.Length > 2)
-                                {
-                                    selector = new string[2];
-                                    for (int i = 0; i < 2; ++i)
-                                    {
-                                        selector[i] = ((JsonElement)parts[2])[i].ToString();
-                                    }
-                                    context!.AddReference(selectorReference, selector);
-                                    _core.MapType(selector[0], typeof(T));
-                                }
-                                else
-                                {
-                                    selector = (context.ResolveReference(selectorReference) as string[])!;
-                                }
-                            }
-                            if (
-                                ((JsonElement)parts[0]).ValueKind is JsonValueKind.Array
-                            )
-                            {
-                                object[] items = new object[((JsonElement)parts[0]).GetArrayLength()];
-                                for (int i = 0; i < ((JsonElement)parts[0]).GetArrayLength(); ++i)
-                                {
-                                    items[i] = ((JsonElement)parts[0])[i].ToString();
-                                }
-
-                                _pocoContext.TryGetSource(typeof(T), items, out object? obj);
-
-                                result = (T?)obj;
-                                if(result is PocoBase poco)
-                                {
-                                    poco!.StartPopulate(context);
-                                }
-
-                                if (reference is { })
-                                {
-                                    context!.AddReference(reference, result!);
-                                }
-                                done = true;
-                            }
+                            key = new List<string>();
+                            key.AddRange(parts.Select(v => v.ToString()));
+                            done = true;
                         }
                         if (!done)
                         {
@@ -148,8 +162,25 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
                 }
                 if (!done)
                 {
-                    PocoBase poco = (result as PocoBase)!;
-                    Property? property = _core.GetProperties(GetType())?[propertyName];
+                    if(key is { })
+                    {
+                        if(@class is null)
+                        {
+                            @class = typeof(object).ToString();
+                        }
+                        key.Insert(0, @class);
+
+                        if(_pocoContext.TryGetSource(typeof(T), key.ToArray(), out object? obj))
+                        {
+                            result = (T)obj!;
+                            ((PocoBase?)((IProjection?)result)?.Projector)?.StartPopulate(context);
+                        }
+
+                        key = null;
+                    }
+
+                    PocoBase? poco = (((IProjection?)result)?.Projector as PocoBase)!;
+                    Property? property = _properties![propertyName];
 
                     if (property is { })
                     {
@@ -236,10 +267,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T>
         }
         finally
         {
-            if(result is PocoBase poco)
-            {
-                poco.StopPopulate(context);
-            }
+            ((PocoBase?)((IProjection?)result)?.Projector)?.StopPopulate(context);
         }
 
     }

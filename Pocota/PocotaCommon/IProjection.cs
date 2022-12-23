@@ -2,5 +2,7 @@
 
 public interface IProjection
 {
-    IProjector Projector { get; }
+    IProjection Projector { get; }
+    I? As<I>() where I : class;
+    object? As(Type type);
 }

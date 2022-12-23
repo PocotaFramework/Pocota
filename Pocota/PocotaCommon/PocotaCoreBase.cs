@@ -140,9 +140,9 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         }
         Type pocoType;
         List<Type> types = new();
-        for (pocoType = item.ImplementationType; pocoType.BaseType is { } && typeof(IProjector).IsAssignableFrom(pocoType); pocoType = pocoType.BaseType)
+        for (pocoType = item.ImplementationType; pocoType.BaseType is { } && typeof(IProjection).IsAssignableFrom(pocoType); pocoType = pocoType.BaseType)
         {
-            if (!typeof(IProjector).IsAssignableFrom(pocoType.BaseType))
+            if (!typeof(IProjection).IsAssignableFrom(pocoType.BaseType))
             {
                 break;
             }
@@ -158,9 +158,9 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         _services!.Add(new ServiceDescriptor(pocoType, item.ImplementationType, ServiceLifetime.Transient));
         foreach (Type type in pocoType.GetNestedTypes())
         {
-            if (typeof(IProjector).IsAssignableFrom(type))
+            if (typeof(IProjection).IsAssignableFrom(type))
             {
-                Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjector) && !type.IsGenericType).FirstOrDefault();
+                Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjection) && !type.IsGenericType).FirstOrDefault();
                 if (@interface is { })
                 {
                     Dictionary<string, Property> properties = new();
@@ -176,7 +176,7 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
                     _actualTypes.Add(@interface, pocoType);
                     _services.Add(new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>
                     {
-                        IProjector poco = (serviceProvider.GetRequiredService(pocoType) as IProjector)!;
+                        IProjection poco = (serviceProvider.GetRequiredService(pocoType) as IProjection)!;
                         return poco.As(@interface)!;
                     }, ServiceLifetime.Transient));
                 }

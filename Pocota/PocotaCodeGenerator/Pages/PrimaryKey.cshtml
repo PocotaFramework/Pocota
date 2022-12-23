@@ -25,9 +25,9 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
 
-    public IProjector? Source 
+    public IProjection? Source 
     { 
-        get => (IProjector?)_source.Target; 
+        get => (IProjection?)_source.Target; 
         internal set 
         {
             _source.Target = value;

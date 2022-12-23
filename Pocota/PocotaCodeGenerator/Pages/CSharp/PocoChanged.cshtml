@@ -34,12 +34,11 @@
         }
 </text>
         }
-
         @Html.Raw($"OnPocoChanged(_initial{fieldName}, {fieldName}, nameof({pm.Name}))");
         OnPropertyChanged(nameof(@pm.Name));
     }
 
-    </text>
+</text>
 }
 
 @Html.Raw("#endregion Poco Changed");

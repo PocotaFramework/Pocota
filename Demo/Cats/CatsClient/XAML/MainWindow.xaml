@@ -69,7 +69,7 @@
                         <Button.CommandParameter>
                             <MultiBinding Converter="{local:FindItemsCommandParameterConverter}" ConverterParameter="Breeds">
                                 <Binding Path="BreedFilter"/>
-                                <Binding Path="Heart.AsIMainWindowHeart.Breeds"/>
+                                <Binding Path="Heart.Breeds"/>
                             </MultiBinding>
                         </Button.CommandParameter>
                     </Button>
@@ -99,7 +99,7 @@
                         <Button.CommandParameter>
                             <MultiBinding Converter="{local:FindItemsCommandParameterConverter}" ConverterParameter="Catteries">
                                 <Binding Path="CatteryFilter"/>
-                                <Binding Path="Heart.AsIMainWindowHeart.Catteries"/>
+                                <Binding Path="Heart.Catteries"/>
                             </MultiBinding>
                         </Button.CommandParameter>
                     </Button>
@@ -264,7 +264,7 @@
                 <Button.CommandParameter>
                     <MultiBinding Converter="{local:FindItemsCommandParameterConverter}" ConverterParameter="Cats">
                         <Binding Path="Heart.CatFilter"/>
-                        <Binding Path="Heart.AsIMainWindowHeart.Cats" />
+                        <Binding Path="Heart.Cats" />
                     </MultiBinding>
                 </Button.CommandParameter>
             </Button>

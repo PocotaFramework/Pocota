@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,6 +10,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.ComponentModel;
 
 namespace CatsCommon.Model;
 
@@ -18,35 +19,68 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
 
 #region Projection classes
 
-    public class CatteryICatteryProjection: ICattery, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+    public class CatteryICatteryProjection: ICattery, IPoco, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
+        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
+            }
 
-        
-#region Projectors
+            remove
+            {
+                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
+            }
+        }
 
-        public CatteryPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
+        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
+        {
+            add
+            {
+                ((INotifyPocoChanged)Projector).PocoChanged += value;
+            }
 
-        ICattery IProjection<ICattery>.Projector => Projector.As<ICattery>()!;
+            remove
+            {
+                ((INotifyPocoChanged)Projector).PocoChanged -= value;
+            }
+        }
 
-#endregion Projectors;
+        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
+        {
+            add
+            {
+                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
+            }
+        }
 
 
+
+
+        public IProjection Projector { get; init; }
+
+        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => ((CatteryPoco)Projector).NameEng;
+            set => ((CatteryPoco)Projector).NameEng = value;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => ((CatteryPoco)Projector).NameNat;
+            set => ((CatteryPoco)Projector).NameNat = value;
         }
 
 
-        internal CatteryICatteryProjection(CatteryPoco projector)
+        internal CatteryICatteryProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -62,7 +96,52 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatteryPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.AcceptChanges()
+        {
+            ((IPoco)Projector).AcceptChanges();
+        }
+
+        void IPoco.CancelChanges()
+        {
+            ((IPoco)Projector).CancelChanges();
+        }
+
+        bool IPoco.IsModified(string property)
+        {
+                return ((IPoco)Projector).IsModified(property);
+        }
+
+        void IPoco.Invalidate()
+        {
+            ((IPoco)Projector).Invalidate();
+        }
+
+        
 
     }
 #endregion Projection classes
@@ -121,18 +200,9 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
 
 
     
-#region Projectors
-
-    public CatteryPoco Projector => this;
-    IProjector IProjection.Projector => Projector;
-
-    ICattery IProjection<ICattery>.Projector => Projector.As<ICattery>()!;
-
-#endregion Projectors;
-
-    
-    
 #region Properties
+
+    public IProjection Projector => this;
 
     public virtual String? NameEng
     {
@@ -184,7 +254,21 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
         {
             return AsCatteryICatteryProjection;
         }
+        if(type == typeof(CatteryPoco))
+        {
+            return this;
+        }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is IProjection<CatteryPoco> other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
 

@@ -24,7 +24,7 @@ internal class SiblingCatsConverter : MarkupExtension, IValueConverter
             && typeof(IProjection<CatPoco>).IsAssignableFrom(value.GetType().GetGenericArguments()[0])
         )
         {
-            return string.Join(",", ((ICollection<IProjection<CatPoco>>)value).Select(v => v.Projector.NameNat));
+            return string.Join(",", ((ICollection<IProjection<ICat>>)value).Select(v => v.As<ICat>()!.NameNat));
         }
         throw new NotImplementedException();
     }

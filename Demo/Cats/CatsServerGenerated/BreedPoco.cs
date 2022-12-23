@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-22T18:29:21                                  //
+// at 2022-12-23T18:45:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -21,47 +21,38 @@ public class BreedPoco: EntityBase, IPoco, IProjection, IProjection<BreedPoco>, 
 #region Projection classes
 
 
-    public class BreedIBreedProjection: IBreed, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+    public class BreedIBreedProjection: IBreed, IPoco, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
     {
 
-        
-#region Projectors
-
-        public BreedPoco Projector { get; init; }
-        IProjector IProjection.Projector => Projector;
-
-        IBreed IProjection<IBreed>.Projector => Projector.As<IBreed>()!;
-
-#endregion Projectors;
-
+        public IProjection Projector { get; init; }
 
 
         public String Code 
         {
-            get => Projector.Code!;
-            set => Projector.Code = value;
+            get => ((BreedPoco)Projector).Code!;
+            set => ((BreedPoco)Projector).Code = value;
         }
 
         public String Group 
         {
-            get => Projector.Group!;
-            set => Projector.Group = value;
+            get => ((BreedPoco)Projector).Group!;
+            set => ((BreedPoco)Projector).Group = value;
         }
 
         public String? NameEng 
         {
-            get => Projector.NameEng;
-            set => Projector.NameEng = value;
+            get => ((BreedPoco)Projector).NameEng;
+            set => ((BreedPoco)Projector).NameEng = value;
         }
 
         public String? NameNat 
         {
-            get => Projector.NameNat;
-            set => Projector.NameNat = value;
+            get => ((BreedPoco)Projector).NameNat;
+            set => ((BreedPoco)Projector).NameNat = value;
         }
 
 
-        internal BreedIBreedProjection(BreedPoco projector)
+        internal BreedIBreedProjection(IProjection projector)
         {
             Projector = projector;
         }
@@ -77,7 +68,45 @@ public class BreedPoco: EntityBase, IPoco, IProjection, IProjection<BreedPoco>, 
         }
 
 
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<BreedPoco> other && object.ReferenceEquals(Projector, other.Projector);
+        }
 
+        public override int GetHashCode()
+        {
+            return Projector.GetHashCode();
+        }
+
+        bool IPoco.IsLoaded(Type @interface)
+        {
+            return ((IPoco)Projector).IsLoaded(@interface);
+        }
+
+        bool IPoco.IsLoaded<T>()
+        {
+            return ((IPoco)Projector).IsLoaded<T>();
+        }
+
+        void IPoco.TouchProperty(string property)
+        {
+            ((IPoco)Projector).TouchProperty(property);
+        }
+
+        void IPoco.Clear()
+        {
+            ((IPoco)Projector).Clear();
+        }
+
+        bool IPoco.IsPropertySet(string property)
+        {
+            return ((IPoco)Projector).IsPropertySet(property);
+        }
+
+
+
+
+        
 
     }
 #endregion Projection classes
@@ -168,18 +197,9 @@ public class BreedPoco: EntityBase, IPoco, IProjection, IProjection<BreedPoco>, 
 
     
     
-#region Projectors
-
-    public BreedPoco Projector => this;
-    IProjector IProjection.Projector => Projector;
-
-    IBreed IProjection<IBreed>.Projector => Projector.As<IBreed>()!;
-
-#endregion Projectors;
-
-    
-    
 #region Properties
+
+    public IProjection Projector => this;
 
     public String Code 
     { 
@@ -243,7 +263,21 @@ public class BreedPoco: EntityBase, IPoco, IProjection, IProjection<BreedPoco>, 
         {
             return AsBreedIBreedProjection;
         }
+        if(type == typeof(BreedPoco))
+        {
+            return this;
+        }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is IProjection<BreedPoco> other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
 

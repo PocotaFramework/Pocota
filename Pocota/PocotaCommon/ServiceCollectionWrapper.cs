@@ -22,7 +22,7 @@ public class ServiceCollectionWrapper : IServiceCollection
 
     public void Add(ServiceDescriptor item)
     {
-        if(item.ImplementationType is { } && typeof(IProjector).IsAssignableFrom(item.ImplementationType))
+        if (item.ImplementationType is { } && typeof(IProjection).IsAssignableFrom(item.ImplementationType))
         {
             _core.AddServiceDescriptor(item);
         }

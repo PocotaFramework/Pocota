@@ -1,5 +1,9 @@
+using CatsCommon.Model;
 using CatsServerEngine;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Net.Leksi.Pocota.Common.Generic;
+using Net.Leksi.Pocota.Server;
 
 namespace TestProject1
 {
@@ -13,7 +17,31 @@ namespace TestProject1
         [Test]
         public void Test1()
         {
-            Console.WriteLine(default(int));
+            IHost host = GetHost();
+            ICatForListing catForListing = host.Services.GetRequiredService<ICatForListing>();
+            ICat cat = ((IProjection<ICat>)catForListing).As<ICat>()!;
+            CatPoco catPoco = ((IProjection<CatPoco>)cat).Projector!;
+
+            Console.WriteLine(cat == catForListing);
+            Console.WriteLine(cat.Equals(catForListing));
+            Console.WriteLine(cat.Equals(catPoco));
+            Console.WriteLine(catForListing.Equals(catPoco));
+        }
+
+        private IHost GetHost()
+        {
+            return Host.CreateDefaultBuilder().ConfigureServices(services => 
+            {
+                services.AddPocota
+                (
+                    pocota =>
+                    {
+                        pocota.AddTransient<Cat>();
+                    },
+                    null
+                );
+
+            }).Build();
         }
     }
 }

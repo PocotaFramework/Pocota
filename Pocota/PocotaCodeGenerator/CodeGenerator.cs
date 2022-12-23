@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Net.Leksi.DocsRazorator;
 using Net.Leksi.Pocota.Client;
@@ -544,7 +545,7 @@ public class CodeGenerator : IModelBuilder
 
             AddUsings(model, typeof(IPrimaryKey<>));
             AddUsings(model, typeof(WeakReference));
-            AddUsings(model, typeof(IProjector));
+            AddUsings(model, typeof(IProjection));
             AddUsings(model, typeof(Type));
 
             model.ReferencedClass = MakePocoClassName(request.Interface);
@@ -967,6 +968,15 @@ public class CodeGenerator : IModelBuilder
                     Parent = model,
                     Interface = GetTypeName(projection),
                 };
+                if (isClient)
+                {
+                    AddUsings(model, typeof(PropertyChangedEventHandler));
+                    projectionModel.Interfaces.Add(GetTypeName(typeof(Client.IPoco)));
+                }
+                else
+                {
+                    projectionModel.Interfaces.Add(GetTypeName(typeof(Server.IPoco)));
+                }
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
                     PropertyModel propertyModel = new()

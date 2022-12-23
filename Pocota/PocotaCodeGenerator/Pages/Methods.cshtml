@@ -15,9 +15,23 @@
         {
             return @Html.Raw($"As{model1.ClassName}");
         }
+        if(type == typeof(@Html.Raw(Model.ClassName)))
+        {
+            return this;
+        }
 </text>
         }
         return null;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is @Html.Raw($"IProjection<{Model.ClassName}>") other && object.ReferenceEquals(this, other.Projector);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
     }
 
     @foreach(MethodModel mm in Model.Methods)

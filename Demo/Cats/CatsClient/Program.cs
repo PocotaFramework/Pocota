@@ -7,6 +7,7 @@ using CatsCommon.Model;
 using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Net.Leksi.Pocota.Client;
 using System;
 
 namespace CatsClient;
@@ -30,15 +31,15 @@ public class Program
                     configurePocos: serv =>
                     {
                         serv.AddTransient<Cat>();
-                        serv.AddTransient<Litter>();
-                        serv.AddTransient<BreedBase>();
-                        serv.AddTransient<CatteryBase>();
-                        serv.AddTransient<CatFilterBase>();
-                        serv.AddTransient<BreedFilterBase>();
-                        serv.AddTransient<CatteryFilterBase>();
-                        serv.AddTransient<IMainWindowHeart, MainWindowHeart>();
-                        serv.AddTransient<IViewCatHeart, ViewCatHeart>();
-                        services.AddTransient<ITracedPocosHeart, TracedPocosHeart>();
+                        serv.AddTransient<LitterPoco>();
+                        serv.AddTransient<BreedPoco>();
+                        serv.AddTransient<CatteryPoco>();
+                        serv.AddTransient<CatFilterPoco>();
+                        serv.AddTransient<BreedFilterPoco>();
+                        serv.AddTransient<CatteryFilterPoco>();
+                        serv.AddTransient<MainWindowHeart>();
+                        serv.AddTransient<ViewCatHeart>();
+                        serv.AddTransient<TracedPocosHeart>();
                     },
                     configureJson: conf =>
                     {

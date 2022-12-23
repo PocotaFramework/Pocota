@@ -55,7 +55,7 @@ public class MainWindowHeart : MainWindowHeartPoco
         SelectedCats.Clear();
         foreach (IProjection<CatPoco> cat in ((DataGrid)sender).SelectedItems)
         {
-            SelectedCats.Add(cat.Projector);
+            SelectedCats.Add(cat.As<CatPoco>()!);
         }
         IsCatSelected = SelectedCats.Count == 1;
     }

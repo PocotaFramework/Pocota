@@ -24,10 +24,13 @@ public class PocotaCore: PocotaCoreBase, IPocota
         )
     {
         PocotaCore core = new();
+        core._services = services;
         ServiceCollectionWrapper serviceDescriptors = new(core);
         configureServices?.Invoke(serviceDescriptors);
         configureJson?.Invoke(core);
+        core._services = null;
         services.AddSingleton<IPocota>(core);
+        services.AddSingleton<PocotaCore>(core);
         services.AddScoped<PocoJsonConverterFactory>();
         services.AddScoped<IPocoContext, PocoContext>();
         services.AddTransient<IPocoTraversalContext, PocoTraversalContext>();

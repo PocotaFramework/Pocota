@@ -107,26 +107,28 @@ public class PocoContext : IPocoContext
         return null;
     }
 
-    internal T FindOrCreateEntity<T>(IPrimaryKey<T> key) where T : class
+    internal T FindOrCreateEntity<T>(IPrimaryKey<T> key, out bool isNew) where T : class
     {
-        if(!key.IsAssigned)
+        if (!key.IsAssigned)
         {
             throw new ArgumentException($"{nameof(key)} must be assigned!");
         }
+        isNew = true;
         if (_cache.TryGetValue(key, out IPrimaryKey? cachedKey))
         {
             if (cachedKey.Source is { })
             {
-                return cachedKey.Source.As<T>()!;
+                isNew = false;
+                return ((IProjection)cachedKey.Source).As<T>()!;
             }
             _cache.Remove(key);
 
         }
-        T result = _services.GetRequiredService<T>();
-        IPrimaryKey newKey = ((IEntity)((IProjection)result).Projector).PrimaryKey;
+        IProjection result = (IProjection)_services.GetRequiredService(typeof(T));
+        IPrimaryKey newKey = ((IEntity)(result).Projector).PrimaryKey;
         newKey.Assign(key);
         _cache.Add(newKey);
-        return result;
+        return result.As<T>()!;
     }
 
     internal object? GetProbePlaceholder(Type type)

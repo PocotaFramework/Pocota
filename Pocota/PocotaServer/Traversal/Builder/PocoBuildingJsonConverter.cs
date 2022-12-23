@@ -14,15 +14,20 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
     private readonly PocotaCore _core;
     private readonly PocoContext _pocoContext;
     private readonly bool _isEntity;
+    private readonly Type _actualType;
+    private readonly IEnumerable<Property> _properties;
+
 
     public PocoBuildingJsonConverter(IServiceProvider services)
     {
         _services = services;
         _core = _services.GetRequiredService<PocotaCore>();
+        _actualType = _core.GetActualType(typeof(T))!;
         _isEntity = _core.IsEntity(typeof(T));
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _probe = _pocoContext.GetProbePlaceholder<T>();
         _skip = _pocoContext.GetSkipPlaceholder<T>();
+        _properties = _core.GetProperties(typeof(T))!.Values;
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -44,11 +49,12 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
         IPrimaryKey<T>? primaryKey = null;
         bool alreadyExists = false;
+        bool isNew = false;
         string? reference = null;
         bool isHighLevel = context.IsHighLevel;
         context.IsHighLevel = false;
         bool isListItem = context.IsListItem;
-        context.IsListItem = false; 
+        context.IsListItem = false;
 
         writer.Flush();
 
@@ -59,7 +65,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
         try
         {
-            while(context.BuildingContext.Spinners.Peek().Level > context.BuildingContext.Level)
+            while (context.BuildingContext.Spinners.Peek().Level > context.BuildingContext.Level)
             {
                 DbDataReader? reader = context.BuildingContext.Spinners.Pop().Spinner.Current;
                 if (reader is { } && !reader.IsClosed)
@@ -100,7 +106,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 .Select<Node, object>((Node v) => v.NodeKind is Node.Kind.Array ? v.Count : v.Name!)
                 .Where(v => v is { })
                 .ToList();
-            if(path.Count > 0 && context.BuildingContext.BufferWriter!.Path.Last().IsIncompleteNumber)
+            if (path.Count > 0 && context.BuildingContext.BufferWriter!.Path.Last().IsIncompleteNumber)
             {
                 //Console.WriteLine(String.Join('/', path));
                 path.RemoveAt(path.Count - 1);
@@ -204,14 +210,14 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             }
             if (_isEntity)
             {
-                value = _pocoContext.FindOrCreateEntity(primaryKey!);
+                value = _pocoContext.FindOrCreateEntity(primaryKey!, out isNew);
             }
             else
             {
                 value = _services.GetRequiredService<T>();
             }
 
-            reference = context.GetReference(value!, out alreadyExists);
+            reference = context.GetReference(((IProjection)value).Projector, out alreadyExists);
             if (context.BuildingContext.Name is { })
             {
                 writer.WritePropertyName(context.BuildingContext.Name);
@@ -226,25 +232,28 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             if (alreadyExists)
             {
 
-                writer.WritePropertyName(PocoTraversalConverterFactory.Ref);
-                writer.WriteStringValue(reference);
+                writer.WriteString(PocoTraversalConverterFactory.Ref, reference);
             }
             else
             {
-                writer.WritePropertyName(PocoTraversalConverterFactory.Id);
-                writer.WriteStringValue(reference);
+                writer.WriteString(PocoTraversalConverterFactory.Id, reference);
                 if (_isEntity)
                 {
                     writer.WritePropertyName(PocoTraversalConverterFactory.Key);
-                    JsonSerializer.Serialize<object[]?>(writer, context.EncodePrimaryKey<T>(primaryKey!));
+                    JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
                 }
+                string classReference = context.GetReference(_actualType, out bool isClassFound);
+                writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
             }
+            string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
+            writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
+
             IPoco poco = (IPoco)((IProjection)value).Projector;
             if ((_isEntity || !alreadyExists) && !poco.IsLoaded<T>() && !context.BuildingContext.BuildingEventArgs.KeyOnly)
             {
                 string? prevPropertyName = null;
 
-                foreach (Property property in _core.GetProperties(typeof(T))!.Values)
+                foreach (Property property in _properties)
                 {
                     context.Target = null;
 
@@ -252,26 +261,29 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     object? propertyValue = property.GetValue(poco);
 
-                    if (!poco.IsPropertySet(property.Name))
+                    bool isPropertySet = poco.IsPropertySet(property.Name);
+
+                    if (isNew || !isPropertySet)
                     {
-                        context.BuildingContext.BuildingEventArgs.IsNullable = property.IsNullable;
-                        bool isPoco = _core.GetActualType(propertyType) is { };
-                        bool isPocoWithKey = _core.IsEntity(propertyType);
-                        bool isNewPocoList = false;
-                        Type typeForSerialization = propertyType;
-                        primaryKey!.TryGetPresets(property.Name, context.BuildingContext.Presets);
-                        if (isPocoWithKey)
+                        if (isNew && isPropertySet)
                         {
-                            propertyValue = _pocoContext.GetProbePlaceholder(propertyType);
+                            writer.WritePropertyName(property.Name);
+                            JsonSerializer.Serialize(writer, propertyValue, propertyType, options);
+                            writer.Flush();
                         }
-                        else {
-                            bool isSetFromPresets = context.BuildingContext.Presets.TryGetValue(string.Empty, out propertyValue);
-                            if (isSetFromPresets)
-                            { 
-                                property.SetValue(poco, propertyValue); 
+                        else
+                        {
+                            context.BuildingContext.BuildingEventArgs.IsNullable = property.IsNullable;
+                            bool isPoco = _core.GetActualType(propertyType) is { };
+                            bool isPocoWithKey = _core.IsEntity(propertyType);
+                            bool isNewPocoList = false;
+                            Type typeForSerialization = propertyType;
+                            if (isPocoWithKey)
+                            {
+                                primaryKey!.TryGetPresets(property.Name, context.BuildingContext.Presets);
+                                propertyValue = _pocoContext.GetProbePlaceholder(propertyType);
                             }
-                            context.BuildingContext.Presets.Clear();
-                            if (!isSetFromPresets)
+                            else
                             {
                                 if (!isPoco || propertyValue is null || !context.TestReference(propertyValue))
                                 {
@@ -368,42 +380,43 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                                 }
                             }
-                        }
-                        if (isPoco)
-                        {
-                            context.BuildingContext.Name = property.Name;
-                        }
-                        else
-                        {
-                            prevPropertyName = property.Name;
-                            writer.WritePropertyName(property.Name);
-                            writer.Flush();
-                        }
-                        if (propertyValue is { })
-                        {
-                            JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
+
                             if (isPoco)
                             {
-                                if (object.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
-                                {
-                                    context.Target = null;
-                                }
+                                context.BuildingContext.Name = property.Name;
                             }
-
-                            if (isPocoWithKey || isNewPocoList)
+                            else
                             {
-                                if (
-                                    (
-                                        context.Target is null
-                                        && propertyValue is { }
-                                    )
-                                    || (
-                                        context.Target is { }
-                                        && !context.Target.Equals(propertyValue)
-                                    )
-                                )
+                                prevPropertyName = property.Name;
+                                writer.WritePropertyName(property.Name);
+                                writer.Flush();
+                            }
+                            if (propertyValue is { })
+                            {
+                                JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
+                                if (isPoco)
                                 {
-                                    property.SetValue(poco, context.Target);
+                                    if (object.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                    {
+                                        context.Target = null;
+                                    }
+                                }
+
+                                if (isPocoWithKey || isNewPocoList)
+                                {
+                                    if (
+                                        (
+                                            context.Target is null
+                                            && propertyValue is { }
+                                        )
+                                        || (
+                                            context.Target is { }
+                                            && !context.Target.Equals(propertyValue)
+                                        )
+                                    )
+                                    {
+                                        property.SetValue(poco, context.Target);
+                                    }
                                 }
                             }
                         }

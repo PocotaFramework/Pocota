@@ -9,7 +9,7 @@ public interface IPrimaryKey
     IEnumerable<string> Names { get; }
     IEnumerable<string> NotAssignedFields { get; }
     IEnumerable<object?> Items { get; }
-    IProjector? Source { get; }
+    IProjection? Source { get; }
     bool IsAssigned { get; }
     Type SourceType { get; }
     void Assign(IPrimaryKey other);

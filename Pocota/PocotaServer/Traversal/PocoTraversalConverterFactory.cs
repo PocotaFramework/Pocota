@@ -8,6 +8,8 @@ internal class PocoTraversalConverterFactory : JsonConverterFactory
     internal const string Key = "$key";
     internal const string Id = "$id";
     internal const string Ref = "$ref";
+    internal const string Class = "$cl";
+    internal const string Interface = "$in";
 
     protected readonly IServiceProvider _services;
     protected readonly PocotaCore _core;
