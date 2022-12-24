@@ -1,5 +1,6 @@
 ﻿using CatsCommon.Filters;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -35,7 +36,8 @@ public class CatFilterConverter : MarkupExtension, IValueConverter, IMultiValueC
                             )
                             || (
                                 "Button".Equals(parameters[1])
-                                && ((IPoco)catFilter).PocoState is PocoState.Modified
+                                && catFilter is IProjection<IPoco> projection
+                                && projection.As<IPoco>()!.PocoState is PocoState.Modified
                             )
                     )
                     {

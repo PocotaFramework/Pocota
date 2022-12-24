@@ -146,7 +146,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         if (parts is { } && parts.Length > 0)
                         {
                             key = new List<string>();
-                            key.AddRange(parts.Select(v => v.ToString()));
+                            key.AddRange(parts.Select(v => v.ToString()!));
                             done = true;
                         }
                         if (!done)
