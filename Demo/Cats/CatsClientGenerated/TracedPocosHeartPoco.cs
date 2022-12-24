@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-23T18:45:23                                          //
+// at 2022-12-24T12:27:28                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -12,135 +12,55 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 
 namespace CatsClient;
 
-public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
+public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
 {
 
 #region Projection classes
 
-    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IPoco, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
+    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
     {
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
-            }
+        private readonly IProjection _projector;
 
-            remove
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
-            }
-        }
-
-        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged -= value;
-            }
-        }
-
-        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
-            }
-        }
-
-
-
-
-        public IProjection Projector { get; init; }
-
-        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
 
         public IList<Tuple<Type,Int32>> TracedPocos 
         {
-            get => ((TracedPocosHeartPoco)Projector).TracedPocos!;
+            get => ((TracedPocosHeartPoco)_projector).TracedPocos!;
         }
 
 
         internal TracedPocosHeartITracedPocosHeartProjection(IProjection projector)
         {
-            Projector = projector;
+            _projector = projector;
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
         public void CollectGarbage()
         {
-            ((TracedPocosHeartPoco)Projector).CollectGarbage();
+            ((TracedPocosHeartPoco)_projector).CollectGarbage();
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(_projector, other.As<TracedPocosHeartPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.AcceptChanges()
-        {
-            ((IPoco)Projector).AcceptChanges();
-        }
-
-        void IPoco.CancelChanges()
-        {
-            ((IPoco)Projector).CancelChanges();
-        }
-
-        bool IPoco.IsModified(string property)
-        {
-                return ((IPoco)Projector).IsModified(property);
-        }
-
-        void IPoco.Invalidate()
-        {
-            ((IPoco)Projector).Invalidate();
-        }
-
-        
 
     }
 #endregion Projection classes
@@ -188,8 +108,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjection, IP
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
     {
         get => _tracedPocos;
@@ -221,12 +139,26 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IPoco, IProjection, IP
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is TracedPocosHeartPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()

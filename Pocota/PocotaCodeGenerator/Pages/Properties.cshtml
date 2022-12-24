@@ -3,8 +3,6 @@
 
 @Html.Raw("#region Properties")
 
-    public IProjection Projector => this;
-
 @foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";

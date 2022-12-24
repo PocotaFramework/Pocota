@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-23T18:45:23                                  //
+// at 2022-12-24T12:27:28                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,138 +10,58 @@ using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
-using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+public class LitterFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
 {
 
 #region Projection classes
 
-    public class LitterFilterILitterFilterProjection: ILitterFilter, IPoco, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
-            }
+        private readonly IProjection _projector;
 
-            remove
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
-            }
-        }
-
-        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged -= value;
-            }
-        }
-
-        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
-            }
-        }
-
-
-
-
-        public IProjection Projector { get; init; }
-
-        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
 
         public ICat Female 
         {
-            get => ((IProjection)((LitterFilterPoco)Projector).Female).As<ICat>()!;
-            set => ((LitterFilterPoco)Projector).Female = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)_projector).Female).As<ICat>()!;
+            set => ((LitterFilterPoco)_projector).Female = (CatPoco)value;
         }
 
         public ICat Male 
         {
-            get => ((IProjection)((LitterFilterPoco)Projector).Male).As<ICat>()!;
-            set => ((LitterFilterPoco)Projector).Male = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)_projector).Male).As<ICat>()!;
+            set => ((LitterFilterPoco)_projector).Male = (CatPoco)value;
         }
 
 
         internal LitterFilterILitterFilterProjection(IProjection projector)
         {
-            Projector = projector;
+            _projector = projector;
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(_projector, other.As<LitterFilterPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.AcceptChanges()
-        {
-            ((IPoco)Projector).AcceptChanges();
-        }
-
-        void IPoco.CancelChanges()
-        {
-            ((IPoco)Projector).CancelChanges();
-        }
-
-        bool IPoco.IsModified(string property)
-        {
-                return ((IPoco)Projector).IsModified(property);
-        }
-
-        void IPoco.Invalidate()
-        {
-            ((IPoco)Projector).Invalidate();
-        }
-
-        
 
     }
 #endregion Projection classes
@@ -201,8 +121,6 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     
 #region Properties
-
-    public IProjection Projector => this;
 
     public virtual CatPoco Female
     {
@@ -274,12 +192,26 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is LitterFilterPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()
@@ -336,7 +268,7 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     private static void SetFemaleValue(object target, object? value)
     {
-        ((LitterFilterPoco)target).Female = (CatPoco)(value as IProjection)?.Projector!;
+        ((LitterFilterPoco)target).Female = (value as IProjection)?.As<CatPoco>()!;
 
     }
 
@@ -347,7 +279,7 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     private static void SetMaleValue(object target, object? value)
     {
-        ((LitterFilterPoco)target).Male = (CatPoco)(value as IProjection)?.Projector!;
+        ((LitterFilterPoco)target).Male = (value as IProjection)?.As<CatPoco>()!;
 
     }
 

@@ -3,63 +3,12 @@
 
     public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     {
-        @if(Model.Parent!.IsClient)
-        {
-            <text>        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
-            }
+        private readonly IProjection _projector;
 
-            remove
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
-            }
-        }
-
-        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged -= value;
-            }
-        }
-
-        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
-            }
-        }
-
-
-
-</text>
-        }
-        @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.IsProjection))
+        @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
-</text>
-        }
-
-        public IProjection Projector { get; init; }
-
-         @if(Model.Parent!.IsClient)
-        {
-            <text>        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
 </text>
         }
 
@@ -68,7 +17,7 @@
             <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if(!pm.IsList || !pm.IsProjection){
-                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"(({Model.Parent!.ClassName})Projector).{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
             else {
@@ -85,7 +34,7 @@
                 }
                 else
                 {
-                    <text>            set => @Html.Raw($"(({Model.Parent!.ClassName})Projector).{pm.Name} = ")@if (pm.IsProjection) { <text>@Html.Raw($"({pm.Class}{(pm.IsNullable ? "?" : string.Empty)})")</text> }value;
+                    <text>            set => @Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name} = ")@if (pm.IsProjection) { <text>@Html.Raw($"({pm.Class}{(pm.IsNullable ? "?" : string.Empty)})")</text> }value;
 </text>
                 }
             }
@@ -96,34 +45,34 @@
 
         internal @Html.Raw($"{Model.ClassName}(IProjection projector)")
         {
-            Projector = projector;
-            @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.IsProjection))
+            _projector = projector;
+            @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-                <text>            @fieldName = new(@Html.Raw($"(({Model.Parent!.ClassName})Projector).{pm.Name}"));
+                <text>            @fieldName = new(@Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name}"));
 </text>
             }
         }
 
         public I? @Html.Raw("As<I>() where I : class")
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
         @foreach(MethodModel mm in Model.Methods)
         {
-        string parameters = string.Join(", ", mm.Parameters.Select(p => p.Class is { } ? $"((IProjection<{p.Class}>){p.Name})?.Projector!" : p.Name));
+        string parameters = string.Join(", ", mm.Parameters.Select(p => p.Class is { } ? $"((IProjection<{p.Class}>){p.Name})?._projector!" : p.Name));
         <text>        public @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})")
         {
             @Html.Raw("")@if (!mm.ReturnType.Equals("void"))
             {
                 <text>object? result = </text>
-        }@Html.Raw($"(({Model.Parent!.ClassName})Projector).{mm.Name}({parameters})");
+        }@Html.Raw($"(({Model.Parent!.ClassName})_projector).{mm.Name}({parameters})");
             @if (!mm.ReturnType.Equals("void"))
             {
                 <text>            return @Html.Raw($"({mm.ReturnType})result");
@@ -135,67 +84,13 @@
 
         public override bool Equals(object? obj)
         {
-            return obj is @Html.Raw($"IProjection<{Model.Parent!.ClassName}>") other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is @Html.Raw($"IProjection<{Model.Parent!.ClassName}>") other && object.ReferenceEquals(_projector, @Html.Raw($"other.As<{Model.Parent!.ClassName}>()"));
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @@interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@@interface);
-        }
-
-        bool @Html.Raw("IPoco.IsLoaded<T>()")
-        {
-            return ((IPoco)Projector)@Html.Raw(".IsLoaded<T>()");
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        @if(Model.Parent!.IsClient){
-            <text>        void IPoco.AcceptChanges()
-        {
-            ((IPoco)Projector).AcceptChanges();
-        }
-
-        void IPoco.CancelChanges()
-        {
-            ((IPoco)Projector).CancelChanges();
-        }
-
-        bool IPoco.IsModified(string property)
-        {
-                return ((IPoco)Projector).IsModified(property);
-        }
-
-        void IPoco.Invalidate()
-        {
-            ((IPoco)Projector).Invalidate();
-        }
-</text>
-        }
-        else {
-            <text>        void IPoco.Clear()
-        {
-            ((IPoco)Projector).Clear();
-        }
-
-        bool IPoco.IsPropertySet(string property)
-        {
-            return ((IPoco)Projector).IsPropertySet(property);
-        }
-
-
-
-</text>
-        }
-
-        
 
     }

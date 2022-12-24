@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-23T18:45:23                                  //
+// at 2022-12-24T12:27:28                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,87 +13,57 @@ using Net.Leksi.Pocota.Server;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
 {
     
 
 #region Projection classes
 
 
-    public class LitterFilterILitterFilterProjection: ILitterFilter, IPoco, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
-
-        public IProjection Projector { get; init; }
+        private readonly IProjection _projector;
 
 
         public ICat Female 
         {
-            get => ((IProjection)((LitterFilterPoco)Projector).Female).As<ICat>()!;
-            set => ((LitterFilterPoco)Projector).Female = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)_projector).Female).As<ICat>()!;
+            set => ((LitterFilterPoco)_projector).Female = (CatPoco)value;
         }
 
         public ICat Male 
         {
-            get => ((IProjection)((LitterFilterPoco)Projector).Male).As<ICat>()!;
-            set => ((LitterFilterPoco)Projector).Male = (CatPoco)value;
+            get => ((IProjection)((LitterFilterPoco)_projector).Male).As<ICat>()!;
+            set => ((LitterFilterPoco)_projector).Male = (CatPoco)value;
         }
 
 
         internal LitterFilterILitterFilterProjection(IProjection projector)
         {
-            Projector = projector;
+            _projector = projector;
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(_projector, other.As<LitterFilterPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.Clear()
-        {
-            ((IPoco)Projector).Clear();
-        }
-
-        bool IPoco.IsPropertySet(string property)
-        {
-            return ((IPoco)Projector).IsPropertySet(property);
-        }
-
-
-
-
-        
 
     }
 #endregion Projection classes
@@ -156,8 +126,6 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public CatPoco Female 
     { 
         get => _female; 
@@ -202,12 +170,26 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is LitterFilterPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()
@@ -283,7 +265,7 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     private static void SetFemaleValue(object target, object? value)
     {
-        ((LitterFilterPoco)target).Female = (CatPoco)(value as IProjection)?.Projector!;
+        ((LitterFilterPoco)target).Female = (value as IProjection)?.As<CatPoco>()!;
 
     }
 
@@ -294,7 +276,7 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Lit
 
     private static void SetMaleValue(object target, object? value)
     {
-        ((LitterFilterPoco)target).Male = (CatPoco)(value as IProjection)?.Projector!;
+        ((LitterFilterPoco)target).Male = (value as IProjection)?.As<CatPoco>()!;
 
     }
 

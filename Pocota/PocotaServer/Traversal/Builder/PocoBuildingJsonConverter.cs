@@ -217,7 +217,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 value = _services.GetRequiredService<T>();
             }
 
-            reference = context.GetReference(((IProjection)value).Projector, out alreadyExists);
+            reference = context.GetReference(((IProjection)value).As<IPoco>()!, out alreadyExists);
             if (context.BuildingContext.Name is { })
             {
                 writer.WritePropertyName(context.BuildingContext.Name);
@@ -248,7 +248,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
             writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
 
-            IPoco poco = (IPoco)((IProjection)value).Projector;
+            IPoco poco = ((IProjection)value).As<IPoco>()!;
             if ((_isEntity || !alreadyExists) && !poco.IsLoaded<T>() && !context.BuildingContext.BuildingEventArgs.KeyOnly)
             {
                 string? prevPropertyName = null;

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-23T18:45:23                                          //
+// at 2022-12-24T12:27:28                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -13,80 +13,36 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 
 namespace CatsClient;
 
-public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
+public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
 {
 
 #region Projection classes
 
-    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, IPoco, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
+    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
     {
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
-            }
-        }
-
-        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged -= value;
-            }
-        }
-
-        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
-            }
-        }
-
-
+        private readonly IProjection _projector;
 
         private readonly ProjectionList<LitterPoco,ILitter> _selectedLitters;
 
-        public IProjection Projector { get; init; }
-
-        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
-
         public EditKind EditKind 
         {
-            get => ((ViewCatHeartPoco)Projector).EditKind!;
-            set => ((ViewCatHeartPoco)Projector).EditKind = value;
+            get => ((ViewCatHeartPoco)_projector).EditKind!;
+            set => ((ViewCatHeartPoco)_projector).EditKind = value;
         }
 
         public ICatForView Cat 
         {
-            get => ((IProjection)((ViewCatHeartPoco)Projector).Cat).As<ICatForView>()!;
-            set => ((ViewCatHeartPoco)Projector).Cat = (CatPoco)value;
+            get => ((IProjection)((ViewCatHeartPoco)_projector).Cat).As<ICatForView>()!;
+            set => ((ViewCatHeartPoco)_projector).Cat = (CatPoco)value;
         }
 
         public Object LittersView 
         {
-            get => ((ViewCatHeartPoco)Projector).LittersView!;
-            set => ((ViewCatHeartPoco)Projector).LittersView = value;
+            get => ((ViewCatHeartPoco)_projector).LittersView!;
+            set => ((ViewCatHeartPoco)_projector).LittersView = value;
         }
 
         public IList<ILitter> SelectedLitters 
@@ -98,71 +54,35 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProje
 
         internal ViewCatHeartIViewCatHeartProjection(IProjection projector)
         {
-            Projector = projector;
-            _selectedLitters = new(((ViewCatHeartPoco)Projector).SelectedLitters);
+            _projector = projector;
+            _selectedLitters = new(((ViewCatHeartPoco)_projector).SelectedLitters);
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
         public void LittersSelectionChanged(Object sender, EventArgs e)
         {
-            ((ViewCatHeartPoco)Projector).LittersSelectionChanged(sender, e);
+            ((ViewCatHeartPoco)_projector).LittersSelectionChanged(sender, e);
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<ViewCatHeartPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<ViewCatHeartPoco> other && object.ReferenceEquals(_projector, other.As<ViewCatHeartPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.AcceptChanges()
-        {
-            ((IPoco)Projector).AcceptChanges();
-        }
-
-        void IPoco.CancelChanges()
-        {
-            ((IPoco)Projector).CancelChanges();
-        }
-
-        bool IPoco.IsModified(string property)
-        {
-                return ((IPoco)Projector).IsModified(property);
-        }
-
-        void IPoco.Invalidate()
-        {
-            ((IPoco)Projector).Invalidate();
-        }
-
-        
 
     }
 #endregion Projection classes
@@ -252,8 +172,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProje
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public virtual EditKind EditKind
     {
         get => _editKind;
@@ -338,12 +256,26 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProje
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<ViewCatHeartPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is ViewCatHeartPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()
@@ -443,7 +375,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IPoco, IProjection, IProje
 
     private static void SetCatValue(object target, object? value)
     {
-        ((ViewCatHeartPoco)target).Cat = (CatPoco)(value as IProjection)?.Projector!;
+        ((ViewCatHeartPoco)target).Cat = (value as IProjection)?.As<CatPoco>()!;
 
     }
 

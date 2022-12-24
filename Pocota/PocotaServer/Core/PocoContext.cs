@@ -125,7 +125,7 @@ public class PocoContext : IPocoContext
 
         }
         IProjection result = (IProjection)_services.GetRequiredService(typeof(T));
-        IPrimaryKey newKey = ((IEntity)(result).Projector).PrimaryKey;
+        IPrimaryKey newKey = result.As<IEntity>()!.PrimaryKey;
         newKey.Assign(key);
         _cache.Add(newKey);
         return result.As<T>()!;

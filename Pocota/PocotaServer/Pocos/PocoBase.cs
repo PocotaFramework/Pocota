@@ -10,5 +10,4 @@ public abstract class PocoBase
     {
         _services= services;
     }
-
 }

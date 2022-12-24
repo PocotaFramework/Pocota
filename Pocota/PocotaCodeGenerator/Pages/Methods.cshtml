@@ -19,6 +19,36 @@
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        @if (Model.IsEntity)
+        {
+            <text>        if(type == typeof(IEntity))
+        {
+            return this;
+        }
+        if(type == typeof(EntityBase))
+        {
+            return this;
+        }
+</text>
+        }
+        else
+        {
+            <text>        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+</text>
+        }
+        
 </text>
         }
         return null;
@@ -26,7 +56,7 @@
 
     public override bool Equals(object? obj)
     {
-        return obj is @Html.Raw($"IProjection<{Model.ClassName}>") other && object.ReferenceEquals(this, other.Projector);
+        return obj is @Html.Raw(Model.ClassName) other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()

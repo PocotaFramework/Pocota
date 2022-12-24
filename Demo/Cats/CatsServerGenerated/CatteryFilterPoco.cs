@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-23T18:45:23                                  //
+// at 2022-12-24T12:27:28                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,81 +13,51 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
     
 
 #region Projection classes
 
 
-    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IPoco, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
     {
-
-        public IProjection Projector { get; init; }
+        private readonly IProjection _projector;
 
 
         public String? SearchRegex 
         {
-            get => ((CatteryFilterPoco)Projector).SearchRegex;
-            set => ((CatteryFilterPoco)Projector).SearchRegex = value;
+            get => ((CatteryFilterPoco)_projector).SearchRegex;
+            set => ((CatteryFilterPoco)_projector).SearchRegex = value;
         }
 
 
         internal CatteryFilterICatteryFilterProjection(IProjection projector)
         {
-            Projector = projector;
+            _projector = projector;
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(_projector, other.As<CatteryFilterPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.Clear()
-        {
-            ((IPoco)Projector).Clear();
-        }
-
-        bool IPoco.IsPropertySet(string property)
-        {
-            return ((IPoco)Projector).IsPropertySet(property);
-        }
-
-
-
-
-        
 
     }
 #endregion Projection classes
@@ -135,8 +105,6 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Ca
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public String? SearchRegex 
     { 
         get => _searchRegex; 
@@ -171,12 +139,26 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection, IProjection<Ca
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is CatteryFilterPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()

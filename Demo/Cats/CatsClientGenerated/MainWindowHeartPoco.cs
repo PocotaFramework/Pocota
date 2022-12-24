@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-23T18:45:23                                          //
+// at 2022-12-24T12:27:28                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -15,70 +15,26 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 
 namespace CatsClient;
 
-public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IProjection<MainWindowHeartPoco>, IProjection<IMainWindowHeart>
+public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<MainWindowHeartPoco>, IProjection<IMainWindowHeart>
 {
 
 #region Projection classes
 
-    public class MainWindowHeartIMainWindowHeartProjection: IMainWindowHeart, IPoco, IProjection, IProjection<MainWindowHeartPoco>, IProjection<IMainWindowHeart>
+    public class MainWindowHeartIMainWindowHeartProjection: IMainWindowHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<MainWindowHeartPoco>, IProjection<IMainWindowHeart>
     {
-        event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPropertyChanged)Projector).PropertyChanged -= value;
-            }
-        }
-
-        event PocoChangedEventHandler? INotifyPocoChanged.PocoChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoChanged -= value;
-            }
-        }
-
-        event PocoStateChangedEventHandler? INotifyPocoChanged.PocoStateChanged
-        {
-            add
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPocoChanged)Projector).PocoStateChanged -= value;
-            }
-        }
-
-
+        private readonly IProjection _projector;
 
         private readonly ProjectionList<CatPoco,ICatForListing> _cats;
         private readonly ProjectionList<CatteryPoco,ICattery> _catteries;
         private readonly ProjectionList<BreedPoco,IBreed> _breeds;
         private readonly ProjectionList<CatPoco,ICatForListing> _selectedCats;
 
-        public IProjection Projector { get; init; }
-
-        PocoState IPoco.PocoState =>  ((IPoco)Projector).PocoState;
-
         public ICatFilter CatFilter 
         {
-            get => ((IProjection)((MainWindowHeartPoco)Projector).CatFilter).As<ICatFilter>()!;
+            get => ((IProjection)((MainWindowHeartPoco)_projector).CatFilter).As<ICatFilter>()!;
         }
 
         public IList<ICatForListing> Cats 
@@ -98,56 +54,56 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IPr
 
         public TimeSpan GetCatsTimeSpent 
         {
-            get => ((MainWindowHeartPoco)Projector).GetCatsTimeSpent!;
-            set => ((MainWindowHeartPoco)Projector).GetCatsTimeSpent = value;
+            get => ((MainWindowHeartPoco)_projector).GetCatsTimeSpent!;
+            set => ((MainWindowHeartPoco)_projector).GetCatsTimeSpent = value;
         }
 
         public TimeSpan RenderingCatsTimeSpent 
         {
-            get => ((MainWindowHeartPoco)Projector).RenderingCatsTimeSpent!;
-            set => ((MainWindowHeartPoco)Projector).RenderingCatsTimeSpent = value;
+            get => ((MainWindowHeartPoco)_projector).RenderingCatsTimeSpent!;
+            set => ((MainWindowHeartPoco)_projector).RenderingCatsTimeSpent = value;
         }
 
         public Int32 BreedsCount 
         {
-            get => ((MainWindowHeartPoco)Projector).BreedsCount!;
+            get => ((MainWindowHeartPoco)_projector).BreedsCount!;
         }
 
         public Int32 CatteriesCount 
         {
-            get => ((MainWindowHeartPoco)Projector).CatteriesCount!;
+            get => ((MainWindowHeartPoco)_projector).CatteriesCount!;
         }
 
         public List<IBreed> AllBreeds 
         {
-            get => ((MainWindowHeartPoco)Projector).AllBreeds!;
+            get => ((MainWindowHeartPoco)_projector).AllBreeds!;
         }
 
         public List<ICattery> AllCatteries 
         {
-            get => ((MainWindowHeartPoco)Projector).AllCatteries!;
+            get => ((MainWindowHeartPoco)_projector).AllCatteries!;
         }
 
         public Int32 AllBreedsCount 
         {
-            get => ((MainWindowHeartPoco)Projector).AllBreedsCount!;
+            get => ((MainWindowHeartPoco)_projector).AllBreedsCount!;
         }
 
         public Int32 AllCatteriesCount 
         {
-            get => ((MainWindowHeartPoco)Projector).AllCatteriesCount!;
+            get => ((MainWindowHeartPoco)_projector).AllCatteriesCount!;
         }
 
         public Boolean IsCatSelected 
         {
-            get => ((MainWindowHeartPoco)Projector).IsCatSelected!;
-            set => ((MainWindowHeartPoco)Projector).IsCatSelected = value;
+            get => ((MainWindowHeartPoco)_projector).IsCatSelected!;
+            set => ((MainWindowHeartPoco)_projector).IsCatSelected = value;
         }
 
         public Object CatsView 
         {
-            get => ((MainWindowHeartPoco)Projector).CatsView!;
-            set => ((MainWindowHeartPoco)Projector).CatsView = value;
+            get => ((MainWindowHeartPoco)_projector).CatsView!;
+            set => ((MainWindowHeartPoco)_projector).CatsView = value;
         }
 
         public IList<ICatForListing> SelectedCats 
@@ -159,78 +115,42 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IPr
 
         internal MainWindowHeartIMainWindowHeartProjection(IProjection projector)
         {
-            Projector = projector;
-            _cats = new(((MainWindowHeartPoco)Projector).Cats);
-            _catteries = new(((MainWindowHeartPoco)Projector).Catteries);
-            _breeds = new(((MainWindowHeartPoco)Projector).Breeds);
-            _selectedCats = new(((MainWindowHeartPoco)Projector).SelectedCats);
+            _projector = projector;
+            _cats = new(((MainWindowHeartPoco)_projector).Cats);
+            _catteries = new(((MainWindowHeartPoco)_projector).Catteries);
+            _breeds = new(((MainWindowHeartPoco)_projector).Breeds);
+            _selectedCats = new(((MainWindowHeartPoco)_projector).SelectedCats);
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
         public void AcceptCatFilterChanges()
         {
-            ((MainWindowHeartPoco)Projector).AcceptCatFilterChanges();
+            ((MainWindowHeartPoco)_projector).AcceptCatFilterChanges();
         }
         public void CatsSelectionChanged(Object sender, EventArgs e)
         {
-            ((MainWindowHeartPoco)Projector).CatsSelectionChanged(sender, e);
+            ((MainWindowHeartPoco)_projector).CatsSelectionChanged(sender, e);
         }
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<MainWindowHeartPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<MainWindowHeartPoco> other && object.ReferenceEquals(_projector, other.As<MainWindowHeartPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.AcceptChanges()
-        {
-            ((IPoco)Projector).AcceptChanges();
-        }
-
-        void IPoco.CancelChanges()
-        {
-            ((IPoco)Projector).CancelChanges();
-        }
-
-        bool IPoco.IsModified(string property)
-        {
-                return ((IPoco)Projector).IsModified(property);
-        }
-
-        void IPoco.Invalidate()
-        {
-            ((IPoco)Projector).Invalidate();
-        }
-
-        
 
     }
 #endregion Projection classes
@@ -477,8 +397,6 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IPr
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public virtual CatFilterPoco CatFilter
     {
         get => _catFilter;
@@ -704,12 +622,26 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IPr
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(EnvelopeBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<MainWindowHeartPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is MainWindowHeartPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()
@@ -898,7 +830,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IPoco, IProjection, IPr
 
     private static void SetCatFilterValue(object target, object? value)
     {
-        ((MainWindowHeartPoco)target).CatFilter = (CatFilterPoco)(value as IProjection)?.Projector!;
+        ((MainWindowHeartPoco)target).CatFilter = (value as IProjection)?.As<CatFilterPoco>()!;
 
     }
 

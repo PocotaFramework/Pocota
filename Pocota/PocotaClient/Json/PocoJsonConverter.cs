@@ -173,13 +173,13 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         if(_pocoContext.TryGetSource(typeof(T), key.ToArray(), out object? obj))
                         {
                             result = (T)obj!;
-                            ((PocoBase?)((IProjection?)result)?.Projector)?.StartPopulate(context);
+                            ((IProjection?)result)?.As<PocoBase>()?.StartPopulate(context);
                         }
 
                         key = null;
                     }
 
-                    PocoBase? poco = (((IProjection?)result)?.Projector as PocoBase)!;
+                    PocoBase? poco = ((IProjection?)result)?.As<PocoBase>();
                     Property? property = _properties![propertyName];
 
                     if (property is { })
@@ -267,7 +267,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         }
         finally
         {
-            ((PocoBase?)((IProjection?)result)?.Projector)?.StopPopulate(context);
+            ((IProjection?)result)?.As<PocoBase>()?.StopPopulate(context);
         }
 
     }

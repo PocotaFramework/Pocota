@@ -7,7 +7,7 @@
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    private </text>
-    if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+    if (pm.IsList)
     {
         <text>readonly </text>
     }
@@ -17,7 +17,7 @@
         <text>?</text>
     } 
     <text> @fieldName</text>
-    if (pm.IsList && (pm.IsProjector || pm.IsReadOnly))
+    if (pm.IsList)
     {
         <text> = new()</text>
     } 

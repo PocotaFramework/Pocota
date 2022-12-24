@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-23T18:45:23                                  //
+// at 2022-12-24T12:27:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace CatsCommon.Model;
 
-public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
 {
     public static readonly Type PrimaryKeyType = typeof(CatteryPrimaryKey);
     
@@ -21,80 +21,50 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
 #region Projection classes
 
 
-    public class CatteryICatteryProjection: ICattery, IPoco, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+    public class CatteryICatteryProjection: ICattery, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
-
-        public IProjection Projector { get; init; }
+        private readonly IProjection _projector;
 
 
         public String? NameEng 
         {
-            get => ((CatteryPoco)Projector).NameEng;
-            set => ((CatteryPoco)Projector).NameEng = value;
+            get => ((CatteryPoco)_projector).NameEng;
+            set => ((CatteryPoco)_projector).NameEng = value;
         }
 
         public String? NameNat 
         {
-            get => ((CatteryPoco)Projector).NameNat;
-            set => ((CatteryPoco)Projector).NameNat = value;
+            get => ((CatteryPoco)_projector).NameNat;
+            set => ((CatteryPoco)_projector).NameNat = value;
         }
 
 
         internal CatteryICatteryProjection(IProjection projector)
         {
-            Projector = projector;
+            _projector = projector;
         }
 
         public I? As<I>() where I : class
         {
-            return (I?)Projector.As(typeof(I))!;
+            return (I?)_projector.As(typeof(I))!;
         }
 
         public object? As(Type type) 
         {
-            return Projector.As(type);
+            return _projector.As(type);
         }
 
 
         public override bool Equals(object? obj)
         {
-            return obj is IProjection<CatteryPoco> other && object.ReferenceEquals(Projector, other.Projector);
+            return obj is IProjection<CatteryPoco> other && object.ReferenceEquals(_projector, other.As<CatteryPoco>());
         }
 
         public override int GetHashCode()
         {
-            return Projector.GetHashCode();
+            return _projector.GetHashCode();
         }
 
-        bool IPoco.IsLoaded(Type @interface)
-        {
-            return ((IPoco)Projector).IsLoaded(@interface);
-        }
-
-        bool IPoco.IsLoaded<T>()
-        {
-            return ((IPoco)Projector).IsLoaded<T>();
-        }
-
-        void IPoco.TouchProperty(string property)
-        {
-            ((IPoco)Projector).TouchProperty(property);
-        }
-
-        void IPoco.Clear()
-        {
-            ((IPoco)Projector).Clear();
-        }
-
-        bool IPoco.IsPropertySet(string property)
-        {
-            return ((IPoco)Projector).IsPropertySet(property);
-        }
-
-
-
-
-        
 
     }
 #endregion Projection classes
@@ -157,8 +127,6 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
     
 #region Properties
 
-    public IProjection Projector => this;
-
     public String? NameEng 
     { 
         get => _nameEng; 
@@ -205,12 +173,30 @@ public class CatteryPoco: EntityBase, IPoco, IProjection, IProjection<CatteryPoc
         {
             return this;
         }
+        if(type == typeof(IPoco))
+        {
+            return this;
+        }
+        if(type == typeof(PocoBase))
+        {
+            return this;
+        }
+        
+        if(type == typeof(IEntity))
+        {
+            return this;
+        }
+        if(type == typeof(EntityBase))
+        {
+            return this;
+        }
+        
         return null;
     }
 
     public override bool Equals(object? obj)
     {
-        return obj is IProjection<CatteryPoco> other && object.ReferenceEquals(this, other.Projector);
+        return obj is CatteryPoco other && object.ReferenceEquals(this, other);
     }
 
     public override int GetHashCode()

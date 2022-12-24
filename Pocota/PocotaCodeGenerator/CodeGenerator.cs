@@ -241,8 +241,8 @@ public class CodeGenerator : IModelBuilder
                 {
                     mm = new MethodModel
                     {
-                        ExpectedOutputType = GetTypeName(method.ReturnType),
-                        DeserilizedType = GetTypeName(method.ReturnType.GetGenericArguments()[0]),
+                        ExpectedOutputType = MakeTypeName(method.ReturnType),
+                        DeserilizedType = MakeTypeName(method.ReturnType.GetGenericArguments()[0]),
                         IsEnumerable = true
                     };
                 }
@@ -257,11 +257,11 @@ public class CodeGenerator : IModelBuilder
                 {
                     mm = new MethodModel
                     {
-                        DeserilizedType = GetTypeName(method.ReturnType)
+                        DeserilizedType = MakeTypeName(method.ReturnType)
                     };
                 }
                 mm.Name = method.Name;
-                mm.ReturnType = GetTypeName(typeof(Task));
+                mm.ReturnType = MakeTypeName(typeof(Task));
 
                 string? routeValue = null;
                 foreach (var attr in method.GetCustomAttributes())
@@ -348,7 +348,7 @@ public class CodeGenerator : IModelBuilder
                     new ParameterModel
                     {
                         Name = GetUniqueVariable(s_context),
-                        Type = $"{GetTypeName(typeof(ApiCallContext))}",
+                        Type = $"{MakeTypeName(typeof(ApiCallContext))}",
                         Attribute = $"[{nameof(DisallowNullAttribute).Substring(0, nameof(DisallowNullAttribute).IndexOf(nameof(Attribute)))}]"
                     }
                 );
@@ -380,7 +380,7 @@ public class CodeGenerator : IModelBuilder
                 {
                     ReturnType = s_void,
                     Name = method.Name,
-                    ExpectedOutputType = GetTypeName(method.ReturnType)
+                    ExpectedOutputType = MakeTypeName(method.ReturnType)
                 };
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -505,7 +505,7 @@ public class CodeGenerator : IModelBuilder
                         FilterModel fm = new FilterModel
                         {
                             Name = parameter.Name!,
-                            Type = $"{GetTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
+                            Type = $"{MakeTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
                             Variable = GetUniqueVariable(parameter.Name!),
                             IsNullable = isNullable,
                             IsConvertible = typeof(IConvertible).IsAssignableFrom(parameter.ParameterType)
@@ -550,14 +550,14 @@ public class CodeGenerator : IModelBuilder
 
             model.ReferencedClass = MakePocoClassName(request.Interface);
 
-            model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), model.ReferencedClass));
-            model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), GetTypeName(request.Interface)));
+            model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<object>)).Replace(MakeTypeName(typeof(object)), model.ReferencedClass));
+            model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<object>)).Replace(MakeTypeName(typeof(object)), MakeTypeName(request.Interface)));
 
             ProjectorHolder projector = _projectorsByType[request.Interface];
 
             foreach(Type projection in projector.Projections)
             {
-                model.Interfaces.Add(GetTypeName(typeof(IPrimaryKey<object>)).Replace(GetTypeName(typeof(object)), GetTypeName(projection)));
+                model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<object>)).Replace(MakeTypeName(typeof(object)), MakeTypeName(projection)));
             }
 
             foreach (string name in projector.KeysDefinitions.Keys)
@@ -568,7 +568,7 @@ public class CodeGenerator : IModelBuilder
                 PrimaryKeyFieldModel pkm = new()
                 {
                     Name = key.Name,
-                    Type = GetTypeName(key.Type),
+                    Type = MakeTypeName(key.Type),
                     Property = key.Property?.Name,
                     KeyReference = key.KeyReference,
                 };
@@ -833,15 +833,19 @@ public class CodeGenerator : IModelBuilder
                 if (model.IsEntity)
                 {
                     AddUsings(model, typeof(Client.EntityBase));
-                    model.Interfaces.Add(GetTypeName(typeof(Client.EntityBase)));
+                    model.Interfaces.Add(MakeTypeName(typeof(Client.EntityBase)));
+                    AddUsings(model, typeof(Client.IEntity));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Client.IEntity)));
                 }
                 else
                 {
                     AddUsings(model, typeof(Client.EnvelopeBase));
-                    model.Interfaces.Add(GetTypeName(typeof(Client.EnvelopeBase)));
+                    model.Interfaces.Add(MakeTypeName(typeof(Client.EnvelopeBase)));
                 }
                 AddUsings(model, typeof(Client.IPoco));
-                model.Interfaces.Add(GetTypeName(typeof(Client.IPoco)));
+                model.Interfaces.Add(MakeIProjectionName(typeof(Client.IPoco)));
+                AddUsings(model, typeof(Client.PocoBase));
+                model.Interfaces.Add(MakeIProjectionName(typeof(Client.PocoBase)));
             }
             else
             {
@@ -849,33 +853,37 @@ public class CodeGenerator : IModelBuilder
                 {
                     model.PrimaryKeyName = MakePrimaryKeyName(request.Interface);
                     AddUsings(model, typeof(Server.EntityBase));
-                    model.Interfaces.Add(GetTypeName(typeof(Server.EntityBase)));
+                    model.Interfaces.Add(MakeTypeName(typeof(Server.EntityBase)));
+                    AddUsings(model, typeof(Server.IEntity));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Server.IEntity)));
                 }
                 else
                 {
                     AddUsings(model, typeof(Server.EnvelopeBase));
-                    model.Interfaces.Add(GetTypeName(typeof(Server.EnvelopeBase)));
+                    model.Interfaces.Add(MakeTypeName(typeof(Server.EnvelopeBase)));
                 }
-                model.Interfaces.Add(GetTypeName(typeof(Server.IPoco)));
+                AddUsings(model, typeof(Server.IPoco));
+                model.Interfaces.Add(MakeTypeName(typeof(Server.IPoco)));
+                model.Interfaces.Add(MakeIProjectionName(typeof(Server.IPoco)));
+                AddUsings(model, typeof(Server.PocoBase));
+                model.Interfaces.Add(MakeIProjectionName(typeof(Server.PocoBase)));
             }
 
             AddUsings(model, request.Interface);
             AddUsings(model, typeof(IProjection));
 
-            model.Interfaces.Add(GetTypeName(typeof(IProjection)));
-            model.Interfaces.Add(GetTypeName(typeof(IProjection<object>)).Replace(GetTypeName(typeof(object)), MakePocoClassName(request.Interface)));
+            model.Interfaces.Add(MakeTypeName(typeof(IProjection)));
+            model.Interfaces.Add(MakeIProjectionName(MakePocoClassName(request.Interface)));
 
             AddUsings(model, typeof(IProjection<>));
 
             if (isClient)
             {
                 AddUsings(model, typeof(Client.PocoBase));
-                AddUsings(model, typeof(Client.IPoco));
             }
             else
             {
                 AddUsings(model, typeof(Server.PocoBase));
-                AddUsings(model, typeof(Server.IPoco));
             }
             AddUsings(model, typeof(Property));
 
@@ -891,7 +899,7 @@ public class CodeGenerator : IModelBuilder
                 {
                     AddUsings(model, _projectorsByProjections[pi.PropertyType].Interface);
                     propertyModel.IsProjector = true;
-                    propertyModel.Class = GetTypeName(pi.PropertyType);
+                    propertyModel.Class = MakeTypeName(pi.PropertyType);
                 }
                 if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                 {
@@ -921,15 +929,15 @@ public class CodeGenerator : IModelBuilder
                     else
                     {
                         AddUsings(model, itemType);
-                        propertyModel.ItemType = GetTypeName(itemType);
+                        propertyModel.ItemType = MakeTypeName(itemType);
                     }
                     if (isClient)
                     {
-                        propertyModel.Type = GetTypeName(typeof(ObservableCollection<object>)).Replace(GetTypeName(typeof(object)), propertyModel.ItemType);
+                        propertyModel.Type = MakeTypeName(typeof(ObservableCollection<object>)).Replace(MakeTypeName(typeof(object)), propertyModel.ItemType);
                     }
                     else
                     {
-                        propertyModel.Type = GetTypeName(typeof(List<object>)).Replace(GetTypeName(typeof(object)), propertyModel.ItemType);
+                        propertyModel.Type = MakeTypeName(typeof(List<object>)).Replace(MakeTypeName(typeof(object)), propertyModel.ItemType);
                     }
                     propertyModel.IsNullable = false;
                 }
@@ -940,15 +948,15 @@ public class CodeGenerator : IModelBuilder
                 else
                 {
                     AddUsings(model, pi.PropertyType);
-                    propertyModel.Type = GetTypeName(pi.PropertyType);
+                    propertyModel.Type = MakeTypeName(pi.PropertyType);
                 }
-                propertyModel.Interfaces.Add(GetTypeName(request.Interface), GetTypeName(pi.PropertyType));
+                propertyModel.Interfaces.Add(MakeTypeName(request.Interface), MakeTypeName(pi.PropertyType));
                 foreach (Type projection in projector.Projections)
                 {
                     if (projection.GetProperty(pi.Name) is PropertyInfo projectionProperty)
                     {
                         AddUsings(model, projectionProperty.PropertyType);
-                        propertyModel.Interfaces.Add(GetTypeName(projection), GetTypeName(projectionProperty.PropertyType));
+                        propertyModel.Interfaces.Add(MakeTypeName(projection), MakeTypeName(projectionProperty.PropertyType));
                     }
                 }
                 model.Properties.Add(propertyModel);
@@ -956,33 +964,24 @@ public class CodeGenerator : IModelBuilder
             foreach (Type projection in new[] { request.Interface }.Concat(projector.Projections))
             {
 
-                model.Interfaces.Add(GetTypeName(typeof(IProjection<object>)).Replace(GetTypeName(typeof(object)), GetTypeName(projection)));
+                model.Interfaces.Add(MakeIProjectionName(projection));
                 AddUsings(model, projection);
                 ClassModel projectionModel = new()
                 {
                     ClassName = MakeProjectionClassName(projection),
                     Interfaces = new List<string>()
                     {
-                        GetTypeName(projection),
+                        MakeTypeName(projection),
                     },
                     Parent = model,
-                    Interface = GetTypeName(projection),
+                    Interface = MakeTypeName(projection),
                 };
-                if (isClient)
-                {
-                    AddUsings(model, typeof(PropertyChangedEventHandler));
-                    projectionModel.Interfaces.Add(GetTypeName(typeof(Client.IPoco)));
-                }
-                else
-                {
-                    projectionModel.Interfaces.Add(GetTypeName(typeof(Server.IPoco)));
-                }
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
                     PropertyModel propertyModel = new()
                     {
                         Name = pi.Name,
-                        Type = GetTypeName(pi.PropertyType),
+                        Type = MakeTypeName(pi.PropertyType),
                         IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                         IsReadOnly = !pi.CanWrite,
                         IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
@@ -998,12 +997,12 @@ public class CodeGenerator : IModelBuilder
                         if (_projectorsByProjections.ContainsKey(itemType))
                         {
                             propertyModel.IsProjection = true;
-                            propertyModel.ItemType = GetTypeName(itemType);
+                            propertyModel.ItemType = MakeTypeName(itemType);
                             propertyModel.Class = MakePocoClassName(_projectorsByProjections[itemType].Interface);
                         }
                         else
                         {
-                            propertyModel.ItemType = GetTypeName(itemType);
+                            propertyModel.ItemType = MakeTypeName(itemType);
                         }
                         propertyModel.IsNullable = false;
                     }
@@ -1016,14 +1015,14 @@ public class CodeGenerator : IModelBuilder
                         MethodModel methodModel = new()
                         {
                             Name = method.Name,
-                            ReturnType = GetTypeName(method.ReturnType),
+                            ReturnType = MakeTypeName(method.ReturnType),
                         };
                         foreach (ParameterInfo parameter in method.GetParameters())
                         {
                             ParameterModel parameterModel = new()
                             {
                                 Name = parameter.Name,
-                                Type = GetTypeName(parameter.ParameterType),
+                                Type = MakeTypeName(parameter.ParameterType),
                             };
                             methodModel.Parameters.Add(parameterModel);
                         }
@@ -1033,9 +1032,9 @@ public class CodeGenerator : IModelBuilder
                 }
                 model.Classes.Add(projectionModel);
             }
-            foreach(ClassModel projectionModel in model.Classes)
+            foreach (ClassModel projectionModel in model.Classes)
             {
-                projectionModel.Interfaces.AddRange(model.Interfaces.Skip(2));
+                projectionModel.Interfaces.AddRange(model.Interfaces.Where(v => v.StartsWith(nameof(IProjection))));
             }
 
             model.IsAbstract = model.Methods.Count > 0;
@@ -1095,6 +1094,16 @@ public class CodeGenerator : IModelBuilder
         return $"{_projectorsByType[@interface].Name}{s_poco}";
     }
 
+    private string MakeIProjectionName(Type genericArgument)
+    {
+        return MakeIProjectionName(MakeTypeName(genericArgument));
+    }
+
+    private string MakeIProjectionName(string genericArgumentName)
+    {
+        return MakeTypeName(typeof(IProjection<object>)).Replace(MakeTypeName(typeof(object)), genericArgumentName);
+    }
+
     private string MakeProjectionClassName(Type @interface)
     {
         return $"{_projectorsByProjections[@interface].Name}{@interface.Name}{s_projection}";
@@ -1137,7 +1146,7 @@ public class CodeGenerator : IModelBuilder
         }
     }
 
-    private string GetTypeName(Type type)
+    private string MakeTypeName(Type type)
     {
         if (type == typeof(void))
         {
@@ -1149,10 +1158,10 @@ public class CodeGenerator : IModelBuilder
         }
         if (type.GetGenericTypeDefinition() == typeof(Nullable<>))
         {
-            return GetTypeName(type.GetGenericArguments()[0]);
+            return MakeTypeName(type.GetGenericArguments()[0]);
         }
         return type.GetGenericTypeDefinition().Name.Substring(0, type.GetGenericTypeDefinition().Name.IndexOf('`'))
-            + '<' + String.Join(',', type.GetGenericArguments().Select(v => GetTypeName(v))) + '>';
+            + '<' + String.Join(',', type.GetGenericArguments().Select(v => MakeTypeName(v))) + '>';
     }
 
     private string GetUniqueVariable(string initial)

@@ -16,7 +16,7 @@
     {
             @if(pm.IsProjector)
             {
-                <text>        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = ({pm.Type})(value as IProjection)?.Projector!");
+                <text>        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = (value as IProjection)?.As<{pm.Type}>()!");
 </text>
             }
             else 
