@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:27                                  //
+// at 2022-12-26T18:18:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -57,10 +57,10 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
             switch(name)
             {
                 case "IdCat":
-                    IdCat = (Int32)value!;
+                    IdCat = (Int32)Convert.ChangeType(value!, typeof(Int32));
                     break;
                 case "IdCattery":
-                    IdCattery = (Int32)value!;
+                    IdCattery = (Int32)Convert.ChangeType(value!, typeof(Int32));
                     break;
                 default:
                     throw new IndexOutOfRangeException($"{name}");

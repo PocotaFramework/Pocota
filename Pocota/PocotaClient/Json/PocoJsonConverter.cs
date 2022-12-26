@@ -188,17 +188,17 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         if (!property.IsReadOnly || property.IsCollection)
                         {
 
-                            object? oldValue = property.GetValue(poco);
+                            object? oldValue = property.GetValue(result!);
 
-                            Type typeForDeserialization;
+                            Type typeForDeserialization = property.Type;
+
                             if (property.IsCollection)
                             {
-                                typeForDeserialization = property.Type;
-                                context!.ItemType = property.ItemType(typeof(T));
+                                context!.ItemType = property.ItemType;
                             }
                             else
                             {
-                                typeForDeserialization = property.PropertyType(typeof(T))!;
+                                typeForDeserialization = property.Type;
                                 context!.ItemType = null;
                             }
 
@@ -239,14 +239,14 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                                 )
                             )
                             {
-                                property.TouchValue(poco);
+                                property.TouchValue(result!);
 
                             }
                             else 
                             {
                                 if (canChangeValue)
                                 {
-                                    property.SetValue(poco, value);
+                                    property.SetValue(result!, value);
                                 }
                                 else if (_pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
                                 {

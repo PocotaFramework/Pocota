@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:28                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -22,23 +22,56 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
 
     public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Female", 
+                    typeof(ICat),
+                    GetFemaleValue, 
+                    SetFemaleValue, 
+                    target => ((IPoco)((LitterFilterILitterFilterProjection)target)._projector).TouchProperty("Female"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Male", 
+                    typeof(ICat),
+                    GetMaleValue, 
+                    SetMaleValue, 
+                    target => ((IPoco)((LitterFilterILitterFilterProjection)target)._projector).TouchProperty("Male"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly LitterFilterPoco _projector;
 
 
         public ICat Female 
         {
-            get => ((IProjection)((LitterFilterPoco)_projector).Female).As<ICat>()!;
-            set => ((LitterFilterPoco)_projector).Female = (CatPoco)value;
+            get => ((IProjection)_projector.Female).As<ICat>()!;
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         public ICat Male 
         {
-            get => ((IProjection)((LitterFilterPoco)_projector).Male).As<ICat>()!;
-            set => ((LitterFilterPoco)_projector).Male = (CatPoco)value;
+            get => ((IProjection)_projector.Male).As<ICat>()!;
+            set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
 
-        internal LitterFilterILitterFilterProjection(IProjection projector)
+        internal LitterFilterILitterFilterProjection(LitterFilterPoco projector)
         {
             _projector = projector;
         }
@@ -64,6 +97,33 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetFemaleValue(object target)
+        {
+            return ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Female)?.As<ICat>()!;
+        }
+
+        private static void SetFemaleValue(object target, object? value)
+        {
+             ((LitterFilterILitterFilterProjection)target)._projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+        }
+
+        private static object? GetMaleValue(object target)
+        {
+            return ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Male)?.As<ICat>()!;
+        }
+
+        private static void SetMaleValue(object target, object? value)
+        {
+             ((LitterFilterILitterFilterProjection)target)._projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
+        }
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -73,7 +133,7 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "Female", 
                 typeof(CatPoco),
                 GetFemaleValue, 
@@ -81,12 +141,11 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
                 target => ((IPoco)target).TouchProperty("Female"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitterFilter, ICat>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Male", 
                 typeof(CatPoco),
                 GetMaleValue, 
@@ -94,9 +153,8 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
                 target => ((IPoco)target).TouchProperty("Male"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitterFilter, ICat>()
         );
     }
 #endregion Init Properties;

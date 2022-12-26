@@ -63,7 +63,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
                 @foreach(PrimaryKeyFieldModel pkm in Model.PrimaryKeys)
                 {
                     <text>                case @Html.Raw($"\"{pkm.Name}\""):
-                    @pkm.Name = @Html.Raw($"({pkm.Type})value!");
+                    @pkm.Name = @Html.Raw($"({pkm.Type})Convert.ChangeType(value!, typeof({pkm.Type}))");
                     break;
 </text>
                 }

@@ -3,6 +3,7 @@ using CatsCommon.Filters;
 using CatsCommon.Model;
 using CatsServerDebug.Converters;
 using CatsServerEngineDebug.Converters;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System.Data.Common;
 using System.Runtime.CompilerServices;
@@ -171,7 +172,7 @@ internal class Builder : IBuilder
             try
             {
                 ICatFilter filter = _services.GetRequiredService<ICatFilter>();
-                filter.Litter = args.GetOwner(1) as ILitter;
+                filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
                 BuildingScript script = _services.GetRequiredService<BuildingScript>();
                 script.AddPathMapEntry("/Cats/[]/IdCat", "IdCat");
                 script.AddPathMapEntry("/Cats/[]/IdCattery", "IdCattery");

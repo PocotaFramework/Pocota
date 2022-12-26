@@ -20,7 +20,7 @@ internal class TreeWalkerBufferWriter : IBufferWriter<byte>
 
     public void Advance(int count)
     {
-        //string chunk = Encoding.UTF8.GetString(_buf, _offset, count);
+        //string chunk = System.Text.Encoding.UTF8.GetString(_buf, _offset, count);
         //Console.WriteLine(chunk);
         if (_output is { })
         {

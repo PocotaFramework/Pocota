@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:28                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -24,32 +24,113 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
 
     public class LitterILitterProjection: ILitter, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Order", 
+                    typeof(Int32),
+                    GetOrderValue, 
+                    SetOrderValue, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Order"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Female", 
+                    typeof(ICat),
+                    GetFemaleValue, 
+                    SetFemaleValue, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Female"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Date", 
+                    typeof(DateOnly),
+                    GetDateValue, 
+                    SetDateValue, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Date"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Male", 
+                    typeof(ICat),
+                    GetMaleValue, 
+                    SetMaleValue, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Male"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Cats", 
+                    typeof(IList<ICat>),
+                    GetCatsValue, 
+                    null, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Cats"), 
+                    false, 
+                    true, 
+                    typeof(CatPoco)
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Strings", 
+                    typeof(IList<String>),
+                    GetStringsValue, 
+                    null, 
+                    target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Strings"), 
+                    false, 
+                    true, 
+                    typeof(String)
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly LitterPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICat> _cats;
 
         public Int32 Order 
         {
-            get => ((LitterPoco)_projector).Order!;
-            set => ((LitterPoco)_projector).Order = value;
+            get => _projector.Order!;
+            set => _projector.Order = (Int32)value!;
         }
 
         public ICat Female 
         {
-            get => ((IProjection)((LitterPoco)_projector).Female).As<ICat>()!;
-            set => ((LitterPoco)_projector).Female = (CatPoco)value;
+            get => ((IProjection)_projector.Female).As<ICat>()!;
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         public DateOnly Date 
         {
-            get => ((LitterPoco)_projector).Date!;
-            set => ((LitterPoco)_projector).Date = value;
+            get => _projector.Date!;
+            set => _projector.Date = (DateOnly)value!;
         }
 
         public ICat? Male 
         {
-            get => ((IProjection?)((LitterPoco)_projector).Male)?.As<ICat>();
-            set => ((LitterPoco)_projector).Male = (CatPoco?)value;
+            get => ((IProjection?)_projector.Male)?.As<ICat>();
+            set => _projector.Male = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<ICat> Cats 
@@ -59,11 +140,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
 
         public IList<String> Strings 
         {
-            get => ((LitterPoco)_projector).Strings!;
+            get => _projector.Strings!;
         }
 
 
-        internal LitterILitterProjection(IProjection projector)
+        internal LitterILitterProjection(LitterPoco projector)
         {
             _projector = projector;
             _cats = new(((LitterPoco)_projector).Cats);
@@ -90,36 +171,152 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetOrderValue(object target)
+        {
+            return ((LitterILitterProjection)target)._projector.Order!;
+        }
+
+        private static void SetOrderValue(object target, object? value)
+        {
+             ((LitterILitterProjection)target)._projector.Order = (Int32)value!;
+        }
+
+        private static object? GetFemaleValue(object target)
+        {
+            return ((IProjection)((LitterILitterProjection)target)._projector.Female)?.As<ICat>()!;
+        }
+
+        private static void SetFemaleValue(object target, object? value)
+        {
+             ((LitterILitterProjection)target)._projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+        }
+
+        private static object? GetDateValue(object target)
+        {
+            return ((LitterILitterProjection)target)._projector.Date!;
+        }
+
+        private static void SetDateValue(object target, object? value)
+        {
+             ((LitterILitterProjection)target)._projector.Date = (DateOnly)value!;
+        }
+
+        private static object? GetMaleValue(object target)
+        {
+            return ((IProjection?)((LitterILitterProjection)target)._projector.Male)?.As<ICat>();
+        }
+
+        private static void SetMaleValue(object target, object? value)
+        {
+             ((LitterILitterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetCatsValue(object target)
+        {
+            return ((LitterILitterProjection)target)._cats;
+        }
+
+
+        private static object? GetStringsValue(object target)
+        {
+            return ((LitterILitterProjection)target)._projector.Strings!;
+        }
+
+
+
+#endregion Properties Accessors;
+
+
 
     }
 
     public class LitterILitterForCatProjection: ILitterForCat, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Order", 
+                    typeof(Int32),
+                    GetOrderValue, 
+                    SetOrderValue, 
+                    target => ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty("Order"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Female", 
+                    typeof(ICatAsParent),
+                    GetFemaleValue, 
+                    SetFemaleValue, 
+                    target => ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty("Female"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Date", 
+                    typeof(DateOnly),
+                    GetDateValue, 
+                    SetDateValue, 
+                    target => ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty("Date"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Male", 
+                    typeof(ICatAsParent),
+                    GetMaleValue, 
+                    SetMaleValue, 
+                    target => ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty("Male"), 
+                    true, 
+                    true, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly LitterPoco _projector;
 
 
         public Int32 Order 
         {
-            get => ((LitterPoco)_projector).Order!;
+            get => _projector.Order!;
         }
 
         public ICatAsParent Female 
         {
-            get => ((IProjection)((LitterPoco)_projector).Female).As<ICatAsParent>()!;
+            get => ((IProjection)_projector.Female).As<ICatAsParent>()!;
         }
 
         public DateOnly Date 
         {
-            get => ((LitterPoco)_projector).Date!;
+            get => _projector.Date!;
         }
 
         public ICatAsParent? Male 
         {
-            get => ((IProjection?)((LitterPoco)_projector).Male)?.As<ICatAsParent>();
+            get => ((IProjection?)_projector.Male)?.As<ICatAsParent>();
         }
 
 
-        internal LitterILitterForCatProjection(IProjection projector)
+        internal LitterILitterForCatProjection(LitterPoco projector)
         {
             _projector = projector;
         }
@@ -144,22 +341,90 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
         {
             return _projector.GetHashCode();
         }
+
+        
+#region Properties Accessors
+
+        private static object? GetOrderValue(object target)
+        {
+            return ((LitterILitterForCatProjection)target)._projector.Order!;
+        }
+
+        private static void SetOrderValue(object target, object? value)
+        {
+             ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
+        }
+
+        private static object? GetFemaleValue(object target)
+        {
+            return ((IProjection)((LitterILitterForCatProjection)target)._projector.Female)?.As<ICatAsParent>()!;
+        }
+
+        private static void SetFemaleValue(object target, object? value)
+        {
+             ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+        }
+
+        private static object? GetDateValue(object target)
+        {
+            return ((LitterILitterForCatProjection)target)._projector.Date!;
+        }
+
+        private static void SetDateValue(object target, object? value)
+        {
+             ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
+        }
+
+        private static object? GetMaleValue(object target)
+        {
+            return ((IProjection?)((LitterILitterForCatProjection)target)._projector.Male)?.As<ICatAsParent>();
+        }
+
+        private static void SetMaleValue(object target, object? value)
+        {
+             ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+
+#endregion Properties Accessors;
+
 
 
     }
 
     public class LitterILitterForDateProjection: ILitterForDate, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Date", 
+                    typeof(DateOnly),
+                    GetDateValue, 
+                    SetDateValue, 
+                    target => ((IPoco)((LitterILitterForDateProjection)target)._projector).TouchProperty("Date"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly LitterPoco _projector;
 
 
         public DateOnly Date 
         {
-            get => ((LitterPoco)_projector).Date!;
+            get => _projector.Date!;
         }
 
 
-        internal LitterILitterForDateProjection(IProjection projector)
+        internal LitterILitterForDateProjection(LitterPoco projector)
         {
             _projector = projector;
         }
@@ -185,12 +450,50 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetDateValue(object target)
+        {
+            return ((LitterILitterForDateProjection)target)._projector.Date!;
+        }
+
+        private static void SetDateValue(object target, object? value)
+        {
+             ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
+        }
+
+
+#endregion Properties Accessors;
+
+
 
     }
 
     public class LitterILitterWithCatsProjection: ILitterWithCats, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Cats", 
+                    typeof(IList<ICatForListing>),
+                    GetCatsValue, 
+                    null, 
+                    target => ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty("Cats"), 
+                    false, 
+                    true, 
+                    typeof(CatPoco)
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly LitterPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICatForListing> _cats;
 
@@ -200,7 +503,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
         }
 
 
-        internal LitterILitterWithCatsProjection(IProjection projector)
+        internal LitterILitterWithCatsProjection(LitterPoco projector)
         {
             _projector = projector;
             _cats = new(((LitterPoco)_projector).Cats);
@@ -226,6 +529,19 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
         {
             return _projector.GetHashCode();
         }
+
+        
+#region Properties Accessors
+
+        private static object? GetCatsValue(object target)
+        {
+            return ((LitterILitterWithCatsProjection)target)._cats;
+        }
+
+
+
+#endregion Properties Accessors;
+
 
 
     }
@@ -236,7 +552,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "Order", 
                 typeof(Int32),
                 GetOrderValue, 
@@ -244,13 +560,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Order"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitter, Int32>()
-            .AddPropertyType<ILitterForCat, Int32>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Female", 
                 typeof(CatPoco),
                 GetFemaleValue, 
@@ -258,13 +572,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Female"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitter, ICat>()
-            .AddPropertyType<ILitterForCat, ICatAsParent>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Date", 
                 typeof(DateOnly),
                 GetDateValue, 
@@ -272,14 +584,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Date"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitter, DateOnly>()
-            .AddPropertyType<ILitterForCat, DateOnly>()
-            .AddPropertyType<ILitterForDate, DateOnly>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Male", 
                 typeof(CatPoco),
                 GetMaleValue, 
@@ -287,13 +596,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Male"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ILitter, ICat>()
-            .AddPropertyType<ILitterForCat, ICatAsParent>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Cats", 
                 typeof(List<CatPoco>),
                 GetCatsValue, 
@@ -301,13 +608,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Cats"), 
                 false, 
                 false, 
-                true            
+                typeof(CatPoco)
             )
-            .AddPropertyType<ILitter, IList<ICat>>()
-            .AddPropertyType<ILitterWithCats, IList<ICatForListing>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Strings", 
                 typeof(List<String>),
                 GetStringsValue, 
@@ -315,9 +620,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IP
                 target => ((IPoco)target).TouchProperty("Strings"), 
                 false, 
                 false, 
-                true            
+                typeof(String)
             )
-            .AddPropertyType<ILitter, IList<String>>()
         );
     }
 #endregion Init Properties;

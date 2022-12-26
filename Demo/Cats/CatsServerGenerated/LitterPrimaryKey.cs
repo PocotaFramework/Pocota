@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:28                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -60,13 +60,13 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
             switch(name)
             {
                 case "IdFemale":
-                    IdFemale = (Int32)value!;
+                    IdFemale = (Int32)Convert.ChangeType(value!, typeof(Int32));
                     break;
                 case "IdFemaleCattery":
-                    IdFemaleCattery = (Int32)value!;
+                    IdFemaleCattery = (Int32)Convert.ChangeType(value!, typeof(Int32));
                     break;
                 case "IdLitter":
-                    IdLitter = (Int32)value!;
+                    IdLitter = (Int32)Convert.ChangeType(value!, typeof(Int32));
                     break;
                 default:
                     throw new IndexOutOfRangeException($"{name}");

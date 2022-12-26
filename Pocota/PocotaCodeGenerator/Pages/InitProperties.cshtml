@@ -1,30 +1,29 @@
 ﻿@using Net.Leksi.Pocota.Common;
 @model ClassModel
+@{
+    string indent = ViewData.ContainsKey("Projection") ? "    " : string.Empty;
+    string targetForTouch = ViewData.ContainsKey("Projection") ? $"(({Model.ClassName})target)._projector" : "target";
+}
 
 @Html.Raw("#region Init Properties")
-    public static void InitProperties(@Html.Raw("List<Property>") properties)
-    {
+    @Html.Raw(indent)public static void InitProperties(@Html.Raw("List<Property>") properties)
+    @Html.Raw(indent){
         @foreach (PropertyModel pm in Model.Properties)
         {    
-    <text>        properties.Add(
-                new @Html.Raw($"Property(")
-                @Html.Raw("\"")@pm.Name@Html.Raw("\""), 
-                typeof(@Html.Raw(pm.Type.Trim('?'))),
-                @Html.Raw($"Get{pm.Name}Value"), 
-                @if (@pm.IsList){<text>                null</text>} else {<text>                @Html.Raw("Set" + pm.Name + "Value")</text>}, 
-                @Html.Raw($"target => ((IPoco)target).TouchProperty(\"{pm.Name}\")"), 
-                @if (!pm.IsNullable){<text>                false</text>} else {<text>                true</text>}, 
-                @if (@pm.IsReadOnly){<text>                true</text>} else {<text>                false</text>}, 
-                @if (@pm.IsList){<text>                true</text>} else {<text>                false</text>}
-            
-            )
-            @foreach(var entry in pm.Interfaces)
-            {
-                <text>            @Html.Raw($".AddPropertyType<{entry.Key.Trim('.')}, {entry.Value.Trim('?')}>()")
-</text>
-            }
-        );
+            <text>        @Html.Raw(indent)properties.Add(
+            @Html.Raw(indent)new @Html.Raw($"Property(")
+                @Html.Raw(indent)@Html.Raw("\"")@pm.Name@Html.Raw("\""), 
+                @Html.Raw(indent)typeof(@Html.Raw(pm.Type.Trim('?'))),
+                @Html.Raw(indent)@Html.Raw($"Get{pm.Name}Value"), 
+            @if (@pm.IsList){<text>                @Html.Raw(indent)null</text>} else {<text>                @Html.Raw(indent)@Html.Raw("Set" + pm.Name + "Value")</text>}, 
+                @Html.Raw(indent)@Html.Raw($"target => ((IPoco){targetForTouch}).TouchProperty(\"{pm.Name}\")"), 
+            @if (!pm.IsNullable){<text>                @Html.Raw(indent)false</text>} else {<text>                @Html.Raw(indent)true</text>}, 
+            @if (@pm.IsReadOnly){<text>                @Html.Raw(indent)true</text>} else {<text>                @Html.Raw(indent)false</text>}, 
+            @if (@pm.IsList){<text>                @Html.Raw(indent)@Html.Raw($"typeof({(pm.Class is {} ? pm.Class : pm.ItemType)})")</text>} else {<text>                @Html.Raw(indent)null</text>}
+
+            @Html.Raw(indent))
+        @Html.Raw(indent));
 </text>
         }
-    }
+    @Html.Raw(indent)}
 @Html.Raw("#endregion Init Properties");

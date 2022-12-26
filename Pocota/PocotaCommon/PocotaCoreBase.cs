@@ -160,18 +160,11 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         {
             if (typeof(IProjection).IsAssignableFrom(type))
             {
+                AddProperties(type);
                 Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjection) && !type.IsGenericType).FirstOrDefault();
                 if (@interface is { })
                 {
-                    Dictionary<string, Property> properties = new();
-                    foreach(Property property in _properties[pocoType].Values)
-                    {
-                        if (property.Interfaces.Contains(@interface))
-                        {
-                            properties.Add(property.Name, property);
-                        }
-                    }
-                    _properties.Add(@interface, properties.ToImmutableDictionary());
+                    _properties.Add(@interface, _properties[type]);
 
                     _actualTypes.Add(@interface, pocoType);
                     _services.Add(new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>

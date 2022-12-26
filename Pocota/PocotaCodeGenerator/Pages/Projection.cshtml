@@ -3,7 +3,10 @@
 
     public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     {
-        private readonly IProjection _projector;
+
+@Html.Partial("InitProperties", viewData: new ViewDataDictionary(ViewData) { { "Projection", true } })
+
+        private readonly @Html.Raw(Model.Parent!.ClassName) _projector;
 
         @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
         {
@@ -17,7 +20,7 @@
             <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if(!pm.IsList || !pm.IsProjection){
-                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
             else {
@@ -34,7 +37,7 @@
                 }
                 else
                 {
-                    <text>            set => @Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name} = ")@if (pm.IsProjection) { <text>@Html.Raw($"({pm.Class}{(pm.IsNullable ? "?" : string.Empty)})")</text> }value;
+                <text>            set => @Html.Raw($"_projector.{pm.Name} = ")@if (pm.IsProjection) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsProjection ? "!" : string.Empty)}")@if (pm.IsProjection) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
                 }
             }
@@ -43,7 +46,7 @@
 </text>
         }
 
-        internal @Html.Raw($"{Model.ClassName}(IProjection projector)")
+        internal @Html.Raw($"{Model.ClassName}({Model.Parent!.ClassName} projector)")
         {
             _projector = projector;
             @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
@@ -92,5 +95,6 @@
             return _projector.GetHashCode();
         }
 
+        @Html.Partial("ProjectionPropertiesAccessors")
 
     }

@@ -2,6 +2,7 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using Net.Leksi.Pocota;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System.Data;
 using System.Data.Common;
@@ -313,7 +314,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdCat=@IdCat AND Cats.IdCattery=@IdCattery");
-            IPrimaryKey primaryKeySelf = ((IEntity)filterObject.Self).PrimaryKey;
+            IPrimaryKey primaryKeySelf = ((IProjection)filterObject.Self).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdCat", primaryKeySelf["IdCat"]);
             sqlCommand.Parameters.AddWithValue("IdCattery", primaryKeySelf["IdCattery"]);
         }
@@ -324,7 +325,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdMother=@IdMother AND Cats.IdMotherCattery=@IdMotherCattery");
-            IPrimaryKey primaryKeyMother = ((IEntity)filterObject.Mother).PrimaryKey;
+            IPrimaryKey primaryKeyMother = ((IProjection)filterObject.Mother).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdMother", primaryKeyMother["IdCat"]);
             sqlCommand.Parameters.AddWithValue("IdMotherCattery", primaryKeyMother["IdCattery"]);
         }
@@ -335,7 +336,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdLitter is not null AND Litters.IdMale=@IdFather AND  Litters.IdMaleCattery=@IdFatherCattery");
-            IPrimaryKey primaryKeyFather = ((IEntity)filterObject.Father).PrimaryKey;
+            IPrimaryKey primaryKeyFather = ((IProjection)filterObject.Father).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdFather", primaryKeyFather["IdCat"]);
             sqlCommand.Parameters.AddWithValue("IdFatherCattery", primaryKeyFather["IdCattery"]);
         }
@@ -346,7 +347,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdLitter is not null AND Litters.IdLitter=@IdLitter AND Litters.IdFemale=@IdFemale AND  Litters.IdFemaleCattery=@IdFemaleCattery");
-            IPrimaryKey primaryKeyLitter = ((IEntity)filterObject.Litter).PrimaryKey;
+            IPrimaryKey primaryKeyLitter = ((IProjection)filterObject.Litter).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdLitter", primaryKeyLitter["IdLitter"]);
             sqlCommand.Parameters.AddWithValue("IdFemale", primaryKeyLitter["IdFemale"]);
             sqlCommand.Parameters.AddWithValue("IdFemaleCattery", primaryKeyLitter["IdFemaleCattery"]);

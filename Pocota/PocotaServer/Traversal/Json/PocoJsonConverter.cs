@@ -1,4 +1,6 @@
-﻿using Net.Leksi.Pocota.Server.Generic;
+﻿using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Server.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,6 +14,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     private readonly bool _isEntity;
     private readonly PocoContext _pocoContext;
     private readonly Type _actualType;
+    private readonly ImmutableDictionary<string, Property> _properties;
 
     public PocoJsonConverter(IServiceProvider services)
     {
@@ -20,6 +23,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         _isEntity = _core.IsEntity(typeof(T));
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _actualType = _core.GetActualType(typeof(T))!;
+        _properties = _core.GetProperties(typeof(T))!;
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -82,40 +86,35 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
                 else if (propertyName.Equals(PocoTraversalConverterFactory.Key))
                 {
-                    object[]? parts = JsonSerializer.Deserialize<object[]>(ref reader);
-                    if (parts is { } && parts.Length > 0)
+                    primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
+
+                    JsonElement element = JsonSerializer.Deserialize<JsonElement>(ref reader);
+
+                    if(element.ValueKind is JsonValueKind.Array && element.GetArrayLength() == primaryKey.Names.Count())
                     {
-                        primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
-                        
-                        if (
-                            ((JsonElement)parts[0]).ValueKind is JsonValueKind.Array 
-                            && ((JsonElement)parts[0]).GetArrayLength() == primaryKey!.Items.Count()
-                        )
+                        for (int i = 0; i < element.GetArrayLength(); ++i)
                         {
-                            for (int i = 0; i < ((JsonElement)parts[0]).GetArrayLength(); ++i)
-                            {
-                                primaryKey![i] = ((JsonElement)parts[0])[i].ToString();
-                            }
-                            if (context.IsUpdating)
-                            {
-                                //primaryKey.TryGetSource<T>(out object? obj);
-                                //result = (T?)obj;
-                            }
-                            else
-                            {
-                                result = _services.GetRequiredService<T>();
-                            }
-                            if (reference is { } && result is { })
-                            {
-                                context!.AddReference(reference, result);
-                            }
-                            done = true;
+                            primaryKey![i] = element[i].ToString();
                         }
+                        if (context.IsUpdating)
+                        {
+                            result = _pocoContext.FindOrCreateEntity(primaryKey, out bool _);
+                        }
+                        else
+                        {
+                            result = _services.GetRequiredService<T>();
+                        }
+                        if (reference is { } && result is { })
+                        {
+                            context!.AddReference(reference, result);
+                        }
+                        done = true;
                     }
                     if (!done)
                     {
                         throw new JsonException("Invalid key");
                     }
+
                 }
                 else
                 {
@@ -129,30 +128,19 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 {
                     result = _services.GetRequiredService<T>();
                 }
-                PropertyInfo? pi = typeof(T).GetProperty(propertyName);
 
-                if(pi is { })
+
+                if(_properties.TryGetValue(propertyName, out Property? property))
                 {
-                    PropertyInfo? actualPropertyInfo = _actualType.GetProperty(propertyName);
+                    object? oldValue = property.GetValue(result);
 
-                    if(actualPropertyInfo is { } && actualPropertyInfo.CanWrite)
+                    context!.Target = oldValue;
+                    object? value = JsonSerializer.Deserialize(ref reader, property.Type, options);
+                    if (!object.ReferenceEquals(oldValue, value))
                     {
-                        object? oldValue = actualPropertyInfo!.GetValue(result);
-
-                        Type typeForDeserialization = pi.PropertyType;
-                        if (PocotaCore.IsIList(pi.PropertyType))
-                        {
-                            typeForDeserialization = actualPropertyInfo.PropertyType;
-                            context!.ItemType = pi.PropertyType.GetGenericArguments()[0];
-                        }
-                        context!.Target = oldValue;
-                        object? value = JsonSerializer.Deserialize(ref reader, typeForDeserialization, options);
-                        if (!object.ReferenceEquals(oldValue, value))
-                        {
-                            actualPropertyInfo.SetValue(result, value);
-                        }
-                        done = true;
+                        property.SetValue(result, value);
                     }
+                    done = true;
 
                 }
                 if (!done)

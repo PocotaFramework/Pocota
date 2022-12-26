@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:28                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -22,17 +22,38 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
 
     public class BreedFilterIBreedFilterProjection: IBreedFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "SearchRegex", 
+                    typeof(String),
+                    GetSearchRegexValue, 
+                    SetSearchRegexValue, 
+                    target => ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly BreedFilterPoco _projector;
 
 
         public String? SearchRegex 
         {
-            get => ((BreedFilterPoco)_projector).SearchRegex;
-            set => ((BreedFilterPoco)_projector).SearchRegex = value;
+            get => _projector.SearchRegex;
+            set => _projector.SearchRegex = (String?)value;
         }
 
 
-        internal BreedFilterIBreedFilterProjection(IProjection projector)
+        internal BreedFilterIBreedFilterProjection(BreedFilterPoco projector)
         {
             _projector = projector;
         }
@@ -58,6 +79,23 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetSearchRegexValue(object target)
+        {
+            return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+        }
+
+        private static void SetSearchRegexValue(object target, object? value)
+        {
+             ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -67,7 +105,7 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "SearchRegex", 
                 typeof(String),
                 GetSearchRegexValue, 
@@ -75,9 +113,8 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
                 target => ((IPoco)target).TouchProperty("SearchRegex"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IBreedFilter, String>()
         );
     }
 #endregion Init Properties;

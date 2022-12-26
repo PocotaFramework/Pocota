@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:27                                  //
+// at 2022-12-26T18:18:10                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -23,35 +23,92 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
 
     public class BreedIBreedProjection: IBreed, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Code", 
+                    typeof(String),
+                    GetCodeValue, 
+                    SetCodeValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Code"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Group", 
+                    typeof(String),
+                    GetGroupValue, 
+                    SetGroupValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Group"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameEng", 
+                    typeof(String),
+                    GetNameEngValue, 
+                    SetNameEngValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameEng"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameNat", 
+                    typeof(String),
+                    GetNameNatValue, 
+                    SetNameNatValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameNat"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly BreedPoco _projector;
 
 
         public String Code 
         {
-            get => ((BreedPoco)_projector).Code!;
-            set => ((BreedPoco)_projector).Code = value;
+            get => _projector.Code!;
+            set => _projector.Code = (String)value!;
         }
 
         public String Group 
         {
-            get => ((BreedPoco)_projector).Group!;
-            set => ((BreedPoco)_projector).Group = value;
+            get => _projector.Group!;
+            set => _projector.Group = (String)value!;
         }
 
         public String? NameEng 
         {
-            get => ((BreedPoco)_projector).NameEng;
-            set => ((BreedPoco)_projector).NameEng = value;
+            get => _projector.NameEng;
+            set => _projector.NameEng = (String?)value;
         }
 
         public String? NameNat 
         {
-            get => ((BreedPoco)_projector).NameNat;
-            set => ((BreedPoco)_projector).NameNat = value;
+            get => _projector.NameNat;
+            set => _projector.NameNat = (String?)value;
         }
 
 
-        internal BreedIBreedProjection(IProjection projector)
+        internal BreedIBreedProjection(BreedPoco projector)
         {
             _projector = projector;
         }
@@ -77,6 +134,53 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetCodeValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.Code!;
+        }
+
+        private static void SetCodeValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.Code = (String)value!;
+        }
+
+        private static object? GetGroupValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.Group!;
+        }
+
+        private static void SetGroupValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.Group = (String)value!;
+        }
+
+        private static object? GetNameEngValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.NameEng;
+        }
+
+        private static void SetNameEngValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.NameEng = (String?)value;
+        }
+
+        private static object? GetNameNatValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.NameNat;
+        }
+
+        private static void SetNameNatValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.NameNat = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -86,7 +190,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "Code", 
                 typeof(String),
                 GetCodeValue, 
@@ -94,12 +198,11 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
                 target => ((IPoco)target).TouchProperty("Code"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IBreed, String>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Group", 
                 typeof(String),
                 GetGroupValue, 
@@ -107,12 +210,11 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
                 target => ((IPoco)target).TouchProperty("Group"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IBreed, String>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "NameEng", 
                 typeof(String),
                 GetNameEngValue, 
@@ -120,12 +222,11 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
                 target => ((IPoco)target).TouchProperty("NameEng"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IBreed, String>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "NameNat", 
                 typeof(String),
                 GetNameNatValue, 
@@ -133,9 +234,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
                 target => ((IPoco)target).TouchProperty("NameNat"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IBreed, String>()
         );
     }
 #endregion Init Properties;

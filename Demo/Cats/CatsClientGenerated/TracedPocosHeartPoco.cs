@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-24T12:27:28                                          //
+// at 2022-12-26T18:18:11                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -22,16 +22,37 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
 
     public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "TracedPocos", 
+                    typeof(IList<Tuple<Type,Int32>>),
+                    GetTracedPocosValue, 
+                    null, 
+                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("TracedPocos"), 
+                    false, 
+                    true, 
+                    typeof(Tuple<Type,Int32>)
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly TracedPocosHeartPoco _projector;
 
 
         public IList<Tuple<Type,Int32>> TracedPocos 
         {
-            get => ((TracedPocosHeartPoco)_projector).TracedPocos!;
+            get => _projector.TracedPocos!;
         }
 
 
-        internal TracedPocosHeartITracedPocosHeartProjection(IProjection projector)
+        internal TracedPocosHeartITracedPocosHeartProjection(TracedPocosHeartPoco projector)
         {
             _projector = projector;
         }
@@ -61,6 +82,19 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetTracedPocosValue(object target)
+        {
+            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
+        }
+
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -70,7 +104,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "TracedPocos", 
                 typeof(ObservableCollection<Tuple<Type,Int32>>),
                 GetTracedPocosValue, 
@@ -78,9 +112,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
                 target => ((IPoco)target).TouchProperty("TracedPocos"), 
                 false, 
                 false, 
-                true            
+                typeof(Tuple<Type,Int32>)
             )
-            .AddPropertyType<ITracedPocosHeart, IList<Tuple<Type,Int32>>>()
         );
     }
 #endregion Init Properties;

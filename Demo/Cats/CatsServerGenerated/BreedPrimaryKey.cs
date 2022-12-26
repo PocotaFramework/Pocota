@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:27                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -56,10 +56,10 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
             switch(name)
             {
                 case "IdBreed":
-                    IdBreed = (String)value!;
+                    IdBreed = (String)Convert.ChangeType(value!, typeof(String));
                     break;
                 case "IdGroup":
-                    IdGroup = (String)value!;
+                    IdGroup = (String)Convert.ChangeType(value!, typeof(String));
                     break;
                 default:
                     throw new IndexOutOfRangeException($"{name}");

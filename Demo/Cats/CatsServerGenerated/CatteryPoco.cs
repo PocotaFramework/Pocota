@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-24T12:27:27                                  //
+// at 2022-12-26T18:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -23,23 +23,56 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
 
     public class CatteryICatteryProjection: ICattery, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "NameEng", 
+                    typeof(String),
+                    GetNameEngValue, 
+                    SetNameEngValue, 
+                    target => ((IPoco)((CatteryICatteryProjection)target)._projector).TouchProperty("NameEng"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameNat", 
+                    typeof(String),
+                    GetNameNatValue, 
+                    SetNameNatValue, 
+                    target => ((IPoco)((CatteryICatteryProjection)target)._projector).TouchProperty("NameNat"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly CatteryPoco _projector;
 
 
         public String? NameEng 
         {
-            get => ((CatteryPoco)_projector).NameEng;
-            set => ((CatteryPoco)_projector).NameEng = value;
+            get => _projector.NameEng;
+            set => _projector.NameEng = (String?)value;
         }
 
         public String? NameNat 
         {
-            get => ((CatteryPoco)_projector).NameNat;
-            set => ((CatteryPoco)_projector).NameNat = value;
+            get => _projector.NameNat;
+            set => _projector.NameNat = (String?)value;
         }
 
 
-        internal CatteryICatteryProjection(IProjection projector)
+        internal CatteryICatteryProjection(CatteryPoco projector)
         {
             _projector = projector;
         }
@@ -65,6 +98,33 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetNameEngValue(object target)
+        {
+            return ((CatteryICatteryProjection)target)._projector.NameEng;
+        }
+
+        private static void SetNameEngValue(object target, object? value)
+        {
+             ((CatteryICatteryProjection)target)._projector.NameEng = (String?)value;
+        }
+
+        private static object? GetNameNatValue(object target)
+        {
+            return ((CatteryICatteryProjection)target)._projector.NameNat;
+        }
+
+        private static void SetNameNatValue(object target, object? value)
+        {
+             ((CatteryICatteryProjection)target)._projector.NameNat = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -74,7 +134,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "NameEng", 
                 typeof(String),
                 GetNameEngValue, 
@@ -82,12 +142,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
                 target => ((IPoco)target).TouchProperty("NameEng"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ICattery, String>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "NameNat", 
                 typeof(String),
                 GetNameNatValue, 
@@ -95,9 +154,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
                 target => ((IPoco)target).TouchProperty("NameNat"), 
                 true, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<ICattery, String>()
         );
     }
 #endregion Init Properties;

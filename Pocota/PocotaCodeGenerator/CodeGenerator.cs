@@ -898,7 +898,7 @@ public class CodeGenerator : IModelBuilder
                 if (_projectorsByProjections.ContainsKey(pi.PropertyType))
                 {
                     AddUsings(model, _projectorsByProjections[pi.PropertyType].Interface);
-                    propertyModel.IsProjector = true;
+                    propertyModel.IsProjection = true;
                     propertyModel.Class = MakeTypeName(pi.PropertyType);
                 }
                 if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
@@ -923,7 +923,7 @@ public class CodeGenerator : IModelBuilder
                     if (_projectorsByProjections.ContainsKey(itemType))
                     {
                         AddUsings(model, _projectorsByProjections[itemType].Interface);
-                        propertyModel.IsProjector = true;
+                        propertyModel.IsProjection = true;
                         propertyModel.ItemType = MakePocoClassName(_projectorsByProjections[itemType].Interface);
                     }
                     else
@@ -941,7 +941,7 @@ public class CodeGenerator : IModelBuilder
                     }
                     propertyModel.IsNullable = false;
                 }
-                else if (propertyModel.IsProjector)
+                else if (propertyModel.IsProjection)
                 {
                     propertyModel.Type = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
                 }

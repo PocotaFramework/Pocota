@@ -14,7 +14,7 @@
         {
             <text>    private static void @Html.Raw($"Set{pm.Name}Value(object target, object? value)")
     {
-            @if(pm.IsProjector)
+            @if(pm.IsProjection)
             {
                 <text>        @Html.Raw($"(({Model.ClassName})target).{pm.Name} = (value as IProjection)?.As<{pm.Type}>()!");
 </text>

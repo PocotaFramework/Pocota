@@ -392,14 +392,14 @@ public abstract class PocoBase : IPoco
                         if (typeof(IPoco).IsAssignableFrom(p.Type))
                         {
 
-                            return ((PocoBase)p.GetValue(this)!)?.IsLoaded(p.PropertyType(@interface)!, antiCycleToken) ?? true;
+                            return ((PocoBase)p.GetValue(this)!)?.IsLoaded(p.Type, antiCycleToken) ?? true;
                         }
                         else if (p.IsCollection)
                         {
                             IEnumerable en = (IEnumerable)p.GetValue(this)!;
                             foreach (PocoBase item in en)
                             {
-                                if (!item.IsLoaded(p.ItemType(@interface)!, antiCycleToken))
+                                if (!item.IsLoaded(p.ItemType!, antiCycleToken))
                                 {
                                     return false;
                                 }

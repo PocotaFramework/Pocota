@@ -1,6 +1,7 @@
 ﻿using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
 using System.Data.Common;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -27,7 +28,15 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _probe = _pocoContext.GetProbePlaceholder<T>();
         _skip = _pocoContext.GetSkipPlaceholder<T>();
-        _properties = _core.GetProperties(typeof(T))!.Values;
+        if (typeof(T).Name.Contains("Litter"))
+        {
+            var props = _core.GetProperties(typeof(T))!;
+            _properties = new string[] { "Order", "Date", "Female", "Male", "Cats", "Strings" }.Where(s => props.ContainsKey(s)).Select(s => props[s]);
+        }
+        else
+        {
+            _properties = _core.GetProperties(typeof(T))!.Values;
+        }
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -139,7 +148,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                     || object.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
                 )
                 {
-                    if (!context.BuildingContext.BuildingEventArgs.IsNullable)
+                    if (!context.BuildingContext.BuildingEventArgs.IsNullable && !isListItem)
                     {
                         context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.NotNullableSetNull);
                     }
@@ -149,9 +158,8 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                     {
                         if (context.BuildingContext.Name is { })
                         {
-                            writer.WritePropertyName(context.BuildingContext.Name);
+                            writer.WriteNull(context.BuildingContext.Name);
                             context.BuildingContext.Name = null;
-                            writer.WriteNullValue();
                         }
 
                     }
@@ -257,9 +265,9 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 {
                     context.Target = null;
 
-                    Type propertyType = property.PropertyType(typeof(T))!;
+                    Type propertyType = property.Type;
 
-                    object? propertyValue = property.GetValue(poco);
+                    object? propertyValue = property.GetValue(value);
 
                     bool isPropertySet = poco.IsPropertySet(property.Name);
 
@@ -267,6 +275,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                     {
                         if (isNew && isPropertySet)
                         {
+                            prevPropertyName = property.Name;
                             writer.WritePropertyName(property.Name);
                             JsonSerializer.Serialize(writer, propertyValue, propertyType, options);
                             writer.Flush();
@@ -291,8 +300,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                         property.IsCollection
                                     )
                                     {
-                                        context.ItemType = property.ItemType(typeof(T));
-                                        typeForSerialization = property.Type;
+                                        //context.ItemType = property.ItemType;
                                         if (propertyValue == default)
                                         {
                                             propertyValue = _pocoContext.GetProbePlaceholder(typeForSerialization);
@@ -353,7 +361,13 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                             context.BuildingContext.UpdateLogEntry(ex, BuildingEventResult.Exception);
                                         }
                                         propertyValue = context.BuildingContext.BuildingEventArgs.Value;
-                                        property.SetValue(poco, propertyValue);
+                                        if (
+                                            (propertyValue is null && value is { })
+                                            || (propertyValue is { } && !propertyValue.Equals(value))
+                                        )
+                                        {
+                                            property.SetValue(value, propertyValue);
+                                        }
                                     }
                                     else
                                     {
@@ -415,7 +429,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                         )
                                     )
                                     {
-                                        property.SetValue(poco, context.Target);
+                                        property.SetValue(value, context.Target);
                                     }
                                 }
                             }

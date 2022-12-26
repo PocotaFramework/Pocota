@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-24T12:27:28                                          //
+// at 2022-12-26T18:18:11                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -25,7 +25,196 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
 
     public class MainWindowHeartIMainWindowHeartProjection: IMainWindowHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<MainWindowHeartPoco>, IProjection<IMainWindowHeart>
     {
-        private readonly IProjection _projector;
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "CatFilter", 
+                    typeof(ICatFilter),
+                    GetCatFilterValue, 
+                    SetCatFilterValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("CatFilter"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Cats", 
+                    typeof(IList<ICatForListing>),
+                    GetCatsValue, 
+                    null, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("Cats"), 
+                    false, 
+                    true, 
+                    typeof(CatPoco)
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Catteries", 
+                    typeof(IList<ICattery>),
+                    GetCatteriesValue, 
+                    null, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("Catteries"), 
+                    false, 
+                    true, 
+                    typeof(CatteryPoco)
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Breeds", 
+                    typeof(IList<IBreed>),
+                    GetBreedsValue, 
+                    null, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("Breeds"), 
+                    false, 
+                    true, 
+                    typeof(BreedPoco)
+                )
+            );
+            properties.Add(
+                new Property(
+                    "GetCatsTimeSpent", 
+                    typeof(TimeSpan),
+                    GetGetCatsTimeSpentValue, 
+                    SetGetCatsTimeSpentValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("GetCatsTimeSpent"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "RenderingCatsTimeSpent", 
+                    typeof(TimeSpan),
+                    GetRenderingCatsTimeSpentValue, 
+                    SetRenderingCatsTimeSpentValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("RenderingCatsTimeSpent"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "BreedsCount", 
+                    typeof(Int32),
+                    GetBreedsCountValue, 
+                    SetBreedsCountValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("BreedsCount"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "CatteriesCount", 
+                    typeof(Int32),
+                    GetCatteriesCountValue, 
+                    SetCatteriesCountValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("CatteriesCount"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "AllBreeds", 
+                    typeof(List<IBreed>),
+                    GetAllBreedsValue, 
+                    SetAllBreedsValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("AllBreeds"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "AllCatteries", 
+                    typeof(List<ICattery>),
+                    GetAllCatteriesValue, 
+                    SetAllCatteriesValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("AllCatteries"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "AllBreedsCount", 
+                    typeof(Int32),
+                    GetAllBreedsCountValue, 
+                    SetAllBreedsCountValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("AllBreedsCount"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "AllCatteriesCount", 
+                    typeof(Int32),
+                    GetAllCatteriesCountValue, 
+                    SetAllCatteriesCountValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("AllCatteriesCount"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "IsCatSelected", 
+                    typeof(Boolean),
+                    GetIsCatSelectedValue, 
+                    SetIsCatSelectedValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("IsCatSelected"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "CatsView", 
+                    typeof(Object),
+                    GetCatsViewValue, 
+                    SetCatsViewValue, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("CatsView"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "SelectedCats", 
+                    typeof(IList<ICatForListing>),
+                    GetSelectedCatsValue, 
+                    null, 
+                    target => ((IPoco)((MainWindowHeartIMainWindowHeartProjection)target)._projector).TouchProperty("SelectedCats"), 
+                    false, 
+                    false, 
+                    typeof(CatPoco)
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private readonly MainWindowHeartPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICatForListing> _cats;
         private readonly ProjectionList<CatteryPoco,ICattery> _catteries;
@@ -34,7 +223,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
 
         public ICatFilter CatFilter 
         {
-            get => ((IProjection)((MainWindowHeartPoco)_projector).CatFilter).As<ICatFilter>()!;
+            get => ((IProjection)_projector.CatFilter).As<ICatFilter>()!;
         }
 
         public IList<ICatForListing> Cats 
@@ -54,56 +243,56 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
 
         public TimeSpan GetCatsTimeSpent 
         {
-            get => ((MainWindowHeartPoco)_projector).GetCatsTimeSpent!;
-            set => ((MainWindowHeartPoco)_projector).GetCatsTimeSpent = value;
+            get => _projector.GetCatsTimeSpent!;
+            set => _projector.GetCatsTimeSpent = (TimeSpan)value!;
         }
 
         public TimeSpan RenderingCatsTimeSpent 
         {
-            get => ((MainWindowHeartPoco)_projector).RenderingCatsTimeSpent!;
-            set => ((MainWindowHeartPoco)_projector).RenderingCatsTimeSpent = value;
+            get => _projector.RenderingCatsTimeSpent!;
+            set => _projector.RenderingCatsTimeSpent = (TimeSpan)value!;
         }
 
         public Int32 BreedsCount 
         {
-            get => ((MainWindowHeartPoco)_projector).BreedsCount!;
+            get => _projector.BreedsCount!;
         }
 
         public Int32 CatteriesCount 
         {
-            get => ((MainWindowHeartPoco)_projector).CatteriesCount!;
+            get => _projector.CatteriesCount!;
         }
 
         public List<IBreed> AllBreeds 
         {
-            get => ((MainWindowHeartPoco)_projector).AllBreeds!;
+            get => _projector.AllBreeds!;
         }
 
         public List<ICattery> AllCatteries 
         {
-            get => ((MainWindowHeartPoco)_projector).AllCatteries!;
+            get => _projector.AllCatteries!;
         }
 
         public Int32 AllBreedsCount 
         {
-            get => ((MainWindowHeartPoco)_projector).AllBreedsCount!;
+            get => _projector.AllBreedsCount!;
         }
 
         public Int32 AllCatteriesCount 
         {
-            get => ((MainWindowHeartPoco)_projector).AllCatteriesCount!;
+            get => _projector.AllCatteriesCount!;
         }
 
         public Boolean IsCatSelected 
         {
-            get => ((MainWindowHeartPoco)_projector).IsCatSelected!;
-            set => ((MainWindowHeartPoco)_projector).IsCatSelected = value;
+            get => _projector.IsCatSelected!;
+            set => _projector.IsCatSelected = (Boolean)value!;
         }
 
         public Object CatsView 
         {
-            get => ((MainWindowHeartPoco)_projector).CatsView!;
-            set => ((MainWindowHeartPoco)_projector).CatsView = value;
+            get => _projector.CatsView!;
+            set => _projector.CatsView = (Object)value!;
         }
 
         public IList<ICatForListing> SelectedCats 
@@ -113,7 +302,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
         }
 
 
-        internal MainWindowHeartIMainWindowHeartProjection(IProjection projector)
+        internal MainWindowHeartIMainWindowHeartProjection(MainWindowHeartPoco projector)
         {
             _projector = projector;
             _cats = new(((MainWindowHeartPoco)_projector).Cats);
@@ -151,6 +340,147 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
             return _projector.GetHashCode();
         }
 
+        
+#region Properties Accessors
+
+        private static object? GetCatFilterValue(object target)
+        {
+            return ((IProjection)((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatFilter)?.As<ICatFilter>()!;
+        }
+
+        private static void SetCatFilterValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatFilter = ((IProjection)value!)?.As<CatFilterPoco>()!;
+        }
+
+        private static object? GetCatsValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._cats;
+        }
+
+
+        private static object? GetCatteriesValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._catteries;
+        }
+
+
+        private static object? GetBreedsValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._breeds;
+        }
+
+
+        private static object? GetGetCatsTimeSpentValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.GetCatsTimeSpent!;
+        }
+
+        private static void SetGetCatsTimeSpentValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.GetCatsTimeSpent = (TimeSpan)value!;
+        }
+
+        private static object? GetRenderingCatsTimeSpentValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.RenderingCatsTimeSpent!;
+        }
+
+        private static void SetRenderingCatsTimeSpentValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.RenderingCatsTimeSpent = (TimeSpan)value!;
+        }
+
+        private static object? GetBreedsCountValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.BreedsCount!;
+        }
+
+        private static void SetBreedsCountValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.BreedsCount = (Int32)value!;
+        }
+
+        private static object? GetCatteriesCountValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatteriesCount!;
+        }
+
+        private static void SetCatteriesCountValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatteriesCount = (Int32)value!;
+        }
+
+        private static object? GetAllBreedsValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreeds!;
+        }
+
+        private static void SetAllBreedsValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreeds = (List<IBreed>)value!;
+        }
+
+        private static object? GetAllCatteriesValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteries!;
+        }
+
+        private static void SetAllCatteriesValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteries = (List<ICattery>)value!;
+        }
+
+        private static object? GetAllBreedsCountValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreedsCount!;
+        }
+
+        private static void SetAllBreedsCountValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreedsCount = (Int32)value!;
+        }
+
+        private static object? GetAllCatteriesCountValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteriesCount!;
+        }
+
+        private static void SetAllCatteriesCountValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteriesCount = (Int32)value!;
+        }
+
+        private static object? GetIsCatSelectedValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsCatSelected!;
+        }
+
+        private static void SetIsCatSelectedValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsCatSelected = (Boolean)value!;
+        }
+
+        private static object? GetCatsViewValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatsView!;
+        }
+
+        private static void SetCatsViewValue(object target, object? value)
+        {
+             ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatsView = (Object)value!;
+        }
+
+        private static object? GetSelectedCatsValue(object target)
+        {
+            return ((MainWindowHeartIMainWindowHeartProjection)target)._selectedCats;
+        }
+
+
+
+#endregion Properties Accessors;
+
+
 
     }
 #endregion Projection classes
@@ -160,7 +490,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
     public static void InitProperties(List<Property> properties)
     {
         properties.Add(
-                new Property(
+            new Property(
                 "CatFilter", 
                 typeof(CatFilterPoco),
                 GetCatFilterValue, 
@@ -168,12 +498,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("CatFilter"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, ICatFilter>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Cats", 
                 typeof(ObservableCollection<CatPoco>),
                 GetCatsValue, 
@@ -181,12 +510,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("Cats"), 
                 false, 
                 false, 
-                true            
+                typeof(CatPoco)
             )
-            .AddPropertyType<IMainWindowHeart, IList<ICatForListing>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Catteries", 
                 typeof(ObservableCollection<CatteryPoco>),
                 GetCatteriesValue, 
@@ -194,12 +522,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("Catteries"), 
                 false, 
                 false, 
-                true            
+                typeof(CatteryPoco)
             )
-            .AddPropertyType<IMainWindowHeart, IList<ICattery>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "Breeds", 
                 typeof(ObservableCollection<BreedPoco>),
                 GetBreedsValue, 
@@ -207,12 +534,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("Breeds"), 
                 false, 
                 false, 
-                true            
+                typeof(BreedPoco)
             )
-            .AddPropertyType<IMainWindowHeart, IList<IBreed>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "GetCatsTimeSpent", 
                 typeof(TimeSpan),
                 GetGetCatsTimeSpentValue, 
@@ -220,12 +546,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("GetCatsTimeSpent"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, TimeSpan>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "RenderingCatsTimeSpent", 
                 typeof(TimeSpan),
                 GetRenderingCatsTimeSpentValue, 
@@ -233,12 +558,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("RenderingCatsTimeSpent"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, TimeSpan>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "BreedsCount", 
                 typeof(Int32),
                 GetBreedsCountValue, 
@@ -246,12 +570,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("BreedsCount"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Int32>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "CatteriesCount", 
                 typeof(Int32),
                 GetCatteriesCountValue, 
@@ -259,12 +582,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("CatteriesCount"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Int32>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "AllBreeds", 
                 typeof(List<IBreed>),
                 GetAllBreedsValue, 
@@ -272,12 +594,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("AllBreeds"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, List<IBreed>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "AllCatteries", 
                 typeof(List<ICattery>),
                 GetAllCatteriesValue, 
@@ -285,12 +606,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("AllCatteries"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, List<ICattery>>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "AllBreedsCount", 
                 typeof(Int32),
                 GetAllBreedsCountValue, 
@@ -298,12 +618,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("AllBreedsCount"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Int32>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "AllCatteriesCount", 
                 typeof(Int32),
                 GetAllCatteriesCountValue, 
@@ -311,12 +630,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("AllCatteriesCount"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Int32>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "IsCatSelected", 
                 typeof(Boolean),
                 GetIsCatSelectedValue, 
@@ -324,12 +642,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("IsCatSelected"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Boolean>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "CatsView", 
                 typeof(Object),
                 GetCatsViewValue, 
@@ -337,12 +654,11 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("CatsView"), 
                 false, 
                 false, 
-                false            
+                null
             )
-            .AddPropertyType<IMainWindowHeart, Object>()
         );
         properties.Add(
-                new Property(
+            new Property(
                 "SelectedCats", 
                 typeof(ObservableCollection<CatPoco>),
                 GetSelectedCatsValue, 
@@ -350,9 +666,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
                 target => ((IPoco)target).TouchProperty("SelectedCats"), 
                 false, 
                 false, 
-                true            
+                typeof(CatPoco)
             )
-            .AddPropertyType<IMainWindowHeart, IList<ICatForListing>>()
         );
     }
 #endregion Init Properties;
@@ -794,24 +1109,80 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<IPoco>, IPr
 
     protected virtual void CatsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.OldItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.OldItems)
+            {
+                item.PocoChanged -= CatsPocoChanged;
+            }
+        }
+        if (e.NewItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.NewItems)
+            {
+                item.PocoChanged += CatsPocoChanged;
+            }
+        }
         OnPocoChanged(_initial_cats, _cats, nameof(Cats));
         OnPropertyChanged(nameof(Cats));
     }
 
     protected virtual void CatteriesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.OldItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.OldItems)
+            {
+                item.PocoChanged -= CatteriesPocoChanged;
+            }
+        }
+        if (e.NewItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.NewItems)
+            {
+                item.PocoChanged += CatteriesPocoChanged;
+            }
+        }
         OnPocoChanged(_initial_catteries, _catteries, nameof(Catteries));
         OnPropertyChanged(nameof(Catteries));
     }
 
     protected virtual void BreedsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.OldItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.OldItems)
+            {
+                item.PocoChanged -= BreedsPocoChanged;
+            }
+        }
+        if (e.NewItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.NewItems)
+            {
+                item.PocoChanged += BreedsPocoChanged;
+            }
+        }
         OnPocoChanged(_initial_breeds, _breeds, nameof(Breeds));
         OnPropertyChanged(nameof(Breeds));
     }
 
     protected virtual void SelectedCatsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.OldItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.OldItems)
+            {
+                item.PocoChanged -= SelectedCatsPocoChanged;
+            }
+        }
+        if (e.NewItems is { })
+        {
+            foreach (INotifyPocoChanged item in e.NewItems)
+            {
+                item.PocoChanged += SelectedCatsPocoChanged;
+            }
+        }
         OnPocoChanged(_initial_selectedCats, _selectedCats, nameof(SelectedCats));
         OnPropertyChanged(nameof(SelectedCats));
     }

@@ -23,7 +23,7 @@
             if(@fieldName != value)
             {
                 @Html.Raw("object")@if (pm.IsNullable) {<text>?</text> } oldValue = @fieldName;
-                @if(pm.IsProjector)
+                @if(pm.IsProjection)
                 {
                     <text>                if(@fieldName is {})
                 {
@@ -32,7 +32,7 @@
 </text>   
                 }
                 @fieldName = value;
-                @if(pm.IsProjector)
+                @if(pm.IsProjection)
                 {
                     <text>                if(@fieldName is {})
                 {
