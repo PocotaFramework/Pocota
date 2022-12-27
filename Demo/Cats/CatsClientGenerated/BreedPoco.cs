@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,15 +10,16 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.ComponentModel;
 
 namespace CatsCommon.Model;
 
-public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
 {
 
 #region Projection classes
 
-    public class BreedIBreedProjection: IBreed, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+    public class BreedIBreedProjection: IBreed, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
     {
 
 
@@ -77,28 +78,42 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, IP
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly BreedPoco _projector;
 
 
-        public String Code 
+       public String Code 
         {
             get => _projector.Code!;
             set => _projector.Code = (String)value!;
         }
 
-        public String Group 
+       public String Group 
         {
             get => _projector.Group!;
             set => _projector.Group = (String)value!;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -254,7 +269,18 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, IP
 
     private BreedIBreedProjection? _asBreedIBreedProjection = null;
 
-    private BreedIBreedProjection AsBreedIBreedProjection => _asBreedIBreedProjection ??= new(this);
+    private BreedIBreedProjection AsBreedIBreedProjection 
+        {
+            get
+            {
+                if(_asBreedIBreedProjection is null)
+                {
+                    _asBreedIBreedProjection = new BreedIBreedProjection(this);
+                    ProjectionCreated(typeof(IBreed), _asBreedIBreedProjection);
+                }
+                return _asBreedIBreedProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -377,6 +403,11 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, IP
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

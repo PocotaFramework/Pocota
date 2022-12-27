@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:10                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -15,7 +15,7 @@ using System.Collections.Generic;
 
 namespace CatsCommon.Model;
 
-public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
 {
     public static readonly Type PrimaryKeyType = typeof(CatPrimaryKey);
     
@@ -23,7 +23,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 #region Projection classes
 
 
-    public class CatICatProjection: ICat, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatProjection: ICat, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
 
@@ -154,65 +154,67 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 #endregion Init Properties;
 
 
+
+
         private readonly CatPoco _projector;
 
         private readonly ProjectionList<LitterPoco,ILitter> _litters;
 
-        public ICattery Cattery 
+       public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery).As<ICattery>()!;
             set => _projector.Cattery = ((IProjection)value!)?.As<CatteryPoco>()!;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-        public Gender Gender 
+       public Gender Gender 
         {
             get => _projector.Gender!;
             set => _projector.Gender = (Gender)value!;
         }
 
-        public IBreed Breed 
+       public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed).As<IBreed>()!;
             set => _projector.Breed = ((IProjection)value!)?.As<BreedPoco>()!;
         }
 
-        public ILitter? Litter 
+       public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
             set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
-        public String? Exterior 
+       public String? Exterior 
         {
             get => _projector.Exterior;
             set => _projector.Exterior = (String?)value;
         }
 
-        public String? Description 
+       public String? Description 
         {
             get => _projector.Description;
             set => _projector.Description = (String?)value;
         }
 
-        public String? Title 
+       public String? Title 
         {
             get => _projector.Title;
             set => _projector.Title = (String?)value;
         }
 
-        public IList<ILitter> Litters 
+       public IList<ILitter> Litters 
         {
             get => _litters;
             set => throw new NotImplementedException();
@@ -352,7 +354,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 
     }
 
-    public class CatICatForListingProjection: ICatForListing, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatForListingProjection: ICatForListing, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
 
@@ -471,50 +473,52 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 #endregion Init Properties;
 
 
+
+
         private readonly CatPoco _projector;
 
 
-        public ICattery Cattery 
+       public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery).As<ICattery>()!;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
-        public Gender Gender 
+       public Gender Gender 
         {
             get => _projector.Gender!;
         }
 
-        public IBreed Breed 
+       public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed).As<IBreed>()!;
         }
 
-        public ILitterForCat? Litter 
+       public ILitterForCat? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForCat>();
         }
 
-        public String? Exterior 
+       public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
-        public String? Description 
+       public String? Description 
         {
             get => _projector.Description;
         }
 
-        public String? Title 
+       public String? Title 
         {
             get => _projector.Title;
         }
@@ -646,7 +650,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 
     }
 
-    public class CatICatAsParentProjection: ICatAsParent, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatAsParentProjection: ICatAsParent, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
 
@@ -741,40 +745,42 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 #endregion Init Properties;
 
 
+
+
         private readonly CatPoco _projector;
 
 
-        public ICattery Cattery 
+       public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery).As<ICattery>()!;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
-        public IBreed Breed 
+       public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed).As<IBreed>()!;
         }
 
-        public ILitterForDate? Litter 
+       public ILitterForDate? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForDate>();
         }
 
-        public String? Exterior 
+       public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
-        public String? Title 
+       public String? Title 
         {
             get => _projector.Title;
         }
@@ -886,7 +892,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 
     }
 
-    public class CatICatForViewProjection: ICatForView, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
+    public class CatICatForViewProjection: ICatForView, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
     {
 
 
@@ -1017,56 +1023,58 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
 #endregion Init Properties;
 
 
+
+
         private readonly CatPoco _projector;
 
         private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
 
-        public ICattery Cattery 
+       public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery).As<ICattery>()!;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
-        public Gender Gender 
+       public Gender Gender 
         {
             get => _projector.Gender!;
         }
 
-        public IBreed Breed 
+       public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed).As<IBreed>()!;
         }
 
-        public ILitterForCat? Litter 
+       public ILitterForCat? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForCat>();
         }
 
-        public String? Exterior 
+       public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
-        public String? Description 
+       public String? Description 
         {
             get => _projector.Description;
         }
 
-        public String? Title 
+       public String? Title 
         {
             get => _projector.Title;
         }
 
-        public IList<ILitterForCat> Litters 
+       public IList<ILitterForCat> Litters 
         {
             get => _litters;
         }
@@ -1369,10 +1377,54 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
     private CatICatAsParentProjection? _asCatICatAsParentProjection = null;
     private CatICatForViewProjection? _asCatICatForViewProjection = null;
 
-    private CatICatProjection AsCatICatProjection => _asCatICatProjection ??= new(this);
-    private CatICatForListingProjection AsCatICatForListingProjection => _asCatICatForListingProjection ??= new(this);
-    private CatICatAsParentProjection AsCatICatAsParentProjection => _asCatICatAsParentProjection ??= new(this);
-    private CatICatForViewProjection AsCatICatForViewProjection => _asCatICatForViewProjection ??= new(this);
+    private CatICatProjection AsCatICatProjection 
+        {
+            get
+            {
+                if(_asCatICatProjection is null)
+                {
+                    _asCatICatProjection = new CatICatProjection(this);
+                    ProjectionCreated(typeof(ICat), _asCatICatProjection);
+                }
+                return _asCatICatProjection = new(this);
+            }
+        }
+    private CatICatForListingProjection AsCatICatForListingProjection 
+        {
+            get
+            {
+                if(_asCatICatForListingProjection is null)
+                {
+                    _asCatICatForListingProjection = new CatICatForListingProjection(this);
+                    ProjectionCreated(typeof(ICatForListing), _asCatICatForListingProjection);
+                }
+                return _asCatICatForListingProjection = new(this);
+            }
+        }
+    private CatICatAsParentProjection AsCatICatAsParentProjection 
+        {
+            get
+            {
+                if(_asCatICatAsParentProjection is null)
+                {
+                    _asCatICatAsParentProjection = new CatICatAsParentProjection(this);
+                    ProjectionCreated(typeof(ICatAsParent), _asCatICatAsParentProjection);
+                }
+                return _asCatICatAsParentProjection = new(this);
+            }
+        }
+    private CatICatForViewProjection AsCatICatForViewProjection 
+        {
+            get
+            {
+                if(_asCatICatForViewProjection is null)
+                {
+                    _asCatICatForViewProjection = new CatICatForViewProjection(this);
+                    ProjectionCreated(typeof(ICatForView), _asCatICatForViewProjection);
+                }
+                return _asCatICatForViewProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -1497,80 +1549,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
         {
             return AsCatICatProjection;
         }
-        if(type == typeof(CatPoco))
-        {
-            return this;
-        }
-        if(type == typeof(IPoco))
-        {
-            return this;
-        }
-        if(type == typeof(PocoBase))
-        {
-            return this;
-        }
-        
-        if(type == typeof(IEntity))
-        {
-            return this;
-        }
-        if(type == typeof(EntityBase))
-        {
-            return this;
-        }
-        
         if(type == typeof(ICatForListing))
         {
             return AsCatICatForListingProjection;
         }
-        if(type == typeof(CatPoco))
-        {
-            return this;
-        }
-        if(type == typeof(IPoco))
-        {
-            return this;
-        }
-        if(type == typeof(PocoBase))
-        {
-            return this;
-        }
-        
-        if(type == typeof(IEntity))
-        {
-            return this;
-        }
-        if(type == typeof(EntityBase))
-        {
-            return this;
-        }
-        
         if(type == typeof(ICatAsParent))
         {
             return AsCatICatAsParentProjection;
         }
-        if(type == typeof(CatPoco))
-        {
-            return this;
-        }
-        if(type == typeof(IPoco))
-        {
-            return this;
-        }
-        if(type == typeof(PocoBase))
-        {
-            return this;
-        }
-        
-        if(type == typeof(IEntity))
-        {
-            return this;
-        }
-        if(type == typeof(EntityBase))
-        {
-            return this;
-        }
-        
         if(type == typeof(ICatForView))
         {
             return AsCatICatForViewProjection;
@@ -1610,6 +1596,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

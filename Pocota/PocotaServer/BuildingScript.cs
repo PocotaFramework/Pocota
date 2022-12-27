@@ -7,9 +7,20 @@ public class BuildingScript
     public const string KeyOnly = "<KeyOnly>";
 
     private readonly IServiceProvider _services;
-    private readonly Dictionary<string, string?> _fieldsMap = new();
-    private readonly Dictionary<string, Type> _converters = new();
     private readonly Dictionary<string, Action<BuildingEventArgs>> _handlers = new();
+
+    private BuildingScriptMapping? _mapping = null;
+
+    private bool _hasExternalMapping = false;
+
+    public BuildingScriptMapping? Mapping { 
+        get => _hasExternalMapping ? _mapping : null; 
+        set
+        {
+            _hasExternalMapping = value is { };
+            _mapping = value;
+        }
+    }
 
     public bool WithTrace { get; set; } = false;
 
@@ -20,15 +31,15 @@ public class BuildingScript
 
     public void AddPathMapEntry(string path, string? fieldName, Type? converterType = null)
     {
-        _fieldsMap.Add(path, fieldName);
-        if(converterType is { })
+        if (_hasExternalMapping)
         {
-            if (!typeof(IValueConverter).IsAssignableFrom(converterType))
-            {
-                throw new ArgumentException($"{nameof(converterType)} must be assignable from {typeof(IValueConverter)} or null!");
-            }
-            _converters.Add(path, converterType);
+            throw new InvalidOperationException("Cannot add path map entry to external mapping!");
         }
+        if(_mapping is null)
+        {
+            _mapping = new BuildingScriptMapping();
+        }
+        _mapping.AddPathMapEntry(path, fieldName, converterType);
     }
 
     public void AddPathHandler(string path, Action<BuildingEventArgs> handler)
@@ -38,10 +49,6 @@ public class BuildingScript
 
     public void Run(BuildingEventArgs args)
     {
-        if (WithTrace)
-        {
-            Console.WriteLine(args.PathSelector);
-        }
         bool success = true;
         if (args.IsKeyRequest)
         {
@@ -87,14 +94,18 @@ public class BuildingScript
         }
         if (success)
         {
-            args.BuildingContext.UpdateLogEntry(null, BuildingEventResult.Matched);
+            args.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
         }
     }
 
     private bool SetValue(string path, BuildingEventArgs args, string? key = null)
     {
-        string? fieldName;
-         if (!_fieldsMap.TryGetValue(path, out fieldName))
+        if (WithTrace)
+        {
+            Console.WriteLine(path);
+        }
+        string? fieldName = null;
+        if (!(_mapping?.FieldsMap.TryGetValue(path, out fieldName) ?? false))
         {
             if (!args.IsKeyRequest || key is { })
             {
@@ -131,7 +142,7 @@ public class BuildingScript
                     }
                     else
                     {
-                        if (_converters.TryGetValue(path, out Type? type))
+                        if (_mapping?.Converters.TryGetValue(path, out Type? type) ?? false)
                         {
                             args.Value = (_services.GetRequiredService(type) as IValueConverter)!.ConvertBack(args.DataReader![fieldName], args.DataReader.GetFieldType(pos));
                         }

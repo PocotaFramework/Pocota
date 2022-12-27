@@ -11,4 +11,5 @@ public class BuildingOptions
     public bool HighLevelListUniqueness { get; set; } = true;
     public IEnumerable<DbDataReader?> Spinner { get; set; } = null!;
     public BuildingScript? Script { get; set; } = null;
+    public bool WithLogging { get; set; } = true;
 }

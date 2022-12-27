@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-26T18:18:11                                          //
+// at 2022-12-27T18:28:56                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -13,15 +13,16 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace CatsClient;
 
-public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
+public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
 {
 
 #region Projection classes
 
-    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
+    public class ViewCatHeartIViewCatHeartProjection: IViewCatHeart, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<ViewCatHeartPoco>, IProjection<IViewCatHeart>
     {
 
 
@@ -80,29 +81,43 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<IPoco>, IProje
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly ViewCatHeartPoco _projector;
 
         private readonly ProjectionList<LitterPoco,ILitter> _selectedLitters;
 
-        public EditKind EditKind 
+       public EditKind EditKind 
         {
             get => _projector.EditKind!;
             set => _projector.EditKind = (EditKind)value!;
         }
 
-        public ICatForView Cat 
+       public ICatForView Cat 
         {
             get => ((IProjection)_projector.Cat).As<ICatForView>()!;
             set => _projector.Cat = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
-        public Object LittersView 
+       public Object LittersView 
         {
             get => _projector.LittersView!;
             set => _projector.LittersView = (Object)value!;
         }
 
-        public IList<ILitter> SelectedLitters 
+       public IList<ILitter> SelectedLitters 
         {
             get => _selectedLitters;
             set => throw new NotImplementedException();
@@ -260,7 +275,18 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<IPoco>, IProje
 
     private ViewCatHeartIViewCatHeartProjection? _asViewCatHeartIViewCatHeartProjection = null;
 
-    private ViewCatHeartIViewCatHeartProjection AsViewCatHeartIViewCatHeartProjection => _asViewCatHeartIViewCatHeartProjection ??= new(this);
+    private ViewCatHeartIViewCatHeartProjection AsViewCatHeartIViewCatHeartProjection 
+        {
+            get
+            {
+                if(_asViewCatHeartIViewCatHeartProjection is null)
+                {
+                    _asViewCatHeartIViewCatHeartProjection = new ViewCatHeartIViewCatHeartProjection(this);
+                    ProjectionCreated(typeof(IViewCatHeart), _asViewCatHeartIViewCatHeartProjection);
+                }
+                return _asViewCatHeartIViewCatHeartProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -380,6 +406,11 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<IPoco>, IProje
     }
 
     public abstract void LittersSelectionChanged(Object sender, EventArgs e);
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

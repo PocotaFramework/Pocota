@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,15 +10,16 @@ using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
+using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
 {
 
 #region Projection classes
 
-    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+    public class LitterFilterILitterFilterProjection: ILitterFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
 
 
@@ -53,16 +54,30 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Poc
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly LitterFilterPoco _projector;
 
 
-        public ICat Female 
+       public ICat Female 
         {
             get => ((IProjection)_projector.Female).As<ICat>()!;
             set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
-        public ICat Male 
+       public ICat Male 
         {
             get => ((IProjection)_projector.Male).As<ICat>()!;
             set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
@@ -172,7 +187,18 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Poc
 
     private LitterFilterILitterFilterProjection? _asLitterFilterILitterFilterProjection = null;
 
-    private LitterFilterILitterFilterProjection AsLitterFilterILitterFilterProjection => _asLitterFilterILitterFilterProjection ??= new(this);
+    private LitterFilterILitterFilterProjection AsLitterFilterILitterFilterProjection 
+        {
+            get
+            {
+                if(_asLitterFilterILitterFilterProjection is null)
+                {
+                    _asLitterFilterILitterFilterProjection = new LitterFilterILitterFilterProjection(this);
+                    ProjectionCreated(typeof(ILitterFilter), _asLitterFilterILitterFilterProjection);
+                }
+                return _asLitterFilterILitterFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -277,6 +303,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Poc
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

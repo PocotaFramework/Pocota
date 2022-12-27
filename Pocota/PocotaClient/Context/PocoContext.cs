@@ -149,7 +149,7 @@ internal class PocoContext : IPocoContext
                         }
                         else
                         {
-                            value = wr.Target;
+                            value = ((IProjection)wr.Target!).As(type);
                         }
                     }
                 }
@@ -160,8 +160,8 @@ internal class PocoContext : IPocoContext
                 if (value is null)
                 {
                     value = _services.GetRequiredService(type);
-                    _cachedObjects[actualType].Add(primaryKey, new WeakReference(value, false));
-                    _core.AttachPrimaryKey(primaryKey, value);
+                    _cachedObjects[actualType].Add(primaryKey, new WeakReference(((IProjection)value).As(actualType), false));
+                    ((IProjection)value).As<EntityBase>()!.PrimaryKey = primaryKey;
                 }
             }
 

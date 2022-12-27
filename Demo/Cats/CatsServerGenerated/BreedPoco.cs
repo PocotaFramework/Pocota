@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:10                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace CatsCommon.Model;
 
-public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
 {
     public static readonly Type PrimaryKeyType = typeof(BreedPrimaryKey);
     
@@ -21,7 +21,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
 #region Projection classes
 
 
-    public class BreedIBreedProjection: IBreed, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+    public class BreedIBreedProjection: IBreed, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
     {
 
 
@@ -80,28 +80,30 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
 #endregion Init Properties;
 
 
+
+
         private readonly BreedPoco _projector;
 
 
-        public String Code 
+       public String Code 
         {
             get => _projector.Code!;
             set => _projector.Code = (String)value!;
         }
 
-        public String Group 
+       public String Group 
         {
             get => _projector.Group!;
             set => _projector.Group = (String)value!;
         }
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -261,7 +263,18 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
 
     private BreedIBreedProjection? _asBreedIBreedProjection = null;
 
-    private BreedIBreedProjection AsBreedIBreedProjection => _asBreedIBreedProjection ??= new(this);
+    private BreedIBreedProjection AsBreedIBreedProjection 
+        {
+            get
+            {
+                if(_asBreedIBreedProjection is null)
+                {
+                    _asBreedIBreedProjection = new BreedIBreedProjection(this);
+                    ProjectionCreated(typeof(IBreed), _asBreedIBreedProjection);
+                }
+                return _asBreedIBreedProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -366,6 +379,11 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPo
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

@@ -69,7 +69,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
         if (isHighLevel)
         {
-            context.BuildingContext.ResetBuildingLog();
+            context.BuildingContext.Log?.Reset();
         }
 
         try
@@ -130,7 +130,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             context.BuildingContext.BuildingEventArgs.InternalPath = path;
             context.BuildingContext.BuildingEventArgs.PropertyType = typeof(T);
 
-            context.BuildingContext.AddLogEntry(
+            context.BuildingContext.Log?.AddEntry(
                 context.BuildingContext.BuildingEventArgs.IsKeyRequest,
                 context.BuildingContext.BuildingEventArgs.PropertyType,
                 context.BuildingContext.BuildingEventArgs.PathSelector
@@ -150,7 +150,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 {
                     if (!context.BuildingContext.BuildingEventArgs.IsNullable && !isListItem)
                     {
-                        context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.NotNullableSetNull);
+                        context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
                     }
                     context.Target = context.BuildingContext.BuildingEventArgs.InternalValue;
 
@@ -176,7 +176,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             }
             catch (Exception ex)
             {
-                context.BuildingContext.UpdateLogEntry(ex, BuildingEventResult.Exception);
+                context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
             }
 
             if (
@@ -184,7 +184,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                 && (_isEntity && !primaryKey!.IsAssigned)
             )
             {
-                context.BuildingContext.UpdateLogEntry(
+                context.BuildingContext.Log?.UpdateEntry(
                     primaryKey?.Names.Where(v => primaryKey[v] == default).ToArray(),
                     BuildingEventResult.KeyNotSet
                 );
@@ -237,6 +237,9 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
             context.BuildingContext.BufferWriter!.Path.Last().Value = value;
 
+            string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
+            writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
+
             if (alreadyExists)
             {
 
@@ -245,16 +248,14 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             else
             {
                 writer.WriteString(PocoTraversalConverterFactory.Id, reference);
+                string classReference = context.GetReference(_actualType, out bool isClassFound);
+                writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
                 if (_isEntity)
                 {
                     writer.WritePropertyName(PocoTraversalConverterFactory.Key);
                     JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
                 }
-                string classReference = context.GetReference(_actualType, out bool isClassFound);
-                writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
             }
-            string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
-            writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
 
             IPoco poco = ((IProjection)value).As<IPoco>()!;
             if ((_isEntity || !alreadyExists) && !poco.IsLoaded<T>() && !context.BuildingContext.BuildingEventArgs.KeyOnly)
@@ -328,7 +329,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                     context.BuildingContext.BuildingEventArgs.InternalPath = path;
                                     context.BuildingContext.BuildingEventArgs.PropertyType = typeForSerialization;
 
-                                    context.BuildingContext.AddLogEntry(
+                                    context.BuildingContext.Log?.AddEntry(
                                         context.BuildingContext.BuildingEventArgs.IsKeyRequest,
                                         context.BuildingContext.BuildingEventArgs.PropertyType,
                                         context.BuildingContext.BuildingEventArgs.PathSelector
@@ -346,19 +347,19 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                             context.BuildingContext!.Spinners.Peek().Script!.Run(context.BuildingContext.BuildingEventArgs);
                                             if (context.BuildingContext.BuildingEventArgs.IsMissed)
                                             {
-                                                context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.Missed);
+                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Missed);
                                             }
                                             if (
                                                 context.BuildingContext.BuildingEventArgs.Value == default
                                                 && !context.BuildingContext.BuildingEventArgs.IsNullable
                                             )
                                             {
-                                                context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.NotNullableSetNull);
+                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
                                             }
                                         }
                                         catch (Exception ex)
                                         {
-                                            context.BuildingContext.UpdateLogEntry(ex, BuildingEventResult.Exception);
+                                            context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
                                         }
                                         propertyValue = context.BuildingContext.BuildingEventArgs.Value;
                                         if (
@@ -379,16 +380,16 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                                 && !context.BuildingContext.BuildingEventArgs.IsNullable
                                             )
                                             {
-                                                context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.NotNullableSetNull);
+                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
                                             }
                                             else
                                             {
-                                                context.BuildingContext.UpdateLogEntry(null, BuildingEventResult.Matched);
+                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
                                             }
                                         }
                                         catch (Exception ex)
                                         {
-                                            context.BuildingContext.UpdateLogEntry(ex, BuildingEventResult.Exception);
+                                            context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
                                         }
                                     }
 
@@ -444,9 +445,9 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         }
         finally
         {
-            if (isHighLevel && context.BuildingContext.Failed)
+            if (isHighLevel && (context.BuildingContext.Log?.Failed ?? false))
             {
-                context.BuildingContext.Throw();
+                context.BuildingContext.Log?.Throw();
             }
             --context.BuildingContext!.Level;
         }

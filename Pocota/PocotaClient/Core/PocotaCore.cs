@@ -10,7 +10,6 @@ namespace Net.Leksi.Pocota.Client.Core;
 public class PocotaCore: PocotaCoreBase, IPocota
 {
     private readonly ConditionalWeakTable<JsonSerializerOptions, PocoTraversalContext> _pocoJsonContexts = new();
-    private readonly ConditionalWeakTable<object, object[]> _attachedPrimaryKeys = new();
 
     private readonly Dictionary<Type, string> _clientToServerTypesMapping = new();
     private readonly Dictionary<string, Type> _serverToClientTypesMapping = new();
@@ -69,20 +68,6 @@ public class PocotaCore: PocotaCoreBase, IPocota
     internal void AddPocoJsonContext(JsonSerializerOptions options, PocoTraversalContext context)
     {
         _pocoJsonContexts.AddOrUpdate(options, context);
-    }
-
-    internal object[]? GetPrimaryKey(object source)
-    {
-        if (_attachedPrimaryKeys.TryGetValue(source, out object[]? primaryKey))
-        {
-            return primaryKey;
-        }
-        return null;
-    }
-
-    internal void AttachPrimaryKey(object[] primaryKey, object source)
-    {
-        _attachedPrimaryKeys.Add(source, primaryKey);
     }
 
     internal bool TryGetPocoJsonContext(JsonSerializerOptions options, out PocoTraversalContext? context)

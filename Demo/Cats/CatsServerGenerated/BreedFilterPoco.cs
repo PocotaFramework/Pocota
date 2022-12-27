@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,14 +13,14 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
+public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
 {
     
 
 #region Projection classes
 
 
-    public class BreedFilterIBreedFilterProjection: IBreedFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
+    public class BreedFilterIBreedFilterProjection: IBreedFilter, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
     {
 
 
@@ -43,10 +43,12 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
 #endregion Init Properties;
 
 
+
+
         private readonly BreedFilterPoco _projector;
 
 
-        public String? SearchRegex 
+       public String? SearchRegex 
         {
             get => _projector.SearchRegex;
             set => _projector.SearchRegex = (String?)value;
@@ -134,7 +136,18 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
 
     private BreedFilterIBreedFilterProjection? _asBreedFilterIBreedFilterProjection = null;
 
-    private BreedFilterIBreedFilterProjection AsBreedFilterIBreedFilterProjection => _asBreedFilterIBreedFilterProjection ??= new(this);
+    private BreedFilterIBreedFilterProjection AsBreedFilterIBreedFilterProjection 
+        {
+            get
+            {
+                if(_asBreedFilterIBreedFilterProjection is null)
+                {
+                    _asBreedFilterIBreedFilterProjection = new BreedFilterIBreedFilterProjection(this);
+                    ProjectionCreated(typeof(IBreedFilter), _asBreedFilterIBreedFilterProjection);
+                }
+                return _asBreedFilterIBreedFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -203,6 +216,11 @@ public class BreedFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjecti
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

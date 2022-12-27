@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -6,25 +6,51 @@
 
 @Html.Partial("InitProperties", viewData: new ViewDataDictionary(ViewData) { { "Projection", true } })
 
+        @if(Model.Parent.IsClient)
+        {
+            <text>        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+</text>
+        }
+
+
         private readonly @Html.Raw(Model.Parent!.ClassName) _projector;
 
-        @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
+        @foreach(PropertyModel pm in Model.Properties.Where(p => (p.IsList && p.Class is {}) || p.IsIndependent))
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+            if(pm.IsIndependent)
+            {
+            <text>        private @Html.Raw($"{pm.Type}{(pm.IsNullable ? "?" : string.Empty)} {fieldName} = null{(!pm.IsNullable ? "!" : string.Empty)};")
+</text>
+            }
+            else 
+            {
             <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
 </text>
+            }
         }
 
         @foreach(PropertyModel pm in Model.Properties)
         {
-            <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
+            string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+            <text>       public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
-            get => @if(!pm.IsList || !pm.IsProjection){
+            get => @if((!pm.IsList || !pm.IsProjection) && !pm.IsIndependent){
                 <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
             else {
-                string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
                 <text>@fieldName;
 </text>
             }
@@ -33,6 +59,11 @@
                 if(pm.IsList)
                 {
                     <text>            set => throw new NotImplementedException();
+</text>
+                }
+                else if(pm.IsIndependent)
+                {
+                <text>            set => @fieldName = value;
 </text>
                 }
                 else

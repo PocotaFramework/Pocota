@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,14 +13,14 @@ using Net.Leksi.Pocota.Server;
 
 namespace CatsCommon.Filters;
 
-public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
 {
     
 
 #region Projection classes
 
 
-    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
+    public class LitterFilterILitterFilterProjection: ILitterFilter, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
     {
 
 
@@ -55,16 +55,18 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
 #endregion Init Properties;
 
 
+
+
         private readonly LitterFilterPoco _projector;
 
 
-        public ICat Female 
+       public ICat Female 
         {
             get => ((IProjection)_projector.Female).As<ICat>()!;
             set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
-        public ICat Male 
+       public ICat Male 
         {
             get => ((IProjection)_projector.Male).As<ICat>()!;
             set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
@@ -176,7 +178,18 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
 
     private LitterFilterILitterFilterProjection? _asLitterFilterILitterFilterProjection = null;
 
-    private LitterFilterILitterFilterProjection AsLitterFilterILitterFilterProjection => _asLitterFilterILitterFilterProjection ??= new(this);
+    private LitterFilterILitterFilterProjection AsLitterFilterILitterFilterProjection 
+        {
+            get
+            {
+                if(_asLitterFilterILitterFilterProjection is null)
+                {
+                    _asLitterFilterILitterFilterProjection = new LitterFilterILitterFilterProjection(this);
+                    ProjectionCreated(typeof(ILitterFilter), _asLitterFilterILitterFilterProjection);
+                }
+                return _asLitterFilterILitterFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -255,6 +268,11 @@ public class LitterFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProject
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

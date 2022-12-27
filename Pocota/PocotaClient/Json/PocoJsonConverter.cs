@@ -55,7 +55,6 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
             string? reference = null;
 
-            List<string>? key = null;
             string? @class = null;
             string? @interface = null;
 
@@ -82,10 +81,15 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         reference = reader.GetString();
                         if (reference is { })
                         {
-                            result = (T?)context!.ResolveReference(reference);
-                            if (result is PocoBase poco)
+                            object? obj = context!.ResolveReference(reference);
+                            if(obj is IProjection projection)
                             {
-                                poco.StartPopulate(context);
+                                result = projection.As<T>();
+                                projection.As<PocoBase>()?.StartPopulate(context); ;
+                            }
+                            else
+                            {
+                                result = (T?)obj;
                             }
                         }
                         else
@@ -97,12 +101,12 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     else if (propertyName.Equals(Class))
                     {
                         string? val = JsonSerializer.Deserialize<string>(ref reader);
-                        if(string.IsNullOrEmpty(val) || !val.StartsWith("#"))
+                        if (string.IsNullOrEmpty(val) || !val.StartsWith("#"))
                         {
                             throw new JsonException("Invalid class reference");
                         }
                         string[] parts = val.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                        if(parts.Length > 1)
+                        if (parts.Length > 1)
                         {
                             @class = parts[1];
                             context.AddReference(parts[0], @class);
@@ -110,7 +114,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         else
                         {
                             @class = (string?)context.ResolveReference(parts[0]);
-                            if(@class is null)
+                            if (@class is null)
                             {
                                 throw new JsonException("Invalid class reference");
                             }
@@ -145,8 +149,21 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         object[]? parts = JsonSerializer.Deserialize<object[]>(ref reader);
                         if (parts is { } && parts.Length > 0)
                         {
-                            key = new List<string>();
-                            key.AddRange(parts.Select(v => v.ToString()!));
+                            if (@class is null)
+                            {
+                                @class = typeof(object).ToString();
+                            }
+
+                            if (_pocoContext.TryGetSource(typeof(T), parts.Select(v => v.ToString()!).ToArray(), out object? obj))
+                            {
+                                result = (T)obj!;
+                                ((IProjection?)result)?.As<PocoBase>()?.StartPopulate(context);
+                                if (result is { } && reference is { })
+                                {
+                                    context.AddReference(reference, ((object?)((IProjection?)result)?.As<PocoBase>() ?? result)!);
+                                }
+                            }
+
                             done = true;
                         }
                         if (!done)
@@ -162,99 +179,78 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
                 if (!done)
                 {
-                    if(key is { })
-                    {
-                        if(@class is null)
-                        {
-                            @class = typeof(object).ToString();
-                        }
-                        key.Insert(0, @class);
-
-                        if(_pocoContext.TryGetSource(typeof(T), key.ToArray(), out object? obj))
-                        {
-                            result = (T)obj!;
-                            ((IProjection?)result)?.As<PocoBase>()?.StartPopulate(context);
-                        }
-
-                        key = null;
-                    }
-
                     PocoBase? poco = ((IProjection?)result)?.As<PocoBase>();
                     Property? property = _properties![propertyName];
 
                     if (property is { })
                     {
 
-                        if (!property.IsReadOnly || property.IsCollection)
+                        object? oldValue = property.GetValue(result!);
+
+                        Type typeForDeserialization = property.Type;
+
+                        if (property.IsCollection)
                         {
+                            context!.ItemType = property.ItemType;
+                        }
+                        else
+                        {
+                            typeForDeserialization = property.Type;
+                            context!.ItemType = null;
+                        }
 
-                            object? oldValue = property.GetValue(result!);
+                        bool isUnchanged = true;
+                        bool isModified = false;
+                        IEntity? entity = poco as IEntity;
+                        if (entity is { })
+                        {
+                            isUnchanged = entity.PocoState is PocoState.Unchanged;
+                            isModified = entity.IsModified(propertyName);
+                        }
+                        bool canChangeValue = (
+                                poco.IsEnvelope
+                                || isUnchanged
+                                || !isModified
+                            );
 
-                            Type typeForDeserialization = property.Type;
-
-                            if (property.IsCollection)
-                            {
-                                context!.ItemType = property.ItemType;
-                            }
-                            else
-                            {
-                                typeForDeserialization = property.Type;
-                                context!.ItemType = null;
-                            }
-
-                            bool isUnchanged = true;
-                            bool isModified = false;
-                            IEntity? entity = poco as IEntity;
-                            if (entity is { })
-                            {
-                                isUnchanged = entity.PocoState is PocoState.Unchanged;
-                                isModified = entity.IsModified(propertyName);
-                            }
-                            bool canChangeValue = (
-                                    poco.IsEnvelope
-                                    || isUnchanged
-                                    || !isModified
-                                );
-
-                            context!.Target = property.IsCollection 
-                                ? (
-                                    canChangeValue 
-                                    ? oldValue 
-                                    : (
-                                        _pocoContext.ExternalUpdateProcessing is ExternalUpdateProcessing.Never
-                                        ? Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!))
-                                        : ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
-                                    )
-                                )
-                                : null;
-                            object? value = JsonSerializer.Deserialize(ref reader, typeForDeserialization, options);
-                            context!.Target = null;
-
-                            if(
-                                (
-                                    oldValue is null && value is null
-                                )
-                                || (
-                                    oldValue is { } && value is { } && oldValue!.Equals(value)
+                        context!.Target = property.IsCollection
+                            ? (
+                                canChangeValue
+                                ? oldValue
+                                : (
+                                    _pocoContext.ExternalUpdateProcessing is ExternalUpdateProcessing.Never
+                                    ? Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!))
+                                    : ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
                                 )
                             )
-                            {
-                                property.TouchValue(result!);
+                            : null;
+                        object? value = JsonSerializer.Deserialize(ref reader, typeForDeserialization, options);
+                        context!.Target = null;
 
-                            }
-                            else 
-                            {
-                                if (canChangeValue)
-                                {
-                                    property.SetValue(result!, value);
-                                }
-                                else if (_pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
-                                {
-                                    ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, value);
-                                }
-                            }
-                            done = true;
+                        if (
+                            (
+                                oldValue is null && value is null
+                            )
+                            || (
+                                oldValue is { } && value is { } && oldValue!.Equals(value)
+                            )
+                        )
+                        {
+                            property.TouchValue(result!);
+
                         }
+                        else
+                        {
+                            if (canChangeValue)
+                            {
+                                property.SetValue(result!, value);
+                            }
+                            else if (_pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
+                            {
+                                ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, value);
+                            }
+                        }
+                        done = true;
 
                     }
                     if (!done)
@@ -297,7 +293,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             }
             else
             {
-                object[]? primaryKey = _core.GetPrimaryKey(value);
+                object[]? primaryKey = ((IProjection)value).As<EntityBase>()?.PrimaryKey;
                 writer.WritePropertyName(Id);
                 writer.WriteStringValue(reference);
                 if (primaryKey is { })
@@ -305,16 +301,16 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     writer.WritePropertyName(Key);
                     JsonSerializer.Serialize<object[]?>(writer, new object[] { primaryKey });
                 }
-                if(context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || typeof(EnvelopeBase).IsAssignableFrom(typeof(T)))
+                if (context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || typeof(EnvelopeBase).IsAssignableFrom(typeof(T)))
                 {
                     Type actualType = value.GetType();
-                    foreach(PropertyInfo pi in typeof(T).GetProperties())
+                    foreach (PropertyInfo pi in typeof(T).GetProperties())
                     {
                         PropertyInfo? actualPropertyInfo = actualType.GetProperty(pi.Name);
-                        if(actualPropertyInfo is { })
+                        if (actualPropertyInfo is { })
                         {
                             object? propertytValue = actualPropertyInfo.GetValue(value);
-                            if(propertytValue is { })
+                            if (propertytValue is { })
                             {
                                 writer.WritePropertyName(pi.Name);
                                 JsonSerializer.Serialize(writer, propertytValue, pi.PropertyType, options);

@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 
 namespace Net.Leksi.Pocota.Client;
@@ -13,7 +14,11 @@ public abstract class EntityBase : PocoBase, IEntity
     private Dictionary<string, Tuple<int, object?>> _deferredOverwritings = null;
     private int _overwritersGenId = 0;
 
+    internal object[]? PrimaryKey { get; set; } = null;
+
     internal override bool IsEnvelope => false;
+
+    ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray();
 
     public EntityBase(IServiceProvider services) : base(services) { }
 

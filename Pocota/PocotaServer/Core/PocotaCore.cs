@@ -80,31 +80,50 @@ public class PocotaCore: PocotaCoreBase
 
     private object? GetPlaceholder(Type type, Func<object> supplier, Dictionary<Type, object> placeholders)
     {
-        if (!placeholders.TryGetValue(type, out object? placeholder))
+        object? placeholder = null;
+        Type? actualType = null;
+        bool isList = false;
+
+        if ((GetActualType(type) is Type tmpType))
+        {
+            actualType = tmpType;
+        }
+        else if (
+            type.IsGenericType
+            && type.GetGenericArguments()[0] is Type itemType
+        )
+        {
+            isList = true;
+            actualType = typeof(List<>).MakeGenericType(itemType);
+        }
+        else
+        {
+            actualType = type;
+        }
+        if (!placeholders.TryGetValue(actualType, out placeholder))
         {
             lock (placeholders)
             {
-                if (!placeholders.TryGetValue(type, out placeholder))
+                if (!placeholders.TryGetValue(actualType, out placeholder))
                 {
-                    placeholder = null;
-                    if (
-                        type.IsGenericType 
-                        && type.GetGenericArguments()[0] is Type itemType
-                        && GetActualType(itemType) is Type
-                        )
+                    if (isList)
                     {
-                        placeholder = Activator.CreateInstance(typeof(List<>).MakeGenericType(new Type[] { itemType }));
+                        placeholder = Activator.CreateInstance(actualType);
                     }
-                    else if (GetActualType(type) is Type actualType)
+                    else 
                     {
                         placeholder = supplier?.Invoke();
                     }
                     if (placeholders is { })
                     {
-                        placeholders.Add(type, placeholder!);
+                        placeholders.Add(actualType, placeholder!);
                     }
                 }
             }
+        }
+        if(placeholder is IProjection projection)
+        {
+            return projection.As(type);
         }
         return placeholder;
     }

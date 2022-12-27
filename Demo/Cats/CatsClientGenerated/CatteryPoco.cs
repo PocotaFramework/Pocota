@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,15 +10,16 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.ComponentModel;
 
 namespace CatsCommon.Model;
 
-public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
 {
 
 #region Projection classes
 
-    public class CatteryICatteryProjection: ICattery, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+    public class CatteryICatteryProjection: ICattery, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
 
 
@@ -53,16 +54,30 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, 
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly CatteryPoco _projector;
 
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -172,7 +187,18 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, 
 
     private CatteryICatteryProjection? _asCatteryICatteryProjection = null;
 
-    private CatteryICatteryProjection AsCatteryICatteryProjection => _asCatteryICatteryProjection ??= new(this);
+    private CatteryICatteryProjection AsCatteryICatteryProjection 
+        {
+            get
+            {
+                if(_asCatteryICatteryProjection is null)
+                {
+                    _asCatteryICatteryProjection = new CatteryICatteryProjection(this);
+                    ProjectionCreated(typeof(ICattery), _asCatteryICatteryProjection);
+                }
+                return _asCatteryICatteryProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -265,6 +291,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<IPoco>, 
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

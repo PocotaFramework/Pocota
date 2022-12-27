@@ -14,7 +14,8 @@ namespace CatsClient;
 
 public class MainWindowHeart : MainWindowHeartPoco
 {
-    private readonly CollectionViewSource _catsViewSource = new();
+    private readonly List<CollectionViewSource> _collectionViewSources = new();
+
     public MainWindowHeart(IServiceProvider services) : base(services)
     {
         CatFilter = _services.GetRequiredService<CatFilterPoco>();
@@ -41,8 +42,6 @@ public class MainWindowHeart : MainWindowHeartPoco
             }
             CatteriesCount = Catteries.Count;
         };
-        _catsViewSource.Source = Cats;
-        CatsView = _catsViewSource.View;
     }
 
     public override void AcceptCatFilterChanges()
@@ -59,4 +58,5 @@ public class MainWindowHeart : MainWindowHeartPoco
         }
         IsCatSelected = SelectedCats.Count == 1;
     }
+
 }

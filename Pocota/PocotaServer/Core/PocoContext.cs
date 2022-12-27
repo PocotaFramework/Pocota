@@ -66,7 +66,10 @@ public class PocoContext : IPocoContext
             AddJsonConverters(type, context.TraversalContext!.JsonSerializerOptions!);
             Utf8JsonWriter jsonWriter = new Utf8JsonWriter(context.BufferWriter!);
             context.TraversalContext!.IsHighLevel = true;
-            context.StackTrace = Environment.StackTrace;
+            if (context.Log is { }) 
+            { 
+                context.Log.StackTrace = Environment.StackTrace; 
+            }
             JsonSerializer.Serialize(
                     jsonWriter,
                     options.Target is { } ? options.Target : GetProbePlaceholder(type),
@@ -162,6 +165,10 @@ public class PocoContext : IPocoContext
         options.JsonSerializerOptions = BindJsonSerializerOptions(options.JsonSerializerOptions);
         PocoTraversalContext context = (GetTraversalContext(BindJsonSerializerOptions(options.JsonSerializerOptions)) as PocoTraversalContext)!;
         context.IsBuilding = true;
+        if (options.WithLogging)
+        {
+            context.BuildingContext!.Log = new BuildingLog();
+        }
         context.BuildingContext!.BufferWriter = new TreeWalkerBufferWriter(options.Output);
         context.HighLevelListUniqueness = options.HighLevelListUniqueness;
         context.BuildingContext!.Spinners.Push(new SpinnerHolder

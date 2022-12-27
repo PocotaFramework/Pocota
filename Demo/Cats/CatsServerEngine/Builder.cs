@@ -57,45 +57,84 @@ internal class Builder : IBuilder
     }
 
 
+    private static BuildingScriptMapping BuildCatMapping = new BuildingScriptMapping()
+        .AddPathMapEntry("/Gender", "Gender", typeof(GenderConverter))
+        .AddPathMapEntry("/Description", "OwnerInfo")
+        .AddPathMapEntry("/Breed/IdBreed", "IdBreed")
+        .AddPathMapEntry("/Breed/IdGroup", "IdGroup")
+        .AddPathMapEntry("/Litter/IdLitter", "IdLitter")
+        .AddPathMapEntry("/Litter/IdFemale", "IdMother")
+        .AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery")
+        .AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter))
+        .AddPathMapEntry("/Litter/Female/NameNat", "MomNameNat")
+        .AddPathMapEntry("/Litter/Female/NameEng", "MomNameEng")
+        .AddPathMapEntry("/Litter/Female/Breed/IdBreed", "MomIdBreed")
+        .AddPathMapEntry("/Litter/Female/Breed/IdGroup", "MomIdGroup")
+        .AddPathMapEntry("/Litter/Female/Cattery/NameNat", "MomCatteryNameNat")
+        .AddPathMapEntry("/Litter/Female/Cattery/NameEng", "MomCatteryNameEng")
+        .AddPathMapEntry("/Litter/Female/Litter/IdLitter", "MomIdLitter")
+        .AddPathMapEntry("/Litter/Female/Litter/IdFemale", "MomIdMother")
+        .AddPathMapEntry("/Litter/Female/Litter/IdFemaleCattery", "MomIdMotherCattery")
+        .AddPathMapEntry("/Litter/Female/Litter/Date", "MomDate", typeof(DateOnlyConverter))
+        .AddPathMapEntry("/Litter/Female/Exterior", "MomExterior")
+        .AddPathMapEntry("/Litter/Female/Title", "MomTitle")
+        .AddPathMapEntry("/Litter/Female/Description", "MomOwnerInfo")
+        .AddPathMapEntry("/Litter/Female/Gender", "MomGender", typeof(GenderConverter))
+        .AddPathMapEntry("/Litter/Male/IdCat", "IdFather")
+        .AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery")
+        .AddPathMapEntry("/Litter/Male/NameNat", "DadNameNat")
+        .AddPathMapEntry("/Litter/Male/NameEng", "DadNameEng")
+        .AddPathMapEntry("/Litter/Male/Breed/IdBreed", "DadIdBreed")
+        .AddPathMapEntry("/Litter/Male/Breed/IdGroup", "DadIdGroup")
+        .AddPathMapEntry("/Litter/Male/Cattery/NameNat", "DadCatteryNameNat")
+        .AddPathMapEntry("/Litter/Male/Cattery/NameEng", "DadCatteryNameEng")
+        .AddPathMapEntry("/Litter/Male/Litter/IdLitter", "DadIdLitter")
+        .AddPathMapEntry("/Litter/Male/Litter/IdFemale", "DadIdMother")
+        .AddPathMapEntry("/Litter/Male/Litter/IdFemaleCattery", "DadIdMotherCattery")
+        .AddPathMapEntry("/Litter/Male/Litter/Date", "DadDate", typeof(DateOnlyConverter))
+        .AddPathMapEntry("/Litter/Male/Exterior", "DadExterior")
+        .AddPathMapEntry("/Litter/Male/Title", "DadTitle")
+        ;
+
+    private static BuildingScriptMapping BuildCatLitterWithCatsMapping = new BuildingScriptMapping()
+            .AddPathMapEntry("/Litters/[]/IdLitter", "IdLitter")
+            .AddPathMapEntry("/Litters/[]/IdFemale", "IdFemale")
+            .AddPathMapEntry("/Litters/[]/IdFemaleCattery", "IdFemaleCattery")
+            .AddPathMapEntry("/Litters/[]/Date", "Date", typeof(DateOnlyConverter))
+
+            .AddPathMapEntry("/Litters/[]/Male/IdCat", "IdMale")
+            .AddPathMapEntry("/Litters/[]/Male/IdCattery", "IdMaleCattery")
+            .AddPathMapEntry("/Litters/[]/Male/NameNat", "DadNameNat")
+            .AddPathMapEntry("/Litters/[]/Male/NameEng", "DadNameEng")
+            .AddPathMapEntry("/Litters/[]/Male/Exterior", "DadExterior")
+            .AddPathMapEntry("/Litters/[]/Male/Title", "DadTitle")
+            .AddPathMapEntry("/Litters/[]/Male/Breed/IdBreed", "DadIdBreed")
+            .AddPathMapEntry("/Litters/[]/Male/Breed/IdGroup", "DadIdGroup")
+            .AddPathMapEntry("/Litters/[]/Male/Litter/IdLitter", "DadIdLitter")
+            .AddPathMapEntry("/Litters/[]/Male/Litter/IdFemale", "DadIdMother")
+            .AddPathMapEntry("/Litters/[]/Male/Litter/IdFemaleCattery", "DadIdMotherCattery")
+            .AddPathMapEntry("/Litters/[]/Male/Litter/Date", "DadBirthDate", typeof(DateOnlyConverter))
+            .AddPathMapEntry("/Litters/[]/Male/Cattery/NameNat", "DadCatteryNameNat")
+            .AddPathMapEntry("/Litters/[]/Male/Cattery/NameEng", "DadCatteryNameEng")
+
+            .AddPathMapEntry("/Litters/[]/Female/NameNat", "MomNameNat")
+            .AddPathMapEntry("/Litters/[]/Female/NameEng", "MomNameEng")
+            .AddPathMapEntry("/Litters/[]/Female/Exterior", "MomExterior")
+            .AddPathMapEntry("/Litters/[]/Female/Title", "MomTitle")
+            .AddPathMapEntry("/Litters/[]/Female/Breed/IdBreed", "MomIdBreed")
+            .AddPathMapEntry("/Litters/[]/Female/Breed/IdGroup", "MomIdGroup")
+            .AddPathMapEntry("/Litters/[]/Female/Litter/IdLitter", "MomIdLitter")
+            .AddPathMapEntry("/Litters/[]/Female/Litter/IdFemale", "MomIdMother")
+            .AddPathMapEntry("/Litters/[]/Female/Litter/IdFemaleCattery", "MomIdMotherCattery")
+            .AddPathMapEntry("/Litters/[]/Female/Litter/Date", "MomBirthDate", typeof(DateOnlyConverter))
+            .AddPathMapEntry("/Litters/[]/Female/Cattery/NameNat", "MomCatteryNameNat")
+            .AddPathMapEntry("/Litters/[]/Female/Cattery/NameEng", "MomCatteryNameEng")
+        ;
+
     public void BuildCat<T>(ICat self, BuildingOptions options)
     {
         options.Script = _services.GetRequiredService<BuildingScript>();
-        options.Script.AddPathMapEntry("/Gender", "Gender", typeof(GenderConverter));
-        options.Script.AddPathMapEntry("/Description", "OwnerInfo");
-        options.Script.AddPathMapEntry("/Breed/IdBreed", "IdBreed");
-        options.Script.AddPathMapEntry("/Breed/IdGroup", "IdGroup");
-        options.Script.AddPathMapEntry("/Litter/IdLitter", "IdLitter");
-        options.Script.AddPathMapEntry("/Litter/IdFemale", "IdMother");
-        options.Script.AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery");
-        options.Script.AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter));
-        options.Script.AddPathMapEntry("/Litter/Female/NameNat", "MomNameNat");
-        options.Script.AddPathMapEntry("/Litter/Female/NameEng", "MomNameEng");
-        options.Script.AddPathMapEntry("/Litter/Female/Breed/IdBreed", "MomIdBreed");
-        options.Script.AddPathMapEntry("/Litter/Female/Breed/IdGroup", "MomIdGroup");
-        options.Script.AddPathMapEntry("/Litter/Female/Cattery/NameNat", "MomCatteryNameNat");
-        options.Script.AddPathMapEntry("/Litter/Female/Cattery/NameEng", "MomCatteryNameEng");
-        options.Script.AddPathMapEntry("/Litter/Female/Litter/IdLitter", "MomIdLitter");
-        options.Script.AddPathMapEntry("/Litter/Female/Litter/IdFemale", "MomIdMother");
-        options.Script.AddPathMapEntry("/Litter/Female/Litter/IdFemaleCattery", "MomIdMotherCattery");
-        options.Script.AddPathMapEntry("/Litter/Female/Litter/Date", "MomDate", typeof(DateOnlyConverter));
-        options.Script.AddPathMapEntry("/Litter/Female/Exterior", "MomExterior");
-        options.Script.AddPathMapEntry("/Litter/Female/Title", "MomTitle");
-        options.Script.AddPathMapEntry("/Litter/Female/Description", "MomOwnerInfo");
-        options.Script.AddPathMapEntry("/Litter/Female/Gender", "MomGender", typeof(GenderConverter));
-        options.Script.AddPathMapEntry("/Litter/Male/IdCat", "IdFather");
-        options.Script.AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery");
-        options.Script.AddPathMapEntry("/Litter/Male/NameNat", "DadNameNat");
-        options.Script.AddPathMapEntry("/Litter/Male/NameEng", "DadNameEng");
-        options.Script.AddPathMapEntry("/Litter/Male/Breed/IdBreed", "DadIdBreed");
-        options.Script.AddPathMapEntry("/Litter/Male/Breed/IdGroup", "DadIdGroup");
-        options.Script.AddPathMapEntry("/Litter/Male/Cattery/NameNat", "DadCatteryNameNat");
-        options.Script.AddPathMapEntry("/Litter/Male/Cattery/NameEng", "DadCatteryNameEng");
-        options.Script.AddPathMapEntry("/Litter/Male/Litter/IdLitter", "DadIdLitter");
-        options.Script.AddPathMapEntry("/Litter/Male/Litter/IdFemale", "DadIdMother");
-        options.Script.AddPathMapEntry("/Litter/Male/Litter/IdFemaleCattery", "DadIdMotherCattery");
-        options.Script.AddPathMapEntry("/Litter/Male/Litter/Date", "DadDate", typeof(DateOnlyConverter));
-        options.Script.AddPathMapEntry("/Litter/Male/Exterior", "DadExterior");
-        options.Script.AddPathMapEntry("/Litter/Male/Title", "DadTitle");
+        options.Script.Mapping = BuildCatMapping;
         options.Script.AddPathHandler("/Litters", args =>
         {
             ILitterFilter filter = _services.GetRequiredService<ILitterFilter>();
@@ -109,38 +148,7 @@ internal class Builder : IBuilder
                 filter.Male = cat;
             }
             BuildingScript script = _services.GetRequiredService<BuildingScript>();
-            script.AddPathMapEntry("/Litters/[]/IdLitter", "IdLitter");
-            script.AddPathMapEntry("/Litters/[]/IdFemale", "IdFemale");
-            script.AddPathMapEntry("/Litters/[]/IdFemaleCattery", "IdFemaleCattery");
-            script.AddPathMapEntry("/Litters/[]/Date", "Date", typeof(DateOnlyConverter));
-
-            script.AddPathMapEntry("/Litters/[]/Male/IdCat", "IdMale");
-            script.AddPathMapEntry("/Litters/[]/Male/IdCattery", "IdMaleCattery");
-            script.AddPathMapEntry("/Litters/[]/Male/NameNat", "DadNameNat");
-            script.AddPathMapEntry("/Litters/[]/Male/NameEng", "DadNameEng");
-            script.AddPathMapEntry("/Litters/[]/Male/Exterior", "DadExterior");
-            script.AddPathMapEntry("/Litters/[]/Male/Title", "DadTitle");
-            script.AddPathMapEntry("/Litters/[]/Male/Breed/IdBreed", "DadIdBreed");
-            script.AddPathMapEntry("/Litters/[]/Male/Breed/IdGroup", "DadIdGroup");
-            script.AddPathMapEntry("/Litters/[]/Male/Litter/IdLitter", "DadIdLitter");
-            script.AddPathMapEntry("/Litters/[]/Male/Litter/IdFemale", "DadIdMother");
-            script.AddPathMapEntry("/Litters/[]/Male/Litter/IdFemaleCattery", "DadIdMotherCattery");
-            script.AddPathMapEntry("/Litters/[]/Male/Litter/Date", "DadBirthDate", typeof(DateOnlyConverter));
-            script.AddPathMapEntry("/Litters/[]/Male/Cattery/NameNat", "DadCatteryNameNat");
-            script.AddPathMapEntry("/Litters/[]/Male/Cattery/NameEng", "DadCatteryNameEng");
-
-            script.AddPathMapEntry("/Litters/[]/Female/NameNat", "MomNameNat");
-            script.AddPathMapEntry("/Litters/[]/Female/NameEng", "MomNameEng");
-            script.AddPathMapEntry("/Litters/[]/Female/Exterior", "MomExterior");
-            script.AddPathMapEntry("/Litters/[]/Female/Title", "MomTitle");
-            script.AddPathMapEntry("/Litters/[]/Female/Breed/IdBreed", "MomIdBreed");
-            script.AddPathMapEntry("/Litters/[]/Female/Breed/IdGroup", "MomIdGroup");
-            script.AddPathMapEntry("/Litters/[]/Female/Litter/IdLitter", "MomIdLitter");
-            script.AddPathMapEntry("/Litters/[]/Female/Litter/IdFemale", "MomIdMother");
-            script.AddPathMapEntry("/Litters/[]/Female/Litter/IdFemaleCattery", "MomIdMotherCattery");
-            script.AddPathMapEntry("/Litters/[]/Female/Litter/Date", "MomBirthDate", typeof(DateOnlyConverter));
-            script.AddPathMapEntry("/Litters/[]/Female/Cattery/NameNat", "MomCatteryNameNat");
-            script.AddPathMapEntry("/Litters/[]/Female/Cattery/NameEng", "MomCatteryNameEng");
+            script.Mapping = BuildCatLitterWithCatsMapping;
             args.UseSpinner(SpinLitters(filter), script);
         });
 
@@ -148,25 +156,57 @@ internal class Builder : IBuilder
         _pocoContext.Build<T>(options);
     }
 
+    private static BuildingScriptMapping BuildCatsMapping = new BuildingScriptMapping()
+        .AddPathMapEntry("/Breed/IdBreed", "IdBreed")
+        .AddPathMapEntry("/Breed/IdGroup", "IdGroup")
+        .AddPathMapEntry("/Litter/IdLitter", "IdLitter")
+        .AddPathMapEntry("/Litter/Female", BuildingScript.KeyOnly)
+        .AddPathMapEntry("/Litter/IdFemale", "IdMother")
+        .AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery")
+        .AddPathMapEntry("/Description", "OwnerInfo")
+        .AddPathMapEntry("/Litter/Male", BuildingScript.KeyOnly)
+        .AddPathMapEntry("/Litter/Male/IdCat", "IdFather")
+        .AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery")
+        .AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter))
+        .AddPathMapEntry("/Gender", "Gender", typeof(GenderConverter))
+        //ILitterWithCats
+        .AddPathMapEntry("/IdFemale", "IdMother")
+        .AddPathMapEntry("/IdFemaleCattery", "IdMotherCattery")
+        ;
+
+    private static BuildingScriptMapping BuildCatsLitterWithCatsMapping = new BuildingScriptMapping()
+            .AddPathMapEntry("/Cats/[]/IdCat", "IdCat")
+            .AddPathMapEntry("/Cats/[]/IdCattery", "IdCattery")
+            .AddPathMapEntry("/Cats/[]/Breed/IdBreed", "IdBreed")
+            .AddPathMapEntry("/Cats/[]/Breed/IdGroup", "IdGroup")
+            .AddPathMapEntry("/Cats/[]/Litter/IdLitter", "IdLitter")
+            .AddPathMapEntry("/Cats/[]/Litter/IdFemale", "IdMother")
+            .AddPathMapEntry("/Cats/[]/Litter/IdFemaleCattery", "IdMotherCattery")
+            .AddPathMapEntry("/Cats/[]/Litter/Female", BuildingScript.KeyOnly)
+            .AddPathMapEntry("/Cats/[]/Description", "OwnerInfo")
+            .AddPathMapEntry("/Cats/[]/Litter/Male/IdCat", "IdFather")
+            .AddPathMapEntry("/Cats/[]/Litter/Male/IdCattery", "IdFatherCattery")
+            .AddPathMapEntry("/Cats/[]/Litter/Male", BuildingScript.KeyOnly)
+            .AddPathMapEntry("/Cats/[]/Litter/Date", "Date", typeof(DateOnlyConverter))
+            .AddPathMapEntry("/Cats/[]/Gender", "Gender", typeof(GenderConverter))
+            .AddPathMapEntry("/Cats/[]/NameNat", "NameNat")
+            .AddPathMapEntry("/Cats/[]/NameEng", "NameEng")
+            .AddPathMapEntry("/Cats/[]/Breed/NameEng", "BreedNameEng")
+            .AddPathMapEntry("/Cats/[]/Breed/NameNat", "BreedNameNat")
+            .AddPathMapEntry("/Cats/[]/Exterior", "Exterior")
+            .AddPathMapEntry("/Cats/[]/Title", "Title")
+            .AddPathMapEntry("/Cats/[]/Cattery/NameEng", "CatteryNameEng")
+            .AddPathMapEntry("/Cats/[]/Cattery/NameNat", "CatteryNameNat")
+        ;
+
     public void BuildCats<T>(ICatFilter? filter, BuildingOptions options) where T : notnull
     {
         options.Script = _services.GetRequiredService<BuildingScript>();
-        options.Script.AddPathMapEntry("/Breed/IdBreed", "IdBreed");
-        options.Script.AddPathMapEntry("/Breed/IdGroup", "IdGroup");
-        options.Script.AddPathMapEntry("/Litter/IdLitter", "IdLitter");
-        options.Script.AddPathMapEntry("/Litter/Female", BuildingScript.KeyOnly);
-        options.Script.AddPathMapEntry("/Litter/IdFemale", "IdMother");
-        options.Script.AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery");
-        options.Script.AddPathMapEntry("/Description", "OwnerInfo");
-        options.Script.AddPathMapEntry("/Litter/Male", BuildingScript.KeyOnly);
-        options.Script.AddPathMapEntry("/Litter/Male/IdCat", "IdFather");
-        options.Script.AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery");
-        options.Script.AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter));
-        options.Script.AddPathMapEntry("/Gender", "Gender", typeof(GenderConverter));
+        options.Script.Mapping = BuildCatsMapping;
+
+        options.Script.WithTrace = true;
 
         //ILitterWithCats
-        options.Script.AddPathMapEntry("/IdFemale", "IdMother");
-        options.Script.AddPathMapEntry("/IdFemaleCattery", "IdMotherCattery");
         options.Script.AddPathHandler("/Cats", args =>
         {
             try
@@ -174,28 +214,7 @@ internal class Builder : IBuilder
                 ICatFilter filter = _services.GetRequiredService<ICatFilter>();
                 filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
                 BuildingScript script = _services.GetRequiredService<BuildingScript>();
-                script.AddPathMapEntry("/Cats/[]/IdCat", "IdCat");
-                script.AddPathMapEntry("/Cats/[]/IdCattery", "IdCattery");
-                script.AddPathMapEntry("/Cats/[]/Breed/IdBreed", "IdBreed");
-                script.AddPathMapEntry("/Cats/[]/Breed/IdGroup", "IdGroup");
-                script.AddPathMapEntry("/Cats/[]/Litter/IdLitter", "IdLitter");
-                script.AddPathMapEntry("/Cats/[]/Litter/IdFemale", "IdMother");
-                script.AddPathMapEntry("/Cats/[]/Litter/IdFemaleCattery", "IdMotherCattery");
-                script.AddPathMapEntry("/Cats/[]/Litter/Female", BuildingScript.KeyOnly);
-                script.AddPathMapEntry("/Cats/[]/Description", "OwnerInfo");
-                script.AddPathMapEntry("/Cats/[]/Litter/Male/IdCat", "IdFather");
-                script.AddPathMapEntry("/Cats/[]/Litter/Male/IdCattery", "IdFatherCattery");
-                script.AddPathMapEntry("/Cats/[]/Litter/Male", BuildingScript.KeyOnly);
-                script.AddPathMapEntry("/Cats/[]/Litter/Date", "Date", typeof(DateOnlyConverter));
-                script.AddPathMapEntry("/Cats/[]/Gender", "Gender", typeof(GenderConverter));
-                script.AddPathMapEntry("/Cats/[]/NameNat", "NameNat");
-                script.AddPathMapEntry("/Cats/[]/NameEng", "NameEng");
-                script.AddPathMapEntry("/Cats/[]/Breed/NameEng", "BreedNameEng");
-                script.AddPathMapEntry("/Cats/[]/Breed/NameNat", "BreedNameNat");
-                script.AddPathMapEntry("/Cats/[]/Exterior", "Exterior");
-                script.AddPathMapEntry("/Cats/[]/Title", "Title");
-                script.AddPathMapEntry("/Cats/[]/Cattery/NameEng", "CatteryNameEng");
-                script.AddPathMapEntry("/Cats/[]/Cattery/NameNat", "CatteryNameNat");
+                script.Mapping = BuildCatsLitterWithCatsMapping;
                 args.UseSpinner(SpinCats(filter), script);
             }
             catch(Exception ex)

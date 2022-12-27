@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -15,14 +15,14 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class CatFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
+public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
 {
     
 
 #region Projection classes
 
 
-    public class CatFilterICatFilterProjection: ICatFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
+    public class CatFilterICatFilterProjection: ICatFilter, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
     {
 
 
@@ -213,94 +213,96 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection
 #endregion Init Properties;
 
 
+
+
         private readonly CatFilterPoco _projector;
 
 
-        public IBreed? Breed 
+       public IBreed? Breed 
         {
             get => ((IProjection?)_projector.Breed)?.As<IBreed>();
             set => _projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
         }
 
-        public ICattery? Cattery 
+       public ICattery? Cattery 
         {
             get => ((IProjection?)_projector.Cattery)?.As<ICattery>();
             set => _projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
         }
 
-        public DateOnly? BornAfter 
+       public DateOnly? BornAfter 
         {
             get => _projector.BornAfter;
             set => _projector.BornAfter = (DateOnly?)value;
         }
 
-        public DateOnly? BornBefore 
+       public DateOnly? BornBefore 
         {
             get => _projector.BornBefore;
             set => _projector.BornBefore = (DateOnly?)value;
         }
 
-        public String? NameRegex 
+       public String? NameRegex 
         {
             get => _projector.NameRegex;
             set => _projector.NameRegex = (String?)value;
         }
 
-        public Gender? Gender 
+       public Gender? Gender 
         {
             get => _projector.Gender;
             set => _projector.Gender = (Gender?)value;
         }
 
-        public ICat? Child 
+       public ICat? Child 
         {
             get => ((IProjection?)_projector.Child)?.As<ICat>();
             set => _projector.Child = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ICat? Self 
+       public ICat? Self 
         {
             get => ((IProjection?)_projector.Self)?.As<ICat>();
             set => _projector.Self = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ICat? Mother 
+       public ICat? Mother 
         {
             get => ((IProjection?)_projector.Mother)?.As<ICat>();
             set => _projector.Mother = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ICat? Father 
+       public ICat? Father 
         {
             get => ((IProjection?)_projector.Father)?.As<ICat>();
             set => _projector.Father = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ICat? Ancestor 
+       public ICat? Ancestor 
         {
             get => ((IProjection?)_projector.Ancestor)?.As<ICat>();
             set => _projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ICat? Descendant 
+       public ICat? Descendant 
         {
             get => ((IProjection?)_projector.Descendant)?.As<ICat>();
             set => _projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
         }
 
-        public ILitter? Litter 
+       public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
             set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
-        public String? ExteriorRegex 
+       public String? ExteriorRegex 
         {
             get => _projector.ExteriorRegex;
             set => _projector.ExteriorRegex = (String?)value;
         }
 
-        public String? TitleRegex 
+       public String? TitleRegex 
         {
             get => _projector.TitleRegex;
             set => _projector.TitleRegex = (String?)value;
@@ -724,7 +726,18 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection
 
     private CatFilterICatFilterProjection? _asCatFilterICatFilterProjection = null;
 
-    private CatFilterICatFilterProjection AsCatFilterICatFilterProjection => _asCatFilterICatFilterProjection ??= new(this);
+    private CatFilterICatFilterProjection AsCatFilterICatFilterProjection 
+        {
+            get
+            {
+                if(_asCatFilterICatFilterProjection is null)
+                {
+                    _asCatFilterICatFilterProjection = new CatFilterICatFilterProjection(this);
+                    ProjectionCreated(typeof(ICatFilter), _asCatFilterICatFilterProjection);
+                }
+                return _asCatFilterICatFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -933,6 +946,11 @@ public class CatFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

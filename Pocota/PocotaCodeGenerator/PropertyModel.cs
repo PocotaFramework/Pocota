@@ -11,4 +11,5 @@ public class PropertyModel
     public string? ItemType { get; internal set; } = null;
     public string? Class { get; internal set; } = null;
     public Dictionary<string, string> Interfaces { get; init; } = new();
+    public bool IsIndependent { get; internal set; } = false;
 }

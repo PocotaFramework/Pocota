@@ -1,6 +1,7 @@
 ﻿using CatsCommon.Model;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,10 +18,10 @@ internal class SiblingCatsConverter : MarkupExtension, IValueConverter
         {
             return null;
         }
-        if(
+        if (
             targetType == typeof(string) 
             && value.GetType().IsGenericType 
-            && typeof(ICollection<>).IsAssignableFrom(value.GetType().GetGenericTypeDefinition())
+            && typeof(IList).IsAssignableFrom(value.GetType())
             && typeof(IProjection<CatPoco>).IsAssignableFrom(value.GetType().GetGenericArguments()[0])
         )
         {

@@ -836,16 +836,20 @@ public class CodeGenerator : IModelBuilder
                     model.Interfaces.Add(MakeTypeName(typeof(Client.EntityBase)));
                     AddUsings(model, typeof(Client.IEntity));
                     model.Interfaces.Add(MakeIProjectionName(typeof(Client.IEntity)));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Client.EntityBase)));
                 }
                 else
                 {
                     AddUsings(model, typeof(Client.EnvelopeBase));
                     model.Interfaces.Add(MakeTypeName(typeof(Client.EnvelopeBase)));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Client.EnvelopeBase)));
                 }
                 AddUsings(model, typeof(Client.IPoco));
                 model.Interfaces.Add(MakeIProjectionName(typeof(Client.IPoco)));
                 AddUsings(model, typeof(Client.PocoBase));
                 model.Interfaces.Add(MakeIProjectionName(typeof(Client.PocoBase)));
+                AddUsings(model, typeof(INotifyPropertyChanged));
+                AddUsings(model, typeof(Client.ProjectionList<,>));
             }
             else
             {
@@ -856,17 +860,20 @@ public class CodeGenerator : IModelBuilder
                     model.Interfaces.Add(MakeTypeName(typeof(Server.EntityBase)));
                     AddUsings(model, typeof(Server.IEntity));
                     model.Interfaces.Add(MakeIProjectionName(typeof(Server.IEntity)));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Server.EntityBase)));
                 }
                 else
                 {
                     AddUsings(model, typeof(Server.EnvelopeBase));
                     model.Interfaces.Add(MakeTypeName(typeof(Server.EnvelopeBase)));
+                    model.Interfaces.Add(MakeIProjectionName(typeof(Server.EnvelopeBase)));
                 }
                 AddUsings(model, typeof(Server.IPoco));
                 model.Interfaces.Add(MakeTypeName(typeof(Server.IPoco)));
                 model.Interfaces.Add(MakeIProjectionName(typeof(Server.IPoco)));
                 AddUsings(model, typeof(Server.PocoBase));
                 model.Interfaces.Add(MakeIProjectionName(typeof(Server.PocoBase)));
+                AddUsings(model, typeof(Server.ProjectionList<,>));
             }
 
             AddUsings(model, request.Interface);
@@ -893,7 +900,8 @@ public class CodeGenerator : IModelBuilder
                 {
                     Name = pi.Name,
                     IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
-                    IsReadOnly = false
+                    IsReadOnly = false,
+                    IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { }
                 };
                 if (_projectorsByProjections.ContainsKey(pi.PropertyType))
                 {
@@ -976,6 +984,10 @@ public class CodeGenerator : IModelBuilder
                     Parent = model,
                     Interface = MakeTypeName(projection),
                 };
+                if (isClient)
+                {
+                    projectionModel.Interfaces.Add(MakeTypeName(typeof(INotifyPropertyChanged)));
+                }
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
                     PropertyModel propertyModel = new()
@@ -986,6 +998,7 @@ public class CodeGenerator : IModelBuilder
                         IsReadOnly = !pi.CanWrite,
                         IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
                         IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
+                        IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { }
                     };
                     if (propertyModel.IsProjection)
                     {

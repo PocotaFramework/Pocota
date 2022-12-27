@@ -38,6 +38,7 @@ public partial class MainWindow : Window
     public Dictionary<Window, MenuItem> Windows { get; init; } = new();
 
     public IMainWindowHeart Heart { get; init; }
+    public CollectionViewSource CatsCollectionViewSource { get; init; } = new();
 
     public Gender[] Genders { get; init; } = Enum.GetValues<Gender>();
 
@@ -107,6 +108,8 @@ public partial class MainWindow : Window
         ViewCatCommand = services.GetRequiredService<ViewCatCommand>();
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
+
+        CatsCollectionViewSource.Source = Heart.Cats;
 
         BreedFilter = services.GetRequiredService<IBreedFilter>();
 
@@ -204,9 +207,10 @@ public partial class MainWindow : Window
         _startGetCats = DateTime.Now;
         e.CallContext!.RequestStartTime = _startGetCats;
         Console.WriteLine($"FindCatsCommand started: {_startGetCats.ToString("o")}");
-        FindSiblingsCatsCommand.Execute(
-            new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
-        );
+
+        //FindSiblingsCatsCommand.Execute(
+        //    new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
+        //);
     }
 
     protected override void OnClosing(CancelEventArgs e)

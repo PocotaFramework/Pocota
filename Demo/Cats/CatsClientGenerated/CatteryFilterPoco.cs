@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,15 +10,16 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
-public class CatteryFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
 
 #region Projection classes
 
-    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
     {
 
 
@@ -41,10 +42,24 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Po
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly CatteryFilterPoco _projector;
 
 
-        public String? SearchRegex 
+       public String? SearchRegex 
         {
             get => _projector.SearchRegex;
             set => _projector.SearchRegex = (String?)value;
@@ -131,7 +146,18 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Po
 
     private CatteryFilterICatteryFilterProjection? _asCatteryFilterICatteryFilterProjection = null;
 
-    private CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection => _asCatteryFilterICatteryFilterProjection ??= new(this);
+    private CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection 
+        {
+            get
+            {
+                if(_asCatteryFilterICatteryFilterProjection is null)
+                {
+                    _asCatteryFilterICatteryFilterProjection = new CatteryFilterICatteryFilterProjection(this);
+                    ProjectionCreated(typeof(ICatteryFilter), _asCatteryFilterICatteryFilterProjection);
+                }
+                return _asCatteryFilterICatteryFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -205,6 +231,11 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<IPoco>, IProjection<Po
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

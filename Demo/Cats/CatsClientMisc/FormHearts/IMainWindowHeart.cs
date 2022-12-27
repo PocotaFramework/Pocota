@@ -1,5 +1,6 @@
 ﻿using CatsCommon.Filters;
 using CatsCommon.Model;
+using Net.Leksi.Pocota.Common;
 
 namespace CatsClient;
 
@@ -18,7 +19,6 @@ public interface IMainWindowHeart
     int AllBreedsCount { get; }
     int AllCatteriesCount { get; }
     bool IsCatSelected { get; set; }
-    object CatsView { get; set; }
     IList<ICatForListing> SelectedCats { get; set; }
     void AcceptCatFilterChanges();
     void CatsSelectionChanged(object sender, EventArgs e);

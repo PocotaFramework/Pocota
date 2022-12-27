@@ -10,4 +10,7 @@ public abstract class PocoBase
     {
         _services= services;
     }
+
+    protected virtual void OnProjectionCreated(Type @interface, IProjection projection) { }
+
 }

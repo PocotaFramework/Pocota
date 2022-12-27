@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-26T18:18:11                                          //
+// at 2022-12-27T18:28:56                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -12,15 +12,16 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace CatsClient;
 
-public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
+public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
 {
 
 #region Projection classes
 
-    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
+    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
     {
 
 
@@ -43,10 +44,24 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
 #endregion Init Properties;
 
 
+        public event PropertyChangedEventHandler? PropertyChanged
+        {
+            add
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
+            }
+
+            remove
+            {
+                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+            }
+        }
+
+
         private readonly TracedPocosHeartPoco _projector;
 
 
-        public IList<Tuple<Type,Int32>> TracedPocos 
+       public IList<Tuple<Type,Int32>> TracedPocos 
         {
             get => _projector.TracedPocos!;
         }
@@ -133,7 +148,18 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
 
     private TracedPocosHeartITracedPocosHeartProjection? _asTracedPocosHeartITracedPocosHeartProjection = null;
 
-    private TracedPocosHeartITracedPocosHeartProjection AsTracedPocosHeartITracedPocosHeartProjection => _asTracedPocosHeartITracedPocosHeartProjection ??= new(this);
+    private TracedPocosHeartITracedPocosHeartProjection AsTracedPocosHeartITracedPocosHeartProjection 
+        {
+            get
+            {
+                if(_asTracedPocosHeartITracedPocosHeartProjection is null)
+                {
+                    _asTracedPocosHeartITracedPocosHeartProjection = new TracedPocosHeartITracedPocosHeartProjection(this);
+                    ProjectionCreated(typeof(ITracedPocosHeart), _asTracedPocosHeartITracedPocosHeartProjection);
+                }
+                return _asTracedPocosHeartITracedPocosHeartProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -200,6 +226,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<IPoco>, IP
     }
 
     public abstract void CollectGarbage();
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

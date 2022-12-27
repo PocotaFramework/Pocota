@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace CatsCommon.Model;
 
-public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
 {
     public static readonly Type PrimaryKeyType = typeof(CatteryPrimaryKey);
     
@@ -21,7 +21,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
 #region Projection classes
 
 
-    public class CatteryICatteryProjection: ICattery, IProjection<IEntity>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
+    public class CatteryICatteryProjection: ICattery, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryPoco>, IProjection<ICattery>
     {
 
 
@@ -56,16 +56,18 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
 #endregion Init Properties;
 
 
+
+
         private readonly CatteryPoco _projector;
 
 
-        public String? NameEng 
+       public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-        public String? NameNat 
+       public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -177,7 +179,18 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
 
     private CatteryICatteryProjection? _asCatteryICatteryProjection = null;
 
-    private CatteryICatteryProjection AsCatteryICatteryProjection => _asCatteryICatteryProjection ??= new(this);
+    private CatteryICatteryProjection AsCatteryICatteryProjection 
+        {
+            get
+            {
+                if(_asCatteryICatteryProjection is null)
+                {
+                    _asCatteryICatteryProjection = new CatteryICatteryProjection(this);
+                    ProjectionCreated(typeof(ICattery), _asCatteryICatteryProjection);
+                }
+                return _asCatteryICatteryProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -262,6 +275,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IPoco, IProjection<I
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

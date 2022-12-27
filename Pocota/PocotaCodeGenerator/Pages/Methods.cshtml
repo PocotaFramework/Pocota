@@ -15,6 +15,8 @@
         {
             return @Html.Raw($"As{model1.ClassName}");
         }
+</text>
+        }
         if(type == typeof(@Html.Raw(Model.ClassName)))
         {
             return this;
@@ -49,8 +51,6 @@
 </text>
         }
         
-</text>
-        }
         return null;
     }
 
@@ -68,6 +68,11 @@
     {
     <text>    public abstract @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})");
 </text>
+    }
+
+    private void ProjectionCreated(Type @@interface, IProjection projection)
+    {
+        OnProjectionCreated(@@interface, projection);
     }
 
 @Html.Raw("#endregion Methods");

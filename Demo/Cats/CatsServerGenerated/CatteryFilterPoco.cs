@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-26T18:18:11                                  //
+// at 2022-12-27T18:28:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,14 +13,14 @@ using System;
 
 namespace CatsCommon.Filters;
 
-public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
     
 
 #region Projection classes
 
 
-    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
     {
 
 
@@ -43,10 +43,12 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjec
 #endregion Init Properties;
 
 
+
+
         private readonly CatteryFilterPoco _projector;
 
 
-        public String? SearchRegex 
+       public String? SearchRegex 
         {
             get => _projector.SearchRegex;
             set => _projector.SearchRegex = (String?)value;
@@ -134,7 +136,18 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjec
 
     private CatteryFilterICatteryFilterProjection? _asCatteryFilterICatteryFilterProjection = null;
 
-    private CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection => _asCatteryFilterICatteryFilterProjection ??= new(this);
+    private CatteryFilterICatteryFilterProjection AsCatteryFilterICatteryFilterProjection 
+        {
+            get
+            {
+                if(_asCatteryFilterICatteryFilterProjection is null)
+                {
+                    _asCatteryFilterICatteryFilterProjection = new CatteryFilterICatteryFilterProjection(this);
+                    ProjectionCreated(typeof(ICatteryFilter), _asCatteryFilterICatteryFilterProjection);
+                }
+                return _asCatteryFilterICatteryFilterProjection = new(this);
+            }
+        }
 
 #endregion Projection Properties;
 
@@ -203,6 +216,11 @@ public class CatteryFilterPoco: EnvelopeBase, IPoco, IProjection<IPoco>, IProjec
         return base.GetHashCode();
     }
 
+
+    private void ProjectionCreated(Type @interface, IProjection projection)
+    {
+        OnProjectionCreated(@interface, projection);
+    }
 
 #endregion Methods;
 

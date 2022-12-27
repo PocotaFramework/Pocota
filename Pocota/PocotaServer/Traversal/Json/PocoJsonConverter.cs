@@ -183,6 +183,9 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
         writer.WriteStartObject();
 
+        string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
+        writer.WriteString(PocoTraversalConverterFactory.Interface, isInterfaceFound ? interfaceReference : typeof(T).ToString());
+
         if (alreadyExists)
         {
 
@@ -190,17 +193,16 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         }
         else
         {
+            string classReference = context.GetReference(_actualType, out bool isClassFound);
+            writer.WriteString(PocoTraversalConverterFactory.Class, isClassFound ? classReference : _actualType.ToString());
+
             writer.WriteString(PocoTraversalConverterFactory.Id, reference);
             if (_isEntity)
             {
                 writer.WritePropertyName(PocoTraversalConverterFactory.Key);
                 JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
-                string classReference = context.GetReference(_actualType, out bool isClassFound);
-                writer.WriteString(PocoTraversalConverterFactory.Class, isClassFound ? classReference : _actualType.ToString());
             }
         }
-        string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
-        writer.WriteString(PocoTraversalConverterFactory.Interface, isInterfaceFound ? interfaceReference : typeof(T).ToString());
 
         foreach (PropertyInfo pi in typeof(T).GetProperties())
         {

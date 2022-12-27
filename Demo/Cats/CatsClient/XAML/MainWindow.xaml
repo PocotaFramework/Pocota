@@ -293,7 +293,7 @@
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
-        <DataGrid x:Name="CatsDataGrid" ItemsSource="{Binding Heart.CatsView}" IsReadOnly="True" 
+        <DataGrid x:Name="CatsDataGrid" ItemsSource="{Binding CatsCollectionViewSource.View}" IsReadOnly="True" 
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Порода" Binding="{Binding Breed.NameNat}"/>
