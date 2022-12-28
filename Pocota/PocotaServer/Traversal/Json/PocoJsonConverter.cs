@@ -136,7 +136,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
                     context!.Target = oldValue;
                     object? value = JsonSerializer.Deserialize(ref reader, property.Type, options);
-                    if (!object.ReferenceEquals(oldValue, value))
+                    if (!PocoBase.ReferenceEquals(oldValue, value))
                     {
                         property.SetValue(result, value);
                     }

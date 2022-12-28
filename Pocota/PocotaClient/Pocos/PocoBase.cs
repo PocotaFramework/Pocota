@@ -37,6 +37,15 @@ public abstract class PocoBase : IPoco
         }
     }
 
+    public static new bool ReferenceEquals(object? obj1, object? obj2)
+    {
+        if (obj1 is IProjection proj1 && obj2 is IProjection proj2)
+        {
+            return object.ReferenceEquals(proj1.As<IPoco>(), proj2.As<IPoco>());
+        }
+        return object.ReferenceEquals(obj1, obj2);
+    }
+
     private readonly Dictionary<PocoTraversalContext, int> _populaters = new(ReferenceEqualityComparer.Instance);
     private readonly PocoContext _pocoContext;
     protected readonly PocotaCore _pocota;

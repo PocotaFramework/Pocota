@@ -60,7 +60,7 @@
                 </TextBlock>
                 <StackPanel x:Name="ControlBreed" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                     <ComboBox x:Name="SelectBreed"  VerticalAlignment="Top" Width="145" Margin="10,10,0,0" ItemsSource="{Binding Heart.Breeds}" DisplayMemberPath="NameNat"
-                              SelectedItem="{Binding Path=Heart.CatFilter.Breed}"
+                              SelectedItem="{Binding Path=Heart.CatFilter.Breed, Converter={local:CatFilterConverter}}"
                               />
                     <TextBox x:Name="BreedRegex" VerticalAlignment="Bottom" Width="145" Margin="10,10,0,0" Visibility="Collapsed" Text="{Binding Path=BreedFilter.SearchRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              KeyUp="BreedRegex_KeyUp"
@@ -114,7 +114,7 @@
                 </TextBlock>
                 <StackPanel Grid.Row="1" Grid.Column="2" Orientation="Horizontal">
                     <DatePicker x:Name="BornBefore" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" 
-                                SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+                                SelectedDate="{Binding Heart.CatFilter.BornBefore, Mode=TwoWay, Converter={local:CatFilterConverter}}"/>
                     <Button x:Name="ClearBornBefore" Margin="0,10,0,0" Command="{Binding ResetDatePickerCommand}" CommandParameter="{Binding ElementName=BornBefore}" Content="🗙"/>
                 </StackPanel>
                 <TextBlock Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" Margin="10,0,0,0" >
@@ -124,8 +124,8 @@
                     </TextBlock.FontWeight>
                 </TextBlock>
                 <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal">
-                    <DatePicker x:Name="BornAfter" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom"
-                                SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+                    <DatePicker x:Name="BornAfter" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Bottom" 
+                                SelectedDate="{Binding Heart.CatFilter.BornAfter, Mode=TwoWay, Converter={local:CatFilterConverter}}"/>
                     <Button x:Name="ClearBornAfter" Margin="0,10,0,0"  Command="{Binding ResetDatePickerCommand}" CommandParameter="{Binding ElementName=BornAfter}" Content="🗙"/>
                 </StackPanel>
                 <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Bottom" Margin="10,10,0,0" >

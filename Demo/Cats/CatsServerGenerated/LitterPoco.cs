@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:55                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,6 +13,13 @@ using System;
 using System.Collections.Generic;
 
 namespace CatsCommon.Model;
+
+
+[Projection(typeof(LitterILitterProjection))]
+[Projection(typeof(LitterILitterForCatProjection))]
+[Projection(typeof(LitterILitterForDateProjection))]
+[Projection(typeof(LitterILitterWithCatsProjection))]
+
 
 public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
 {
@@ -86,7 +93,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     target => ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty("Cats"), 
                     false, 
                     true, 
-                    typeof(CatPoco)
+                    typeof(ICat)
                 )
             );
             properties.Add(
@@ -109,7 +116,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly LitterPoco _projector;
 
-        private readonly ProjectionList<CatPoco,ICat> _cats;
+        private readonly ProjectionList<ICat,CatPoco> _cats;
 
        public Int32 Order 
         {
@@ -149,6 +156,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         internal LitterILitterProjection(LitterPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
             _cats = new(((LitterPoco)_projector).Cats);
         }
 
@@ -323,6 +334,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         internal LitterILitterForCatProjection(LitterPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -433,6 +448,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         internal LitterILitterForDateProjection(LitterPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -492,7 +511,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     target => ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty("Cats"), 
                     false, 
                     true, 
-                    typeof(CatPoco)
+                    typeof(ICatForListing)
                 )
             );
         }
@@ -503,7 +522,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly LitterPoco _projector;
 
-        private readonly ProjectionList<CatPoco,ICatForListing> _cats;
+        private readonly ProjectionList<ICatForListing,CatPoco> _cats;
 
        public IList<ICatForListing> Cats 
         {
@@ -514,6 +533,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         internal LitterILitterWithCatsProjection(LitterPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
             _cats = new(((LitterPoco)_projector).Cats);
         }
 
@@ -671,7 +694,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     _asLitterILitterProjection = new LitterILitterProjection(this);
                     ProjectionCreated(typeof(ILitter), _asLitterILitterProjection);
                 }
-                return _asLitterILitterProjection = new(this);
+                return _asLitterILitterProjection;
             }
         }
     private LitterILitterForCatProjection AsLitterILitterForCatProjection 
@@ -683,7 +706,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     _asLitterILitterForCatProjection = new LitterILitterForCatProjection(this);
                     ProjectionCreated(typeof(ILitterForCat), _asLitterILitterForCatProjection);
                 }
-                return _asLitterILitterForCatProjection = new(this);
+                return _asLitterILitterForCatProjection;
             }
         }
     private LitterILitterForDateProjection AsLitterILitterForDateProjection 
@@ -695,7 +718,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     _asLitterILitterForDateProjection = new LitterILitterForDateProjection(this);
                     ProjectionCreated(typeof(ILitterForDate), _asLitterILitterForDateProjection);
                 }
-                return _asLitterILitterForDateProjection = new(this);
+                return _asLitterILitterForDateProjection;
             }
         }
     private LitterILitterWithCatsProjection AsLitterILitterWithCatsProjection 
@@ -707,7 +730,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     _asLitterILitterWithCatsProjection = new LitterILitterWithCatsProjection(this);
                     ProjectionCreated(typeof(ILitterWithCats), _asLitterILitterWithCatsProjection);
                 }
-                return _asLitterILitterWithCatsProjection = new(this);
+                return _asLitterILitterWithCatsProjection;
             }
         }
 

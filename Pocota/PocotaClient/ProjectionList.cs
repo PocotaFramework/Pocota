@@ -2,26 +2,33 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class ProjectionList<T, I> : IList<I>, INotifyCollectionChanged
+public class ProjectionList<I, T> : IList<I>, INotifyCollectionChanged, INotifyPropertyChanged
     where I : class 
     where T : class
 {
-    private readonly ObservableCollection<T> _source;
+    private event NotifyCollectionChangedEventHandler? _collectionChanged;
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public event NotifyCollectionChangedEventHandler? CollectionChanged
     {
-        add 
-        { 
-            _source.CollectionChanged += value;
-        }
-        remove 
+        add
         {
-            _source.CollectionChanged -= value;
+            _collectionChanged += value;
+        }
+        remove
+        {
+            _collectionChanged -= value;
         }
     }
+
+    private static readonly PropertyChangedEventArgs s_propertyChangedEventArgs = new(null);
+
+    private readonly ObservableCollection<T> _source;
 
     public I this[int index]
     {
@@ -36,6 +43,21 @@ public class ProjectionList<T, I> : IList<I>, INotifyCollectionChanged
     public ProjectionList(ObservableCollection<T> source)
     {
         _source = source!;
+        _source.CollectionChanged += (o, e) =>
+        {
+            NotifyCollectionChangedEventArgs args;
+            if(e.Action is NotifyCollectionChangedAction.Add)
+            {
+                args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, ((IProjection)e.NewItems![0]!).As<I>()!);
+            }
+            else
+            {
+                args = e;
+            }
+            _collectionChanged?.Invoke(this, args);
+            PropertyChanged?.Invoke(this, s_propertyChangedEventArgs);
+        };
+
     }
 
     public void Add(I item)
@@ -64,10 +86,7 @@ public class ProjectionList<T, I> : IList<I>, INotifyCollectionChanged
 
     public IEnumerator<I> GetEnumerator()
     {
-        foreach (I item in _source.Select(value => ((IProjection)value!).As<I>()!))
-        {
-            yield return item;
-        }
+        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 
     public int IndexOf(I item)
@@ -92,6 +111,6 @@ public class ProjectionList<T, I> : IList<I>, INotifyCollectionChanged
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _source.GetEnumerator();
+        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 }

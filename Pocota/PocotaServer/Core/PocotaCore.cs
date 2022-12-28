@@ -1,5 +1,6 @@
 ﻿using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -84,21 +85,22 @@ public class PocotaCore: PocotaCoreBase
         Type? actualType = null;
         bool isList = false;
 
-        if ((GetActualType(type) is Type tmpType))
+        if (GetActualType(type) is Type tmpType)
         {
             actualType = tmpType;
         }
         else if (
             type.IsGenericType
-            && type.GetGenericArguments()[0] is Type itemType
+            && typeof(IList).IsAssignableFrom(type)
+            && GetActualType(type.GetGenericArguments()[0]) is Type itemType
         )
         {
             isList = true;
-            actualType = typeof(List<>).MakeGenericType(itemType);
+            actualType = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
         }
         else
         {
-            actualType = type;
+            return null;
         }
         if (!placeholders.TryGetValue(actualType, out placeholder))
         {
@@ -113,6 +115,10 @@ public class PocotaCore: PocotaCoreBase
                     else 
                     {
                         placeholder = supplier?.Invoke();
+                        if(placeholder is IProjection projection1)
+                        {
+                            placeholder = projection1.As<IPoco>()!;
+                        }
                     }
                     if (placeholders is { })
                     {

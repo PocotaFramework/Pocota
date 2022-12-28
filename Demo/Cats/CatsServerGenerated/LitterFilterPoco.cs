@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:55                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,6 +12,10 @@ using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 
 namespace CatsCommon.Filters;
+
+
+[Projection(typeof(LitterFilterILitterFilterProjection))]
+
 
 public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterFilterPoco>, IProjection<ILitterFilter>
 {
@@ -76,6 +80,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         internal LitterFilterILitterFilterProjection(LitterFilterPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -187,7 +195,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
                     _asLitterFilterILitterFilterProjection = new LitterFilterILitterFilterProjection(this);
                     ProjectionCreated(typeof(ILitterFilter), _asLitterFilterILitterFilterProjection);
                 }
-                return _asLitterFilterILitterFilterProjection = new(this);
+                return _asLitterFilterILitterFilterProjection;
             }
         }
 

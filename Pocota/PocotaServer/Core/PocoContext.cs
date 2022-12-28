@@ -78,7 +78,7 @@ public class PocoContext : IPocoContext
                 );
             object? result = context.TraversalContext.Target;
             context.TraversalContext.Target = null;
-            options.Target = object.ReferenceEquals(result, GetSkipPlaceholder(type)) ? null : result;
+            options.Target = PocoBase.ReferenceEquals(result, GetSkipPlaceholder(type)) ? null : result;
         }
         finally
         {

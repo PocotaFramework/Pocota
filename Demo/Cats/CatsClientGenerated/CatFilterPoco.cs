@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:56                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -16,496 +16,12 @@ using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
+
+[Projection(typeof(CatFilterICatFilterProjection))]
+
+
 public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
 {
-
-#region Projection classes
-
-    public class CatFilterICatFilterProjection: ICatFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
-    {
-
-
-#region Init Properties
-        public static void InitProperties(List<Property> properties)
-        {
-            properties.Add(
-                new Property(
-                    "Breed", 
-                    typeof(IBreed),
-                    GetBreedValue, 
-                    SetBreedValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Breed"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Cattery", 
-                    typeof(ICattery),
-                    GetCatteryValue, 
-                    SetCatteryValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Cattery"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "BornAfter", 
-                    typeof(DateOnly),
-                    GetBornAfterValue, 
-                    SetBornAfterValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("BornAfter"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "BornBefore", 
-                    typeof(DateOnly),
-                    GetBornBeforeValue, 
-                    SetBornBeforeValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("BornBefore"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "NameRegex", 
-                    typeof(String),
-                    GetNameRegexValue, 
-                    SetNameRegexValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("NameRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Gender", 
-                    typeof(Gender),
-                    GetGenderValue, 
-                    SetGenderValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Gender"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Child", 
-                    typeof(ICat),
-                    GetChildValue, 
-                    SetChildValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Child"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Self", 
-                    typeof(ICat),
-                    GetSelfValue, 
-                    SetSelfValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Self"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Mother", 
-                    typeof(ICat),
-                    GetMotherValue, 
-                    SetMotherValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Mother"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Father", 
-                    typeof(ICat),
-                    GetFatherValue, 
-                    SetFatherValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Father"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Ancestor", 
-                    typeof(ICat),
-                    GetAncestorValue, 
-                    SetAncestorValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Ancestor"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Descendant", 
-                    typeof(ICat),
-                    GetDescendantValue, 
-                    SetDescendantValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Descendant"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Litter", 
-                    typeof(ILitter),
-                    GetLitterValue, 
-                    SetLitterValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Litter"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "ExteriorRegex", 
-                    typeof(String),
-                    GetExteriorRegexValue, 
-                    SetExteriorRegexValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("ExteriorRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "TitleRegex", 
-                    typeof(String),
-                    GetTitleRegexValue, 
-                    SetTitleRegexValue, 
-                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("TitleRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-        }
-#endregion Init Properties;
-
-
-        public event PropertyChangedEventHandler? PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
-            }
-        }
-
-
-        private readonly CatFilterPoco _projector;
-
-
-       public IBreed? Breed 
-        {
-            get => ((IProjection?)_projector.Breed)?.As<IBreed>();
-            set => _projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
-        }
-
-       public ICattery? Cattery 
-        {
-            get => ((IProjection?)_projector.Cattery)?.As<ICattery>();
-            set => _projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
-        }
-
-       public DateOnly? BornAfter 
-        {
-            get => _projector.BornAfter;
-            set => _projector.BornAfter = (DateOnly?)value;
-        }
-
-       public DateOnly? BornBefore 
-        {
-            get => _projector.BornBefore;
-            set => _projector.BornBefore = (DateOnly?)value;
-        }
-
-       public String? NameRegex 
-        {
-            get => _projector.NameRegex;
-            set => _projector.NameRegex = (String?)value;
-        }
-
-       public Gender? Gender 
-        {
-            get => _projector.Gender;
-            set => _projector.Gender = (Gender?)value;
-        }
-
-       public ICat? Child 
-        {
-            get => ((IProjection?)_projector.Child)?.As<ICat>();
-            set => _projector.Child = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ICat? Self 
-        {
-            get => ((IProjection?)_projector.Self)?.As<ICat>();
-            set => _projector.Self = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ICat? Mother 
-        {
-            get => ((IProjection?)_projector.Mother)?.As<ICat>();
-            set => _projector.Mother = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ICat? Father 
-        {
-            get => ((IProjection?)_projector.Father)?.As<ICat>();
-            set => _projector.Father = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ICat? Ancestor 
-        {
-            get => ((IProjection?)_projector.Ancestor)?.As<ICat>();
-            set => _projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ICat? Descendant 
-        {
-            get => ((IProjection?)_projector.Descendant)?.As<ICat>();
-            set => _projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-       public ILitter? Litter 
-        {
-            get => ((IProjection?)_projector.Litter)?.As<ILitter>();
-            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
-        }
-
-       public String? ExteriorRegex 
-        {
-            get => _projector.ExteriorRegex;
-            set => _projector.ExteriorRegex = (String?)value;
-        }
-
-       public String? TitleRegex 
-        {
-            get => _projector.TitleRegex;
-            set => _projector.TitleRegex = (String?)value;
-        }
-
-
-        internal CatFilterICatFilterProjection(CatFilterPoco projector)
-        {
-            _projector = projector;
-        }
-
-        public I? As<I>() where I : class
-        {
-            return (I?)_projector.As(typeof(I))!;
-        }
-
-        public object? As(Type type) 
-        {
-            return _projector.As(type);
-        }
-
-
-        public override bool Equals(object? obj)
-        {
-            return obj is IProjection<CatFilterPoco> other && object.ReferenceEquals(_projector, other.As<CatFilterPoco>());
-        }
-
-        public override int GetHashCode()
-        {
-            return _projector.GetHashCode();
-        }
-
-        
-#region Properties Accessors
-
-        private static object? GetBreedValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
-        }
-
-        private static void SetBreedValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
-        }
-
-        private static object? GetCatteryValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
-        }
-
-        private static void SetCatteryValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
-        }
-
-        private static object? GetBornAfterValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.BornAfter;
-        }
-
-        private static void SetBornAfterValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly?)value;
-        }
-
-        private static object? GetBornBeforeValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.BornBefore;
-        }
-
-        private static void SetBornBeforeValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly?)value;
-        }
-
-        private static object? GetNameRegexValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.NameRegex;
-        }
-
-        private static void SetNameRegexValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String?)value;
-        }
-
-        private static object? GetGenderValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.Gender;
-        }
-
-        private static void SetGenderValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender?)value;
-        }
-
-        private static object? GetChildValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
-        }
-
-        private static void SetChildValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetSelfValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
-        }
-
-        private static void SetSelfValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetMotherValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
-        }
-
-        private static void SetMotherValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetFatherValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
-        }
-
-        private static void SetFatherValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetAncestorValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
-        }
-
-        private static void SetAncestorValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetDescendantValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
-        }
-
-        private static void SetDescendantValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
-        }
-
-        private static object? GetLitterValue(object target)
-        {
-            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
-        }
-
-        private static void SetLitterValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
-        }
-
-        private static object? GetExteriorRegexValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
-        }
-
-        private static void SetExteriorRegexValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String?)value;
-        }
-
-        private static object? GetTitleRegexValue(object target)
-        {
-            return ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
-        }
-
-        private static void SetTitleRegexValue(object target, object? value)
-        {
-             ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
-
-    }
-#endregion Projection classes
 
     
 #region Init Properties
@@ -731,7 +247,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     _asCatFilterICatFilterProjection = new CatFilterICatFilterProjection(this);
                     ProjectionCreated(typeof(ICatFilter), _asCatFilterICatFilterProjection);
                 }
-                return _asCatFilterICatFilterProjection = new(this);
+                return _asCatFilterICatFilterProjection;
             }
         }
 
@@ -1321,5 +837,501 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
 
 }
+
+
+#region Projection classes
+
+    public class CatFilterICatFilterProjection: ICatFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatFilterPoco>, IProjection<ICatFilter>
+    {
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Breed", 
+                    typeof(IBreed),
+                    GetBreedValue, 
+                    SetBreedValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Breed"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Cattery", 
+                    typeof(ICattery),
+                    GetCatteryValue, 
+                    SetCatteryValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Cattery"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "BornAfter", 
+                    typeof(DateOnly),
+                    GetBornAfterValue, 
+                    SetBornAfterValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("BornAfter"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "BornBefore", 
+                    typeof(DateOnly),
+                    GetBornBeforeValue, 
+                    SetBornBeforeValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("BornBefore"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameRegex", 
+                    typeof(String),
+                    GetNameRegexValue, 
+                    SetNameRegexValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("NameRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Gender", 
+                    typeof(Gender),
+                    GetGenderValue, 
+                    SetGenderValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Gender"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Child", 
+                    typeof(ICat),
+                    GetChildValue, 
+                    SetChildValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Child"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Self", 
+                    typeof(ICat),
+                    GetSelfValue, 
+                    SetSelfValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Self"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Mother", 
+                    typeof(ICat),
+                    GetMotherValue, 
+                    SetMotherValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Mother"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Father", 
+                    typeof(ICat),
+                    GetFatherValue, 
+                    SetFatherValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Father"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Ancestor", 
+                    typeof(ICat),
+                    GetAncestorValue, 
+                    SetAncestorValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Ancestor"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Descendant", 
+                    typeof(ICat),
+                    GetDescendantValue, 
+                    SetDescendantValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Descendant"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Litter", 
+                    typeof(ILitter),
+                    GetLitterValue, 
+                    SetLitterValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("Litter"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "ExteriorRegex", 
+                    typeof(String),
+                    GetExteriorRegexValue, 
+                    SetExteriorRegexValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("ExteriorRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "TitleRegex", 
+                    typeof(String),
+                    GetTitleRegexValue, 
+                    SetTitleRegexValue, 
+                    target => ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty("TitleRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private event PropertyChangedEventHandler? _propertyChanged;
+
+
+            public event PropertyChangedEventHandler? PropertyChanged
+            {
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
+            }
+
+
+        private readonly CatFilterPoco _projector;
+
+
+       public IBreed? Breed 
+        {
+            get => ((IProjection?)_projector.Breed)?.As<IBreed>();
+            set => _projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
+        }
+
+       public ICattery? Cattery 
+        {
+            get => ((IProjection?)_projector.Cattery)?.As<ICattery>();
+            set => _projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
+        }
+
+       public DateOnly? BornAfter 
+        {
+            get => _projector.BornAfter;
+            set => _projector.BornAfter = (DateOnly?)value;
+        }
+
+       public DateOnly? BornBefore 
+        {
+            get => _projector.BornBefore;
+            set => _projector.BornBefore = (DateOnly?)value;
+        }
+
+       public String? NameRegex 
+        {
+            get => _projector.NameRegex;
+            set => _projector.NameRegex = (String?)value;
+        }
+
+       public Gender? Gender 
+        {
+            get => _projector.Gender;
+            set => _projector.Gender = (Gender?)value;
+        }
+
+       public ICat? Child 
+        {
+            get => ((IProjection?)_projector.Child)?.As<ICat>();
+            set => _projector.Child = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ICat? Self 
+        {
+            get => ((IProjection?)_projector.Self)?.As<ICat>();
+            set => _projector.Self = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ICat? Mother 
+        {
+            get => ((IProjection?)_projector.Mother)?.As<ICat>();
+            set => _projector.Mother = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ICat? Father 
+        {
+            get => ((IProjection?)_projector.Father)?.As<ICat>();
+            set => _projector.Father = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ICat? Ancestor 
+        {
+            get => ((IProjection?)_projector.Ancestor)?.As<ICat>();
+            set => _projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ICat? Descendant 
+        {
+            get => ((IProjection?)_projector.Descendant)?.As<ICat>();
+            set => _projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+       public ILitter? Litter 
+        {
+            get => ((IProjection?)_projector.Litter)?.As<ILitter>();
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
+        }
+
+       public String? ExteriorRegex 
+        {
+            get => _projector.ExteriorRegex;
+            set => _projector.ExteriorRegex = (String?)value;
+        }
+
+       public String? TitleRegex 
+        {
+            get => _projector.TitleRegex;
+            set => _projector.TitleRegex = (String?)value;
+        }
+
+
+        internal CatFilterICatFilterProjection(CatFilterPoco projector)
+        {
+            _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
+        }
+
+        public I? As<I>() where I : class
+        {
+            return (I?)_projector.As(typeof(I))!;
+        }
+
+        public object? As(Type type) 
+        {
+            return _projector.As(type);
+        }
+
+
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatFilterPoco> other && object.ReferenceEquals(_projector, other.As<CatFilterPoco>());
+        }
+
+        public override int GetHashCode()
+        {
+            return _projector.GetHashCode();
+        }
+
+        
+#region Properties Accessors
+
+        private static object? GetBreedValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
+        }
+
+        private static void SetBreedValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
+        }
+
+        private static object? GetCatteryValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
+        }
+
+        private static void SetCatteryValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
+        }
+
+        private static object? GetBornAfterValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.BornAfter;
+        }
+
+        private static void SetBornAfterValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly?)value;
+        }
+
+        private static object? GetBornBeforeValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.BornBefore;
+        }
+
+        private static void SetBornBeforeValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly?)value;
+        }
+
+        private static object? GetNameRegexValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.NameRegex;
+        }
+
+        private static void SetNameRegexValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String?)value;
+        }
+
+        private static object? GetGenderValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.Gender;
+        }
+
+        private static void SetGenderValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender?)value;
+        }
+
+        private static object? GetChildValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
+        }
+
+        private static void SetChildValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetSelfValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
+        }
+
+        private static void SetSelfValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetMotherValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
+        }
+
+        private static void SetMotherValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetFatherValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
+        }
+
+        private static void SetFatherValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetAncestorValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
+        }
+
+        private static void SetAncestorValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetDescendantValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
+        }
+
+        private static void SetDescendantValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        private static object? GetLitterValue(object target)
+        {
+            return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
+        }
+
+        private static void SetLitterValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
+        }
+
+        private static object? GetExteriorRegexValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
+        }
+
+        private static void SetExteriorRegexValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String?)value;
+        }
+
+        private static object? GetTitleRegexValue(object target)
+        {
+            return ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
+        }
+
+        private static void SetTitleRegexValue(object target, object? value)
+        {
+             ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
+
+    }
+#endregion Projection classes
 
 

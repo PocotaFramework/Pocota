@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-27T18:28:56                                          //
+// at 2022-12-28T18:41:17                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -16,103 +16,12 @@ using System.ComponentModel;
 
 namespace CatsClient;
 
+
+[Projection(typeof(TracedPocosHeartITracedPocosHeartProjection))]
+
+
 public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
 {
-
-#region Projection classes
-
-    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
-    {
-
-
-#region Init Properties
-        public static void InitProperties(List<Property> properties)
-        {
-            properties.Add(
-                new Property(
-                    "TracedPocos", 
-                    typeof(IList<Tuple<Type,Int32>>),
-                    GetTracedPocosValue, 
-                    null, 
-                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("TracedPocos"), 
-                    false, 
-                    true, 
-                    typeof(Tuple<Type,Int32>)
-                )
-            );
-        }
-#endregion Init Properties;
-
-
-        public event PropertyChangedEventHandler? PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
-            }
-        }
-
-
-        private readonly TracedPocosHeartPoco _projector;
-
-
-       public IList<Tuple<Type,Int32>> TracedPocos 
-        {
-            get => _projector.TracedPocos!;
-        }
-
-
-        internal TracedPocosHeartITracedPocosHeartProjection(TracedPocosHeartPoco projector)
-        {
-            _projector = projector;
-        }
-
-        public I? As<I>() where I : class
-        {
-            return (I?)_projector.As(typeof(I))!;
-        }
-
-        public object? As(Type type) 
-        {
-            return _projector.As(type);
-        }
-
-        public void CollectGarbage()
-        {
-            ((TracedPocosHeartPoco)_projector).CollectGarbage();
-        }
-
-        public override bool Equals(object? obj)
-        {
-            return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(_projector, other.As<TracedPocosHeartPoco>());
-        }
-
-        public override int GetHashCode()
-        {
-            return _projector.GetHashCode();
-        }
-
-        
-#region Properties Accessors
-
-        private static object? GetTracedPocosValue(object target)
-        {
-            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
-        }
-
-
-
-#endregion Properties Accessors;
-
-
-
-    }
-#endregion Projection classes
 
     
 #region Init Properties
@@ -157,7 +66,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
                     _asTracedPocosHeartITracedPocosHeartProjection = new TracedPocosHeartITracedPocosHeartProjection(this);
                     ProjectionCreated(typeof(ITracedPocosHeart), _asTracedPocosHeartITracedPocosHeartProjection);
                 }
-                return _asTracedPocosHeartITracedPocosHeartProjection = new(this);
+                return _asTracedPocosHeartITracedPocosHeartProjection;
             }
         }
 
@@ -312,5 +221,108 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
 
 }
+
+
+#region Projection classes
+
+    public class TracedPocosHeartITracedPocosHeartProjection: ITracedPocosHeart, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
+    {
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "TracedPocos", 
+                    typeof(IList<Tuple<Type,Int32>>),
+                    GetTracedPocosValue, 
+                    null, 
+                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("TracedPocos"), 
+                    false, 
+                    true, 
+                    typeof(Tuple<Type,Int32>)
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private event PropertyChangedEventHandler? _propertyChanged;
+
+
+            public event PropertyChangedEventHandler? PropertyChanged
+            {
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
+            }
+
+
+        private readonly TracedPocosHeartPoco _projector;
+
+
+       public IList<Tuple<Type,Int32>> TracedPocos 
+        {
+            get => _projector.TracedPocos!;
+        }
+
+
+        internal TracedPocosHeartITracedPocosHeartProjection(TracedPocosHeartPoco projector)
+        {
+            _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
+        }
+
+        public I? As<I>() where I : class
+        {
+            return (I?)_projector.As(typeof(I))!;
+        }
+
+        public object? As(Type type) 
+        {
+            return _projector.As(type);
+        }
+
+        public void CollectGarbage()
+        {
+            ((TracedPocosHeartPoco)_projector).CollectGarbage();
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(_projector, other.As<TracedPocosHeartPoco>());
+        }
+
+        public override int GetHashCode()
+        {
+            return _projector.GetHashCode();
+        }
+
+        
+#region Properties Accessors
+
+        private static object? GetTracedPocosValue(object target)
+        {
+            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
+        }
+
+
+
+#endregion Properties Accessors;
+
+
+
+    }
+#endregion Projection classes
 
 

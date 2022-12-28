@@ -850,6 +850,7 @@ public class CodeGenerator : IModelBuilder
                 model.Interfaces.Add(MakeIProjectionName(typeof(Client.PocoBase)));
                 AddUsings(model, typeof(INotifyPropertyChanged));
                 AddUsings(model, typeof(Client.ProjectionList<,>));
+                AddUsings(model, typeof(ProjectionAttribute));
             }
             else
             {

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:55                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,6 +12,10 @@ using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Model;
+
+
+[Projection(typeof(BreedIBreedProjection))]
+
 
 public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
 {
@@ -113,6 +117,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         internal BreedIBreedProjection(BreedPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -272,7 +280,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                     _asBreedIBreedProjection = new BreedIBreedProjection(this);
                     ProjectionCreated(typeof(IBreed), _asBreedIBreedProjection);
                 }
-                return _asBreedIBreedProjection = new(this);
+                return _asBreedIBreedProjection;
             }
         }
 

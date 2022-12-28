@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Server;
 
@@ -49,16 +50,36 @@ public class BuildingScript
 
     public void Run(BuildingEventArgs args)
     {
+        if (WithTrace)
+        {
+            Console.Write($"{args.PathSelector}: ");
+        }
         bool success = true;
         if (args.IsKeyRequest)
         {
-            if(_handlers.TryGetValue(args.PathSelector!, out Action<BuildingEventArgs>? handler))
+            if (WithTrace)
             {
-                handler.Invoke(args);
+                Console.Write($"(KeyRequest) ");
             }
-            if(args.PrimaryKey is { })
+            if (_handlers.TryGetValue(args.PathSelector!, out Action<BuildingEventArgs>? handler))
             {
-                if(!SetValue(args.PathSelector!, args, null))
+                if (WithTrace)
+                {
+                    Console.WriteLine($"(Handling: ----------");
+                }
+                handler.Invoke(args);
+                if (WithTrace)
+                {
+                    Console.WriteLine($"--------------------)");
+                }
+            }
+            else if(args.PrimaryKey is { })
+            {
+                if (WithTrace)
+                {
+                    Console.Write($"(PrimaryKey presents) ");
+                }
+                if (!SetValue(args.PathSelector!, args, null))
                 {
                     foreach (string key in args.PrimaryKey.NotAssignedFields)
                     {
@@ -85,7 +106,15 @@ public class BuildingScript
         {
             if (_handlers.TryGetValue(args.PathSelector!, out Action<BuildingEventArgs>? handler))
             {
+                if (WithTrace)
+                {
+                    Console.WriteLine($"(Handling: ----------");
+                }
                 handler.Invoke(args);
+                if (WithTrace)
+                {
+                    Console.WriteLine($"--------------------)");
+                }
             }
             else
             {
@@ -96,13 +125,17 @@ public class BuildingScript
         {
             args.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
         }
+        if (WithTrace)
+        {
+            Console.WriteLine($"success: {success}");
+        }
     }
 
     private bool SetValue(string path, BuildingEventArgs args, string? key = null)
     {
         if (WithTrace)
         {
-            Console.WriteLine(path);
+            Console.Write($"(setting {path}{(key is { } ? $" (key: {key})" : string.Empty)}: ");
         }
         string? fieldName = null;
         if (!(_mapping?.FieldsMap.TryGetValue(path, out fieldName) ?? false))
@@ -114,16 +147,28 @@ public class BuildingScript
         }
         else if (fieldName is null)
         {
+            if (WithTrace)
+            {
+                Console.Write($"default )");
+            }
             args.SetDefault();
             return true;
         }
         else if (args.IsKeyRequest && fieldName.Equals(KeyOnly))
         {
+            if (WithTrace)
+            {
+                Console.Write($"KeyOnly )");
+            }
             args.SetKeyOnly();
             return false;
         }
         if(fieldName is { })
         {
+            if (WithTrace)
+            {
+                Console.Write($"field: {fieldName} = ");
+            }
             try
             {
                 int pos = args.DataReader!.GetOrdinal(fieldName);
@@ -131,6 +176,10 @@ public class BuildingScript
                 {
                     if (!args.IsKeyRequest)
                     {
+                        if (WithTrace)
+                        {
+                            Console.Write($"default ");
+                        }
                         args.SetDefault();
                     }
                 }
@@ -138,6 +187,10 @@ public class BuildingScript
                 {
                     if (args.IsKeyRequest)
                     {
+                        if (WithTrace)
+                        {
+                            Console.Write($"{args.DataReader![fieldName]} ");
+                        }
                         args.PrimaryKey[key!] = args.DataReader![fieldName];
                     }
                     else
@@ -150,13 +203,25 @@ public class BuildingScript
                         {
                             args.Value = Convert.ChangeType(args.DataReader![fieldName], args.PropertyType);
                         }
+                        if (WithTrace)
+                        {
+                            Console.Write($"{args.Value} ");
+                        }
                     }
+                }
+                if (WithTrace)
+                {
+                    Console.Write($") ");
                 }
                 return true;
             }
             catch (IndexOutOfRangeException)
             {
             }
+        }
+        if (WithTrace)
+        {
+            Console.Write($") ");
         }
         return false;
     }

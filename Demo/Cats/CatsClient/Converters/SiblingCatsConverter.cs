@@ -22,10 +22,10 @@ internal class SiblingCatsConverter : MarkupExtension, IValueConverter
             targetType == typeof(string) 
             && value.GetType().IsGenericType 
             && typeof(IList).IsAssignableFrom(value.GetType())
-            && typeof(IProjection<CatPoco>).IsAssignableFrom(value.GetType().GetGenericArguments()[0])
+            && typeof(CatPoco).IsAssignableFrom(value.GetType().GetGenericArguments()[0])
         )
         {
-            return string.Join(",", ((ICollection<IProjection<ICat>>)value).Select(v => v.As<ICat>()!.NameNat));
+            return string.Join(",", ((ICollection<CatPoco>)value).Select(v => v.As<ICat>()!.NameNat));
         }
         throw new NotImplementedException();
     }

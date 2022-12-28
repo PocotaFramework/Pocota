@@ -145,7 +145,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                 if (
                     context.BuildingContext.BuildingEventArgs.InternalValue == default
-                    || object.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
+                    || PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
                 )
                 {
                     if (!context.BuildingContext.BuildingEventArgs.IsNullable && !isListItem)
@@ -180,7 +180,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             }
 
             if (
-                !object.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
+                !PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _skip)
                 && (_isEntity && !primaryKey!.IsAssigned)
             )
             {
@@ -209,7 +209,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                 return;
             }
-            if (!object.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _probe))
+            if (!PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.InternalValue, _probe))
             {
                 context.Target = context.BuildingContext.BuildingEventArgs.InternalValue;
                 writer.Flush();
@@ -297,9 +297,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                             {
                                 if (!isPoco || propertyValue is null || !context.TestReference(propertyValue))
                                 {
-                                    if (
-                                        property.IsCollection
-                                    )
+                                    if (property.IsCollection)
                                     {
                                         //context.ItemType = property.ItemType;
                                         if (propertyValue == default)
@@ -411,7 +409,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                 JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
                                 if (isPoco)
                                 {
-                                    if (object.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                    if (PocoBase.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
                                     {
                                         context.Target = null;
                                     }

@@ -164,7 +164,10 @@ internal class PocoContext : IPocoContext
                     ((IProjection)value).As<EntityBase>()!.PrimaryKey = primaryKey;
                 }
             }
-
+            if(value is null)
+            {
+                throw new InvalidOperationException();
+            }
             return res;
         }
     }

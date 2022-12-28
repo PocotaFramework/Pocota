@@ -115,7 +115,7 @@ internal class ListBuildingJsonConverter<T> : JsonConverter<T> where T : class
             {
                 break;
             }
-            if (!object.ReferenceEquals(itemSkip, context.Target))
+            if (!PocoBase.ReferenceEquals(itemSkip, context.Target))
             {
                 _add!.Invoke(value, new[] { context.Target });
             }

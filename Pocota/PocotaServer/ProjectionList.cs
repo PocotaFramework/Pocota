@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 
 namespace Net.Leksi.Pocota.Server;
 
-public class ProjectionList<T, I> : IList<I>
+public class ProjectionList<I, T> : IList<I>
     where I : class 
     where T : class
 {
@@ -51,10 +51,7 @@ public class ProjectionList<T, I> : IList<I>
 
     public IEnumerator<I> GetEnumerator()
     {
-        foreach (I item in _source.Select(value => ((IProjection)value!).As<I>()!))
-        {
-            yield return item;
-        }
+        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 
     public int IndexOf(I item)
@@ -79,6 +76,6 @@ public class ProjectionList<T, I> : IList<I>
 
     IEnumerator IEnumerable.GetEnumerator()
     {
-        return _source.GetEnumerator();
+        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 }

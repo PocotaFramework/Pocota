@@ -9,60 +9,12 @@ namespace Net.Leksi.Pocota.Client.Json;
 
 internal class ListJsonConverter<T> : JsonConverter<T> where T : class
 {
-    private static readonly MethodInfo? _clear;
-    private static readonly MethodInfo? _add;
-    private static readonly MethodInfo? _removeAt;
-    private static readonly PropertyInfo? _count;
-    private static readonly PropertyInfo? _items;
+    private static readonly Dictionary<Type, ListMembersHolder> s_members_holders = new();
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
     private readonly Type _itemType;
     private readonly PocoContext _pocoContext;
-
-    static ListJsonConverter()
-    {
-        Queue<Type> types = new();
-        types.Enqueue(typeof(T));
-        while (types.Count > 0)
-        {
-            Type now = types.Dequeue();
-            foreach (var m in now.GetMethods())
-            {
-                if ("Add".Equals(m.Name) && _add is null)
-                {
-                    _add = m;
-                }
-                else if ("RemoveAt".Equals(m.Name) && _removeAt is null)
-                {
-                    _removeAt = m;
-                }
-                else if ("Clear".Equals(m.Name) && _removeAt is null)
-                {
-                    _clear = m;
-                }
-            }
-            foreach (var p in now.GetProperties())
-            {
-                if ("Count".Equals(p.Name) && _count is null)
-                {
-                    _count = p;
-                }
-                else if ("Items".Equals(p.Name) && _count is null)
-                {
-                    _items = p;
-                }
-            }
-            foreach (var intf in now.GetInterfaces())
-            {
-                types.Enqueue(intf);
-            }
-            if (now != typeof(object) && now.BaseType is { })
-            {
-                types.Enqueue(now.BaseType);
-            }
-        }
-    }
 
     public ListJsonConverter(IServiceProvider services)
     {
@@ -99,32 +51,97 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
             result = (T?)Activator.CreateInstance(typeof(T));
         }
 
-        object?[] value = new object[1];
-        object?[] index = new object[1];
+        if(result is { })
+        {
+            ListMembersHolder membersHolder = GetListMembersHolder(result.GetType());
 
-        if (context.CallContext?.DispatcherWrapper is { })
-        {
-            context.CallContext.DispatcherWrapper.Invoke(() => _clear!.Invoke(result, null));
-        }
-        else
-        {
-            _clear!.Invoke(result, null);
+            object?[] value = new object[1];
+            object?[] index = new object[1];
+
+            if (membersHolder.Clear is { })
+            {
+                if (context.CallContext?.DispatcherWrapper is { })
+                {
+                    context.CallContext.DispatcherWrapper.Invoke(() => membersHolder.Clear!.Invoke(result, null));
+                }
+                else
+                {
+                    membersHolder.Clear!.Invoke(result, null);
+                }
+            }
+
+            while (reader.Read())
+            {
+                if (reader.TokenType is JsonTokenType.EndArray)
+                {
+                    break;
+                }
+                value[0] = JsonSerializer.Deserialize(ref reader, itemType, options);
+                if (context.CallContext?.DispatcherWrapper is { })
+                {
+                    context.CallContext.DispatcherWrapper.Invoke(() => membersHolder.Add!.Invoke(result, value));
+                }
+                else
+                {
+                    membersHolder.Add!.Invoke(result, value);
+                }
+            }
         }
 
-        while (reader.Read())
+        return result;
+    }
+
+    private ListMembersHolder GetListMembersHolder(Type type)
+    {
+        if(!s_members_holders.TryGetValue(type, out ListMembersHolder? result))
         {
-            if (reader.TokenType is JsonTokenType.EndArray)
+            lock (s_members_holders)
             {
-                break;
-            }
-            value[0] = JsonSerializer.Deserialize(ref reader, itemType, options);
-            if (context.CallContext?.DispatcherWrapper is { })
-            {
-                context.CallContext.DispatcherWrapper.Invoke(() => _add!.Invoke(result, value));
-            }
-            else
-            {
-                _add!.Invoke(result, value);
+                if (!s_members_holders.TryGetValue(type, out result))
+                {
+                    result = new ListMembersHolder();
+                    Queue<Type> types = new();
+                    types.Enqueue(type);
+                    while (types.Count > 0)
+                    {
+                        Type now = types.Dequeue();
+                        foreach (var m in now.GetMethods())
+                        {
+                            if ("Add".Equals(m.Name) && result.Add is null)
+                            {
+                                result.Add = m;
+                            }
+                            else if ("RemoveAt".Equals(m.Name) && result.RemoveAt is null)
+                            {
+                                result.RemoveAt = m;
+                            }
+                            else if ("Clear".Equals(m.Name) && result.Clear is null)
+                            {
+                                result.Clear = m;
+                            }
+                        }
+                        foreach (var p in now.GetProperties())
+                        {
+                            if ("Count".Equals(p.Name) && result.Count is null)
+                            {
+                                result.Count = p;
+                            }
+                            else if ("Items".Equals(p.Name) && result.Items is null)
+                            {
+                                result.Items = p;
+                            }
+                        }
+                        foreach (var intf in now.GetInterfaces())
+                        {
+                            types.Enqueue(intf);
+                        }
+                        if (now != typeof(object) && now.BaseType is { })
+                        {
+                            types.Enqueue(now.BaseType);
+                        }
+                    }
+                    s_members_holders.Add(type, result);
+                }
             }
         }
         return result;
@@ -138,14 +155,16 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
         }
         else
         {
+            ListMembersHolder membersHolder = GetListMembersHolder(value.GetType());
+
             object[] index = new object[1];
             writer.WriteStartArray();
 
-            int count = (int)_count!.GetValue(value)!;
+            int count = (int)membersHolder.Count!.GetValue(value)!;
             for (int i = 0; i < count; ++i)
             {
                 index[0] = i;
-                object? item = _items!.GetValue(value, index);
+                object? item = membersHolder.Items!.GetValue(value, index);
                 JsonSerializer.Serialize(writer, item, options);
             }
             writer.WriteEndArray();

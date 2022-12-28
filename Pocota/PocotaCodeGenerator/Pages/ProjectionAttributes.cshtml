@@ -1,0 +1,8 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+@foreach (ClassModel model in Model.Classes)
+{
+    <text>[Projection(typeof(@Html.Raw(model.ClassName)))]
+</text> 
+}

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:56                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,188 +14,12 @@ using System.ComponentModel;
 
 namespace CatsCommon.Model;
 
+
+[Projection(typeof(BreedIBreedProjection))]
+
+
 public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
 {
-
-#region Projection classes
-
-    public class BreedIBreedProjection: IBreed, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
-    {
-
-
-#region Init Properties
-        public static void InitProperties(List<Property> properties)
-        {
-            properties.Add(
-                new Property(
-                    "Code", 
-                    typeof(String),
-                    GetCodeValue, 
-                    SetCodeValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Code"), 
-                    false, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Group", 
-                    typeof(String),
-                    GetGroupValue, 
-                    SetGroupValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Group"), 
-                    false, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "NameEng", 
-                    typeof(String),
-                    GetNameEngValue, 
-                    SetNameEngValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameEng"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "NameNat", 
-                    typeof(String),
-                    GetNameNatValue, 
-                    SetNameNatValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameNat"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-        }
-#endregion Init Properties;
-
-
-        public event PropertyChangedEventHandler? PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
-            }
-
-            remove
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
-            }
-        }
-
-
-        private readonly BreedPoco _projector;
-
-
-       public String Code 
-        {
-            get => _projector.Code!;
-            set => _projector.Code = (String)value!;
-        }
-
-       public String Group 
-        {
-            get => _projector.Group!;
-            set => _projector.Group = (String)value!;
-        }
-
-       public String? NameEng 
-        {
-            get => _projector.NameEng;
-            set => _projector.NameEng = (String?)value;
-        }
-
-       public String? NameNat 
-        {
-            get => _projector.NameNat;
-            set => _projector.NameNat = (String?)value;
-        }
-
-
-        internal BreedIBreedProjection(BreedPoco projector)
-        {
-            _projector = projector;
-        }
-
-        public I? As<I>() where I : class
-        {
-            return (I?)_projector.As(typeof(I))!;
-        }
-
-        public object? As(Type type) 
-        {
-            return _projector.As(type);
-        }
-
-
-        public override bool Equals(object? obj)
-        {
-            return obj is IProjection<BreedPoco> other && object.ReferenceEquals(_projector, other.As<BreedPoco>());
-        }
-
-        public override int GetHashCode()
-        {
-            return _projector.GetHashCode();
-        }
-
-        
-#region Properties Accessors
-
-        private static object? GetCodeValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.Code!;
-        }
-
-        private static void SetCodeValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.Code = (String)value!;
-        }
-
-        private static object? GetGroupValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.Group!;
-        }
-
-        private static void SetGroupValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.Group = (String)value!;
-        }
-
-        private static object? GetNameEngValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.NameEng;
-        }
-
-        private static void SetNameEngValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.NameEng = (String?)value;
-        }
-
-        private static object? GetNameNatValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.NameNat;
-        }
-
-        private static void SetNameNatValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.NameNat = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
-
-    }
-#endregion Projection classes
 
     
 #region Init Properties
@@ -278,7 +102,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                     _asBreedIBreedProjection = new BreedIBreedProjection(this);
                     ProjectionCreated(typeof(IBreed), _asBreedIBreedProjection);
                 }
-                return _asBreedIBreedProjection = new(this);
+                return _asBreedIBreedProjection;
             }
         }
 
@@ -364,7 +188,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public object? As(Type type)
     {
-        if(type == typeof(IBreed))
+        if (type == typeof(IBreed))
         {
             return AsBreedIBreedProjection;
         }
@@ -496,5 +320,193 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
 
 }
+
+
+#region Projection classes
+
+    public class BreedIBreedProjection: IBreed, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedPoco>, IProjection<IBreed>
+    {
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "Code", 
+                    typeof(String),
+                    GetCodeValue, 
+                    SetCodeValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Code"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Group", 
+                    typeof(String),
+                    GetGroupValue, 
+                    SetGroupValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Group"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameEng", 
+                    typeof(String),
+                    GetNameEngValue, 
+                    SetNameEngValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameEng"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "NameNat", 
+                    typeof(String),
+                    GetNameNatValue, 
+                    SetNameNatValue, 
+                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameNat"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private event PropertyChangedEventHandler? _propertyChanged;
+
+
+            public event PropertyChangedEventHandler? PropertyChanged
+            {
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
+            }
+
+
+        private readonly BreedPoco _projector;
+
+
+       public String Code 
+        {
+            get => _projector.Code!;
+            set => _projector.Code = (String)value!;
+        }
+
+       public String Group 
+        {
+            get => _projector.Group!;
+            set => _projector.Group = (String)value!;
+        }
+
+       public String? NameEng 
+        {
+            get => _projector.NameEng;
+            set => _projector.NameEng = (String?)value;
+        }
+
+       public String? NameNat 
+        {
+            get => _projector.NameNat;
+            set => _projector.NameNat = (String?)value;
+        }
+
+
+        internal BreedIBreedProjection(BreedPoco projector)
+        {
+            _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
+        }
+
+        public I? As<I>() where I : class
+        {
+            return (I?)_projector.As(typeof(I))!;
+        }
+
+        public object? As(Type type) 
+        {
+            return _projector.As(type);
+        }
+
+
+        public override bool Equals(object? obj)
+        {
+            return obj is BreedIBreedProjection other && object.ReferenceEquals(_projector, other.As<BreedPoco>());
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        
+#region Properties Accessors
+
+        private static object? GetCodeValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.Code!;
+        }
+
+        private static void SetCodeValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.Code = (String)value!;
+        }
+
+        private static object? GetGroupValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.Group!;
+        }
+
+        private static void SetGroupValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.Group = (String)value!;
+        }
+
+        private static object? GetNameEngValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.NameEng;
+        }
+
+        private static void SetNameEngValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.NameEng = (String?)value;
+        }
+
+        private static object? GetNameNatValue(object target)
+        {
+            return ((BreedIBreedProjection)target)._projector.NameNat;
+        }
+
+        private static void SetNameNatValue(object target, object? value)
+        {
+             ((BreedIBreedProjection)target)._projector.NameNat = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
+
+    }
+#endregion Projection classes
 
 

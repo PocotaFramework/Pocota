@@ -204,8 +204,6 @@ internal class Builder : IBuilder
         options.Script = _services.GetRequiredService<BuildingScript>();
         options.Script.Mapping = BuildCatsMapping;
 
-        options.Script.WithTrace = true;
-
         //ILitterWithCats
         options.Script.AddPathHandler("/Cats", args =>
         {
@@ -557,7 +555,7 @@ internal class Builder : IBuilder
                     }
                 }
             }
-            if (!object.ReferenceEquals(cat, filter.Descendant) && TestFilter(filter, (ICat)cat))
+            if (!PocoBase.ReferenceEquals(cat, filter.Descendant) && TestFilter(filter, (ICat)cat))
             {
                 yield return cat;
             }
@@ -596,7 +594,7 @@ internal class Builder : IBuilder
         while (queue.Count > 0)
         {
             T cat = queue.Dequeue();
-            if (!object.ReferenceEquals(cat, filter.Ancestor) && TestFilter(filter, ((ICat)cat)))
+            if (!PocoBase.ReferenceEquals(cat, filter.Ancestor) && TestFilter(filter, ((ICat)cat)))
             {
                 yield return cat;
             }

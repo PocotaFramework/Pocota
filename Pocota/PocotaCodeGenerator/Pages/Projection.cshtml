@@ -8,18 +8,21 @@
 
         @if(Model.Parent.IsClient)
         {
-            <text>        public event PropertyChangedEventHandler? PropertyChanged
-        {
-            add
-            {
-                ((INotifyPropertyChanged)_projector).PropertyChanged += value;
-            }
+    <text>        private event PropertyChangedEventHandler? _propertyChanged;
 
-            remove
+
+            public event PropertyChangedEventHandler? PropertyChanged
             {
-                ((INotifyPropertyChanged)_projector).PropertyChanged -= value;
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
             }
-        }
 </text>
         }
 
@@ -36,7 +39,7 @@
             }
             else 
             {
-            <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
+            <text>        private readonly @Html.Raw($"ProjectionList<{pm.ItemType},{pm.Class}> {fieldName};")
 </text>
             }
         }
@@ -80,6 +83,10 @@
         internal @Html.Raw($"{Model.ClassName}({Model.Parent!.ClassName} projector)")
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
             @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";

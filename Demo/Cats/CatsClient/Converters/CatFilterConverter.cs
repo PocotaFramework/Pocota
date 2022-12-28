@@ -14,11 +14,15 @@ public class CatFilterConverter : MarkupExtension, IValueConverter, IMultiValueC
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if(value is ICatFilter catFilter)
+        if(value is null)
+        {
+            return null;
+        }
+        if(value is IProjection<ICatFilter> catFilter)
         {
             if (targetType == typeof(string))
             {
-                if (typeof(ICatFilter).GetProperties().Where(p => p.GetValue(value) != default).Count() is int count && count > 0)
+                if (typeof(ICatFilter).GetProperties().Where(p => p.GetValue(catFilter.As<ICatFilter>()!) != default).Count() is int count && count > 0)
                 {
                     return $"{parameter} ({count})";
                 }
@@ -32,21 +36,28 @@ public class CatFilterConverter : MarkupExtension, IValueConverter, IMultiValueC
                     if (
                             (
                                 "Header".Equals(parameters[1]) 
-                                && typeof(ICatFilter).GetProperties().Where(p => p.GetValue(value) != default).Count() is int count && count > 0
+                                && typeof(ICatFilter).GetProperties().Where(p => p.GetValue(catFilter.As<ICatFilter>()!) != default).Count() is int count && count > 0
                             )
                             || (
                                 "Button".Equals(parameters[1])
-                                && catFilter is IProjection<IPoco> projection
-                                && projection.As<IPoco>()!.PocoState is PocoState.Modified
+                                && catFilter.As<IPoco>()!.PocoState is PocoState.Modified
                             )
                     )
                     {
                         return FontWeights.Bold;
                     }
-                    return new FontWeightConverter().ConvertFromString(parameters[0]);
+                    return new FontWeightConverter().ConvertFromString(parameters[0])!;
                 }
                 throw new NotImplementedException();
             }
+        }
+        else if(value is DateOnly? && targetType == typeof(DateTime?))
+        {
+            return ((DateOnly)value).ToDateTime(TimeOnly.MinValue);
+        }
+        else 
+        {
+            Console.WriteLine($"{this}.Convert: {value}, {targetType}, {parameter}");
         }
         throw new NotImplementedException();
     }
@@ -58,6 +69,15 @@ public class CatFilterConverter : MarkupExtension, IValueConverter, IMultiValueC
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is null)
+        {
+            return null;
+        }
+        if(value is DateTime? && targetType == typeof(DateOnly?))
+        {
+            return DateOnly.FromDateTime((DateTime)value);
+        }
+        Console.WriteLine($"{this}.ConvertBack: {value}, {targetType}, {parameter}");
         throw new NotImplementedException();
     }
 

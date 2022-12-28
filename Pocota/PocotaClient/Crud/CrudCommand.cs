@@ -26,20 +26,25 @@ public abstract class CrudCommand : ICommand
     public void Execute(object? parameter)
     {
         ApiCallContext callOptions = new ApiCallContext { CommandParameter = parameter, OnReceived = OnReceived, OnDone = OnExecuted, OnException = OnException };
-        OnExecuting(callOptions);
-        DoExecute(callOptions);
+        if (OnExecuting(callOptions))
+        {
+            DoExecute(callOptions);
+        }
     }
 
     protected abstract void DoExecute(ApiCallContext callOptions);
 
     protected void OnReceived(ApiCallContext? callOptions)
     {
-        Received?.Invoke(this, new CrudCommandExecutingEventArgs(callOptions));
+        CrudCommandExecutingEventArgs args = new CrudCommandExecutingEventArgs(callOptions);
+        Received?.Invoke(this, args);
     }
 
-    protected void OnExecuting(ApiCallContext? callOptions)
+    protected bool OnExecuting(ApiCallContext? callOptions)
     {
-        Executing?.Invoke(this, new CrudCommandExecutingEventArgs(callOptions));
+        CrudCommandExecutingEventArgs args = new CrudCommandExecutingEventArgs(callOptions);
+        Executing?.Invoke(this, args);
+        return !args.IsInterrupted;
     }
 
     protected void OnExecuted(object? result, ApiCallContext? callOptions)

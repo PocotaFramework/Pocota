@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-27T18:28:55                                  //
+// at 2022-12-28T18:41:16                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,6 +14,13 @@ using System;
 using System.Collections.Generic;
 
 namespace CatsCommon.Model;
+
+
+[Projection(typeof(CatICatProjection))]
+[Projection(typeof(CatICatForListingProjection))]
+[Projection(typeof(CatICatAsParentProjection))]
+[Projection(typeof(CatICatForViewProjection))]
+
 
 public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
 {
@@ -147,7 +154,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     target => ((IPoco)((CatICatProjection)target)._projector).TouchProperty("Litters"), 
                     false, 
                     false, 
-                    typeof(LitterPoco)
+                    typeof(ILitter)
                 )
             );
         }
@@ -158,7 +165,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly CatPoco _projector;
 
-        private readonly ProjectionList<LitterPoco,ILitter> _litters;
+        private readonly ProjectionList<ILitter,LitterPoco> _litters;
 
        public ICattery Cattery 
         {
@@ -224,6 +231,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatProjection(CatPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
             _litters = new(((CatPoco)_projector).Litters);
         }
 
@@ -527,6 +538,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatForListingProjection(CatPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -789,6 +804,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatAsParentProjection(CatPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
         }
 
         public I? As<I>() where I : class
@@ -1016,7 +1035,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     target => ((IPoco)((CatICatForViewProjection)target)._projector).TouchProperty("Litters"), 
                     false, 
                     true, 
-                    typeof(LitterPoco)
+                    typeof(ILitterForCat)
                 )
             );
         }
@@ -1027,7 +1046,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly CatPoco _projector;
 
-        private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
+        private readonly ProjectionList<ILitterForCat,LitterPoco> _litters;
 
        public ICattery Cattery 
         {
@@ -1083,6 +1102,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatForViewProjection(CatPoco projector)
         {
             _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
             _litters = new(((CatPoco)_projector).Litters);
         }
 
@@ -1386,7 +1409,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     _asCatICatProjection = new CatICatProjection(this);
                     ProjectionCreated(typeof(ICat), _asCatICatProjection);
                 }
-                return _asCatICatProjection = new(this);
+                return _asCatICatProjection;
             }
         }
     private CatICatForListingProjection AsCatICatForListingProjection 
@@ -1398,7 +1421,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     _asCatICatForListingProjection = new CatICatForListingProjection(this);
                     ProjectionCreated(typeof(ICatForListing), _asCatICatForListingProjection);
                 }
-                return _asCatICatForListingProjection = new(this);
+                return _asCatICatForListingProjection;
             }
         }
     private CatICatAsParentProjection AsCatICatAsParentProjection 
@@ -1410,7 +1433,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     _asCatICatAsParentProjection = new CatICatAsParentProjection(this);
                     ProjectionCreated(typeof(ICatAsParent), _asCatICatAsParentProjection);
                 }
-                return _asCatICatAsParentProjection = new(this);
+                return _asCatICatAsParentProjection;
             }
         }
     private CatICatForViewProjection AsCatICatForViewProjection 
@@ -1422,7 +1445,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     _asCatICatForViewProjection = new CatICatForViewProjection(this);
                     ProjectionCreated(typeof(ICatForView), _asCatICatForViewProjection);
                 }
-                return _asCatICatForViewProjection = new(this);
+                return _asCatICatForViewProjection;
             }
         }
 

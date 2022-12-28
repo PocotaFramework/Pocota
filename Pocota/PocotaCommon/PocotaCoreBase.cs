@@ -156,15 +156,15 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
             _actualTypes.Add(type, pocoType);
         }
         _services!.Add(new ServiceDescriptor(pocoType, item.ImplementationType, ServiceLifetime.Transient));
-        foreach (Type type in pocoType.GetNestedTypes())
+        foreach (ProjectionAttribute pa in pocoType.GetCustomAttributes<ProjectionAttribute>())
         {
-            if (typeof(IProjection).IsAssignableFrom(type))
+            if (typeof(IProjection).IsAssignableFrom(pa.Type))
             {
-                AddProperties(type);
-                Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjection) && !type.IsGenericType).FirstOrDefault();
+                AddProperties(pa.Type);
+                Type? @interface = pa.Type.GetInterfaces().Where(i => i != typeof(IProjection) && !pa.Type.IsGenericType).FirstOrDefault();
                 if (@interface is { })
                 {
-                    _properties.Add(@interface, _properties[type]);
+                    _properties.Add(@interface, _properties[pa.Type]);
 
                     _actualTypes.Add(@interface, pocoType);
                     _services.Add(new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>

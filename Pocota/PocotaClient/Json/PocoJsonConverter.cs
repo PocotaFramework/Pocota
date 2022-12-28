@@ -2,6 +2,7 @@
 using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System.Collections.Immutable;
 using System.Reflection;
 using System.Text.Json;
@@ -21,6 +22,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     private readonly PocotaCore _core;
     private readonly PocoContext _pocoContext;
     private readonly ImmutableDictionary<string, Property>? _properties;
+    private readonly bool _isEntity;
 
     public PocoJsonConverter(IServiceProvider services)
     {
@@ -28,6 +30,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         _core = _services.GetRequiredService<PocotaCore>();
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _properties = _core.GetProperties(typeof(T));
+        _isEntity = typeof(IProjection<IEntity>).IsAssignableFrom(_core.GetActualType(typeof(T)));
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -47,7 +50,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             throw new JsonException();
         }
 
-        T? result = (T?)context!.Target;
+        IProjection<T>? result = (IProjection<T>?)context!.Target;
 
         try
         {
@@ -57,6 +60,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
             string? @class = null;
             string? @interface = null;
+            string? key = null;
 
             while (reader.Read())
             {
@@ -81,16 +85,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         reference = reader.GetString();
                         if (reference is { })
                         {
-                            object? obj = context!.ResolveReference(reference);
-                            if(obj is IProjection projection)
-                            {
-                                result = projection.As<T>();
-                                projection.As<PocoBase>()?.StartPopulate(context); ;
-                            }
-                            else
-                            {
-                                result = (T?)obj;
-                            }
+                            result = (IProjection<T>)context!.ResolveReference(reference)!;
+                            result?.As<PocoBase>()?.StartPopulate(context); ;
                         }
                         else
                         {
@@ -144,7 +140,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         }
                         done = true;
                     }
-                    else if (propertyName.Equals(Key))
+                    else if (propertyName.Equals(Key) && _isEntity)
                     {
                         object[]? parts = JsonSerializer.Deserialize<object[]>(ref reader);
                         if (parts is { } && parts.Length > 0)
@@ -153,15 +149,19 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             {
                                 @class = typeof(object).ToString();
                             }
+                            key = string.Join(',', parts.Select(v => v.ToString()!));
+                            _pocoContext.TryGetSource(typeof(T), parts.Select(v => v.ToString()!).ToArray(), out object? obj);
+                            result = (IProjection<T>)obj!;
+                            result.As<PocoBase>()?.StartPopulate(context);
 
-                            if (_pocoContext.TryGetSource(typeof(T), parts.Select(v => v.ToString()!).ToArray(), out object? obj))
+                            if (result is { } && reference is { })
                             {
-                                result = (T)obj!;
-                                ((IProjection?)result)?.As<PocoBase>()?.StartPopulate(context);
-                                if (result is { } && reference is { })
-                                {
-                                    context.AddReference(reference, ((object?)((IProjection?)result)?.As<PocoBase>() ?? result)!);
-                                }
+                                context.AddReference(reference, ((object?)((IProjection?)result)?.As<PocoBase>() ?? result)!);
+                            }
+
+                            if(result is null)
+                            {
+                                throw new InvalidOperationException();
                             }
 
                             done = true;
@@ -179,13 +179,22 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
                 if (!done)
                 {
-                    PocoBase? poco = ((IProjection?)result)?.As<PocoBase>();
+                    if(result is null)
+                    {
+                        if (_isEntity)
+                        {
+                            throw new InvalidOperationException($"{typeof(T)}, {reference}, {key}");
+                        }
+                        result = (IProjection<T>)_services.GetRequiredService<T>();
+                        result.As<PocoBase>()?.StartPopulate(context);
+                    }
+                    PocoBase? poco = result!.As<PocoBase>();
                     Property? property = _properties![propertyName];
 
                     if (property is { })
                     {
 
-                        object? oldValue = property.GetValue(result!);
+                        object? oldValue = property.GetValue(result.As<T>()!);
 
                         Type typeForDeserialization = property.Type;
 
@@ -208,7 +217,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             isModified = entity.IsModified(propertyName);
                         }
                         bool canChangeValue = (
-                                poco.IsEnvelope
+                                poco!.IsEnvelope
                                 || isUnchanged
                                 || !isModified
                             );
@@ -236,14 +245,14 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             )
                         )
                         {
-                            property.TouchValue(result!);
+                            property.TouchValue(result.As<T>()!);
 
                         }
                         else
                         {
                             if (canChangeValue)
                             {
-                                property.SetValue(result!, value);
+                                property.SetValue(result.As<T>()!, value);
                             }
                             else if (_pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
                             {
@@ -259,11 +268,11 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     }
                 }
             }
-            return result;
+            return result?.As<T>();
         }
         finally
         {
-            ((IProjection?)result)?.As<PocoBase>()?.StopPopulate(context);
+            result?.As<PocoBase>()?.StopPopulate(context);
         }
 
     }
@@ -293,7 +302,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             }
             else
             {
-                object[]? primaryKey = ((IProjection)value).As<EntityBase>()?.PrimaryKey;
+                IProjection<T> projection = (IProjection<T>)value;
+                object[]? primaryKey = projection.As<EntityBase>()?.PrimaryKey;
                 writer.WritePropertyName(Id);
                 writer.WriteStringValue(reference);
                 if (primaryKey is { })
@@ -301,20 +311,15 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     writer.WritePropertyName(Key);
                     JsonSerializer.Serialize<object[]?>(writer, new object[] { primaryKey });
                 }
-                if (context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || typeof(EnvelopeBase).IsAssignableFrom(typeof(T)))
+                if (context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || projection.As<EnvelopeBase>() is { })
                 {
-                    Type actualType = value.GetType();
-                    foreach (PropertyInfo pi in typeof(T).GetProperties())
+                    foreach (Property property in _properties!.Values)
                     {
-                        PropertyInfo? actualPropertyInfo = actualType.GetProperty(pi.Name);
-                        if (actualPropertyInfo is { })
+                        object? propertytValue = property.GetValue(projection);
+                        if (propertytValue is { })
                         {
-                            object? propertytValue = actualPropertyInfo.GetValue(value);
-                            if (propertytValue is { })
-                            {
-                                writer.WritePropertyName(pi.Name);
-                                JsonSerializer.Serialize(writer, propertytValue, pi.PropertyType, options);
-                            }
+                            writer.WritePropertyName(property.Name);
+                            JsonSerializer.Serialize(writer, propertytValue, property.Type, options);
                         }
                     }
                 }

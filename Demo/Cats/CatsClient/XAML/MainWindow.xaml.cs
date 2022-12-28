@@ -7,8 +7,11 @@ using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Client.Crud;
+using Net.Leksi.Pocota.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http;
@@ -64,6 +67,8 @@ public partial class MainWindow : Window
 
     public CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
+    ComboBox SelectBreed1;
+
     public MainWindow(IServiceProvider services)
     {
         services.GetRequiredService<IPocoContext>().ExternalUpdateProcessing = ExternalUpdateProcessing.Always;
@@ -109,13 +114,15 @@ public partial class MainWindow : Window
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
 
-        CatsCollectionViewSource.Source = Heart.Cats;
+        //CatsCollectionViewSource.Source = Heart.Cats;
 
         BreedFilter = services.GetRequiredService<IBreedFilter>();
 
         CatteryFilter = services.GetRequiredService<ICatteryFilter>();
 
         InitializeComponent();
+
+        SelectBreed1 = SelectBreed;
 
         CatsDataGrid.SelectionChanged += Heart.CatsSelectionChanged;
 
@@ -207,10 +214,9 @@ public partial class MainWindow : Window
         _startGetCats = DateTime.Now;
         e.CallContext!.RequestStartTime = _startGetCats;
         Console.WriteLine($"FindCatsCommand started: {_startGetCats.ToString("o")}");
-
-        //FindSiblingsCatsCommand.Execute(
-        //    new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
-        //);
+        FindSiblingsCatsCommand.Execute(
+            new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
+        );
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -230,10 +236,21 @@ public partial class MainWindow : Window
         {
             _firstShown = true;
             FindBreedsCommand.Executed += FindBreedsCommand_ExecutedFirst;
+            FindBreedsCommand.Executing += FindBreedsCommand_ExecutingFirst;
+            FindCatteriesCommand.Executed += FindCatteriesCommand_ExecutedFirst;
             ConnectToServer();
         }
     }
 
+    private void FindBreedsCommand_ExecutingFirst(object sender, CrudCommandExecutingEventArgs args)
+    {
+        FindBreedsCommand.Executing -= FindBreedsCommand_ExecutingFirst;
+        FindCatteriesCommand.Execute(
+            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
+        );
+    }
+
+    private int _breedsAndCatteriesReentering = 2;
     private void ConnectToServer()
     {
         Dispatcher.BeginInvoke(() =>
@@ -263,6 +280,7 @@ public partial class MainWindow : Window
 
     internal void ShowErrorMessage(Exception exception, bool shutdown)
     {
+        Console.WriteLine(exception);
         MessageBox.Show(exception.ToString(), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
         if (shutdown)
         {
@@ -274,17 +292,20 @@ public partial class MainWindow : Window
     {
         FindBreedsCommand.Executed -= FindBreedsCommand_ExecutedFirst;
         FindBreedsCommand.Executed += FindBreedsAndCatteriesCommand_Executed;
-        FindCatteriesCommand.Executed += FindCatteriesCommand_ExecutedFirst;
-        FindCatteriesCommand.Execute(
-            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
-        );
+        if(Interlocked.Decrement(ref _breedsAndCatteriesReentering) == 0)
+        {
+            _connectingDialog!.DialogResult = true;
+        }
     }
 
     private void FindCatteriesCommand_ExecutedFirst(object? sender, EventArgs e)
     {
         FindCatteriesCommand.Executed -= FindCatteriesCommand_ExecutedFirst;
         FindCatteriesCommand.Executed += FindBreedsAndCatteriesCommand_Executed;
-        _connectingDialog!.DialogResult = true;
+        if (Interlocked.Decrement(ref _breedsAndCatteriesReentering) == 0)
+        {
+            _connectingDialog!.DialogResult = true;
+        }
     }
 
     private void FindBreedsAndCatteriesCommand_Executed(object? sender, EventArgs e)
@@ -298,22 +319,10 @@ public partial class MainWindow : Window
         }
         else if (sender is FindCatteriesCommand)
         {
-            if (SelectCattery.Visibility is Visibility.Collapsed)
-            {
-                ClearCattery.Command.Execute(ClearCattery.CommandParameter);
-            }
-        }
-    }
-
-    private void DatePicker_SelectedDateChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-    {
-        if (sender is DatePicker datePicker)
-        {
-            typeof(ICatFilter).GetProperty(datePicker.Name)!.SetValue(
-                Heart.CatFilter,
-                datePicker.SelectedDate is null ?
-                    null : DateOnly.Parse(DateTime.Parse(datePicker.SelectedDate.ToString()!.Trim()).ToString("yyyy-MM-dd"))
-            );
+            //if (SelectCattery.Visibility is Visibility.Collapsed)
+            //{
+            //    ClearCattery.Command.Execute(ClearCattery.CommandParameter);
+            //}
         }
     }
 
@@ -395,4 +404,5 @@ public partial class MainWindow : Window
     {
         CloseAllWindowsCommand.Execute(Windows);
     }
+
 }
