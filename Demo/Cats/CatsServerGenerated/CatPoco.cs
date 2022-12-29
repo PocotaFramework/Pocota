@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-28T18:41:16                                  //
+// at 2022-12-29T14:41:32                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,13 +14,6 @@ using System;
 using System.Collections.Generic;
 
 namespace CatsCommon.Model;
-
-
-[Projection(typeof(CatICatProjection))]
-[Projection(typeof(CatICatForListingProjection))]
-[Projection(typeof(CatICatAsParentProjection))]
-[Projection(typeof(CatICatForViewProjection))]
-
 
 public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>
 {
@@ -165,11 +158,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly CatPoco _projector;
 
-        private readonly ProjectionList<ILitter,LitterPoco> _litters;
+        private readonly ProjectionList<LitterPoco,ILitter> _litters;
 
        public ICattery Cattery 
         {
-            get => ((IProjection)_projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
             set => _projector.Cattery = ((IProjection)value!)?.As<CatteryPoco>()!;
         }
 
@@ -193,7 +186,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public IBreed Breed 
         {
-            get => ((IProjection)_projector.Breed).As<IBreed>()!;
+            get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
             set => _projector.Breed = ((IProjection)value!)?.As<BreedPoco>()!;
         }
 
@@ -231,10 +224,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatProjection(CatPoco projector)
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
+
             _litters = new(((CatPoco)_projector).Litters);
         }
 
@@ -491,7 +481,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public ICattery Cattery 
         {
-            get => ((IProjection)_projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
        public String? NameNat 
@@ -511,7 +501,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public IBreed Breed 
         {
-            get => ((IProjection)_projector.Breed).As<IBreed>()!;
+            get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
        public ILitterForCat? Litter 
@@ -538,10 +528,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatForListingProjection(CatPoco projector)
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
+
         }
 
         public I? As<I>() where I : class
@@ -767,7 +754,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public ICattery Cattery 
         {
-            get => ((IProjection)_projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
        public String? NameNat 
@@ -782,7 +769,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public IBreed Breed 
         {
-            get => ((IProjection)_projector.Breed).As<IBreed>()!;
+            get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
        public ILitterForDate? Litter 
@@ -804,10 +791,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatAsParentProjection(CatPoco projector)
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
+
         }
 
         public I? As<I>() where I : class
@@ -1046,11 +1030,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly CatPoco _projector;
 
-        private readonly ProjectionList<ILitterForCat,LitterPoco> _litters;
+        private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
 
        public ICattery Cattery 
         {
-            get => ((IProjection)_projector.Cattery).As<ICattery>()!;
+            get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
        public String? NameNat 
@@ -1070,7 +1054,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
        public IBreed Breed 
         {
-            get => ((IProjection)_projector.Breed).As<IBreed>()!;
+            get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
        public ILitterForCat? Litter 
@@ -1102,10 +1086,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         internal CatICatForViewProjection(CatPoco projector)
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
+
             _litters = new(((CatPoco)_projector).Litters);
         }
 

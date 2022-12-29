@@ -39,7 +39,7 @@
             }
             else 
             {
-            <text>        private readonly @Html.Raw($"ProjectionList<{pm.ItemType},{pm.Class}> {fieldName};")
+        <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
 </text>
             }
         }
@@ -50,7 +50,7 @@
             <text>       public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if((!pm.IsList || !pm.IsProjection) && !pm.IsIndependent){
-                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)@if (pm.IsNullable) {<text>?</text> }@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)?@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
             else {
@@ -83,10 +83,14 @@
         internal @Html.Raw($"{Model.ClassName}({Model.Parent!.ClassName} projector)")
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
+            @if(Model.Parent!.IsClient){
+                <text>            _projector.PropertyChanged += (o, e) =>
             {
                 _propertyChanged?.Invoke(this, e);
             };
+</text>
+            }
+
             @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";

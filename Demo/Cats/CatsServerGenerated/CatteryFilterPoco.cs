@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-28T18:41:16                                  //
+// at 2022-12-29T14:41:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,10 +12,6 @@ using Net.Leksi.Pocota.Server;
 using System;
 
 namespace CatsCommon.Filters;
-
-
-[Projection(typeof(CatteryFilterICatteryFilterProjection))]
-
 
 public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
@@ -62,10 +58,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
         internal CatteryFilterICatteryFilterProjection(CatteryFilterPoco projector)
         {
             _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
+
         }
 
         public I? As<I>() where I : class

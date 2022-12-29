@@ -171,7 +171,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
         if (_isEntity)
         {
-            primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
+            primaryKey = (IPrimaryKey<T>?)((IProjection)value).As<IEntity>()!.PrimaryKey;
             if (primaryKey is { })
             {
                 if (isHighLevel &&!context.IsHighLevelListUnique(primaryKey))
@@ -184,7 +184,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         writer.WriteStartObject();
 
         string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
-        writer.WriteString(PocoTraversalConverterFactory.Interface, isInterfaceFound ? interfaceReference : typeof(T).ToString());
+        writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
 
         if (alreadyExists)
         {
@@ -193,34 +193,37 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         }
         else
         {
-            string classReference = context.GetReference(_actualType, out bool isClassFound);
-            writer.WriteString(PocoTraversalConverterFactory.Class, isClassFound ? classReference : _actualType.ToString());
-
             writer.WriteString(PocoTraversalConverterFactory.Id, reference);
+            string classReference = context.GetReference(_actualType, out bool isClassFound);
+            writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
             if (_isEntity)
             {
                 writer.WritePropertyName(PocoTraversalConverterFactory.Key);
                 JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
             }
         }
+        IPoco poco = ((IProjection)value).As<IPoco>()!;
 
-        foreach (PropertyInfo pi in typeof(T).GetProperties())
+        foreach (KeyValuePair<string, Property> property in _properties)
         {
-            PropertyInfo actualPropertyInfo = value!.GetType().GetProperty(pi.Name)!;
-            if(!context.IsPropertySerialized(reference, actualPropertyInfo))
+            if(!poco.IsPropertySet(property.Key))
             {
-                object? propertyValue = pi.GetValue(value);
+                object? propertyValue = property.Value.GetValue(value);
                 if(propertyValue is { })
                 {
-                    writer.WritePropertyName(pi.Name);
+                    writer.WritePropertyName(property.Key);
                     try
                     {
-                        JsonSerializer.Serialize(writer, propertyValue, pi.PropertyType, options);
+                        JsonSerializer.Serialize(writer, propertyValue, property.Value.Type, options);
                     }
                     catch(Exception ex)
                     {
-                        throw new JsonException($"Exception occured while serializing the property {pi} of {typeof(T)} object!", ex);
+                        throw new JsonException($"Exception occured while serializing the property {property.Key} of {typeof(T)} object!", ex);
                     }
+                }
+                else
+                {
+                    writer.WriteNull(property.Key);
                 }
             }
         }

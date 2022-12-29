@@ -415,6 +415,7 @@ public class CodeGenerator : IModelBuilder
             AddUsings(model, typeof(Controller));
             AddUsings(model, typeof(Server.IPocoContext));
             AddUsings(model, typeof(Task));
+            AddUsings(model, typeof(HttpUtility));
 
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
@@ -850,7 +851,6 @@ public class CodeGenerator : IModelBuilder
                 model.Interfaces.Add(MakeIProjectionName(typeof(Client.PocoBase)));
                 AddUsings(model, typeof(INotifyPropertyChanged));
                 AddUsings(model, typeof(Client.ProjectionList<,>));
-                AddUsings(model, typeof(ProjectionAttribute));
             }
             else
             {

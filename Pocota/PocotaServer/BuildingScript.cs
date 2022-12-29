@@ -1,11 +1,11 @@
-﻿using System.IO;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Server;
 
 public class BuildingScript
 {
     public const string KeyOnly = "<KeyOnly>";
+    public const string Touch = "<Touch>";
 
     private readonly IServiceProvider _services;
     private readonly Dictionary<string, Action<BuildingEventArgs>> _handlers = new();
@@ -39,6 +39,8 @@ public class BuildingScript
         if(_mapping is null)
         {
             _mapping = new BuildingScriptMapping();
+            _mapping.CreationPoint = Environment.StackTrace.Split('\n', StringSplitOptions.TrimEntries).Skip(3).Take(1).FirstOrDefault()!;
+
         }
         _mapping.AddPathMapEntry(path, fieldName, converterType);
     }
@@ -52,6 +54,10 @@ public class BuildingScript
     {
         if (WithTrace)
         {
+            if(_mapping is { })
+            {
+                Console.WriteLine($"from mapping: {_mapping.CreationPoint}: ");
+            }
             Console.Write($"{args.PathSelector}: ");
         }
         bool success = true;
@@ -165,6 +171,22 @@ public class BuildingScript
         }
         if(fieldName is { })
         {
+            if (fieldName.Equals(Touch))
+            {
+                if (WithTrace)
+                {
+                    Console.Write($"Touch )");
+                }
+                if (args.IsCollection)
+                {
+                    args.Skip();
+                }
+                else
+                {
+                    args.Touch();
+                }
+                return true;
+            }
             if (WithTrace)
             {
                 Console.Write($"field: {fieldName} = ");

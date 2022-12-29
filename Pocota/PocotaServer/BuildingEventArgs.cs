@@ -85,6 +85,7 @@ public class BuildingEventArgs: EventArgs
 
     public bool IsNullable { get; internal set; } = true;
     public Type PropertyType { get; internal set; } = null!;
+    public bool IsCollection { get; internal set; } = false;
 
     public object? Value
     {
@@ -192,9 +193,9 @@ public class BuildingEventArgs: EventArgs
 
     public void Skip()
     {
-        if (!IsKeyRequest)
+        if (!IsKeyRequest && !IsCollection)
         {
-            throw new InvalidOperationException($"{nameof(Skip)} can be called only at key requiest!");
+            throw new InvalidOperationException($"{nameof(Skip)} can be called only at key requiest or collection!");
         }
         if (!IsMissed && !KeyOnly)
         {

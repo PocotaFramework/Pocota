@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Demo\Cats\CatsServerEngine\CatsServerEngineDebug.csproj" />
     <ProjectReference Include="..\..\Demo\Cats\CatsServerGenerated\CatsServerGeneratedDebug.csproj" />
+    <ProjectReference Include="..\..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
   </ItemGroup>
 
 </Project>

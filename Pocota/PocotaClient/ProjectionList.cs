@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class ProjectionList<I, T> : IList<I>, INotifyCollectionChanged, INotifyPropertyChanged
+public class ProjectionList<T, I> : ProjectionListBase<T, I>, INotifyCollectionChanged, INotifyPropertyChanged
     where I : class 
     where T : class
 {
@@ -28,89 +28,36 @@ public class ProjectionList<I, T> : IList<I>, INotifyCollectionChanged, INotifyP
 
     private static readonly PropertyChangedEventArgs s_propertyChangedEventArgs = new(null);
 
-    private readonly ObservableCollection<T> _source;
-
-    public I this[int index]
+    public ProjectionList(IList<T> source):base(source)
     {
-        get => ((IProjection)_source[index]!).As<I>()!;
-        set => _source[index] = ((IProjection)value!).As<T>()!;
-    }
-
-    public int Count => _source.Count;
-
-    public bool IsReadOnly => false;
-
-    public ProjectionList(ObservableCollection<T> source)
-    {
-        _source = source!;
-        _source.CollectionChanged += (o, e) =>
+        ((ObservableCollection<T>)_source).CollectionChanged += (o, e) =>
         {
-            NotifyCollectionChangedEventArgs args;
-            if(e.Action is NotifyCollectionChangedAction.Add)
+            NotifyCollectionChangedEventArgs args = e;
+            if (e.Action is NotifyCollectionChangedAction.Add)
             {
-                args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, ((IProjection)e.NewItems![0]!).As<I>()!);
+                args = new NotifyCollectionChangedEventArgs(e.Action, ((IProjection)e.NewItems![0]!).As<I>()!, e.NewStartingIndex);
             }
-            else
+            else if (e.Action is NotifyCollectionChangedAction.Replace)
             {
-                args = e;
+                args = new NotifyCollectionChangedEventArgs(
+                    e.Action,
+                    new List<I>() { ((IProjection)e.NewItems![0]!).As<I>()! },
+                    new List<I>() { ((IProjection)e.OldItems![0]!).As<I>()! },
+                    e.NewStartingIndex
+                );
+            }
+            else if (e.Action is NotifyCollectionChangedAction.Move)
+            {
+                args = new NotifyCollectionChangedEventArgs(
+                    e.Action,
+                    ((IProjection)e.NewItems![0]!).As<I>()!,
+                    e.NewStartingIndex,
+                    e.OldStartingIndex
+                );
             }
             _collectionChanged?.Invoke(this, args);
             PropertyChanged?.Invoke(this, s_propertyChangedEventArgs);
         };
 
-    }
-
-    public void Add(I item)
-    {
-        T itemValue = ((IProjection)item!).As<T>()!;
-        _source.Add(itemValue);
-    }
-
-    public void Clear()
-    {
-        _source.Clear();
-    }
-
-    public bool Contains(I item)
-    {
-        return _source.Contains(((IProjection)item!).As<T>()!);
-    }
-
-    public void CopyTo(I[] array, int arrayIndex)
-    {
-        foreach (I item in _source.Select(value => ((IProjection)value!).As<I>()!))
-        {
-            array[arrayIndex++] = item;
-        }
-    }
-
-    public IEnumerator<I> GetEnumerator()
-    {
-        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
-    }
-
-    public int IndexOf(I item)
-    {
-        return _source.IndexOf(((IProjection)item!).As<T>()!);
-    }
-
-    public void Insert(int index, I item)
-    {
-        _source.Insert(index, ((IProjection)item!).As<T>()!);
-    }
-
-    public bool Remove(I item)
-    {
-        return _source.Remove(((IProjection)item!).As<T>()!);
-    }
-
-    public void RemoveAt(int index)
-    {
-        _source.RemoveAt(index);
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 }

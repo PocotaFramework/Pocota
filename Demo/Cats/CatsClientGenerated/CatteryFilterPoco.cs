@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-28T18:41:17                                  //
+// at 2022-12-29T14:41:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,13 +14,113 @@ using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
-
-[Projection(typeof(CatteryFilterICatteryFilterProjection))]
-
-
 public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
 {
 
+    #region Projection classes
+
+    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
+    {
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "SearchRegex", 
+                    typeof(String),
+                    GetSearchRegexValue, 
+                    SetSearchRegexValue, 
+                    target => ((IPoco)((CatteryFilterICatteryFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private event PropertyChangedEventHandler? _propertyChanged;
+
+
+            public event PropertyChangedEventHandler? PropertyChanged
+            {
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
+            }
+
+
+        private readonly CatteryFilterPoco _projector;
+
+
+       public String? SearchRegex 
+        {
+            get => _projector.SearchRegex;
+            set => _projector.SearchRegex = (String?)value;
+        }
+
+
+        internal CatteryFilterICatteryFilterProjection(CatteryFilterPoco projector)
+        {
+            _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
+
+        }
+
+        public I? As<I>() where I : class
+        {
+            return (I?)_projector.As(typeof(I))!;
+        }
+
+        public object? As(Type type) 
+        {
+            return _projector.As(type);
+        }
+
+
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(_projector, other.As<CatteryFilterPoco>());
+        }
+
+        public override int GetHashCode()
+        {
+            return _projector.GetHashCode();
+        }
+
+        
+#region Properties Accessors
+
+        private static object? GetSearchRegexValue(object target)
+        {
+            return ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex;
+        }
+
+        private static void SetSearchRegexValue(object target, object? value)
+        {
+             ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
+
+    }
+    #endregion Projection classes
+    
     
 #region Init Properties
     public static void InitProperties(List<Property> properties)
@@ -201,107 +301,5 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 }
 
 
-#region Projection classes
-
-    public class CatteryFilterICatteryFilterProjection: ICatteryFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatteryFilterPoco>, IProjection<ICatteryFilter>
-    {
-
-
-#region Init Properties
-        public static void InitProperties(List<Property> properties)
-        {
-            properties.Add(
-                new Property(
-                    "SearchRegex", 
-                    typeof(String),
-                    GetSearchRegexValue, 
-                    SetSearchRegexValue, 
-                    target => ((IPoco)((CatteryFilterICatteryFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-        }
-#endregion Init Properties;
-
-
-        private event PropertyChangedEventHandler? _propertyChanged;
-
-
-            public event PropertyChangedEventHandler? PropertyChanged
-            {
-                add
-                {
-                    _propertyChanged += value;
-                }
-
-                remove
-                {
-                    _propertyChanged -= value;
-                }
-            }
-
-
-        private readonly CatteryFilterPoco _projector;
-
-
-       public String? SearchRegex 
-        {
-            get => _projector.SearchRegex;
-            set => _projector.SearchRegex = (String?)value;
-        }
-
-
-        internal CatteryFilterICatteryFilterProjection(CatteryFilterPoco projector)
-        {
-            _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
-        }
-
-        public I? As<I>() where I : class
-        {
-            return (I?)_projector.As(typeof(I))!;
-        }
-
-        public object? As(Type type) 
-        {
-            return _projector.As(type);
-        }
-
-
-        public override bool Equals(object? obj)
-        {
-            return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(_projector, other.As<CatteryFilterPoco>());
-        }
-
-        public override int GetHashCode()
-        {
-            return _projector.GetHashCode();
-        }
-
-        
-#region Properties Accessors
-
-        private static object? GetSearchRegexValue(object target)
-        {
-            return ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex;
-        }
-
-        private static void SetSearchRegexValue(object target, object? value)
-        {
-             ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
-
-    }
-#endregion Projection classes
 
 

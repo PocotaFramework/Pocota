@@ -2,7 +2,7 @@
 // Controller Proxy                 //
 // CatsContract.CatsControllerProxy //
 // Generated automatically from     //
-// at 2022-12-28T18:41:16           //
+// at 2022-12-29T14:41:32           //
 //////////////////////////////////////
 
 
@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace CatsContract;
 
@@ -32,7 +33,7 @@ public class CatsControllerProxy : Controller
         if (filter is { })
         {
             pocoContext.AddJsonConverters<ICatFilter?>(jsonSerializerOptions);
-            filter1 = JsonSerializer.Deserialize<ICatFilter?>(filter, jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
         ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         ((Controller)contra).ControllerContext = ControllerContext;
@@ -48,7 +49,7 @@ public class CatsControllerProxy : Controller
         if (cat is { })
         {
             pocoContext.AddJsonConverters<ICat>(jsonSerializerOptions);
-            cat1 = JsonSerializer.Deserialize<ICat>(cat, jsonSerializerOptions)!;
+            cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), jsonSerializerOptions)!;
         }
         ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         ((Controller)contra).ControllerContext = ControllerContext;
@@ -64,7 +65,7 @@ public class CatsControllerProxy : Controller
         if (filter is { })
         {
             pocoContext.AddJsonConverters<IBreedFilter?>(jsonSerializerOptions);
-            filter1 = JsonSerializer.Deserialize<IBreedFilter?>(filter, jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
         ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         ((Controller)contra).ControllerContext = ControllerContext;
@@ -80,7 +81,7 @@ public class CatsControllerProxy : Controller
         if (filter is { })
         {
             pocoContext.AddJsonConverters<ICatteryFilter?>(jsonSerializerOptions);
-            filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(filter, jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
         ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         ((Controller)contra).ControllerContext = ControllerContext;
@@ -96,7 +97,7 @@ public class CatsControllerProxy : Controller
         if (filter is { })
         {
             pocoContext.AddJsonConverters<ICatFilter?>(jsonSerializerOptions);
-            filter1 = JsonSerializer.Deserialize<ICatFilter?>(filter, jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
         ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         ((Controller)contra).ControllerContext = ControllerContext;

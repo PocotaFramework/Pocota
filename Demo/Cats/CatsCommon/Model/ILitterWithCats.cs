@@ -2,5 +2,5 @@
 
 public interface ILitterWithCats
 {
-    IList<ICatForListing>? Cats { get; }
+    IList<ICatForListing> Cats { get; }
 }

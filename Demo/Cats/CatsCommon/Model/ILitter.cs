@@ -6,6 +6,6 @@ public interface ILitter
     DateOnly Date { get; set; }
     ICat Female { get; set; }
     ICat? Male { get; set; }
-    IList<ICat>? Cats { get; }
+    IList<ICat> Cats { get; }
     IList<string> Strings { get; }
 }

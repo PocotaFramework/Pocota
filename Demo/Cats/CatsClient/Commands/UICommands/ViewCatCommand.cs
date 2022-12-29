@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Client.Crud;
+using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -35,26 +37,26 @@ public class ViewCatCommand : ICommand
 
     public bool CanExecute(object? parameter)
     {
-        return parameter is ICat || (parameter is object[] && ((object[])parameter)[0] is ICat);
+        return parameter is IProjection<ICat> || (parameter is object[] && ((object[])parameter)[0] is IProjection<ICat>);
     }
 
     public void Execute(object? parameter)
     {
-        if(parameter is ICatForListing cat)
+        if(parameter is IProjection<ICat> projection && projection.As<ICat>() is ICat cat)
         {
-            if(!((IPoco)cat).IsLoaded<ICatForView>())
+            if(!((IProjection)cat).As<IPoco>()!.IsLoaded<ICatForView>())
             {
-                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = (ICat)cat });
+                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat });
             }
             else
             {
                 GetCat_Executed(this, new CrudCommandExecutedEventArgs(cat, null));
             }
         }
-        else if(parameter is object[] && ((object[])parameter)[0] is ICatForListing cat1) {
-            if (!((IPoco)cat1).IsLoaded<ICatForView>())
+        else if(parameter is object[] && ((object[])parameter)[0] is IProjection<ICat> projection1 && projection1.As<ICat>() is ICat cat1) {
+            if (!((IProjection)cat1).As<IPoco>()!.IsLoaded<ICatForView>())
             {
-                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = (ICat)cat1 });
+                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat1 });
             }
             else
             {
@@ -73,7 +75,7 @@ public class ViewCatCommand : ICommand
         ViewCat view = _services.GetRequiredService<ViewCat>();
         MainWindow mainWindow = _services.GetRequiredService<MainWindow>();
         mainWindow.AddView(view);
-        ((IViewCatHeart)view.Heart).Cat = e.Result as ICatForView;
+        view.Heart.Cat = ((IProjection)e.Result!).As<ICatForView>()!;
         view.Closed += View_Closed;
         view.Show();
     }
@@ -81,6 +83,6 @@ public class ViewCatCommand : ICommand
     private void View_Closed(object? sender, EventArgs e)
     {
         MainWindow mainWindow = _services.GetRequiredService<MainWindow>();
-        mainWindow.RemoveView(sender as Window);
+        mainWindow.RemoveView((sender as Window)!);
     }
 }

@@ -309,7 +309,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 if (primaryKey is { })
                 {
                     writer.WritePropertyName(Key);
-                    JsonSerializer.Serialize<object[]?>(writer, new object[] { primaryKey });
+                    JsonSerializer.Serialize<object[]?>(writer, primaryKey);
                 }
                 if (context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || projection.As<EnvelopeBase>() is { })
                 {

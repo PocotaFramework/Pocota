@@ -77,6 +77,7 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
                     break;
                 }
                 value[0] = JsonSerializer.Deserialize(ref reader, itemType, options);
+                Console.WriteLine(value[0]);
                 if (context.CallContext?.DispatcherWrapper is { })
                 {
                     context.CallContext.DispatcherWrapper.Invoke(() => membersHolder.Add!.Invoke(result, value));
@@ -89,6 +90,30 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
         }
 
         return result;
+    }
+
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    {
+        if (value is null)
+        {
+            writer.WriteNullValue();
+        }
+        else
+        {
+            ListMembersHolder membersHolder = GetListMembersHolder(value.GetType());
+
+            object[] index = new object[1];
+            writer.WriteStartArray();
+
+            int count = (int)membersHolder.Count!.GetValue(value)!;
+            for (int i = 0; i < count; ++i)
+            {
+                index[0] = i;
+                object? item = membersHolder.Items!.GetValue(value, index);
+                JsonSerializer.Serialize(writer, item, options);
+            }
+            writer.WriteEndArray();
+        }
     }
 
     private ListMembersHolder GetListMembersHolder(Type type)
@@ -147,27 +172,4 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
         return result;
     }
 
-    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
-    {
-        if (value is null)
-        {
-            writer.WriteNullValue();
-        }
-        else
-        {
-            ListMembersHolder membersHolder = GetListMembersHolder(value.GetType());
-
-            object[] index = new object[1];
-            writer.WriteStartArray();
-
-            int count = (int)membersHolder.Count!.GetValue(value)!;
-            for (int i = 0; i < count; ++i)
-            {
-                index[0] = i;
-                object? item = membersHolder.Items!.GetValue(value, index);
-                JsonSerializer.Serialize(writer, item, options);
-            }
-            writer.WriteEndArray();
-        }
-    }
 }

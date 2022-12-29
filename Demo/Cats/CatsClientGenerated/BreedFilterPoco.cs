@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-28T18:41:16                                  //
+// at 2022-12-29T14:41:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -14,13 +14,113 @@ using System.ComponentModel;
 
 namespace CatsCommon.Filters;
 
-
-[Projection(typeof(BreedFilterIBreedFilterProjection))]
-
-
 public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
 {
 
+    #region Projection classes
+
+    public class BreedFilterIBreedFilterProjection: IBreedFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
+    {
+
+
+#region Init Properties
+        public static void InitProperties(List<Property> properties)
+        {
+            properties.Add(
+                new Property(
+                    "SearchRegex", 
+                    typeof(String),
+                    GetSearchRegexValue, 
+                    SetSearchRegexValue, 
+                    target => ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
+                    true, 
+                    false, 
+                    null
+                )
+            );
+        }
+#endregion Init Properties;
+
+
+        private event PropertyChangedEventHandler? _propertyChanged;
+
+
+            public event PropertyChangedEventHandler? PropertyChanged
+            {
+                add
+                {
+                    _propertyChanged += value;
+                }
+
+                remove
+                {
+                    _propertyChanged -= value;
+                }
+            }
+
+
+        private readonly BreedFilterPoco _projector;
+
+
+       public String? SearchRegex 
+        {
+            get => _projector.SearchRegex;
+            set => _projector.SearchRegex = (String?)value;
+        }
+
+
+        internal BreedFilterIBreedFilterProjection(BreedFilterPoco projector)
+        {
+            _projector = projector;
+            _projector.PropertyChanged += (o, e) =>
+            {
+                _propertyChanged?.Invoke(this, e);
+            };
+
+        }
+
+        public I? As<I>() where I : class
+        {
+            return (I?)_projector.As(typeof(I))!;
+        }
+
+        public object? As(Type type) 
+        {
+            return _projector.As(type);
+        }
+
+
+        public override bool Equals(object? obj)
+        {
+            return obj is IProjection<BreedFilterPoco> other && object.ReferenceEquals(_projector, other.As<BreedFilterPoco>());
+        }
+
+        public override int GetHashCode()
+        {
+            return _projector.GetHashCode();
+        }
+
+        
+#region Properties Accessors
+
+        private static object? GetSearchRegexValue(object target)
+        {
+            return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+        }
+
+        private static void SetSearchRegexValue(object target, object? value)
+        {
+             ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String?)value;
+        }
+
+
+#endregion Properties Accessors;
+
+
+
+    }
+    #endregion Projection classes
+    
     
 #region Init Properties
     public static void InitProperties(List<Property> properties)
@@ -201,107 +301,5 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 }
 
 
-#region Projection classes
-
-    public class BreedFilterIBreedFilterProjection: IBreedFilter, INotifyPropertyChanged, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<BreedFilterPoco>, IProjection<IBreedFilter>
-    {
-
-
-#region Init Properties
-        public static void InitProperties(List<Property> properties)
-        {
-            properties.Add(
-                new Property(
-                    "SearchRegex", 
-                    typeof(String),
-                    GetSearchRegexValue, 
-                    SetSearchRegexValue, 
-                    target => ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-        }
-#endregion Init Properties;
-
-
-        private event PropertyChangedEventHandler? _propertyChanged;
-
-
-            public event PropertyChangedEventHandler? PropertyChanged
-            {
-                add
-                {
-                    _propertyChanged += value;
-                }
-
-                remove
-                {
-                    _propertyChanged -= value;
-                }
-            }
-
-
-        private readonly BreedFilterPoco _projector;
-
-
-       public String? SearchRegex 
-        {
-            get => _projector.SearchRegex;
-            set => _projector.SearchRegex = (String?)value;
-        }
-
-
-        internal BreedFilterIBreedFilterProjection(BreedFilterPoco projector)
-        {
-            _projector = projector;
-            _projector.PropertyChanged += (o, e) =>
-            {
-                _propertyChanged?.Invoke(this, e);
-            };
-        }
-
-        public I? As<I>() where I : class
-        {
-            return (I?)_projector.As(typeof(I))!;
-        }
-
-        public object? As(Type type) 
-        {
-            return _projector.As(type);
-        }
-
-
-        public override bool Equals(object? obj)
-        {
-            return obj is IProjection<BreedFilterPoco> other && object.ReferenceEquals(_projector, other.As<BreedFilterPoco>());
-        }
-
-        public override int GetHashCode()
-        {
-            return _projector.GetHashCode();
-        }
-
-        
-#region Properties Accessors
-
-        private static object? GetSearchRegexValue(object target)
-        {
-            return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
-        }
-
-        private static void SetSearchRegexValue(object target, object? value)
-        {
-             ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
-
-    }
-#endregion Projection classes
 
 

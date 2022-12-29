@@ -1,4 +1,6 @@
 ﻿using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Globalization;
 using System.Windows.Data;
@@ -26,9 +28,9 @@ public class PocoStateConverter : MarkupExtension, IValueConverter
             {
                 return Converter.Convert(value, targetType, parameter, culture);
             }
-            if (value is PocoBase poco)
+            if (value is IProjection<IPoco> projection && projection.As<IPoco>() is IPoco poco)
             {
-                return Converter.Convert(((IPoco)poco).PocoState, targetType, parameter, culture);
+                return Converter.Convert(poco.PocoState, targetType, parameter, culture);
             }
             throw new NotImplementedException();
         }

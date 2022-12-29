@@ -1,5 +1,6 @@
 ﻿using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
         {
             if (values.Length == 2 && values[0] is IProjection<ICat> projection && projection.As<ICat>() is ICat cat && values[1] is EditKind editKind)
             {
-                return $"{(editKind is EditKind.ReadOnly ? "Просмотр" : "Редактирование")}: {cat.NameNat} ({cat.Litter?.Date}, {GenderConverter.Converter.Convert(cat.Gender, typeof(string), null, CultureInfo.CurrentCulture)}, {cat.Cattery.NameNat}), {PocoStateConverter.Converter.Convert(((IPoco)cat).PocoState, typeof(string), null, CultureInfo.CurrentCulture)}";
+                return $"{(editKind is EditKind.ReadOnly ? "Просмотр" : "Редактирование")}: {cat.NameNat} ({cat.Litter?.Date}, {GenderConverter.Converter.Convert(cat.Gender, typeof(string), null, CultureInfo.CurrentCulture)}, {cat.Cattery.NameNat}), {PocoStateConverter.Converter.Convert(((IProjection)cat).As<IPoco>()!.PocoState, typeof(string), null, CultureInfo.CurrentCulture)}";
             }
             return "Кошка не найдена";
         }

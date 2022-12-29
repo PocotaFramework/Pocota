@@ -140,7 +140,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
             sb.Append(" where ");
             if (filter.Female is { })
             {
-                IPrimaryKey primaryKey = ((IEntity)filter.Female).PrimaryKey;
+                IPrimaryKey primaryKey = ((IProjection)filter.Female).As<IEntity>()!.PrimaryKey;
                 sb.Append("Litters.IdFemale=@IdFemale and Litters.IdFemaleCattery=@IdFemaleCattery");
                 sqlCommand.Parameters.AddWithValue("IdFemale", primaryKey["IdCat"]!);
                 sqlCommand.Parameters.AddWithValue("IdFemaleCattery", primaryKey["IdCattery"]!);
@@ -151,7 +151,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
             }
             if (filter.Male is { })
             {
-                IPrimaryKey primaryKey = ((IEntity)filter.Male).PrimaryKey;
+                IPrimaryKey primaryKey = ((IProjection)filter.Male).As<IEntity>()!.PrimaryKey;
                 sb.Append("Litters.IdMale=@IdMale and Litters.IdMaleCattery=@IdMaleCattery");
                 sqlCommand.Parameters.AddWithValue("IdMale", primaryKey["IdCat"]!);
                 sqlCommand.Parameters.AddWithValue("IdMaleCattery", primaryKey["IdCattery"]!);
@@ -266,7 +266,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdBreed=@IdBreed AND Cats.IdGroup=@IdGroup");
-            IPrimaryKey primaryKeyBreed = ((IEntity)filterObject.Breed).PrimaryKey;
+            IPrimaryKey primaryKeyBreed = ((IProjection)filterObject.Breed).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdBreed", primaryKeyBreed["IdBreed"]!);
             sqlCommand.Parameters.AddWithValue("IdGroup", primaryKeyBreed["IdGroup"]!);
         }
@@ -277,7 +277,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 sbWhere.Append(" AND ");
             }
             sbWhere.Append("Cats.IdCattery=@IDCattery");
-            IPrimaryKey primaryKeyCattery = ((IEntity)filterObject.Cattery).PrimaryKey;
+            IPrimaryKey primaryKeyCattery = ((IProjection)filterObject.Cattery).As<IEntity>()!.PrimaryKey;
             sqlCommand.Parameters.AddWithValue("IdCattery", primaryKeyCattery["IdCattery"]!);
         }
         if (filterObject.BornAfter is { })

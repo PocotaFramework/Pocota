@@ -57,6 +57,21 @@ public class MainWindowHeart : MainWindowHeartPoco
             SelectedCats.Add(cat.As<CatPoco>()!);
         }
         IsCatSelected = SelectedCats.Count == 1;
+        if (IsCatSelected)
+        {
+            SelectedCat = SelectedCats[0];
+        }
+        else
+        {
+            SelectedCat = null;
+        }
+    }
+
+    protected override void OnProjectionCreated(Type @interface, IProjection projection)
+    {
+        ((IMainWindowHeart)projection).CatsViewSource = new CollectionViewSource();
+        ((CollectionViewSource)((IMainWindowHeart)projection).CatsViewSource).Source = ((IMainWindowHeart)projection).Cats;
+        base.OnProjectionCreated(@interface, projection);
     }
 
 }

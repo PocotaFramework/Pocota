@@ -28,15 +28,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _probe = _pocoContext.GetProbePlaceholder<T>();
         _skip = _pocoContext.GetSkipPlaceholder<T>();
-        if (typeof(T).Name.Contains("Litter"))
-        {
-            var props = _core.GetProperties(typeof(T))!;
-            _properties = new string[] { "Order", "Date", "Female", "Male", "Cats", "Strings" }.Where(s => props.ContainsKey(s)).Select(s => props[s]);
-        }
-        else
-        {
-            _properties = _core.GetProperties(typeof(T))!.Values;
-        }
+        _properties = _core.GetProperties(typeof(T))!.Values;
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -274,6 +266,8 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     if (isNew || !isPropertySet)
                     {
+                        bool isTouched = false;
+
                         if (isNew && isPropertySet)
                         {
                             prevPropertyName = property.Name;
@@ -299,7 +293,6 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                 {
                                     if (property.IsCollection)
                                     {
-                                        //context.ItemType = property.ItemType;
                                         if (propertyValue == default)
                                         {
                                             propertyValue = _pocoContext.GetProbePlaceholder(typeForSerialization);
@@ -324,6 +317,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                         path.RemoveAt(path.Count - 1);
                                     }
                                     path.Add(property.Name);
+                                    context.BuildingContext.BuildingEventArgs.IsCollection = property.IsCollection;
                                     context.BuildingContext.BuildingEventArgs.InternalPath = path;
                                     context.BuildingContext.BuildingEventArgs.PropertyType = typeForSerialization;
 
@@ -353,6 +347,10 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                             )
                                             {
                                                 context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
+                                            }
+                                            if(PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.Value, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                            {
+                                                isTouched = true;
                                             }
                                         }
                                         catch (Exception ex)
@@ -406,12 +404,19 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                             }
                             if (propertyValue is { })
                             {
-                                JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
-                                if (isPoco)
+                                if (isTouched)
                                 {
-                                    if (PocoBase.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                    JsonSerializer.Serialize(writer, new object[0], typeof(object[]), options);
+                                }
+                                else
+                                {
+                                    JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
+                                    if (isPoco)
                                     {
-                                        context.Target = null;
+                                        if (PocoBase.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                        {
+                                            context.Target = null;
+                                        }
                                     }
                                 }
 

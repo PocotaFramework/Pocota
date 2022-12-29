@@ -9,9 +9,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Client.Crud;
 using Net.Leksi.Pocota.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Net.Http;
@@ -41,7 +39,6 @@ public partial class MainWindow : Window
     public Dictionary<Window, MenuItem> Windows { get; init; } = new();
 
     public IMainWindowHeart Heart { get; init; }
-    public CollectionViewSource CatsCollectionViewSource { get; init; } = new();
 
     public Gender[] Genders { get; init; } = Enum.GetValues<Gender>();
 
@@ -66,8 +63,6 @@ public partial class MainWindow : Window
     public CatsConnector Connector { get; init; }
 
     public CancellationTokenSource CancellationTokenSource { get; set; } = new();
-
-    ComboBox SelectBreed1;
 
     public MainWindow(IServiceProvider services)
     {
@@ -99,6 +94,7 @@ public partial class MainWindow : Window
 
         FindSiblingsCatsCommand = services.GetRequiredService<FindSiblingsCatsCommand>();
         FindSiblingsCatsCommand.CoughtException += CrudCommand_CoughtException;
+        FindSiblingsCatsCommand.Executed += FindSiblingsCatsCommand_Executed;
 
         services.GetRequiredService<GetCatCommand>().CoughtException += CrudCommand_CoughtException;
 
@@ -114,15 +110,11 @@ public partial class MainWindow : Window
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
 
-        //CatsCollectionViewSource.Source = Heart.Cats;
-
         BreedFilter = services.GetRequiredService<IBreedFilter>();
 
         CatteryFilter = services.GetRequiredService<ICatteryFilter>();
 
         InitializeComponent();
-
-        SelectBreed1 = SelectBreed;
 
         CatsDataGrid.SelectionChanged += Heart.CatsSelectionChanged;
 
@@ -133,6 +125,11 @@ public partial class MainWindow : Window
             _tracedPocos.Show();
         }
 
+    }
+
+    private void FindSiblingsCatsCommand_Executed(object sender, CrudCommandExecutedEventArgs args)
+    {
+        ;
     }
 
     private void CrudCommand_CoughtException(object? sender, ExceptionEventArgs args)
@@ -172,8 +169,8 @@ public partial class MainWindow : Window
 
     internal void AddView(Window view)
     {
-        MenuItem mi = new MenuItem { };
-        Binding binding = new Binding();
+        MenuItem mi = new();
+        Binding binding = new();
         binding.Source = view;
         binding.Path = new("Title");
         binding.Mode = BindingMode.OneWay;
@@ -235,24 +232,16 @@ public partial class MainWindow : Window
         if (!_firstShown)
         {
             _firstShown = true;
-            FindBreedsCommand.Executed += FindBreedsCommand_ExecutedFirst;
-            FindBreedsCommand.Executing += FindBreedsCommand_ExecutingFirst;
-            FindCatteriesCommand.Executed += FindCatteriesCommand_ExecutedFirst;
             ConnectToServer();
         }
-    }
-
-    private void FindBreedsCommand_ExecutingFirst(object sender, CrudCommandExecutingEventArgs args)
-    {
-        FindBreedsCommand.Executing -= FindBreedsCommand_ExecutingFirst;
-        FindCatteriesCommand.Execute(
-            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
-        );
     }
 
     private int _breedsAndCatteriesReentering = 2;
     private void ConnectToServer()
     {
+        _breedsAndCatteriesReentering = 2;
+        FindBreedsCommand.Executed += FindBreedsCommand_ExecutedFirst;
+        FindCatteriesCommand.Executed += FindCatteriesCommand_ExecutedFirst;
         Dispatcher.BeginInvoke(() =>
         {
             _connectingDialog = new ConnectingDialog();
@@ -264,6 +253,9 @@ public partial class MainWindow : Window
         });
         FindBreedsCommand.Execute(
             new FindItemsCommand<IBreed, IBreedFilter>.Parameter { Filter = BreedFilter, Target = Heart.Breeds }
+        );
+        FindCatteriesCommand.Execute(
+            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
         );
     }
 
@@ -319,10 +311,10 @@ public partial class MainWindow : Window
         }
         else if (sender is FindCatteriesCommand)
         {
-            //if (SelectCattery.Visibility is Visibility.Collapsed)
-            //{
-            //    ClearCattery.Command.Execute(ClearCattery.CommandParameter);
-            //}
+            if (SelectCattery.Visibility is Visibility.Collapsed)
+            {
+                ClearCattery.Command.Execute(ClearCattery.CommandParameter);
+            }
         }
     }
 
@@ -360,39 +352,41 @@ public partial class MainWindow : Window
     {
         if (sender is MenuItem item)
         {
+            ICat? cat = ((IProjection?)Heart.SelectedCat)?.As<ICat>();
             switch (item.Name)
             {
                 case "AsDescendant":
-                    Heart.CatFilter.Descendant = CatsDataGrid.SelectedItem as ICat;
+                    Heart.CatFilter.Descendant = cat;
                     break;
                 case "AsAncestor":
-                    Heart.CatFilter.Ancestor = CatsDataGrid.SelectedItem as ICat;
+                    Heart.CatFilter.Ancestor = cat;
                     break;
                 case "AsLitter":
-                    Heart.CatFilter.Litter = (CatsDataGrid.SelectedItem as ICat)?.Litter;
+                    Heart.CatFilter.Litter = cat?.Litter;
                     break;
                 case "AsChild":
-                    Heart.CatFilter.Child = CatsDataGrid.SelectedItem as ICat;
+                    Heart.CatFilter.Child = cat;
                     break;
                 case "AsParent":
-                    ICat cat = (CatsDataGrid.SelectedItem as ICat)!;
-                    if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
+                    if(cat is { })
                     {
-                        Heart.CatFilter.Mother = cat;
-                    }
-                    else
-                    {
-                        Heart.CatFilter.Father = cat;
+                        if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
+                        {
+                            Heart.CatFilter.Mother = cat;
+                        }
+                        else
+                        {
+                            Heart.CatFilter.Father = cat;
+                        }
                     }
                     break;
                 case "AsSelf":
-                    Heart.CatFilter.Self = CatsDataGrid.SelectedItem as ICat;
+                    Heart.CatFilter.Self = cat;
                     break;
                 case "ShowCat":
-                    ICat cat1 = (CatsDataGrid.SelectedItem as ICat)!;
-                    if (ViewCatCommand.CanExecute(cat1))
+                    if (ViewCatCommand.CanExecute(cat))
                     {
-                        ViewCatCommand.Execute(cat1);
+                        ViewCatCommand.Execute(cat);
                     }
                     break;
             }

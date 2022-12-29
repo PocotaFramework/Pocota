@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
 
-public class PocotaCore: PocotaCoreBase
+public class PocotaCore : PocotaCoreBase
 {
     private readonly ConditionalWeakTable<JsonSerializerOptions, PocoTraversalContext> _pocoJsonContexts = new();
     private readonly Dictionary<Type, object> _probePlaceholders = new();
@@ -28,15 +28,15 @@ public class PocotaCore: PocotaCoreBase
         ServiceCollectionWrapper serviceDescriptors = new(core);
         configureServices?.Invoke(serviceDescriptors);
         List<ServiceDescriptor> primaryKeysDescriptors = new();
-        foreach(ServiceDescriptor item in services)
+        foreach (ServiceDescriptor item in services)
         {
-            if(core.GetActualType(item.ServiceType) is Type actualType && typeof(IEntity).IsAssignableFrom(actualType))
+            if (core.GetActualType(item.ServiceType) is Type actualType && typeof(IEntity).IsAssignableFrom(actualType))
             {
                 Type primaryKeyType = (Type)actualType.GetField("PrimaryKeyType")!.GetValue(null)!;
                 primaryKeysDescriptors.Add(new ServiceDescriptor(typeof(IPrimaryKey<>).MakeGenericType(item.ServiceType), primaryKeyType, ServiceLifetime.Transient));
             }
         }
-        foreach(ServiceDescriptor item in primaryKeysDescriptors)
+        foreach (ServiceDescriptor item in primaryKeysDescriptors)
         {
             services.Add(item);
         }
@@ -82,52 +82,67 @@ public class PocotaCore: PocotaCoreBase
     private object? GetPlaceholder(Type type, Func<object> supplier, Dictionary<Type, object> placeholders)
     {
         object? placeholder = null;
-        Type? actualType = null;
-        bool isList = false;
-
-        if (GetActualType(type) is Type tmpType)
-        {
-            actualType = tmpType;
-        }
-        else if (
-            type.IsGenericType
-            && typeof(IList).IsAssignableFrom(type)
-            && GetActualType(type.GetGenericArguments()[0]) is Type itemType
-        )
-        {
-            isList = true;
-            actualType = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
-        }
-        else
-        {
-            return null;
-        }
-        if (!placeholders.TryGetValue(actualType, out placeholder))
+        if (!placeholders.TryGetValue(type, out placeholder))
         {
             lock (placeholders)
             {
-                if (!placeholders.TryGetValue(actualType, out placeholder))
+
+                if (!placeholders.TryGetValue(type, out placeholder))
                 {
-                    if (isList)
+                    Type? actualType = null;
+                    bool isList = false;
+
+                    if (GetActualType(type) is Type tmpType)
                     {
-                        placeholder = Activator.CreateInstance(actualType);
+                        actualType = tmpType;
                     }
-                    else 
+                    else if (
+                        type.IsGenericType
+                        && (
+                            typeof(IList).IsAssignableFrom(type)
+                            || typeof(IList<>).MakeGenericType(type.GetGenericArguments()[0]).IsAssignableFrom(type)
+                        )
+                        && GetActualType(type.GetGenericArguments()[0]) is Type itemType
+                    )
                     {
-                        placeholder = supplier?.Invoke();
-                        if(placeholder is IProjection projection1)
+                        isList = true;
+                        actualType = typeof(List<>).MakeGenericType(type.GetGenericArguments()[0]);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                    if (!placeholders.TryGetValue(actualType, out placeholder))
+                    {
+                        if (isList)
                         {
-                            placeholder = projection1.As<IPoco>()!;
+                            placeholder = Activator.CreateInstance(actualType);
+                        }
+                        else
+                        {
+                            placeholder = supplier?.Invoke();
+                            if (placeholder is IProjection projection1)
+                            {
+                                placeholder = projection1.As<IPoco>()!;
+                            }
+                        }
+                        if (placeholders is { })
+                        {
+                            placeholders.Add(actualType, placeholder!);
+                            if(type != actualType)
+                            {
+                                placeholders.Add(type, placeholder!);
+                            }
                         }
                     }
-                    if (placeholders is { })
+                    else
                     {
-                        placeholders.Add(actualType, placeholder!);
+                        placeholders.Add(type, placeholder!);
                     }
                 }
             }
         }
-        if(placeholder is IProjection projection)
+        if (placeholder is IProjection projection)
         {
             return projection.As(type);
         }

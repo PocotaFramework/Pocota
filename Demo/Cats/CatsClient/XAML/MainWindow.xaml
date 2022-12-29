@@ -60,7 +60,7 @@
                 </TextBlock>
                 <StackPanel x:Name="ControlBreed" Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
                     <ComboBox x:Name="SelectBreed"  VerticalAlignment="Top" Width="145" Margin="10,10,0,0" ItemsSource="{Binding Heart.Breeds}" DisplayMemberPath="NameNat"
-                              SelectedItem="{Binding Path=Heart.CatFilter.Breed, Converter={local:CatFilterConverter}}"
+                              SelectedItem="{Binding Path=Heart.CatFilter.Breed}"
                               />
                     <TextBox x:Name="BreedRegex" VerticalAlignment="Bottom" Width="145" Margin="10,10,0,0" Visibility="Collapsed" Text="{Binding Path=BreedFilter.SearchRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              KeyUp="BreedRegex_KeyUp"
@@ -293,7 +293,7 @@
                 </WrapPanel>
             </StatusBarItem>
         </StatusBar>
-        <DataGrid x:Name="CatsDataGrid" ItemsSource="{Binding CatsCollectionViewSource.View}" IsReadOnly="True" 
+        <DataGrid x:Name="CatsDataGrid" ItemsSource="{Binding Heart.CatsViewSource.View}" IsReadOnly="True" 
                   AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Порода" Binding="{Binding Breed.NameNat}"/>
