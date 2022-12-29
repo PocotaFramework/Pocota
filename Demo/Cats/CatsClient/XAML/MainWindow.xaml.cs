@@ -211,9 +211,9 @@ public partial class MainWindow : Window
         _startGetCats = DateTime.Now;
         e.CallContext!.RequestStartTime = _startGetCats;
         Console.WriteLine($"FindCatsCommand started: {_startGetCats.ToString("o")}");
-        FindSiblingsCatsCommand.Execute(
-            new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
-        );
+        //FindSiblingsCatsCommand.Execute(
+        //    new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
+        //);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -267,6 +267,9 @@ public partial class MainWindow : Window
         Console.WriteLine($"FindCatsCommand done: {DateTime.Now.ToString("o")}, elapsed: {DateTime.Now - e.CallContext!.RequestStartTime}");
         CommandManager.InvalidateRequerySuggested();
 
+        FindSiblingsCatsCommand.Execute(
+            new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
+        );
 
     }
 

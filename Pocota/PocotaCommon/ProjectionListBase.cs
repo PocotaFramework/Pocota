@@ -21,11 +21,11 @@ public class ProjectionListBase<T, I> : IList<I>, IList
 
     public bool IsReadOnly => _source.IsReadOnly;
 
-    public bool IsFixedSize => ((IList)_source).IsFixedSize;
+    bool IList.IsFixedSize => ((IList)_source).IsFixedSize;
 
-    public bool IsSynchronized => ((IList)_source).IsSynchronized;
+    bool ICollection.IsSynchronized => ((ICollection)_source).IsSynchronized;
 
-    public object SyncRoot => ((IList)_source).SyncRoot;
+    object ICollection.SyncRoot => ((ICollection)_source).SyncRoot;
 
     object? IList.this[int index] 
     {
@@ -92,32 +92,32 @@ public class ProjectionListBase<T, I> : IList<I>, IList
         return _source.Select(value => ((IProjection)value!).As<I>()!).GetEnumerator();
     }
 
-    public int Add(object? value)
+    int IList.Add(object? value)
     {
         return ((IList)_source).Add(value);
     }
 
-    public bool Contains(object? value)
+    bool IList.Contains(object? value)
     {
         return ((IList)_source).Contains(value);
     }
 
-    public int IndexOf(object? value)
+    int IList. IndexOf(object? value)
     {
         return ((IList)_source).IndexOf(value);
     }
 
-    public void Insert(int index, object? value)
+    void IList.Insert(int index, object? value)
     {
         ((IList)_source).Insert(index, value);
     }
 
-    public void Remove(object? value)
+    void IList.Remove(object? value)
     {
         ((IList)_source).Remove(value);
     }
 
-    public void CopyTo(Array array, int index)
+    void ICollection.CopyTo(Array array, int index)
     {
         ((IList)_source).CopyTo(array, index);
     }
