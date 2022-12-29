@@ -25,7 +25,7 @@ internal class SiblingCatsConverter : MarkupExtension, IValueConverter
             && typeof(IProjection<ICat>).IsAssignableFrom(value.GetType().GetGenericArguments()[0])
         )
         {
-            Console.WriteLine(((IList<ICatForListing>)value).Count);
+            //Console.WriteLine(((IList<ICatForListing>)value).Count);
             return string.Join(",", ((IList<ICatForListing>)value).Select(v => v.NameNat));
         }
         throw new NotImplementedException();

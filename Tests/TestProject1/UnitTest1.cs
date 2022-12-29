@@ -28,22 +28,30 @@ namespace TestProject1
             source.CollectionChanged += Cats_CollectionChanged;
 
             Console.WriteLine("Add");
-            source.Add(host.Services.GetRequiredService<CatPoco>());
+            cats.Add(host.Services.GetRequiredService<ICatForListing>());
+            Console.WriteLine(cats.Count);
             Console.WriteLine("Add");
-            source.Add(host.Services.GetRequiredService<CatPoco>());
+            cats.Add(host.Services.GetRequiredService<ICatForListing>());
+            Console.WriteLine(cats.Count);
             Console.WriteLine("Insert");
-            CatPoco c1 = host.Services.GetRequiredService<CatPoco>();
-            source.Insert(1, c1);
-            Console.WriteLine("Move");
-            source.Move(1, 2);
+            ICatForListing c1 = host.Services.GetRequiredService<ICatForListing>();
+            cats.Insert(1, c1);
+            Console.WriteLine(cats.Count);
+            //Console.WriteLine("Move");
+            //cats.Move(1, 2);
+            //Console.WriteLine(cats.Count);
             Console.WriteLine("Remove");
-            source.Remove(c1);
+            cats.Remove(c1);
+            Console.WriteLine(cats.Count);
             Console.WriteLine("RemoveAt");
-            source.RemoveAt(1);
+            cats.RemoveAt(1);
+            Console.WriteLine(cats.Count);
             Console.WriteLine("SetItem");
-            source[0] = host.Services.GetRequiredService<CatPoco>();
+            cats[0] = host.Services.GetRequiredService<ICatForListing>();
+            Console.WriteLine(cats.Count);
             Console.WriteLine("Clear");
-            source.Clear();
+            cats.Clear();
+            Console.WriteLine(cats.Count);
 
         }
 

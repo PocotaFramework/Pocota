@@ -171,7 +171,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery")
         .AddPathMapEntry("/Description", "OwnerInfo")
         .AddPathMapEntry("/Litter/Male", BuildingScript.KeyOnly)
-        .AddPathMapEntry("/Litter/Cats", BuildingScript.Touch)
+        .AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
         .AddPathMapEntry("/Litter/Male/IdCat", "IdFather")
         .AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery")
         .AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter))
@@ -195,7 +195,7 @@ internal class Builder : IBuilder
             .AddPathMapEntry("/Cats/[]/Litter/Male/IdCattery", "IdFatherCattery")
             .AddPathMapEntry("/Cats/[]/Litter/Male", BuildingScript.KeyOnly)
             .AddPathMapEntry("/Cats/[]/Litter/Date", "Date", typeof(DateOnlyConverter))
-            .AddPathMapEntry("/Cats/[]/Litter/Cats", BuildingScript.Touch)
+            .AddPathMapEntry("/Cats/[]/Litter/Cats", BuildingScript.Skip)
             .AddPathMapEntry("/Cats/[]/Gender", "Gender", typeof(GenderConverter))
             .AddPathMapEntry("/Cats/[]/NameNat", "NameNat")
             .AddPathMapEntry("/Cats/[]/NameEng", "NameEng")
@@ -266,12 +266,21 @@ internal class Builder : IBuilder
     {
         int numTests = 0;
         Dictionary<T, int> crossing = new();
+        int countTests = 0;
         if (filter?.Child is { })
         {
-            if (filter?.Descendant is null && filter?.Ancestor is null)
-            {
-                return FindParentCats<T>(filter, options).Where(v => TestFilter(filter!, ((IProjection)v).As<ICat>()!));
-            }
+            ++countTests;
+        }
+        if (filter?.Ancestor is { })
+        {
+            ++countTests;
+        }
+        if (filter?.Descendant is { })
+        {
+            ++countTests;
+        }
+        if (filter?.Child is { })
+        {
             ++numTests;
             foreach (T cat in FindParentCats<T>(filter, options))
             {
@@ -289,14 +298,18 @@ internal class Builder : IBuilder
                         crossing[cat] = value + 1;
                     }
                 }
+                if (crossing.TryGetValue(cat, out value) && value == countTests)
+                {
+                    if(TestFilter(filter!, ((IProjection)cat).As<ICat>()!))
+                    {
+                        yield return ((IProjection)cat).As<T>()!;
+                    }
+                    crossing.Remove(cat);
+                }
             }
         }
         if (filter?.Descendant is { })
         {
-            if (filter?.Child is null && filter?.Ancestor is null)
-            {
-                return FindAncestorCats<T>(filter!, options).Where(v => TestFilter(filter!, ((IProjection)v).As<ICat>()!));
-            }
             ++numTests;
             foreach (T cat in FindAncestorCats<T>(filter, options))
             {
@@ -314,14 +327,18 @@ internal class Builder : IBuilder
                         crossing[cat] = value + 1;
                     }
                 }
+                if (crossing.TryGetValue(cat, out value) && value == countTests)
+                {
+                    if (TestFilter(filter!, ((IProjection)cat).As<ICat>()!))
+                    {
+                        yield return ((IProjection)cat).As<T>()!;
+                    }
+                    crossing.Remove(cat);
+                }
             }
         }
         if (filter?.Ancestor is { })
         {
-            if (filter?.Child is null && filter?.Descendant is null)
-            {
-                return SpinDescendantCats<T>(filter, options).Where(v => TestFilter(filter!, ((IProjection)v).As<ICat>()!));
-            }
             ++numTests;
             foreach (T cat in SpinDescendantCats<T>(filter, options))
             {
@@ -339,10 +356,16 @@ internal class Builder : IBuilder
                         crossing[cat] = value + 1;
                     }
                 }
+                if (crossing.TryGetValue(cat, out value) && value == countTests)
+                {
+                    if (TestFilter(filter!, ((IProjection)cat).As<ICat>()!))
+                    {
+                        yield return ((IProjection)cat).As<T>()!;
+                    }
+                    crossing.Remove(cat);
+                }
             }
         }
-
-        return crossing.Where(e => e.Value == numTests && TestFilter(filter!, ((IProjection)e.Key).As<ICat>()!)).Select(e => ((IProjection)e.Key).As<T>()!);
     }
 
     public void BuildLittersWithCats<T>(ICatFilter? filter, BuildingOptions options) where T : class
@@ -512,10 +535,10 @@ internal class Builder : IBuilder
             Target = litters,
         };
         littersOptions.Script = _services.GetRequiredService<BuildingScript>();
+        littersOptions.Script.AddPathMapEntry("/Cats", BuildingScript.Skip);
         littersOptions.Script.AddPathMapEntry("/Male", BuildingScript.KeyOnly);
         littersOptions.Script.AddPathMapEntry("/Male/IdCat", "/IdMale");
         littersOptions.Script.AddPathMapEntry("/Male/IdCattery", "/IdMaleCattery");
-        littersOptions.Script.WithTrace = true;
 
         BuildCats<T>(catsFilter, catsOptions);
         foreach (T item in cats)

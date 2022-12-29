@@ -119,8 +119,6 @@ public class Connector
                     context!.OnException?.Invoke(BuildRemoteException(stream), context);
                     return;
                 }
-                stream._savedStream.Position = 0;
-                Console.WriteLine(new StreamReader(stream._savedStream).ReadToEnd());
             }
             context!.OnException?.Invoke(ex, context);
         }

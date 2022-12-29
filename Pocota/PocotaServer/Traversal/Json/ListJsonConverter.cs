@@ -79,9 +79,6 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
         T? result = (T?)context!.Target;
         context!.Target = null;
 
-        Type itemType = context.ItemType is { } ? context.ItemType : _itemType;
-        context.ItemType = null;
-
         if (result is null)
         {
             result = (T?)Activator.CreateInstance(typeof(List<>).MakeGenericType(new Type[] { _itemType }));
@@ -95,7 +92,7 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
             {
                 break;
             }
-            index[0] = JsonSerializer.Deserialize(ref reader, itemType, options);
+            index[0] = JsonSerializer.Deserialize(ref reader, _itemType, options);
             _add!.Invoke(result, index);
         }
         return result;

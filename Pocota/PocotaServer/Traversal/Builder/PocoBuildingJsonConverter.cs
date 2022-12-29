@@ -266,7 +266,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     if (isNew || !isPropertySet)
                     {
-                        bool isTouched = false;
+                        bool isSkipped = false;
 
                         if (isNew && isPropertySet)
                         {
@@ -280,7 +280,6 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                             context.BuildingContext.BuildingEventArgs.IsNullable = property.IsNullable;
                             bool isPoco = _core.GetActualType(propertyType) is { };
                             bool isPocoWithKey = _core.IsEntity(propertyType);
-                            bool isNewPocoList = false;
                             Type typeForSerialization = propertyType;
                             if (isPocoWithKey)
                             {
@@ -291,19 +290,6 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                             {
                                 if (!isPoco || propertyValue is null || !context.TestReference(propertyValue))
                                 {
-                                    if (property.IsCollection)
-                                    {
-                                        if (propertyValue == default)
-                                        {
-                                            propertyValue = _pocoContext.GetProbePlaceholder(typeForSerialization);
-                                            isNewPocoList = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        context.ItemType = null;
-                                    }
-
                                     context.BuildingContext.BuildingEventArgs.IsKeyRequest = false;
 
                                     path = context.BuildingContext.BufferWriter!.Path
@@ -328,87 +314,62 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                     );
 
                                     context.BuildingContext.BuildingEventArgs.InternalValue = propertyValue;
-                                    context.BuildingContext.BuildingEventArgs.PrimaryKey = primaryKey!;
+                                    context.BuildingContext.BuildingEventArgs.PrimaryKey = null;
                                     context.BuildingContext.BuildingEventArgs.IsMissed = true;
                                     context.BuildingContext.BuildingEventArgs.DataReader = context.BuildingContext.Spinners.Peek().Spinner.Current;
 
-                                    if (!isNewPocoList)
+                                    try
                                     {
-                                        try
+                                        context.BuildingContext!.Spinners.Peek().Script!.Run(context.BuildingContext.BuildingEventArgs);
+                                        if (context.BuildingContext.BuildingEventArgs.IsMissed)
                                         {
-                                            context.BuildingContext!.Spinners.Peek().Script!.Run(context.BuildingContext.BuildingEventArgs);
-                                            if (context.BuildingContext.BuildingEventArgs.IsMissed)
-                                            {
-                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Missed);
-                                            }
-                                            if (
-                                                context.BuildingContext.BuildingEventArgs.Value == default
-                                                && !context.BuildingContext.BuildingEventArgs.IsNullable
-                                            )
-                                            {
-                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
-                                            }
-                                            if(PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.Value, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
-                                            {
-                                                isTouched = true;
-                                            }
+                                            context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Missed);
                                         }
-                                        catch (Exception ex)
+                                        else if (PocoBase.ReferenceEquals(context.BuildingContext.BuildingEventArgs.Value, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
                                         {
-                                            context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
+                                            isSkipped = true;
                                         }
-                                        propertyValue = context.BuildingContext.BuildingEventArgs.Value;
-                                        if (
-                                            (propertyValue is null && value is { })
-                                            || (propertyValue is { } && !propertyValue.Equals(value))
+                                        else if (
+                                            context.BuildingContext.BuildingEventArgs.Value == default
+                                            && !context.BuildingContext.BuildingEventArgs.IsNullable
                                         )
                                         {
-                                            property.SetValue(value, propertyValue);
+                                            context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
+                                        }
+                                        else
+                                        {
+                                            context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
                                         }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        try
-                                        {
-                                            context.BuildingContext!.Spinners.Peek().Script!.Run(context.BuildingContext.BuildingEventArgs);
-                                            if (
-                                                context.BuildingContext.BuildingEventArgs.Value == default
-                                                && !context.BuildingContext.BuildingEventArgs.IsNullable
-                                            )
-                                            {
-                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.NotNullableSetNull);
-                                            }
-                                            else
-                                            {
-                                                context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
-                                            }
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
-                                        }
+                                        context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
                                     }
 
+                                    propertyValue = context.BuildingContext.BuildingEventArgs.Value;
+                                    if (
+                                        (propertyValue is null && value is { })
+                                        || (propertyValue is { } && !propertyValue.Equals(value))
+                                    )
+                                    {
+                                        property.SetValue(value, propertyValue);
+                                    }
                                 }
                             }
 
-                            if (isPoco)
+                            if (!isSkipped)
                             {
-                                context.BuildingContext.Name = property.Name;
-                            }
-                            else
-                            {
-                                prevPropertyName = property.Name;
-                                writer.WritePropertyName(property.Name);
-                                writer.Flush();
-                            }
-                            if (propertyValue is { })
-                            {
-                                if (isTouched)
+                                if (isPoco)
                                 {
-                                    JsonSerializer.Serialize(writer, new object[0], typeof(object[]), options);
+                                    context.BuildingContext.Name = property.Name;
                                 }
                                 else
+                                {
+                                    prevPropertyName = property.Name;
+                                    writer.WritePropertyName(property.Name);
+                                    writer.Flush();
+                                }
+                                if (propertyValue is { })
                                 {
                                     JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
                                     if (isPoco)
@@ -418,22 +379,22 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                             context.Target = null;
                                         }
                                     }
-                                }
 
-                                if (isPocoWithKey || isNewPocoList)
-                                {
-                                    if (
-                                        (
-                                            context.Target is null
-                                            && propertyValue is { }
-                                        )
-                                        || (
-                                            context.Target is { }
-                                            && !context.Target.Equals(propertyValue)
-                                        )
-                                    )
+                                    if (isPocoWithKey)
                                     {
-                                        property.SetValue(value, context.Target);
+                                        if (
+                                            (
+                                                context.Target is null
+                                                && propertyValue is { }
+                                            )
+                                            || (
+                                                context.Target is { }
+                                                && !context.Target.Equals(propertyValue)
+                                            )
+                                        )
+                                        {
+                                            property.SetValue(value, context.Target);
+                                        }
                                     }
                                 }
                             }

@@ -1,0 +1,359 @@
+[
+  {
+    "$in": "#2:CatsCommon.Model.ILitterWithCats",
+    "$id": "#1",
+    "$cl": "#3:CatsCommon.Model.LitterPoco",
+    "$key": [ 1, 9, 2 ],
+    "Cats": [
+      {
+        "$in": "#5:CatsCommon.Model.ICatForListing",
+        "$id": "#4",
+        "$cl": "#6:CatsCommon.Model.CatPoco",
+        "$key": [ 1, 4 ],
+        "Litter": {
+          "$in": "#7:CatsCommon.Model.ILitterForCat",
+          "$ref": "#1",
+          "Cats": [],
+          "Female": {
+            "$in": "#9:CatsCommon.Model.ICatAsParent",
+            "$id": "#8",
+            "$cl": "#6",
+            "$key": [ 1, 9 ]
+          },
+          "Male": null,
+          "Date": "2004-08-02"
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11:CatsCommon.Model.IBreed",
+          "$id": "#10",
+          "$cl": "#12:CatsCommon.Model.BreedPoco",
+          "$key": [ "ACL       ", "SLH       " ],
+          "Group": "SLH       ",
+          "NameEng": "American Curl",
+          "NameNat": "\u0430\u043C\u0435\u0440\u0438\u043A\u0430\u043D\u0441\u043A\u0438\u0439 \u043A\u0435\u0440\u043B (\u041F\u0414\u0428)",
+          "Code": "ACL       "
+        },
+        "Title": "CH",
+        "NameEng": "Bassi",
+        "NameNat": "\u0411\u0430\u0441\u0441\u0438",
+        "Exterior": "b",
+        "Cattery": {
+          "$in": "#14:CatsCommon.Model.ICattery",
+          "$id": "#13",
+          "$cl": "#15:CatsCommon.Model.CatteryPoco",
+          "$key": [ 4 ],
+          "NameEng": "Cattery #4",
+          "NameNat": "\u041A\u043E\u0448\u0430\u0442\u043D\u0438\u043A \u2116 4"
+        },
+        "Gender": "Female"
+      },
+      {
+        "$in": "#5",
+        "$id": "#16",
+        "$cl": "#6",
+        "$key": [ 2, 4 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#1",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "EC",
+        "NameEng": "Baunti",
+        "NameNat": "\u0411\u0430\u0443\u043D\u0442\u0438",
+        "Exterior": "s",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#13"
+        },
+        "Gender": "Female"
+      }
+    ]
+  },
+  {
+    "$in": "#2",
+    "$id": "#17",
+    "$cl": "#3",
+    "$key": [ 15, 5, 2 ],
+    "Cats": [
+      {
+        "$in": "#5",
+        "$id": "#18",
+        "$cl": "#6",
+        "$key": [ 61, 5 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#17",
+          "Cats": [],
+          "Female": {
+            "$in": "#9",
+            "$id": "#19",
+            "$cl": "#6",
+            "$key": [ 15, 5 ]
+          },
+          "Male": {
+            "$in": "#9",
+            "$id": "#20",
+            "$cl": "#6",
+            "$key": [ 6, 8 ]
+          },
+          "Date": "2007-12-24"
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$id": "#21",
+          "$cl": "#12",
+          "$key": [ "ACR       ", "SH        " ],
+          "Group": "SH        ",
+          "NameEng": "American Curl",
+          "NameNat": "\u0430\u043C\u0435\u0440\u0438\u043A\u0430\u043D\u0441\u043A\u0438\u0439 \u043A\u0435\u0440\u043B (\u041A\u0428)",
+          "Code": "ACR       "
+        },
+        "Title": "WCH",
+        "NameEng": "Bon\u0060ka",
+        "NameNat": "\u0411\u043E\u043D\u044C\u043A\u0430",
+        "Exterior": "b",
+        "Cattery": {
+          "$in": "#14",
+          "$id": "#22",
+          "$cl": "#15",
+          "$key": [ 5 ],
+          "NameEng": "Cattery #5",
+          "NameNat": "\u041A\u043E\u0448\u0430\u0442\u043D\u0438\u043A \u2116 5"
+        },
+        "Gender": "Female"
+      },
+      {
+        "$in": "#5",
+        "$id": "#23",
+        "$cl": "#6",
+        "$key": [ 62, 5 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#17",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#21"
+        },
+        "Title": "IC",
+        "NameEng": "Bal\u0060tazar",
+        "NameNat": "\u0411\u0430\u043B\u044C\u0442\u0430\u0437\u0430\u0440",
+        "Exterior": "w",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#22"
+        },
+        "Gender": "Male"
+      },
+      {
+        "$in": "#5",
+        "$id": "#24",
+        "$cl": "#6",
+        "$key": [ 63, 5 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#17",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#21"
+        },
+        "Title": "GIC",
+        "NameEng": "Barin",
+        "NameNat": "\u0411\u0430\u0440\u0438\u043D",
+        "Exterior": "b",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#22"
+        },
+        "Gender": "Male"
+      },
+      {
+        "$in": "#5",
+        "$id": "#25",
+        "$cl": "#6",
+        "$key": [ 64, 5 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#17",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#21"
+        },
+        "Title": "GIC",
+        "NameEng": "Baunti",
+        "NameNat": "\u0411\u0430\u0443\u043D\u0442\u0438",
+        "Exterior": "y",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#22"
+        },
+        "Gender": "Female"
+      }
+    ]
+  },
+  {
+    "$in": "#2",
+    "$id": "#26",
+    "$cl": "#3",
+    "$key": [ 66, 9, 2 ],
+    "Cats": [
+      {
+        "$in": "#5",
+        "$id": "#27",
+        "$cl": "#6",
+        "$key": [ 247, 9 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#26",
+          "Cats": [],
+          "Female": {
+            "$in": "#9",
+            "$id": "#28",
+            "$cl": "#6",
+            "$key": [ 66, 9 ]
+          },
+          "Male": {
+            "$in": "#9",
+            "$id": "#29",
+            "$cl": "#6",
+            "$key": [ 89, 9 ]
+          },
+          "Date": "2008-06-03"
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "IC",
+        "NameEng": "Barmaljej",
+        "NameNat": "\u0411\u0430\u0440\u043C\u0430\u043B\u0435\u0439",
+        "Exterior": "r",
+        "Cattery": {
+          "$in": "#14",
+          "$id": "#30",
+          "$cl": "#15",
+          "$key": [ 9 ],
+          "NameEng": "Cattery #9",
+          "NameNat": "\u041A\u043E\u0448\u0430\u0442\u043D\u0438\u043A \u2116 9"
+        },
+        "Gender": "Male"
+      },
+      {
+        "$in": "#5",
+        "$id": "#31",
+        "$cl": "#6",
+        "$key": [ 248, 9 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#26",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "WCH",
+        "NameEng": "Bazilio",
+        "NameNat": "\u0411\u0430\u0437\u0438\u043B\u0438\u043E",
+        "Exterior": "r",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#30"
+        },
+        "Gender": "Male"
+      },
+      {
+        "$in": "#5",
+        "$id": "#32",
+        "$cl": "#6",
+        "$key": [ 249, 9 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#26",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "GIC",
+        "NameEng": "Boni",
+        "NameNat": "\u0411\u043E\u043D\u0438",
+        "Exterior": "a",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#30"
+        },
+        "Gender": "Female"
+      },
+      {
+        "$in": "#5",
+        "$id": "#33",
+        "$cl": "#6",
+        "$key": [ 250, 9 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#26",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "GEC",
+        "NameEng": "Best",
+        "NameNat": "\u0411\u044D\u0441\u0442",
+        "Exterior": "g",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#30"
+        },
+        "Gender": "Male"
+      },
+      {
+        "$in": "#5",
+        "$id": "#34",
+        "$cl": "#6",
+        "$key": [ 251, 9 ],
+        "Litter": {
+          "$in": "#7",
+          "$ref": "#26",
+          "Cats": []
+        },
+        "Description": "",
+        "Breed": {
+          "$in": "#11",
+          "$ref": "#10"
+        },
+        "Title": "IC",
+        "NameEng": "Baunti",
+        "NameNat": "\u0411\u0430\u0443\u043D\u0442\u0438",
+        "Exterior": "d",
+        "Cattery": {
+          "$in": "#14",
+          "$ref": "#30"
+        },
+        "Gender": "Female"
+      }
+    ]
+  }
+]

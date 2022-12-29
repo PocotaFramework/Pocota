@@ -77,7 +77,6 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
                     break;
                 }
                 value[0] = JsonSerializer.Deserialize(ref reader, itemType, options);
-                Console.WriteLine(value[0]);
                 if (context.CallContext?.DispatcherWrapper is { })
                 {
                     context.CallContext.DispatcherWrapper.Invoke(() => membersHolder.Add!.Invoke(result, value));

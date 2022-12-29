@@ -22,7 +22,7 @@ internal class PocoTraversalContext : IPocoTraversalContext
 
     private int _genUsedObjectRef = 0;
 
-    internal Type? ItemType { get; set; } = null;
+    //internal Type? ItemType { get; set; } = null;
 
     internal JsonSerializerOptions? JsonSerializerOptions { get; set; }
 

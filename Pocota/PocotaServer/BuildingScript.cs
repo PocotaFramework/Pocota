@@ -5,7 +5,7 @@ namespace Net.Leksi.Pocota.Server;
 public class BuildingScript
 {
     public const string KeyOnly = "<KeyOnly>";
-    public const string Touch = "<Touch>";
+    public const string Skip = "<Skip>";
 
     private readonly IServiceProvider _services;
     private readonly Dictionary<string, Action<BuildingEventArgs>> _handlers = new();
@@ -171,20 +171,13 @@ public class BuildingScript
         }
         if(fieldName is { })
         {
-            if (fieldName.Equals(Touch))
+            if (fieldName.Equals(Skip))
             {
                 if (WithTrace)
                 {
-                    Console.Write($"Touch )");
+                    Console.Write($"Skip )");
                 }
-                if (args.IsCollection)
-                {
-                    args.Skip();
-                }
-                else
-                {
-                    args.Touch();
-                }
+                args.Skip();
                 return true;
             }
             if (WithTrace)

@@ -94,8 +94,7 @@ internal class ListBuildingJsonConverter<T> : JsonConverter<T> where T : class
             _clear?.Invoke(value, null);
         }
 
-        Type itemType = context.ItemType is { } ? context.ItemType : _itemType;
-        context.ItemType = null;
+        Type itemType = _itemType;
         bool isHighLevel = context.IsHighLevel;
         context.IsHighLevel = false;
 
