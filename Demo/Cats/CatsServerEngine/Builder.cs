@@ -171,7 +171,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery")
         .AddPathMapEntry("/Description", "OwnerInfo")
         .AddPathMapEntry("/Litter/Male", BuildingScript.KeyOnly)
-        .AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
+        //.AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
         .AddPathMapEntry("/Litter/Male/IdCat", "IdFather")
         .AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery")
         .AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter))
@@ -212,7 +212,22 @@ internal class Builder : IBuilder
         options.Script = _services.GetRequiredService<BuildingScript>();
         options.Script.Mapping = BuildCatsMapping;
 
-        //ILitterWithCats
+        options.Script.AddPathHandler("/Litter/Cats", args =>
+        {
+            if(typeof(T) == typeof(ICatWithSiblings))
+            {
+                ICatFilter filter = _services.GetRequiredService<ICatFilter>();
+                filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
+                BuildingScript script = _services.GetRequiredService<BuildingScript>();
+                script.Mapping = BuildCatsLitterWithCatsMapping;
+                args.UseSpinner(SpinCats(filter), script);
+            }
+            else
+            {
+                args.Skip();
+            }
+        });
+            //ILitterWithCats
         options.Script.AddPathHandler("/Cats", args =>
         {
             try
@@ -340,7 +355,7 @@ internal class Builder : IBuilder
         if (filter?.Ancestor is { })
         {
             ++numTests;
-            foreach (T cat in SpinDescendantCats<T>(filter, options))
+            foreach (T cat in FindDescendantCats<T>(filter, options))
             {
                 if (!crossing.TryGetValue(cat, out int value))
                 {
@@ -368,20 +383,9 @@ internal class Builder : IBuilder
         }
     }
 
-    public void BuildLittersWithCats<T>(ICatFilter? filter, BuildingOptions options) where T : class
+    public void BuildLittersWithCats(ICatFilter? filter, BuildingOptions options)
     {
-        if (filter?.Child is { } || filter?.Ancestor is { } || filter?.Descendant is { })
-        {
-            JsonSerializer.Serialize<IEnumerable<T>>(
-                options.Output!,
-                new T[0],
-                options.JsonSerializerOptions
-            );
-        }
-        else
-        {
-            BuildCats<T>(filter, options);
-        }
+        BuildCats<ICatWithSiblings>(filter, options);
     }
 
     public IEnumerable<DbDataReader?> SpinCats(ICatFilter? filter)
@@ -439,7 +443,7 @@ internal class Builder : IBuilder
         {
             crossing.Add(cat);
         }
-        foreach (T cat in SpinDescendantCats<T>(catFilter, options))
+        foreach (T cat in FindDescendantCats<T>(catFilter, options))
         {
             if (!crossing.Add(cat))
             {
@@ -607,7 +611,7 @@ internal class Builder : IBuilder
         dataReader.Close();
     }
 
-    private IEnumerable<T> SpinDescendantCats<T>(ICatFilter filter, BuildingOptions options) where T : class
+    private IEnumerable<T> FindDescendantCats<T>(ICatFilter filter, BuildingOptions options) where T : class
     {
         Queue<T> queue = new();
         List<T> cats = new();
@@ -616,7 +620,11 @@ internal class Builder : IBuilder
         BuildingOptions catsOptions = new()
         {
             JsonSerializerOptions = _pocoContext.BindJsonSerializerOptions(),
-            Target = cats
+            Target = cats,
+            OnItem = it => 
+            {
+                Console.WriteLine(it);
+            }
         };
         BuildCats<T>(catsFilter, catsOptions);
         foreach (T item in cats)
@@ -632,39 +640,29 @@ internal class Builder : IBuilder
             {
                 yield return ((IProjection)cat).As<T>()!;
             }
-            for (int step = 0; step < 2; ++step)
+            if (cat!.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
             {
-                if (step == 0 && (cat!.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate))
-                {
-                    catsFilter.Mother = cat;
-                    catsFilter.Father = null;
-                }
-                else if (step == 1 && (cat!.Gender is Gender.Male || cat.Gender is Gender.MaleCastrate))
-                {
-                    catsFilter.Father = cat;
-                    catsFilter.Mother = null;
-                }
-                if (catsFilter.Mother is { } || catsFilter.Father is { })
-                {
-                    BuildCats<T>(catsFilter, catsOptions);
-                    foreach (ICat item in cats.Select(v => ((IProjection)v).As<ICat>()!))
-                    {
-                        if (item.Litter is { })
-                        {
-                            if (step == 0)
-                            {
-                                item.Litter.Female = cat;
-                            }
-                            else
-                            {
-                                item.Litter.Male = cat;
-                            }
-                        }
-                        queue.Enqueue(((IProjection)item).As<T>()!);
-                    }
-                    cats.Clear();
-                }
+                catsFilter.Mother = cat;
+                catsFilter.Father = null;
             }
+            else if (cat!.Gender is Gender.Male || cat.Gender is Gender.MaleCastrate)
+            {
+                catsFilter.Father = cat;
+                catsFilter.Mother = null;
+            }
+            BuildCats<T>(catsFilter, catsOptions);
+            foreach (ICat item in cats.Select(v => ((IProjection)v).As<ICat>()!))
+            {
+                //if (item.Litter is { })
+                //{
+                //    if (catsFilter.Father is { })
+                //    {
+                //        item.Litter.Male = cat;
+                //    }
+                //}
+                queue.Enqueue(((IProjection)item).As<T>()!);
+            }
+            cats.Clear();
         }
     }
 

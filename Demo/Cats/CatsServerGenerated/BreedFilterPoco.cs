@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -238,7 +238,8 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     {
         if(@interface == typeof(IBreedFilter))
         {
-            return _loaded_searchRegex
+            return true
+                && _loaded_searchRegex
             ;
         }
         return false;

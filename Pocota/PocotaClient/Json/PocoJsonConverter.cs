@@ -29,7 +29,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         _services = services;
         _core = _services.GetRequiredService<PocotaCore>();
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
-        _properties = _core.GetProperties(typeof(T));
+        _properties = _core.GetPropertiesDictionary(typeof(T));
         _isEntity = typeof(IProjection<IEntity>).IsAssignableFrom(_core.GetActualType(typeof(T)));
     }
 

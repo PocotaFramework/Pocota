@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -404,7 +404,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     {
         if(@interface == typeof(IBreed))
         {
-            return _loaded_code
+            return true
+                && _loaded_code
                 && _loaded_group
                 && _loaded_nameEng
                 && _loaded_nameNat

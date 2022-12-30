@@ -133,7 +133,7 @@ public abstract class PocoBase : IPoco
                     _cancellingChanges = true;
                     foreach (var entry in _modified)
                     {
-                        if (_pocota.GetProperties(GetType())?[entry.Key] is Property property && !property.IsCollection)
+                        if (_pocota.GetPropertiesDictionary(GetType())?[entry.Key] is Property property && !property.IsCollection)
                         {
                             property.SetValue(this, entry.Value);
                         }
@@ -306,7 +306,7 @@ public abstract class PocoBase : IPoco
                         {
                             _modified = new Dictionary<string, object?>();
                         }
-                        if (_pocota.GetProperties(GetType())![property!].IsCollection)
+                        if (_pocota.GetPropertiesDictionary(GetType())![property!].IsCollection)
                         {
                             if (IsCollectionChanged(property!))
                             {
@@ -394,7 +394,7 @@ public abstract class PocoBase : IPoco
         if (!_antiCycleTokens.TryGetValue(antiCycleToken, out var _))
         {
             _antiCycleTokens.Add(antiCycleToken, string.Empty);
-            if(_pocota.GetProperties(@interface) is IDictionary<string, Property> properties)
+            if(_pocota.GetPropertiesDictionary(@interface) is IDictionary<string, Property> properties)
             {
                 return properties.Values.All(p =>
                 {

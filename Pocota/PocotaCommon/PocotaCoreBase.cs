@@ -12,7 +12,8 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
 {
     private readonly Dictionary<Type, HashSet<Type>> _jsonConverters = new();
     private readonly HashSet<Type> _currentJsonCoverterTargets = new();
-    private readonly Dictionary<Type, ImmutableDictionary<string, Property>> _properties = new();
+    private readonly Dictionary<Type, ImmutableDictionary<string, Property>> _propertiesByName = new();
+    private readonly Dictionary<Type, ImmutableList<Property>> _propertiesByOrder = new();
 
     private bool _calledAt = false;
 
@@ -24,9 +25,18 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
 
     internal IServiceCollection? Services => _services;
 
-    public ImmutableDictionary<string, Property>? GetProperties(Type targetType)
+    public ImmutableDictionary<string, Property>? GetPropertiesDictionary(Type targetType)
     {
-        if (_properties.TryGetValue(targetType, out ImmutableDictionary<string, Property>? result))
+        if (_propertiesByName.TryGetValue(targetType, out ImmutableDictionary<string, Property>? result))
+        {
+            return result;
+        }
+        return null;
+    }
+
+    public ImmutableList<Property>? GetPropertiesList(Type targetType)
+    {
+        if (_propertiesByOrder.TryGetValue(targetType, out ImmutableList<Property>? result))
         {
             return result;
         }
@@ -152,7 +162,8 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         _actualTypes.Add(pocoType, pocoType);
         foreach (Type type in types)
         {
-            _properties.Add(type, _properties[pocoType]);
+            _propertiesByName.Add(type, _propertiesByName[pocoType]);
+            _propertiesByOrder.Add(type, _propertiesByOrder[pocoType]);
             _actualTypes.Add(type, pocoType);
         }
         _services!.Add(new ServiceDescriptor(pocoType, item.ImplementationType, ServiceLifetime.Transient));
@@ -164,7 +175,8 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
                 Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjection) && !type.IsGenericType).FirstOrDefault();
                 if (@interface is { })
                 {
-                    _properties.Add(@interface, _properties[type]);
+                    _propertiesByName.Add(@interface, _propertiesByName[type]);
+                    _propertiesByOrder.Add(@interface, _propertiesByOrder[type]);
 
                     _actualTypes.Add(@interface, pocoType);
                     _services.Add(new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>
@@ -184,9 +196,10 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
             throw new InvalidOperationException("Forbidden Call!");
         }
         List<Property> properties = new();
-        MethodInfo initProperties = targetType.GetMethod("InitProperties"/*, BindingFlags.Static*/)!;
+        MethodInfo initProperties = targetType.GetMethod("InitProperties")!;
         initProperties?.Invoke(null, new object[] { properties });
-        _properties.Add(targetType, properties.ToImmutableDictionary(v => v.Name, v => v));
+        _propertiesByName.Add(targetType, properties.ToImmutableDictionary(v => v.Name, v => v));
+        _propertiesByOrder.Add(targetType, properties.ToImmutableList());
     }
 
 }

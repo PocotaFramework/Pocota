@@ -28,7 +28,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _probe = _pocoContext.GetProbePlaceholder<T>();
         _skip = _pocoContext.GetSkipPlaceholder<T>();
-        _properties = _core.GetProperties(typeof(T))!.Values;
+        _properties = _core.GetPropertiesList(typeof(T))!;
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -262,6 +262,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     object? propertyValue = property.GetValue(value);
 
+
                     bool isPropertySet = poco.IsPropertySet(property.Name);
 
                     if (isNew || !isPropertySet)
@@ -346,12 +347,12 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                         context.BuildingContext.Log?.UpdateEntry(ex, BuildingEventResult.Exception);
                                     }
 
-                                    propertyValue = context.BuildingContext.BuildingEventArgs.Value;
                                     if (
-                                        (propertyValue is null && value is { })
-                                        || (propertyValue is { } && !propertyValue.Equals(value))
+                                        (propertyValue is null && context.BuildingContext.BuildingEventArgs.Value is { })
+                                        || (propertyValue is { } && !propertyValue.Equals(context.BuildingContext.BuildingEventArgs.Value))
                                     )
                                     {
+                                        propertyValue = context.BuildingContext.BuildingEventArgs.Value;
                                         property.SetValue(value, propertyValue);
                                     }
                                 }
@@ -402,8 +403,14 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                     }
                 }
             }
+
             writer.WriteEndObject();
             writer.Flush();
+
+            if(isHighLevel && context.BuildingContext.OnItem is { } && value is { })
+            {
+                context.BuildingContext.OnItem.Invoke(value);
+            }
             context.Target = value;
 
         }

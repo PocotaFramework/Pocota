@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 

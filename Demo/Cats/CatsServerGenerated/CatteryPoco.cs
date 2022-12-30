@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -298,7 +298,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     {
         if(@interface == typeof(ICattery))
         {
-            return _loaded_nameEng
+            return true
+                && _loaded_nameEng
                 && _loaded_nameNat
             ;
         }

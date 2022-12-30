@@ -9,7 +9,7 @@ namespace CatsContract;
 
 [Poco(
     typeof(ICat), 
-    Projections = new[] { typeof(ICatForListing), typeof(ICatAsParent), typeof(ICatForView) },
+    Projections = new[] { typeof(ICatForListing), typeof(ICatAsParent), typeof(ICatForView), typeof(ICatWithSiblings) },
     PrimaryKey = new object[] { "IdCat", typeof(int), "IdCattery", "Cattery.IdCattery" }
     )]
 [Poco(
@@ -45,7 +45,7 @@ public interface ICatsContract
     IList<ICattery> FindCatteries(ICatteryFilter? filter);
 
     [Route("/litters/with/cats")]
-    IList<ILitterWithCats> FindLittersWithCats(ICatFilter? filter);
+    IList<ICatWithSiblings> FindLittersWithCats(ICatFilter? filter);
 
     [Route("/exteriors")]
     IList<string> FindExteriors();

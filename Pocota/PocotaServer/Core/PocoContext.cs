@@ -176,7 +176,8 @@ public class PocoContext : IPocoContext
             Level = 1,
             Spinner = options.Spinner.GetEnumerator(),
             Script = options.Script ?? _services.GetRequiredService<BuildingScript>()
-        }); ;
+        });
+        context.BuildingContext!.OnItem = options.OnItem;
         return context.BuildingContext!;
     }
 

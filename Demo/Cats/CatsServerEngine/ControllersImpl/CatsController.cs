@@ -45,7 +45,7 @@ public class CatsController : Controller, ICatsController
         HttpContext.Response.ContentType = AppJson;
         JsonSerializerOptions optionsOut = HttpContext.RequestServices.GetRequiredService<IPocoContext>().BindJsonSerializerOptions();
 
-        builder.BuildLittersWithCats<ILitterWithCats>(
+        builder.BuildLittersWithCats(
             filter,
             new BuildingOptions { 
                 Output = HttpContext.Response.Body, 

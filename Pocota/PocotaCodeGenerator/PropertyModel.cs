@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public class PropertyModel
+public class PropertyModel: IComparable<PropertyModel>
 {
     public string Name { get; internal set; } = null!;
     public string Type { get; internal set; } = null!;
@@ -12,4 +12,17 @@ public class PropertyModel
     public string? Class { get; internal set; } = null;
     public Dictionary<string, string> Interfaces { get; init; } = new();
     public bool IsIndependent { get; internal set; } = false;
+
+    public int CompareTo(PropertyModel? other)
+    {
+        if(other is null)
+        {
+            return 1;
+        }
+        if (other.IsList && !IsList) return -1;
+        if (!other.IsList && IsList) return 1;
+        if (other.IsProjection && !IsProjection) return -1;
+        if (!other.IsProjection && IsProjection) return 1;
+        return Name.CompareTo(other.Name);
+    }
 }

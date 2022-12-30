@@ -969,6 +969,7 @@ public class CodeGenerator : IModelBuilder
                     }
                 }
                 model.Properties.Add(propertyModel);
+                model.Properties.Sort();
             }
             foreach (Type projection in new[] { request.Interface }.Concat(projector.Projections))
             {
@@ -989,39 +990,38 @@ public class CodeGenerator : IModelBuilder
                 {
                     projectionModel.Interfaces.Add(MakeTypeName(typeof(INotifyPropertyChanged)));
                 }
+
+                HashSet<string> keysProperties = new();
+
+                foreach (string name in projector.KeysDefinitions.Keys)
+                {
+                    PrimaryKeyDefinition key = projector.KeysDefinitions[name];
+
+                    if(key.Property is { })
+                    {
+                        keysProperties.Add(key.Property.Name);
+                    }
+
+                }
+
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
-                    PropertyModel propertyModel = new()
-                    {
-                        Name = pi.Name,
-                        Type = MakeTypeName(pi.PropertyType),
-                        IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
-                        IsReadOnly = !pi.CanWrite,
-                        IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
-                        IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
-                        IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { }
-                    };
-                    if (propertyModel.IsProjection)
-                    {
-                        propertyModel.Class = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
-                    }
-                    if (propertyModel.IsList)
-                    {
-                        Type itemType = pi.PropertyType.GetGenericArguments()[0];
-                        if (_projectorsByProjections.ContainsKey(itemType))
-                        {
-                            propertyModel.IsProjection = true;
-                            propertyModel.ItemType = MakeTypeName(itemType);
-                            propertyModel.Class = MakePocoClassName(_projectorsByProjections[itemType].Interface);
-                        }
-                        else
-                        {
-                            propertyModel.ItemType = MakeTypeName(itemType);
-                        }
-                        propertyModel.IsNullable = false;
-                    }
-                    projectionModel.Properties.Add(propertyModel);
+                    keysProperties.Remove(pi.Name);
+                    AddPropertyModel(projectionModel, pi, false);
                 }
+                if(false/*keysProperties.Count > 0*/)
+                {
+                    foreach (PropertyInfo pi in request.Interface.GetProperties())
+                    {
+                        if (keysProperties.Contains(pi.Name))
+                        {
+                            AddPropertyModel(projectionModel, pi, true);
+                        }
+                    }
+                }
+
+                projectionModel.Properties.Sort();
+
                 foreach (MethodInfo method in projection.GetMethods())
                 {
                     if (!projection.GetProperties().Any(p => p.GetGetMethod() == method || p.GetSetMethod() == method))
@@ -1057,6 +1057,40 @@ public class CodeGenerator : IModelBuilder
 
 
         }
+    }
+
+    private void AddPropertyModel(ClassModel projectionModel, PropertyInfo pi, bool isHidden)
+    {
+        PropertyModel propertyModel = new()
+        {
+            Name = pi.Name,
+            Type = MakeTypeName(pi.PropertyType),
+            IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
+            IsReadOnly = !pi.CanWrite,
+            IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
+            IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
+            IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { },
+        };
+        if (propertyModel.IsProjection)
+        {
+            propertyModel.Class = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
+        }
+        if (propertyModel.IsList)
+        {
+            Type itemType = pi.PropertyType.GetGenericArguments()[0];
+            if (_projectorsByProjections.ContainsKey(itemType))
+            {
+                propertyModel.IsProjection = true;
+                propertyModel.ItemType = MakeTypeName(itemType);
+                propertyModel.Class = MakePocoClassName(_projectorsByProjections[itemType].Interface);
+            }
+            else
+            {
+                propertyModel.ItemType = MakeTypeName(itemType);
+            }
+            propertyModel.IsNullable = false;
+        }
+        projectionModel.Properties.Add(propertyModel);
     }
 
     private void InitClassModel(ClassModel model, GeneratingRequest request)

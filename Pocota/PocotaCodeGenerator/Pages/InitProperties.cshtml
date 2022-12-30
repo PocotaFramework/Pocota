@@ -15,11 +15,11 @@
                 @Html.Raw(indent)@Html.Raw("\"")@pm.Name@Html.Raw("\""), 
                 @Html.Raw(indent)typeof(@Html.Raw(pm.Type.Trim('?'))),
                 @Html.Raw(indent)@Html.Raw($"Get{pm.Name}Value"), 
-            @if (@pm.IsList){<text>                @Html.Raw(indent)null</text>} else {<text>                @Html.Raw(indent)@Html.Raw("Set" + pm.Name + "Value")</text>}, 
+            @if (pm.IsList){<text>                @Html.Raw(indent)null</text>} else {<text>                @Html.Raw(indent)@Html.Raw("Set" + pm.Name + "Value")</text>}, 
                 @Html.Raw(indent)@Html.Raw($"target => ((IPoco){targetForTouch}).TouchProperty(\"{pm.Name}\")"), 
             @if (!pm.IsNullable){<text>                @Html.Raw(indent)false</text>} else {<text>                @Html.Raw(indent)true</text>}, 
-            @if (@pm.IsReadOnly){<text>                @Html.Raw(indent)true</text>} else {<text>                @Html.Raw(indent)false</text>}, 
-            @if (@pm.IsList){<text>                @Html.Raw(indent)@Html.Raw($"typeof({(false/*pm.Class is {}*/ ? pm.Class : pm.ItemType)})")</text>} else {<text>                @Html.Raw(indent)null</text>}
+            @if (pm.IsReadOnly){<text>                @Html.Raw(indent)true</text>} else {<text>                @Html.Raw(indent)false</text>}, 
+            @if (pm.IsList){<text>                @Html.Raw(indent)@Html.Raw($"typeof({(false/*pm.Class is {}*/ ? pm.Class : pm.ItemType)})")</text>} else {<text>                @Html.Raw(indent)null</text>}
 
             @Html.Raw(indent))
         @Html.Raw(indent));

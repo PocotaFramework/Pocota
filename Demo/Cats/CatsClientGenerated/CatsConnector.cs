@@ -2,7 +2,7 @@
 // Connector                                               //
 // CatsContract.CatsConnector                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -138,7 +138,7 @@ public class CatsConnector : Connector
                     : HttpUtility.UrlEncode(JsonSerializer.Serialize<ICatFilter?>(filter, jsonSerializerOptions));
             string query = $"/litters/with/cats/{filter1}/";
             context!.HttpRequest = new(HttpMethod.Get, query);
-            await GetResponseAsyncEnumerator<ILitterWithCats>(context!);
+            await GetResponseAsyncEnumerator<ICatWithSiblings>(context!);
         }
         catch(Exception){
             throw;

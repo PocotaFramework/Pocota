@@ -18,7 +18,7 @@
         @foreach(ClassModel @class in Model.Classes){
             <text>        if(@@interface == typeof(@Html.Raw(@class.Interface)))
         {
-            return @Html.Raw($"{string.Join("\r\n                && ", @class.Properties.Select(pm => $"_loaded_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}"))}")
+            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Select(pm => $"_loaded_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
             ;
         }
 </text>

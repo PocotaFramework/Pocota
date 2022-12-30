@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-29T14:41:33                                  //
+// at 2022-12-30T16:08:23                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -291,7 +291,8 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     {
         if(@interface == typeof(ILitterFilter))
         {
-            return _loaded_female
+            return true
+                && _loaded_female
                 && _loaded_male
             ;
         }

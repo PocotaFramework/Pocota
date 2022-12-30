@@ -27,6 +27,8 @@ internal class BuildingContext
 
     internal BuildingLog? Log { get; set; } = null;
 
+    public Action<object>? OnItem { get; set; } = null;
+
     public BuildingContext(IServiceProvider services)
     {
         _services = services;

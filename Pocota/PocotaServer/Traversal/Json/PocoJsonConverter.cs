@@ -14,7 +14,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     private readonly bool _isEntity;
     private readonly PocoContext _pocoContext;
     private readonly Type _actualType;
-    private readonly ImmutableDictionary<string, Property> _properties;
+    private readonly ImmutableDictionary<string, Property> _propertiesByName;
+    private readonly ImmutableList<Property> _propertiesByOrder;
 
     public PocoJsonConverter(IServiceProvider services)
     {
@@ -23,7 +24,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         _isEntity = _core.IsEntity(typeof(T));
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _actualType = _core.GetActualType(typeof(T))!;
-        _properties = _core.GetProperties(typeof(T))!;
+        _propertiesByName = _core.GetPropertiesDictionary(typeof(T))!;
+        _propertiesByOrder = _core.GetPropertiesList(typeof(T))!;
     }
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -130,7 +132,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
 
 
-                if(_properties.TryGetValue(propertyName, out Property? property))
+                if(_propertiesByName.TryGetValue(propertyName, out Property? property))
                 {
                     object? oldValue = property.GetValue(result);
 
@@ -204,26 +206,26 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         }
         IPoco poco = ((IProjection)value).As<IPoco>()!;
 
-        foreach (KeyValuePair<string, Property> property in _properties)
+        foreach (Property property in _propertiesByOrder)
         {
-            if(!poco.IsPropertySet(property.Key))
+            if(poco.IsPropertySet(property.Name) && !context.IsPropertySerialized(reference, property.Name))
             {
-                object? propertyValue = property.Value.GetValue(value);
+                object? propertyValue = property.GetValue(value);
                 if(propertyValue is { })
                 {
-                    writer.WritePropertyName(property.Key);
+                    writer.WritePropertyName(property.Name);
                     try
                     {
-                        JsonSerializer.Serialize(writer, propertyValue, property.Value.Type, options);
+                        JsonSerializer.Serialize(writer, propertyValue, property.Type, options);
                     }
                     catch(Exception ex)
                     {
-                        throw new JsonException($"Exception occured while serializing the property {property.Key} of {typeof(T)} object!", ex);
+                        throw new JsonException($"Exception occured while serializing the property {property.Name} of {typeof(T)} object!", ex);
                     }
                 }
                 else
                 {
-                    writer.WriteNull(property.Key);
+                    writer.WriteNull(property.Name);
                 }
             }
         }

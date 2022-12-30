@@ -12,7 +12,7 @@ public interface IBuilder
     void BuildCats<T>(ICatFilter? filter, BuildingOptions options) where T : class;
     void BuildCatteries(ICatteryFilter? filter, BuildingOptions options);
     void BuildExteriors(BuildingOptions options);
-    void BuildLittersWithCats<T>(ICatFilter? filter, BuildingOptions options) where T : class;
+    void BuildLittersWithCats(ICatFilter? filter, BuildingOptions options);
     void BuildTitles(BuildingOptions options);
     IEnumerable<DbDataReader?> SpinCats(ICatFilter? filter);
 }

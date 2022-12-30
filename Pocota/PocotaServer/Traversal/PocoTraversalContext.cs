@@ -8,7 +8,7 @@ internal class PocoTraversalContext : IPocoTraversalContext
 {
     private ConditionalWeakTable<object, string>? _usedObjects;
     private Dictionary<string, object>? _referencedObjects;
-    private Dictionary<string, HashSet<PropertyInfo>>? _referencedProperties;
+    private Dictionary<string, HashSet<string>>? _referencedProperties;
 
     private const string ReferencePrefix = "#";
 
@@ -95,18 +95,18 @@ internal class PocoTraversalContext : IPocoTraversalContext
         return null;
     }
 
-    internal bool IsPropertySerialized(string reference, PropertyInfo propertyInfo)
+    internal bool IsPropertySerialized(string reference, string propertyName)
     {
         if(_referencedProperties is null)
         {
-            _referencedProperties = new Dictionary<string, HashSet<PropertyInfo>>();
+            _referencedProperties = new Dictionary<string, HashSet<string>>();
         }
-        if(!_referencedProperties.TryGetValue(reference, out HashSet<PropertyInfo>? set))
+        if(!_referencedProperties.TryGetValue(reference, out HashSet<string>? set))
         {
-            set = new HashSet<PropertyInfo>();
+            set = new HashSet<string>();
             _referencedProperties.Add(reference, set);
         }
-        return !set.Add(propertyInfo);
+        return !set.Add(propertyName);
     }
 
     internal bool IsHighLevelListUnique(IPrimaryKey primaryKey)

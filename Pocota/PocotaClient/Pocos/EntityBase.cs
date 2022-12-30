@@ -99,7 +99,7 @@ public abstract class EntityBase : PocoBase, IEntity
                         ((IPoco)this).CancelChanges();
                         foreach(var pair in _deferredOverwritings)
                         {
-                            if(_pocota.GetProperties(GetType())?[pair.Key] is Property property)
+                            if(_pocota.GetPropertiesDictionary(GetType())?[pair.Key] is Property property)
                             {
                                 if (!property.IsCollection)
                                 {
