@@ -211,6 +211,7 @@ internal class Builder : IBuilder
     {
         options.Script = _services.GetRequiredService<BuildingScript>();
         options.Script.Mapping = BuildCatsMapping;
+        options.Script.Mapping.Tag = "BuildCatsMapping";
 
         options.Script.WithTrace = true;
 
@@ -224,6 +225,7 @@ internal class Builder : IBuilder
                 BuildingScript script = _services.GetRequiredService<BuildingScript>();
                 script.WithTrace = true;
                 script.Mapping = BuildCatsLitterWithCatsMapping;
+                script.Mapping.Tag = "BuildCatsLitterWithCatsMapping";
                 args.UseSpinner(SpinCats(filter), script);
             }
             else

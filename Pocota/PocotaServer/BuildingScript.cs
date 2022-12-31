@@ -39,7 +39,6 @@ public class BuildingScript
         if(_mapping is null)
         {
             _mapping = new BuildingScriptMapping();
-            _mapping.CreationPoint = Environment.StackTrace.Split('\n', StringSplitOptions.TrimEntries).Skip(3).Take(1).FirstOrDefault()!;
 
         }
         _mapping.AddPathMapEntry(path, fieldName, converterType);
@@ -54,9 +53,9 @@ public class BuildingScript
     {
         if (WithTrace)
         {
-            if(_mapping is { })
+            if(_mapping is { } && !string.IsNullOrEmpty(_mapping.Tag))
             {
-                Console.WriteLine($"from mapping: {_mapping.CreationPoint}: ");
+                Console.WriteLine($"from mapping: {_mapping.Tag}: ");
             }
             Console.Write($"{args.PathSelector}: ");
         }

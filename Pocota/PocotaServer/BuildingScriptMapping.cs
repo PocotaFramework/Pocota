@@ -13,12 +13,7 @@ public class BuildingScriptMapping
     internal ImmutableDictionary<string, string?> FieldsMap => _fieldsMapProp ??= _fieldsMap.ToImmutableDictionary();
     internal ImmutableDictionary<string, Type> Converters => _convertersProp ??= _converters.ToImmutableDictionary();
 
-    internal string CreationPoint { get; set; }
-
-    public BuildingScriptMapping()
-    {
-        CreationPoint = Environment.StackTrace.Split('\n', StringSplitOptions.TrimEntries).Skip(2).Take(1).FirstOrDefault()!;
-    }
+    public string Tag { get; set; } = string.Empty;
 
     public BuildingScriptMapping AddPathMapEntry(string path, string? fieldName, Type? converterType = null)
     {

@@ -13,4 +13,6 @@ public class BuildingOptions
     public BuildingScript? Script { get; set; } = null;
     public bool WithLogging { get; set; } = true;
     public Action<object>? OnItem { get; set; } = null;
+    public bool WithScriptTrace { get; set; } = false;
+    public bool WithJsonTrace { get; set; } = false;
 }

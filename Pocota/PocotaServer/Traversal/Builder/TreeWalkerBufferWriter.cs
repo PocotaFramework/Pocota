@@ -13,6 +13,8 @@ internal class TreeWalkerBufferWriter : IBufferWriter<byte>
 
     internal List<Node> Path { get; init; } = new List<Node>();
 
+    internal bool WithTrace { get; set; } = false;
+
     internal TreeWalkerBufferWriter(Stream? output)
     {
         _output = output;

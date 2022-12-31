@@ -348,8 +348,11 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                     }
 
                                     if (
-                                        (propertyValue is null && context.BuildingContext.BuildingEventArgs.Value is { })
-                                        || (propertyValue is { } && !propertyValue.Equals(context.BuildingContext.BuildingEventArgs.Value))
+                                        !isSkipped
+                                        && (
+                                            (propertyValue is null && context.BuildingContext.BuildingEventArgs.Value is { })
+                                            || (propertyValue is { } && !propertyValue.Equals(context.BuildingContext.BuildingEventArgs.Value))
+                                        )
                                     )
                                     {
                                         propertyValue = context.BuildingContext.BuildingEventArgs.Value;
