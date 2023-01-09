@@ -172,6 +172,7 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
             if (typeof(IProjection).IsAssignableFrom(type))
             {
                 AddProperties(type);
+                //_actualTypes.Add(type, pocoType);
                 Type? @interface = type.GetInterfaces().Where(i => i != typeof(IProjection) && !type.IsGenericType).FirstOrDefault();
                 if (@interface is { })
                 {

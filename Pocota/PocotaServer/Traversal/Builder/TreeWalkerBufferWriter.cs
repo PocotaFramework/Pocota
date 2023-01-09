@@ -23,7 +23,7 @@ internal class TreeWalkerBufferWriter : IBufferWriter<byte>
     public void Advance(int count)
     {
         //string chunk = System.Text.Encoding.UTF8.GetString(_buf, _offset, count);
-        //Console.WriteLine(chunk);
+        //Console.WriteLine($"{GetHashCode()}: {chunk}");
         if (_output is { })
         {
             _output.Write(_buf, _offset, count);

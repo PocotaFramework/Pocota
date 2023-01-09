@@ -2,5 +2,7 @@
 
 public interface ILitterWithCats
 {
-    IList<ICatForListing> Cats { get; }
+    ICatAsParent Female { get; }
+    ICatAsParent? Male { get; }
+    IList<ICatAsSibling> Cats { get; }
 }

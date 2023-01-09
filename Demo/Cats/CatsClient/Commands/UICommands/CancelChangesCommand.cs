@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -22,8 +23,9 @@ public class CancelChangesCommand : MarkupExtension, ICommand
     public bool CanExecute(object? parameter)
     {
         return parameter is object[] values
-            && values[0] is PocoBase poco 
-            && ((IPoco)poco).PocoState is PocoState pocoState
+            && values[0] is IProjection<IPoco> proj
+            && proj.As<IPoco>() is IPoco poco
+            && poco.PocoState is PocoState pocoState
             && pocoState is not PocoState.Unchanged
             && pocoState is not PocoState.Created
             && (
@@ -40,10 +42,11 @@ public class CancelChangesCommand : MarkupExtension, ICommand
         if (
             CanExecute(parameter) 
             && parameter is object[] values
-            && values[0] is IEntity poco
+            && values[0] is IProjection<IEntity> proj
+            && proj.As<IEntity>() is IEntity entity
         )
         {
-            poco.CancelChanges();
+            entity.CancelChanges();
         }
     }
 

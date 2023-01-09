@@ -34,7 +34,7 @@ public class Program
                         serv.AddTransient<LitterPoco>();
                         serv.AddTransient<BreedPoco>();
                         serv.AddTransient<CatteryPoco>();
-                        serv.AddTransient<CatFilterPoco>();
+                        serv.AddTransient<CatFilter>();
                         serv.AddTransient<BreedFilterPoco>();
                         serv.AddTransient<CatteryFilterPoco>();
                         serv.AddTransient<MainWindowHeart>();

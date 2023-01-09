@@ -6,5 +6,5 @@ public interface ILitterForCat
     DateOnly Date { get; }
     ICatAsParent Female { get; }
     ICatAsParent? Male { get; }
-    IList<ICatForListing> Cats { get; }
+    IList<ICatAsSibling> Cats { get; }
 }

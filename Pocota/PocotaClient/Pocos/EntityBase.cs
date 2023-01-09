@@ -116,9 +116,9 @@ public abstract class EntityBase : PocoBase, IEntity
                             }
                         }
                         ((IPoco)this).AcceptChanges();
+                        Console.WriteLine($"overwrite {GetType()}:{GetHashCode()}: {{{string.Join(',', _deferredOverwritings.Select(e => $"{e.Key}={e.Value.Item2}({e.Value.Item1})"))}}}");
                         _deferredOverwritings.Clear();
                     }
-                    Console.WriteLine($"ovewrite {GetType()}:{GetHashCode()}: {{{string.Join(',', _deferredOverwritings.Select(e => $"{e.Key}={e.Value.Item2}({e.Value.Item1})"))}}}");
                 }
             }
         }

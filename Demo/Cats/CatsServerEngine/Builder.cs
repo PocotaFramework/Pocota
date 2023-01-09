@@ -94,6 +94,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/Male/Litter/Date", "DadDate", typeof(DateOnlyConverter))
         .AddPathMapEntry("/Litter/Male/Exterior", "DadExterior")
         .AddPathMapEntry("/Litter/Male/Title", "DadTitle")
+        .AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
         ;
 
     private static BuildingScriptMapping BuildCatLitterWithCatsMapping = new BuildingScriptMapping()
@@ -135,8 +136,6 @@ internal class Builder : IBuilder
     {
         options.Script = _services.GetRequiredService<BuildingScript>();
 
-        //options.Script.WithTrace = true;
-
         options.Script.Mapping = BuildCatMapping;
         options.Script.AddPathHandler("/Litters", args =>
         {
@@ -153,7 +152,24 @@ internal class Builder : IBuilder
             BuildingScript script = _services.GetRequiredService<BuildingScript>();
             script.Mapping = BuildCatLitterWithCatsMapping;
 
-            script.WithTrace = true;
+            script.AddPathHandler("/Litters/[]/Cats", args =>
+            {
+                if (typeof(T) == typeof(ICatWithSiblings))
+                {
+                    ICatFilter filter1 = _services.GetRequiredService<ICatFilter>();
+                    filter1.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
+                    BuildingScript script1 = _services.GetRequiredService<BuildingScript>();
+                    //script.WithTrace = true;
+                    script1.Mapping = BuildCatsLitterWithCatsMapping;
+                    script1.Mapping.Tag = "BuildCatsLitterWithCatsMapping";
+                    args.UseSpinner(SpinCats(filter1), script1);
+                }
+                else
+                {
+                    args.Skip();
+                }
+            });
+
 
             args.UseSpinner(SpinLitters(filter), script);
         });
@@ -213,7 +229,7 @@ internal class Builder : IBuilder
         options.Script.Mapping = BuildCatsMapping;
         options.Script.Mapping.Tag = "BuildCatsMapping";
 
-        options.Script.WithTrace = true;
+        //options.Script.WithTrace = true;
 
         options.Script.AddPathHandler("/Litter/Cats", args =>
         {
@@ -221,9 +237,8 @@ internal class Builder : IBuilder
             {
                 ICatFilter filter = _services.GetRequiredService<ICatFilter>();
                 filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
-                Console.WriteLine("Litter: " + string.Join(',', ((IProjection)filter.Litter!).As<IEntity>().PrimaryKey.Items));
                 BuildingScript script = _services.GetRequiredService<BuildingScript>();
-                script.WithTrace = true;
+                //script.WithTrace = true;
                 script.Mapping = BuildCatsLitterWithCatsMapping;
                 script.Mapping.Tag = "BuildCatsLitterWithCatsMapping";
                 args.UseSpinner(SpinCats(filter), script);
@@ -234,22 +249,22 @@ internal class Builder : IBuilder
             }
         });
             //ILitterWithCats
-        options.Script.AddPathHandler("/Cats", args =>
-        {
-            try
-            {
-                ICatFilter filter = _services.GetRequiredService<ICatFilter>();
-                filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
-                BuildingScript script = _services.GetRequiredService<BuildingScript>();
-                script.Mapping = BuildCatsLitterWithCatsMapping;
-                args.UseSpinner(SpinCats(filter), script);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
-        });
+        //options.Script.AddPathHandler("/Cats", args =>
+        //{
+        //    try
+        //    {
+        //        ICatFilter filter = _services.GetRequiredService<ICatFilter>();
+        //        filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
+        //        BuildingScript script = _services.GetRequiredService<BuildingScript>();
+        //        script.Mapping = BuildCatsLitterWithCatsMapping;
+        //        args.UseSpinner(SpinCats(filter), script);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex);
+        //        throw;
+        //    }
+        //});
 
         _pocoContext.AddJsonConverters<T>(options.JsonSerializerOptions!);
 
@@ -629,7 +644,7 @@ internal class Builder : IBuilder
             Target = cats,
             OnItem = it => 
             {
-                Console.WriteLine(it);
+                //Console.WriteLine(it);
             }
         };
         BuildCats<T>(catsFilter, catsOptions);

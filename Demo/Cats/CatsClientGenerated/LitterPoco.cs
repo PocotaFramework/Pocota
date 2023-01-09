@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-30T16:08:23                                  //
+// at 2023-01-09T18:10:00                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -313,13 +313,13 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             properties.Add(
                 new Property(
                     "Cats", 
-                    typeof(IList<ICatForListing>),
+                    typeof(IList<ICatAsSibling>),
                     GetCatsValue, 
                     null, 
                     target => ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty("Cats"), 
                     false, 
                     true, 
-                    typeof(ICatForListing)
+                    typeof(ICatAsSibling)
                 )
             );
         }
@@ -345,7 +345,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly LitterPoco _projector;
 
-        private readonly ProjectionList<CatPoco,ICatForListing> _cats;
+        private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
 
        public DateOnly Date 
         {
@@ -367,7 +367,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             get => ((IProjection?)_projector.Male)?.As<ICatAsParent>();
         }
 
-       public IList<ICatForListing> Cats 
+       public IList<ICatAsSibling> Cats 
         {
             get => _cats;
         }
@@ -570,14 +570,38 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             properties.Add(
                 new Property(
+                    "Female", 
+                    typeof(ICatAsParent),
+                    GetFemaleValue, 
+                    SetFemaleValue, 
+                    target => ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty("Female"), 
+                    false, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
+                    "Male", 
+                    typeof(ICatAsParent),
+                    GetMaleValue, 
+                    SetMaleValue, 
+                    target => ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty("Male"), 
+                    true, 
+                    true, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
                     "Cats", 
-                    typeof(IList<ICatForListing>),
+                    typeof(IList<ICatAsSibling>),
                     GetCatsValue, 
                     null, 
                     target => ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty("Cats"), 
                     false, 
                     true, 
-                    typeof(ICatForListing)
+                    typeof(ICatAsSibling)
                 )
             );
         }
@@ -603,9 +627,19 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly LitterPoco _projector;
 
-        private readonly ProjectionList<CatPoco,ICatForListing> _cats;
+        private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
 
-       public IList<ICatForListing> Cats 
+       public ICatAsParent Female 
+        {
+            get => ((IProjection)_projector.Female)?.As<ICatAsParent>()!;
+        }
+
+       public ICatAsParent? Male 
+        {
+            get => ((IProjection?)_projector.Male)?.As<ICatAsParent>();
+        }
+
+       public IList<ICatAsSibling> Cats 
         {
             get => _cats;
         }
@@ -645,6 +679,26 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         
 #region Properties Accessors
+
+        private static object? GetFemaleValue(object target)
+        {
+            return ((IProjection)((LitterILitterWithCatsProjection)target)._projector.Female)?.As<ICatAsParent>()!;
+        }
+
+        private static void SetFemaleValue(object target, object? value)
+        {
+             ((LitterILitterWithCatsProjection)target)._projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+        }
+
+        private static object? GetMaleValue(object target)
+        {
+            return ((IProjection?)((LitterILitterWithCatsProjection)target)._projector.Male)?.As<ICatAsParent>();
+        }
+
+        private static void SetMaleValue(object target, object? value)
+        {
+             ((LitterILitterWithCatsProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>();
+        }
 
         private static object? GetCatsValue(object target)
         {

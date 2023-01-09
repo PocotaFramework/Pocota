@@ -44,7 +44,7 @@ public class ViewCatCommand : ICommand
     {
         if(parameter is IProjection<ICat> projection && projection.As<ICat>() is ICat cat)
         {
-            if(!((IProjection)cat).As<IPoco>()!.IsLoaded<ICatForView>())
+            if(!((IProjection)cat).As<IPoco>()!.IsLoaded<ICat>())
             {
                 _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat });
             }
@@ -54,7 +54,7 @@ public class ViewCatCommand : ICommand
             }
         }
         else if(parameter is object[] && ((object[])parameter)[0] is IProjection<ICat> projection1 && projection1.As<ICat>() is ICat cat1) {
-            if (!((IProjection)cat1).As<IPoco>()!.IsLoaded<ICatForView>())
+            if (!((IProjection)cat1).As<IPoco>()!.IsLoaded<ICat>())
             {
                 _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat1 });
             }
@@ -75,7 +75,7 @@ public class ViewCatCommand : ICommand
         ViewCat view = _services.GetRequiredService<ViewCat>();
         MainWindow mainWindow = _services.GetRequiredService<MainWindow>();
         mainWindow.AddView(view);
-        view.Heart.Cat = ((IProjection)e.Result!).As<ICatForView>()!;
+        view.Heart.Cat = ((IProjection)e.Result!).As<ICat>()!;
         view.Closed += View_Closed;
         view.Show();
     }

@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-30T16:08:23                                  //
+// at 2023-01-09T18:09:59                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace CatsCommon.Model;
 
-public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey<ICatForListing>, IPrimaryKey<ICatAsParent>, IPrimaryKey<ICatForView>, IPrimaryKey<ICatWithSiblings>
+public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey<ICatForListing>, IPrimaryKey<ICatAsParent>, IPrimaryKey<ICatForView>, IPrimaryKey<ICatWithSiblings>, IPrimaryKey<ICatAsSibling>
 {
     private static string[] s_names = new string[] { "IdCat", "IdCattery" };
 

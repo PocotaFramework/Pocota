@@ -1,62 +1,23 @@
-﻿using System.Reflection;
+﻿using Net.Leksi.Pocota.Common;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Net.Leksi.Pocota.Server;
 
-internal class ListJsonConverter<T> : JsonConverter<T> where T : class
+internal class ListJsonConverter<T> : ListJsonConverterBase<T> where T : class
 {
-    private static readonly MethodInfo? _add;
-    private static readonly PropertyInfo? _items;
-    private static readonly PropertyInfo? _count;
+    private static readonly Type _itemType = typeof(T).GetGenericArguments()[0];
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
-    private readonly Type _itemType;
     private readonly PocoContext _pocoContext;
 
-
-    static ListJsonConverter()
-    {
-        Queue<Type> types = new();
-        types.Enqueue(typeof(T));
-        while (types.Count > 0)
-        {
-            Type now = types.Dequeue();
-            foreach (var m in now.GetMethods())
-            {
-                if ("Add".Equals(m.Name) && _add is null)
-                {
-                    _add = m;
-                }
-            }
-            foreach (var p in now.GetProperties())
-            {
-                if ("Count".Equals(p.Name) && _count is null)
-                {
-                    _count = p;
-                }
-                else if ("Items".Equals(p.Name) && _items is null)
-                {
-                    _items = p;
-                }
-            }
-            foreach (var intf in now.GetInterfaces())
-            {
-                types.Enqueue(intf);
-            }
-            if (now != typeof(object) && now.BaseType is { })
-            {
-                types.Enqueue(now.BaseType);
-            }
-        }
-    }
 
     public ListJsonConverter(IServiceProvider services)
     {
         _services = services;
         _core = _services.GetRequiredService<PocotaCore>();
-        _itemType = typeof(T).GetGenericArguments()[0];
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
     }
 
@@ -84,18 +45,25 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
             result = (T?)Activator.CreateInstance(typeof(List<>).MakeGenericType(new Type[] { _itemType }));
         }
 
-        object?[] index = new object[1];
-
-        while (reader.Read())
+        if(result is { })
         {
-            if (reader.TokenType is JsonTokenType.EndArray)
+            ListMembersHolder membersHolder = GetListMembersHolder(result.GetType());
+            object?[] index = new object[1];
+
+            while (reader.Read())
             {
-                break;
+                if (reader.TokenType is JsonTokenType.EndArray)
+                {
+                    break;
+                }
+                index[0] = JsonSerializer.Deserialize(ref reader, _itemType, options);
+                membersHolder.Add!.Invoke(result, index);
             }
-            index[0] = JsonSerializer.Deserialize(ref reader, _itemType, options);
-            _add!.Invoke(result, index);
+            return result;
         }
-        return result;
+
+        return null;
+
     }
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
@@ -110,14 +78,16 @@ internal class ListJsonConverter<T> : JsonConverter<T> where T : class
         bool isHighLevel = context.IsHighLevel;
         context.IsHighLevel = false;
 
+        ListMembersHolder membersHolder = GetListMembersHolder(value.GetType());
+
         for (int i = 0; ; ++i)
         {
             context.IsHighLevel = isHighLevel;
             index[0] = i;
             try
             {
-                object? item = _items!.GetValue(value, index);
-                JsonSerializer.Serialize(writer, item, options);
+                object? item = membersHolder.Item!.GetValue(value, index);
+                JsonSerializer.Serialize(writer, item, _itemType, options);
             }
             catch (TargetInvocationException tiex)
             {

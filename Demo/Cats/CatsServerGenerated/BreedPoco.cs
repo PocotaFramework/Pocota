@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2022-12-30T16:08:23                                  //
+// at 2023-01-09T18:09:59                                  //
 /////////////////////////////////////////////////////////////
 
 

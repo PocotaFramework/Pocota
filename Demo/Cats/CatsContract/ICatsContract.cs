@@ -9,7 +9,7 @@ namespace CatsContract;
 
 [Poco(
     typeof(ICat), 
-    Projections = new[] { typeof(ICatForListing), typeof(ICatAsParent), typeof(ICatForView), typeof(ICatWithSiblings) },
+    Projections = new[] { typeof(ICatForListing), typeof(ICatAsParent), typeof(ICatForView), typeof(ICatWithSiblings), typeof(ICatAsSibling) },
     PrimaryKey = new object[] { "IdCat", typeof(int), "IdCattery", "Cattery.IdCattery" }
     )]
 [Poco(

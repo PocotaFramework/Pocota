@@ -26,7 +26,7 @@ internal class SiblingCatsConverter : MarkupExtension, IValueConverter
         )
         {
             //Console.WriteLine(((IList<ICatForListing>)value).Count);
-            return string.Join(",", ((IList<ICatForListing>)value).Select(v => v.NameNat));
+            return string.Join(",", ((IList<ICatAsSibling>)value).Select(v => v.NameNat));
         }
         throw new NotImplementedException();
     }

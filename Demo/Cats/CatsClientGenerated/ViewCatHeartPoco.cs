@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2022-12-30T16:08:23                                          //
+// at 2023-01-09T18:10:00                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -56,7 +56,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             properties.Add(
                 new Property(
                     "Cat", 
-                    typeof(ICatForView),
+                    typeof(ICat),
                     GetCatValue, 
                     SetCatValue, 
                     target => ((IPoco)((ViewCatHeartIViewCatHeartProjection)target)._projector).TouchProperty("Cat"), 
@@ -114,9 +114,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             set => _projector.LittersView = (Object)value!;
         }
 
-       public ICatForView Cat 
+       public ICat Cat 
         {
-            get => ((IProjection)_projector.Cat)?.As<ICatForView>()!;
+            get => ((IProjection)_projector.Cat)?.As<ICat>()!;
             set => _projector.Cat = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
@@ -188,7 +188,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
         private static object? GetCatValue(object target)
         {
-            return ((IProjection)((ViewCatHeartIViewCatHeartProjection)target)._projector.Cat)?.As<ICatForView>()!;
+            return ((IProjection)((ViewCatHeartIViewCatHeartProjection)target)._projector.Cat)?.As<ICat>()!;
         }
 
         private static void SetCatValue(object target, object? value)

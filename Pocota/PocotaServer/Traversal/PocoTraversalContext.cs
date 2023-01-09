@@ -34,6 +34,8 @@ internal class PocoTraversalContext : IPocoTraversalContext
 
     internal bool IsListItem { get; set; } = false;
 
+    public TraversalStack Stack { get; init; } = new();
+
     internal BuildingContext? BuildingContext 
     {
         get

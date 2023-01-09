@@ -47,6 +47,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             throw new InvalidOperationException("Unproper using!");
         }
         ++context.BuildingContext!.Level;
+        context.Stack.Push(value);
 
         IPrimaryKey<T>? primaryKey = null;
         bool alreadyExists = false;
@@ -208,6 +209,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                 return;
             }
+            context.Stack.Pop(value);
             if (_isEntity)
             {
                 value = _pocoContext.FindOrCreateEntity(primaryKey!, out isNew);
@@ -216,6 +218,8 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             {
                 value = _services.GetRequiredService<T>();
             }
+
+            context.Stack.Push(value);
 
             reference = context.GetReference(((IProjection)value).As<IPoco>()!, out alreadyExists);
             if (context.BuildingContext.Name is { })
@@ -265,7 +269,9 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     bool isPropertySet = poco.IsPropertySet(property.Name);
 
-                    if (isNew || !isPropertySet)
+                    bool isCollectionReentering = property.IsCollection && propertyValue is { } && context.Stack.Contains(propertyValue, ReferenceEqualityComparer.Instance);
+
+                    if (!isCollectionReentering && (isNew || !isPropertySet))
                     {
                         bool isSkipped = false;
 
@@ -376,28 +382,36 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                 if (propertyValue is { })
                                 {
                                     JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
-                                    if (isPoco)
-                                    {
-                                        if (PocoBase.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
-                                        {
-                                            context.Target = null;
-                                        }
-                                    }
 
-                                    if (isPocoWithKey)
+                                    if (property.IsCollection)
                                     {
-                                        if (
-                                            (
-                                                context.Target is null
-                                                && propertyValue is { }
-                                            )
-                                            || (
-                                                context.Target is { }
-                                                && !context.Target.Equals(propertyValue)
-                                            )
-                                        )
+                                        property.TouchValue(value);
+                                    }
+                                    else
+                                    {
+                                        if (isPoco)
                                         {
-                                            property.SetValue(value, context.Target);
+                                            if (PocoBase.ReferenceEquals(context.Target, _pocoContext.GetSkipPlaceholder(typeForSerialization)))
+                                            {
+                                                context.Target = null;
+                                            }
+                                        }
+
+                                        if (isPocoWithKey)
+                                        {
+                                            if (
+                                                (
+                                                    context.Target is null
+                                                    && propertyValue is { }
+                                                )
+                                                || (
+                                                    context.Target is { }
+                                                    && !context.Target.Equals(propertyValue)
+                                                )
+                                            )
+                                            {
+                                                property.SetValue(value, context.Target);
+                                            }
                                         }
                                     }
                                 }
@@ -419,11 +433,12 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         }
         finally
         {
+            --context.BuildingContext!.Level;
+            context.Stack.Pop(value);
             if (isHighLevel && (context.BuildingContext.Log?.Failed ?? false))
             {
                 context.BuildingContext.Log?.Throw();
             }
-            --context.BuildingContext!.Level;
         }
 
     }

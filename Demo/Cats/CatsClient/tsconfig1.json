@@ -1,737 +1,187 @@
-{
-  "$id": "1",
-  "$values": [
-    {
-      "$in": "#2:CatsCommon.Model.ICatWithSiblings",
-      "$id": "#1",
-      "$cl": "#3:CatsCommon.Model.CatPoco",
-      "$key": [
-        885,
-        9
-      ],
-      "Cattery": {
-        "$in": "#5:CatsCommon.Model.ICattery",
-        "$id": "#4",
-        "$cl": "#6:CatsCommon.Model.CatteryPoco",
-        "$key": [
-          9
-        ],
-        "NameEng": "Cattery #9",
-        "NameNat": "Кошатник № 9"
-      },
-      "Litter": {
-        "$in": "#8:CatsCommon.Model.ILitterWithCats",
-        "$id": "#7",
-        "$cl": "#9:CatsCommon.Model.LitterPoco",
-        "$key": [
-          163,
-          2,
-          1
-        ],
-        "Order": 1,
-        "Female": {
-          "$in": "#11:CatsCommon.Model.ICat",
-          "$id": "#10",
+[
+  {
+    "$in": "#2:CatsCommon.Model.ICatWithSiblings",
+    "$id": "#1",
+    "$cl": "#3:CatsCommon.Model.CatPoco",
+    "$key": [ 405, 9 ],
+    "Litter": {
+      "$in": "#5:CatsCommon.Model.ILitterWithCats",
+      "$id": "#4",
+      "$cl": "#6:CatsCommon.Model.LitterPoco",
+      "$key": [ 194, 9, 1 ],
+      "Cats": [
+        {
+          "$in": "#8:CatsCommon.Model.ICatForListing",
+          "$id": "#7",
           "$cl": "#3",
-          "$key": [
-            163,
-            2
-          ],
+          "$key": [ 404, 9 ],
           "Description": "",
-          "Exterior": "d",
+          "Exterior": "c",
           "Gender": "Female",
-          "NameEng": "Bjessi",
-          "NameNat": "Бесси",
-          "Title": "WCH",
+          "NameEng": "Amjelija",
+          "NameNat": "\u0410\u043C\u0435\u043B\u0438\u044F",
+          "Title": "GIC",
           "Breed": {
-            "$in": "#13:CatsCommon.Model.IBreed",
-            "$id": "#12",
-            "$cl": "#14:CatsCommon.Model.BreedPoco",
-            "$key": [
-              "ABY       ",
-              "SH        "
-            ],
+            "$in": "#10:CatsCommon.Model.IBreed",
+            "$id": "#9",
+            "$cl": "#11:CatsCommon.Model.BreedPoco",
+            "$key": [ "ABY       ", "SH        " ],
             "Code": "ABY       ",
             "Group": "SH        ",
             "NameEng": "Abyssinian",
-            "NameNat": "абиссинская"
+            "NameNat": "\u0430\u0431\u0438\u0441\u0441\u0438\u043D\u0441\u043A\u0430\u044F"
           },
           "Cattery": {
-            "$in": "#5",
-            "$id": "#15",
-            "$cl": "#6",
-            "$key": [
-              2
-            ],
-            "NameEng": "Cattery #2",
-            "NameNat": "Кошатник № 2"
+            "$in": "#13:CatsCommon.Model.ICattery",
+            "$id": "#12",
+            "$cl": "#14:CatsCommon.Model.CatteryPoco",
+            "$key": [ 9 ],
+            "NameEng": "Cattery #9",
+            "NameNat": "\u041A\u043E\u0448\u0430\u0442\u043D\u0438\u043A \u2116 9"
           },
           "Litter": {
-            "$in": "#17:CatsCommon.Model.ILitter",
-            "$id": "#16",
-            "$cl": "#9",
-            "$key": [
-              44,
-              2,
-              2
-            ],
-            "Date": "2008-12-25",
-            "Order": 2,
+            "$in": "#15:CatsCommon.Model.ILitterForCat",
+            "$ref": "#4",
+            "Date": "2008-12-26",
             "Female": {
-              "$in": "#11",
-              "$id": "#18",
+              "$in": "#17:CatsCommon.Model.ICatAsParent",
+              "$id": "#16",
               "$cl": "#3",
-              "$key": [
-                44,
-                2
-              ],
-              "Description": "",
-              "Exterior": "y",
-              "Gender": "Female",
-              "NameEng": "Ariel`",
-              "NameNat": "Ариэль",
-              "Title": "WCH",
-              "Breed": {
-                "$in": "#13",
-                "$ref": "#12"
-              },
-              "Cattery": {
-                "$in": "#5",
-                "$ref": "#15"
-              },
-              "Litter": {
-                "$in": "#17",
-                "$id": "#19",
-                "$cl": "#9",
-                "$key": [
-                  18,
-                  2,
-                  1
-                ],
-                "Date": "2007-01-22",
-                "Order": 1,
-                "Female": {
-                  "$in": "#11",
-                  "$id": "#20",
-                  "$cl": "#3",
-                  "$key": [
-                    18,
-                    2
-                  ],
-                  "Description": "",
-                  "Exterior": "c",
-                  "Gender": "Female",
-                  "NameEng": "Amina",
-                  "NameNat": "Амина",
-                  "Title": "GIC",
-                  "Breed": {
-                    "$in": "#13",
-                    "$ref": "#12"
-                  },
-                  "Cattery": {
-                    "$in": "#5",
-                    "$ref": "#15"
-                  },
-                  "Litter": {
-                    "$in": "#17",
-                    "$id": "#21",
-                    "$cl": "#9",
-                    "$key": [
-                      18,
-                      9,
-                      1
-                    ],
-                    "Date": "2006-01-22",
-                    "Order": 1,
-                    "Female": {
-                      "$in": "#11",
-                      "$id": "#22",
-                      "$cl": "#3",
-                      "$key": [
-                        18,
-                        9
-                      ],
-                      "Description": "",
-                      "Exterior": "g",
-                      "Gender": "Female",
-                      "NameEng": "Amjelija",
-                      "NameNat": "Амелия",
-                      "Title": "GEC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#4"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$id": "#23",
-                        "$cl": "#9",
-                        "$key": [
-                          9,
-                          9,
-                          1
-                        ],
-                        "Date": "2005-01-22",
-                        "Order": 1,
-                        "Female": {
-                          "$in": "#11",
-                          "$id": "#24",
-                          "$cl": "#3",
-                          "$key": [
-                            9,
-                            9
-                          ],
-                          "Description": "",
-                          "Exterior": "y",
-                          "Gender": "Female",
-                          "NameEng": "Bassi",
-                          "NameNat": "Басси",
-                          "Title": "IC",
-                          "Breed": {
-                            "$in": "#13",
-                            "$ref": "#12"
-                          },
-                          "Cattery": {
-                            "$in": "#5",
-                            "$ref": "#4"
-                          },
-                          "Litter": {
-                            "$in": "#17",
-                            "$id": "#25",
-                            "$cl": "#9",
-                            "$key": [
-                              1,
-                              2,
-                              2
-                            ],
-                            "Date": "2004-01-22",
-                            "Order": 2,
-                            "Female": {
-                              "$in": "#11",
-                              "$id": "#26",
-                              "$cl": "#3",
-                              "$key": [
-                                1,
-                                2
-                              ],
-                              "Description": "",
-                              "Exterior": "d",
-                              "Gender": "Female",
-                              "NameEng": "Dusil`njeja",
-                              "NameNat": "Дусильнея",
-                              "Title": "GEC",
-                              "Breed": {
-                                "$in": "#13",
-                                "$ref": "#12"
-                              },
-                              "Cattery": {
-                                "$in": "#5",
-                                "$ref": "#15"
-                              },
-                              "Litter": null
-                            },
-                            "Male": null
-                          }
-                        },
-                        "Male": {
-                          "$in": "#11",
-                          "$id": "#27",
-                          "$cl": "#3",
-                          "$key": [
-                            8,
-                            9
-                          ],
-                          "Description": "",
-                          "Exterior": "e",
-                          "Gender": "Male",
-                          "NameEng": "Baks",
-                          "NameNat": "Бакс",
-                          "Title": "IC",
-                          "Breed": {
-                            "$in": "#13",
-                            "$ref": "#12"
-                          },
-                          "Cattery": {
-                            "$in": "#5",
-                            "$ref": "#4"
-                          },
-                          "Litter": {
-                            "$in": "#17",
-                            "$ref": "#25"
-                          }
-                        }
-                      }
-                    },
-                    "Male": {
-                      "$in": "#11",
-                      "$id": "#28",
-                      "$cl": "#3",
-                      "$key": [
-                        12,
-                        2
-                      ],
-                      "Description": "",
-                      "Exterior": "f",
-                      "Gender": "Male",
-                      "NameEng": "Bastjer",
-                      "NameNat": "Бастер",
-                      "Title": "GEC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#15"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$id": "#29",
-                        "$cl": "#9",
-                        "$key": [
-                          3,
-                          2,
-                          2
-                        ],
-                        "Date": "2005-01-22",
-                        "Order": 2,
-                        "Female": {
-                          "$in": "#11",
-                          "$id": "#30",
-                          "$cl": "#3",
-                          "$key": [
-                            3,
-                            2
-                          ],
-                          "Description": "",
-                          "Exterior": "h",
-                          "Gender": "Female",
-                          "NameEng": "Ajvi",
-                          "NameNat": "Айви",
-                          "Title": "WCH",
-                          "Breed": {
-                            "$in": "#13",
-                            "$ref": "#12"
-                          },
-                          "Cattery": {
-                            "$in": "#5",
-                            "$ref": "#15"
-                          },
-                          "Litter": {
-                            "$in": "#17",
-                            "$id": "#31",
-                            "$cl": "#9",
-                            "$key": [
-                              1,
-                              2,
-                              1
-                            ],
-                            "Date": "2003-02-22",
-                            "Order": 1,
-                            "Female": {
-                              "$in": "#11",
-                              "$ref": "#26"
-                            },
-                            "Male": null
-                          }
-                        },
-                        "Male": {
-                          "$in": "#11",
-                          "$id": "#32",
-                          "$cl": "#3",
-                          "$key": [
-                            7,
-                            9
-                          ],
-                          "Description": "",
-                          "Exterior": "o",
-                          "Gender": "Male",
-                          "NameEng": "Borman",
-                          "NameNat": "Борман",
-                          "Title": "IC",
-                          "Breed": {
-                            "$in": "#13",
-                            "$ref": "#12"
-                          },
-                          "Cattery": {
-                            "$in": "#5",
-                            "$ref": "#4"
-                          },
-                          "Litter": {
-                            "$in": "#17",
-                            "$ref": "#25"
-                          }
-                        }
-                      }
-                    }
-                  }
-                },
-                "Male": {
-                  "$in": "#11",
-                  "$id": "#33",
-                  "$cl": "#3",
-                  "$key": [
-                    52,
-                    9
-                  ],
-                  "Description": "",
-                  "Exterior": "s",
-                  "Gender": "Male",
-                  "NameEng": "Aslan",
-                  "NameNat": "Аслан",
-                  "Title": "EC",
-                  "Breed": {
-                    "$in": "#13",
-                    "$ref": "#12"
-                  },
-                  "Cattery": {
-                    "$in": "#5",
-                    "$ref": "#4"
-                  },
-                  "Litter": {
-                    "$in": "#17",
-                    "$id": "#34",
-                    "$cl": "#9",
-                    "$key": [
-                      19,
-                      9,
-                      1
-                    ],
-                    "Date": "2006-01-22",
-                    "Order": 1,
-                    "Female": {
-                      "$in": "#11",
-                      "$id": "#35",
-                      "$cl": "#3",
-                      "$key": [
-                        19,
-                        9
-                      ],
-                      "Description": "",
-                      "Exterior": "s",
-                      "Gender": "Female",
-                      "NameEng": "Ajsi",
-                      "NameNat": "Айси",
-                      "Title": "GEC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#4"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$ref": "#23"
-                      }
-                    },
-                    "Male": {
-                      "$in": "#11",
-                      "$id": "#36",
-                      "$cl": "#3",
-                      "$key": [
-                        7,
-                        2
-                      ],
-                      "Description": "",
-                      "Exterior": "f",
-                      "Gender": "Male",
-                      "NameEng": "Abrikosik",
-                      "NameNat": "Абрикосик",
-                      "Title": "IC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#15"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$id": "#37",
-                        "$cl": "#9",
-                        "$key": [
-                          3,
-                          2,
-                          1
-                        ],
-                        "Date": "2004-02-22",
-                        "Order": 1,
-                        "Female": {
-                          "$in": "#11",
-                          "$ref": "#30"
-                        },
-                        "Male": {
-                          "$in": "#11",
-                          "$id": "#38",
-                          "$cl": "#3",
-                          "$key": [
-                            4,
-                            2
-                          ],
-                          "Description": "",
-                          "Exterior": "s",
-                          "Gender": "Male",
-                          "NameEng": "Ajk",
-                          "NameNat": "Айк",
-                          "Title": "GIC",
-                          "Breed": {
-                            "$in": "#13",
-                            "$ref": "#12"
-                          },
-                          "Cattery": {
-                            "$in": "#5",
-                            "$ref": "#15"
-                          },
-                          "Litter": {
-                            "$in": "#17",
-                            "$ref": "#31"
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              "$key": [ 194, 9 ]
             },
             "Male": {
-              "$in": "#11",
-              "$id": "#39",
+              "$in": "#17",
+              "$id": "#18",
               "$cl": "#3",
-              "$key": [
-                57,
-                2
-              ],
-              "Description": "",
-              "Exterior": "h",
-              "Gender": "Male",
-              "NameEng": "Archik",
-              "NameNat": "Арчик",
-              "Title": "CH",
-              "Breed": {
-                "$in": "#13",
-                "$ref": "#12"
-              },
-              "Cattery": {
-                "$in": "#5",
-                "$ref": "#15"
-              },
-              "Litter": {
-                "$in": "#17",
-                "$id": "#40",
-                "$cl": "#9",
-                "$key": [
-                  27,
-                  2,
-                  1
-                ],
-                "Date": "2007-01-28",
-                "Order": 1,
-                "Female": {
-                  "$in": "#11",
-                  "$id": "#41",
-                  "$cl": "#3",
-                  "$key": [
-                    27,
-                    2
-                  ],
-                  "Description": "",
-                  "Exterior": "o",
-                  "Gender": "Female",
-                  "NameEng": "Ada",
-                  "NameNat": "Ада",
-                  "Title": "CH",
-                  "Breed": {
-                    "$in": "#13",
-                    "$ref": "#12"
-                  },
-                  "Cattery": {
-                    "$in": "#5",
-                    "$ref": "#15"
-                  },
-                  "Litter": {
-                    "$in": "#17",
-                    "$id": "#42",
-                    "$cl": "#9",
-                    "$key": [
-                      11,
-                      2,
-                      1
-                    ],
-                    "Date": "2006-01-24",
-                    "Order": 1,
-                    "Female": {
-                      "$in": "#11",
-                      "$id": "#43",
-                      "$cl": "#3",
-                      "$key": [
-                        11,
-                        2
-                      ],
-                      "Description": "",
-                      "Exterior": "r",
-                      "Gender": "Female",
-                      "NameEng": "Brendi",
-                      "NameNat": "Брэнди",
-                      "Title": "EC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#15"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$ref": "#29"
-                      }
-                    },
-                    "Male": {
-                      "$in": "#11",
-                      "$id": "#44",
-                      "$cl": "#3",
-                      "$key": [
-                        8,
-                        2
-                      ],
-                      "Description": "",
-                      "Exterior": "c",
-                      "Gender": "Male",
-                      "NameEng": "Asmur",
-                      "NameNat": "Асмур",
-                      "Title": "EC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#15"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$ref": "#37"
-                      }
-                    }
-                  }
-                },
-                "Male": {
-                  "$in": "#11",
-                  "$id": "#45",
-                  "$cl": "#3",
-                  "$key": [
-                    60,
-                    9
-                  ],
-                  "Description": "",
-                  "Exterior": "x",
-                  "Gender": "Male",
-                  "NameEng": "Amtaro",
-                  "NameNat": "Амтаро",
-                  "Title": "GEC",
-                  "Breed": {
-                    "$in": "#13",
-                    "$ref": "#12"
-                  },
-                  "Cattery": {
-                    "$in": "#5",
-                    "$ref": "#4"
-                  },
-                  "Litter": {
-                    "$in": "#17",
-                    "$id": "#46",
-                    "$cl": "#9",
-                    "$key": [
-                      13,
-                      2,
-                      1
-                    ],
-                    "Date": "2006-01-25",
-                    "Order": 1,
-                    "Female": {
-                      "$in": "#11",
-                      "$id": "#47",
-                      "$cl": "#3",
-                      "$key": [
-                        13,
-                        2
-                      ],
-                      "Description": "",
-                      "Exterior": "a",
-                      "Gender": "Female",
-                      "NameEng": "Bastet",
-                      "NameNat": "Бастэт",
-                      "Title": "IC",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#15"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$ref": "#29"
-                      }
-                    },
-                    "Male": {
-                      "$in": "#11",
-                      "$id": "#48",
-                      "$cl": "#3",
-                      "$key": [
-                        22,
-                        9
-                      ],
-                      "Description": "",
-                      "Exterior": "w",
-                      "Gender": "Male",
-                      "NameEng": "Al`frjedo",
-                      "NameNat": "Альфредо",
-                      "Title": "WCH",
-                      "Breed": {
-                        "$in": "#13",
-                        "$ref": "#12"
-                      },
-                      "Cattery": {
-                        "$in": "#5",
-                        "$ref": "#4"
-                      },
-                      "Litter": {
-                        "$in": "#17",
-                        "$ref": "#23"
-                      }
-                    }
-                  }
-                }
-              }
+              "$key": [ 74, 2 ]
             }
           }
+        },
+        {
+          "$in": "#8",
+          "$ref": "#1",
+          "Description": "",
+          "Exterior": "q",
+          "Gender": "Male",
+          "NameEng": "Artas",
+          "NameNat": "\u0410\u0440\u0442\u0430\u0441",
+          "Title": "GEC",
+          "Breed": {
+            "$in": "#10",
+            "$ref": "#9"
+          },
+          "Cattery": {
+            "$in": "#13",
+            "$ref": "#12"
+          },
+          "Litter": {
+            "$in": "#15",
+            "$ref": "#4"
+          }
+        },
+        {
+          "$in": "#8",
+          "$id": "#19",
+          "$cl": "#3",
+          "$key": [ 406, 9 ],
+          "Description": "",
+          "Exterior": "s",
+          "Gender": "Male",
+          "NameEng": "Aang",
+          "NameNat": "\u0410\u0430\u043D\u0433",
+          "Title": "CH",
+          "Breed": {
+            "$in": "#10",
+            "$ref": "#9"
+          },
+          "Cattery": {
+            "$in": "#13",
+            "$ref": "#12"
+          },
+          "Litter": {
+            "$in": "#15",
+            "$ref": "#4"
+          }
         }
-      }
-    },
-    {
-      "$in": "#2",
-      "$id": "#49",
-      "$cl": "#3",
-      "$key": [
-        886,
-        9
-      ],
-      "Cattery": {
-        "$in": "#5",
-        "$ref": "#4"
-      },
-      "Litter": {
-        "$in": "#8",
-        "$ref": "#7"
-      }
+      ]
     }
-  ]
-}
+  }
+] [
+  {
+    "$in": "#2",
+    "$id": "#20",
+    "$cl": "#3",
+    "$key": [ 885, 9 ],
+    "Litter": {
+      "$in": "#5",
+      "$id": "#21",
+      "$cl": "#6",
+      "$key": [ 163, 2, 1 ],
+      "Cats": [
+        {
+          "$in": "#8",
+          "$ref": "#20",
+          "Description": "",
+          "Exterior": "n",
+          "Gender": "Male",
+          "NameEng": "Adel\u0060",
+          "NameNat": "\u0410\u0434\u044D\u043B\u044C",
+          "Title": "GIC",
+          "Breed": {
+            "$in": "#10",
+            "$ref": "#9"
+          },
+          "Cattery": {
+            "$in": "#13",
+            "$ref": "#12"
+          },
+          "Litter": {
+            "$in": "#15",
+            "$ref": "#21",
+            "Date": "2009-12-29",
+            "Female": {
+              "$in": "#17",
+              "$id": "#22",
+              "$cl": "#3",
+              "$key": [ 163, 2 ]
+            },
+            "Male": {
+              "$in": "#17",
+              "$ref": "#1"
+            }
+          }
+        },
+        {
+          "$in": "#8",
+          "$id": "#23",
+          "$cl": "#3",
+          "$key": [ 886, 9 ],
+          "Description": "",
+          "Exterior": "g",
+          "Gender": "Female",
+          "NameEng": "Alisa",
+          "NameNat": "\u0410\u043B\u0438\u0441\u0430",
+          "Title": "WCH",
+          "Breed": {
+            "$in": "#10",
+            "$ref": "#9"
+          },
+          "Cattery": {
+            "$in": "#13",
+            "$ref": "#12"
+          },
+          "Litter": {
+            "$in": "#15",
+            "$ref": "#21"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "$in": "#2",
+    "$ref": "#23"
+  }
+] [
+] [
+]

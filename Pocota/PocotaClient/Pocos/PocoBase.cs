@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -407,10 +408,10 @@ public abstract class PocoBase : IPoco
                         }
                         else if (p.IsCollection)
                         {
-                            IEnumerable en = (IEnumerable)p.GetValue(this)!;
-                            foreach (PocoBase item in en)
+                            IEnumerable en = (IEnumerable)p.GetValue(((IProjection)this).As(@interface)!)!;
+                            foreach (IProjection<PocoBase> item in en)
                             {
-                                if (!item.IsLoaded(p.ItemType!, antiCycleToken))
+                                if (!item.As<PocoBase>()!.IsLoaded(p.ItemType!, antiCycleToken))
                                 {
                                     return false;
                                 }
