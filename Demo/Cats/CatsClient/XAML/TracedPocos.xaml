@@ -5,14 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CatsClient.XAML"
         mc:Ignorable="d"
-        Title="TracedPocos" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
-    <DockPanel LastChildFill="True">
-        <Button DockPanel.Dock="Top" Click="Button_Click">Собрать мусор</Button>
-        <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True" >
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Тип" Binding="{Binding Item1}" />
-                <DataGridTextColumn Header="Количество" Binding="{Binding Item2}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+        Title="Системная информация" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DockPanel LastChildFill="True" Grid.Row="0">
+            <Button DockPanel.Dock="Top" Click="Button_Click">Собрать мусор</Button>
+            <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Тип" Binding="{Binding Item1}" />
+                    <DataGridTextColumn Header="Количество" Binding="{Binding Item2}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+        <DockPanel LastChildFill="True" Grid.Row="2">
+            <DataGrid ItemsSource="{Binding Heart.ModifiedPocos}" AutoGenerateColumns="False" IsReadOnly="True" >
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Тип" Binding="{Binding Item1}" />
+                    <DataGridTextColumn Header="Хеш" Binding="{Binding Item2}" />
+                    <DataGridTextColumn Header="Состояние" Binding="{Binding Item3}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
 </Window>

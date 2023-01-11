@@ -222,15 +222,13 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                                 || !isModified
                             );
 
+
                         context!.Target = property.IsCollection
                             ? (
                                 canChangeValue
                                 ? oldValue
-                                : (
-                                    _pocoContext.ExternalUpdateProcessing is ExternalUpdateProcessing.Never
-                                    ? Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!))
-                                    : ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
-                                )
+                                : ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
+                                
                             )
                             : null;
                         object? value = JsonSerializer.Deserialize(ref reader, typeForDeserialization, options);
@@ -254,7 +252,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             {
                                 property.SetValue(result.As<T>()!, value);
                             }
-                            else if (_pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
+                            else
                             {
                                 ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, value);
                             }

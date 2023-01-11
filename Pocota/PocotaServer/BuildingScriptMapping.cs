@@ -13,7 +13,12 @@ public class BuildingScriptMapping
     internal ImmutableDictionary<string, string?> FieldsMap => _fieldsMapProp ??= _fieldsMap.ToImmutableDictionary();
     internal ImmutableDictionary<string, Type> Converters => _convertersProp ??= _converters.ToImmutableDictionary();
 
-    public string Tag { get; set; } = string.Empty;
+    public string Tag { get; init; }
+
+    public BuildingScriptMapping(string tag = "")
+    {
+        Tag = tag;
+    }
 
     public BuildingScriptMapping AddPathMapEntry(string path, string? fieldName, Type? converterType = null)
     {

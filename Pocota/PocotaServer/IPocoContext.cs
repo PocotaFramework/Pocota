@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Net.Leksi.Pocota.Common;
+using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
 
@@ -13,5 +14,8 @@ public interface IPocoContext
 
     void AddJsonConverters(Type targetType, JsonSerializerOptions jsonSerializerOptions);
     void AddJsonConverters<TTarget>(JsonSerializerOptions jsonSerializerOptions);
+
+    Property? GetProperty(Type targetType, string propertyName);
+    Property? GetProperty<T>(string propertyName);
 
 }

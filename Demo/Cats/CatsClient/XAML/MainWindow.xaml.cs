@@ -66,7 +66,6 @@ public partial class MainWindow : Window
 
     public MainWindow(IServiceProvider services)
     {
-        services.GetRequiredService<IPocoContext>().ExternalUpdateProcessing = ExternalUpdateProcessing.Always;
         services.GetRequiredService<IPocoContext>().TracePocos = true;
 
         Connector = services.GetRequiredService<CatsConnector>();

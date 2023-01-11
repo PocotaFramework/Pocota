@@ -44,24 +44,10 @@ public class ViewCatCommand : ICommand
     {
         if(parameter is IProjection<ICat> projection && projection.As<ICat>() is ICat cat)
         {
-            if(!((IProjection)cat).As<IPoco>()!.IsLoaded<ICat>())
-            {
-                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat });
-            }
-            else
-            {
-                GetCat_Executed(this, new CrudCommandExecutedEventArgs(cat, null));
-            }
+            _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat });
         }
         else if(parameter is object[] && ((object[])parameter)[0] is IProjection<ICat> projection1 && projection1.As<ICat>() is ICat cat1) {
-            if (!((IProjection)cat1).As<IPoco>()!.IsLoaded<ICat>())
-            {
-                _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat1 });
-            }
-            else
-            {
-                GetCat_Executed(this, new CrudCommandExecutedEventArgs(cat1, null));
-            }
+            _getCat.Execute(new GetItemCommand<ICat>.Parameter { Item = cat1 });
         }
     }
 

@@ -12,14 +12,13 @@ public class BuildingScript
 
     private BuildingScriptMapping? _mapping = null;
 
-    private bool _hasExternalMapping = false;
+    private BuildingScriptMapping? _externalMapping = null;
 
-    public BuildingScriptMapping? Mapping { 
-        get => _hasExternalMapping ? _mapping : null; 
+    public BuildingScriptMapping? Mapping {
+        get => _externalMapping; 
         set
         {
-            _hasExternalMapping = value is { };
-            _mapping = value;
+            _externalMapping = value;
         }
     }
 
@@ -32,13 +31,9 @@ public class BuildingScript
 
     public void AddPathMapEntry(string path, string? fieldName, Type? converterType = null)
     {
-        if (_hasExternalMapping)
-        {
-            throw new InvalidOperationException("Cannot add path map entry to external mapping!");
-        }
         if(_mapping is null)
         {
-            _mapping = new BuildingScriptMapping();
+            _mapping = new BuildingScriptMapping("<internal>");
 
         }
         _mapping.AddPathMapEntry(path, fieldName, converterType);
@@ -53,10 +48,6 @@ public class BuildingScript
     {
         if (WithTrace)
         {
-            if(_mapping is { } && !string.IsNullOrEmpty(_mapping.Tag))
-            {
-                Console.WriteLine($"from mapping: {_mapping.Tag}: ");
-            }
             Console.Write($"{args.PathSelector}: ");
         }
         bool success = true;
@@ -70,13 +61,9 @@ public class BuildingScript
             {
                 if (WithTrace)
                 {
-                    Console.WriteLine($"(Handling: ----------");
+                    Console.WriteLine($"(Handled)");
                 }
                 handler.Invoke(args);
-                if (WithTrace)
-                {
-                    Console.WriteLine($"--------------------)");
-                }
             }
             else if(args.PrimaryKey is { })
             {
@@ -113,13 +100,9 @@ public class BuildingScript
             {
                 if (WithTrace)
                 {
-                    Console.WriteLine($"(Handling: ----------");
+                    Console.WriteLine($"(Handled)");
                 }
                 handler.Invoke(args);
-                if (WithTrace)
-                {
-                    Console.WriteLine($"--------------------)");
-                }
             }
             else
             {
@@ -143,32 +126,49 @@ public class BuildingScript
             Console.Write($"(setting {path}{(key is { } ? $" (key: {key})" : string.Empty)}: ");
         }
         string? fieldName = null;
-        if (!(_mapping?.FieldsMap.TryGetValue(path, out fieldName) ?? false))
+        BuildingScriptMapping? usedMapping = null;
+        if (
+            !(
+                (_mapping?.FieldsMap.TryGetValue(path, out fieldName) ?? false) 
+                && (usedMapping = _mapping) == usedMapping
+            ) 
+            && !(
+                (_externalMapping?.FieldsMap.TryGetValue(path, out fieldName) ?? false)
+                && (usedMapping = _externalMapping) == usedMapping
+            )
+        )
         {
             if (!args.IsKeyRequest || key is { })
             {
                 fieldName = Regex.Replace(path, "/+", string.Empty);
             }
         }
-        else if (fieldName is null)
+        else
         {
-            if (WithTrace)
+            if(WithTrace && usedMapping is { } && usedMapping.Tag is { })
             {
-                Console.Write($"default )");
+                Console.Write($"(from mapping: {usedMapping.Tag})");
             }
-            args.SetDefault();
-            return true;
-        }
-        else if (args.IsKeyRequest && fieldName.Equals(KeyOnly))
-        {
-            if (WithTrace)
+            if (fieldName is null)
             {
-                Console.Write($"KeyOnly )");
+                if (WithTrace)
+                {
+                    Console.Write($"default )");
+                }
+                args.SetDefault();
+                return true;
             }
-            args.SetKeyOnly();
-            return false;
+            else if (args.IsKeyRequest && fieldName.Equals(KeyOnly))
+            {
+                if (WithTrace)
+                {
+                    Console.Write($"KeyOnly )");
+                }
+                args.SetKeyOnly();
+                return false;
+            }
         }
-        if(fieldName is { })
+        if (fieldName is { })
         {
             if (fieldName.Equals(Skip))
             {
@@ -209,7 +209,8 @@ public class BuildingScript
                     }
                     else
                     {
-                        if (_mapping?.Converters.TryGetValue(path, out Type? type) ?? false)
+                        Type? type;
+                        if ((_mapping?.Converters.TryGetValue(path, out type) ?? false) || (_externalMapping?.Converters.TryGetValue(path, out type) ?? false))
                         {
                             args.Value = (_services.GetRequiredService(type) as IValueConverter)!.ConvertBack(args.DataReader![fieldName], args.DataReader.GetFieldType(pos));
                         }

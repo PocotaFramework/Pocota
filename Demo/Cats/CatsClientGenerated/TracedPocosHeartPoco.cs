@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-09T18:10:00                                          //
+// at 2023-01-11T18:42:24                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -28,6 +28,18 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 #region Init Properties
         public static void InitProperties(List<Property> properties)
         {
+            properties.Add(
+                new Property(
+                    "ModifiedPocos", 
+                    typeof(IList<Tuple<Type,Int32,PocoState>>),
+                    GetModifiedPocosValue, 
+                    null, 
+                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("ModifiedPocos"), 
+                    false, 
+                    true, 
+                    typeof(Tuple<Type,Int32,PocoState>)
+                )
+            );
             properties.Add(
                 new Property(
                     "TracedPocos", 
@@ -63,6 +75,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
         private readonly TracedPocosHeartPoco _projector;
 
+
+       public IList<Tuple<Type,Int32,PocoState>> ModifiedPocos 
+        {
+            get => _projector.ModifiedPocos!;
+        }
 
        public IList<Tuple<Type,Int32>> TracedPocos 
         {
@@ -108,6 +125,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         
 #region Properties Accessors
 
+        private static object? GetModifiedPocosValue(object target)
+        {
+            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos!;
+        }
+
+
         private static object? GetTracedPocosValue(object target)
         {
             return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
@@ -128,6 +151,18 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     {
         properties.Add(
             new Property(
+                "ModifiedPocos", 
+                typeof(ObservableCollection<Tuple<Type,Int32,PocoState>>),
+                GetModifiedPocosValue, 
+                null, 
+                target => ((IPoco)target).TouchProperty("ModifiedPocos"), 
+                false, 
+                false, 
+                typeof(Tuple<Type,Int32,PocoState>)
+            )
+        );
+        properties.Add(
+            new Property(
                 "TracedPocos", 
                 typeof(ObservableCollection<Tuple<Type,Int32>>),
                 GetTracedPocosValue, 
@@ -145,6 +180,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Fields
 
+    private readonly ObservableCollection<Tuple<Type,Int32,PocoState>> _modifiedPocos = new();
+    private readonly List<Tuple<Type,Int32,PocoState>> _initial_modifiedPocos = new();
     private readonly ObservableCollection<Tuple<Type,Int32>> _tracedPocos = new();
     private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
 
@@ -175,6 +212,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Properties
 
+    public virtual ObservableCollection<Tuple<Type,Int32,PocoState>> ModifiedPocos
+    {
+        get => _modifiedPocos;
+        set => throw new NotImplementedException();
+    }
+
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
     {
         get => _tracedPocos;
@@ -186,6 +229,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     public TracedPocosHeartPoco(IServiceProvider services) : base(services) 
     { 
+        _modifiedPocos.CollectionChanged += ModifiedPocosCollectionChanged;
         _tracedPocos.CollectionChanged += TracedPocosCollectionChanged;
     }
 
@@ -250,6 +294,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     {
         switch(property)
         {
+            case "ModifiedPocos":
+                return !Enumerable.SequenceEqual(
+                        _modifiedPocos.OrderBy(o => o.GetHashCode()), 
+                        _initial_modifiedPocos.OrderBy(o => o.GetHashCode()),
+                        ReferenceEqualityComparer.Instance
+                    );
             case "TracedPocos":
                 return !Enumerable.SequenceEqual(
                         _tracedPocos.OrderBy(o => o.GetHashCode()), 
@@ -263,6 +313,20 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     protected override void CancelCollectionsChanges()
     {
+        for(int i = _modifiedPocos.Count - 1; i >= 0; --i)
+        {
+            if (!_initial_modifiedPocos.Contains(_modifiedPocos[i]))
+            {
+                _modifiedPocos.RemoveAt(i);
+            }
+        }
+        foreach(var item in _initial_modifiedPocos)
+        {
+            if(!_modifiedPocos.Contains(item))
+            {
+                _modifiedPocos.Add(item);
+            }
+        }
         for(int i = _tracedPocos.Count - 1; i >= 0; --i)
         {
             if (!_initial_tracedPocos.Contains(_tracedPocos[i]))
@@ -281,6 +345,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     protected override void AcceptCollectionsChanges()
     {
+        if(_modified is null || !_modified.ContainsKey("ModifiedPocos"))
+        {
+            _initial_modifiedPocos.Clear();
+            _initial_modifiedPocos.AddRange(_modifiedPocos);
+        }
         if(_modified is null || !_modified.ContainsKey("TracedPocos"))
         {
             _initial_tracedPocos.Clear();
@@ -295,6 +364,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 #region Poco Changed
 
 
+    protected virtual void ModifiedPocosCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        OnPocoChanged(_initial_modifiedPocos, _modifiedPocos, nameof(ModifiedPocos));
+        OnPropertyChanged(nameof(ModifiedPocos));
+    }
+
     protected virtual void TracedPocosCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         OnPocoChanged(_initial_tracedPocos, _tracedPocos, nameof(TracedPocos));
@@ -307,6 +382,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     
 #region Properties Accessors
+
+    private static object? GetModifiedPocosValue(object target)
+    {
+        return ((TracedPocosHeartPoco)target).ModifiedPocos;
+    }
+
 
     private static object? GetTracedPocosValue(object target)
     {

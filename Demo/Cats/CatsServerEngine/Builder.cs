@@ -57,7 +57,7 @@ internal class Builder : IBuilder
     }
 
 
-    private static BuildingScriptMapping BuildCatMapping = new BuildingScriptMapping()
+    private static BuildingScriptMapping BuildCatMapping = new BuildingScriptMapping("BuildCatMapping")
         .AddPathMapEntry("/Gender", "Gender", typeof(GenderConverter))
         .AddPathMapEntry("/Description", "OwnerInfo")
         .AddPathMapEntry("/Breed/IdBreed", "IdBreed")
@@ -97,7 +97,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
         ;
 
-    private static BuildingScriptMapping BuildCatLitterWithCatsMapping = new BuildingScriptMapping()
+    private static BuildingScriptMapping BuildCatLitterWithCatsMapping = new BuildingScriptMapping("BuildCatsLitterWithCatsMapping")
             .AddPathMapEntry("/Litters/[]/IdLitter", "IdLitter")
             .AddPathMapEntry("/Litters/[]/IdFemale", "IdFemale")
             .AddPathMapEntry("/Litters/[]/IdFemaleCattery", "IdFemaleCattery")
@@ -161,7 +161,6 @@ internal class Builder : IBuilder
                     BuildingScript script1 = _services.GetRequiredService<BuildingScript>();
                     //script.WithTrace = true;
                     script1.Mapping = BuildCatsLitterWithCatsMapping;
-                    script1.Mapping.Tag = "BuildCatsLitterWithCatsMapping";
                     args.UseSpinner(SpinCats(filter1), script1);
                 }
                 else
@@ -178,7 +177,7 @@ internal class Builder : IBuilder
         _pocoContext.Build<T>(options);
     }
 
-    private static BuildingScriptMapping BuildCatsMapping = new BuildingScriptMapping()
+    private static BuildingScriptMapping BuildCatsMapping = new BuildingScriptMapping("BuildCatsMapping")
         .AddPathMapEntry("/Breed/IdBreed", "IdBreed")
         .AddPathMapEntry("/Breed/IdGroup", "IdGroup")
         .AddPathMapEntry("/Litter/IdLitter", "IdLitter")
@@ -197,7 +196,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/IdFemaleCattery", "IdMotherCattery")
         ;
 
-    private static BuildingScriptMapping BuildCatsLitterWithCatsMapping = new BuildingScriptMapping()
+    private static BuildingScriptMapping BuildCatsLitterWithCatsMapping = new BuildingScriptMapping("BuildCatsLitterWithCatsMapping")
             .AddPathMapEntry("/Cats/[]/IdCat", "IdCat")
             .AddPathMapEntry("/Cats/[]/IdCattery", "IdCattery")
             .AddPathMapEntry("/Cats/[]/Breed/IdBreed", "IdBreed")
@@ -225,65 +224,65 @@ internal class Builder : IBuilder
 
     public void BuildCats<T>(ICatFilter? filter, BuildingOptions options) where T : class
     {
-        options.Script = _services.GetRequiredService<BuildingScript>();
-        options.Script.Mapping = BuildCatsMapping;
-        options.Script.Mapping.Tag = "BuildCatsMapping";
-
-        //options.Script.WithTrace = true;
-
-        options.Script.AddPathHandler("/Litter/Cats", args =>
+        if (filter?.Ancestor is { } || filter?.Descendant is { } || filter?.Child is { })
         {
-            if(typeof(T) == typeof(ICatWithSiblings))
+            if(typeof(T) == typeof(ILitterWithCats))
             {
-                ICatFilter filter = _services.GetRequiredService<ICatFilter>();
-                filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
-                BuildingScript script = _services.GetRequiredService<BuildingScript>();
-                //script.WithTrace = true;
-                script.Mapping = BuildCatsLitterWithCatsMapping;
-                script.Mapping.Tag = "BuildCatsLitterWithCatsMapping";
-                args.UseSpinner(SpinCats(filter), script);
+                _pocoContext.AddJsonConverters(typeof(ICatWithSiblings), options.JsonSerializerOptions!);
+                JsonSerializer.Serialize(
+                    options.Output!,
+                    FindLittersWithCats(filter, options),
+                    options.JsonSerializerOptions
+                );
             }
             else
             {
-                args.Skip();
+                _pocoContext.AddJsonConverters<T>(options.JsonSerializerOptions!);
+                JsonSerializer.Serialize(
+                    options.Output!,
+                    FindCats<T>(filter, options),
+                    options.JsonSerializerOptions
+                );
             }
-        });
-            //ILitterWithCats
-        //options.Script.AddPathHandler("/Cats", args =>
-        //{
-        //    try
-        //    {
-        //        ICatFilter filter = _services.GetRequiredService<ICatFilter>();
-        //        filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
-        //        BuildingScript script = _services.GetRequiredService<BuildingScript>();
-        //        script.Mapping = BuildCatsLitterWithCatsMapping;
-        //        args.UseSpinner(SpinCats(filter), script);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex);
-        //        throw;
-        //    }
-        //});
-
-        _pocoContext.AddJsonConverters<T>(options.JsonSerializerOptions!);
-
-        if (filter?.Ancestor is { } || filter?.Descendant is { } || filter?.Child is { })
-        {
-
-
-            JsonSerializer.Serialize<IEnumerable<T>>(
-                options.Output!,
-                FindCats<T>(filter, options),
-                options.JsonSerializerOptions
-            );
         }
         else
         {
+            options.Script = _services.GetRequiredService<BuildingScript>();
+            options.Script.Mapping = BuildCatsMapping;
+
+            //options.Script.WithTrace = true;
+            if(typeof(T) == typeof(ILitterWithCats) || typeof(T) == typeof(ICatWithSiblings))
+            {
+                options.Script.AddPathHandler("/Litter/Cats", args =>
+                {
+                    ICatFilter filter = _services.GetRequiredService<ICatFilter>();
+                    filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
+                    BuildingScript script = _services.GetRequiredService<BuildingScript>();
+                    //script.WithTrace = true;
+                    script.Mapping = BuildCatsLitterWithCatsMapping;
+                    args.UseSpinner(SpinCats(filter), script);
+                });
+
+            }
+            else
+            {
+                options.Script.AddPathMapEntry("/Litter/Cats", BuildingScript.Skip);
+            }
             options.Spinner = SpinCats(filter);
-            _pocoContext.Build<List<T>>(
-                options
-            );
+
+            if (typeof(T) == typeof(ILitterWithCats))
+            {
+                options.Mapper = _pocoContext.GetProperty<ICatWithSiblings>("Litter");
+                _pocoContext.Build<List<ICatWithSiblings>>(
+                    options
+                );
+            }
+            else
+            {
+                _pocoContext.Build<List<T>>(
+                    options
+                );
+            }
         }
     }
 
@@ -296,6 +295,11 @@ internal class Builder : IBuilder
             yield return dataReader;
         }
         dataReader.Close();
+    }
+
+    private IEnumerable<ILitterWithCats> FindLittersWithCats(ICatFilter filter, BuildingOptions options)
+    {
+        return FindCats<ICatWithSiblings>(filter, options).Select(cat => cat.Litter)!;
     }
 
     private IEnumerable<T> FindCats<T>(ICatFilter? filter, BuildingOptions options) where T : class
@@ -406,7 +410,7 @@ internal class Builder : IBuilder
 
     public void BuildLittersWithCats(ICatFilter? filter, BuildingOptions options)
     {
-        BuildCats<ICatWithSiblings>(filter, options);
+        BuildCats<ILitterWithCats>(filter, options);
     }
 
     public IEnumerable<DbDataReader?> SpinCats(ICatFilter? filter)
@@ -455,22 +459,6 @@ internal class Builder : IBuilder
             }
         }
         dataReader.Close();
-    }
-
-    private IEnumerable<T> SpinDescendantAndAncestorCats<T>(ICatFilter catFilter, BuildingOptions options) where T : class
-    {
-        HashSet<T> crossing = new();
-        foreach (T cat in FindAncestorCats<T>(catFilter, options))
-        {
-            crossing.Add(cat);
-        }
-        foreach (T cat in FindDescendantCats<T>(catFilter, options))
-        {
-            if (!crossing.Add(cat))
-            {
-                yield return cat;
-            }
-        }
     }
 
     private IEnumerable<string> SpinExteriors()

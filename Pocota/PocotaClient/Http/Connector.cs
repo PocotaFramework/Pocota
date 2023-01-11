@@ -93,10 +93,7 @@ public class Connector
             if(Interlocked.Decrement(ref _reentering) == 0)
             {
                 reenteringCompleted = true;
-                if(pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
-                {
-                    pocoContext.OverwriteExternalUpdates();
-                }
+                pocoContext.OverwriteExternalUpdates();
             }
         }
         catch (Exception ex)
@@ -105,10 +102,7 @@ public class Connector
             {
                 if (Interlocked.Decrement(ref _reentering) == 0)
                 {
-                    if (pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
-                    {
-                        pocoContext.OverwriteExternalUpdates();
-                    }
+                    pocoContext.OverwriteExternalUpdates();
                 }
             }
             if (stream is { })
@@ -160,10 +154,7 @@ public class Connector
             if (Interlocked.Decrement(ref _reentering) == 0)
             {
                 reenteringCompleted = true;
-                if (pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
-                {
-                    pocoContext.OverwriteExternalUpdates();
-                }
+                pocoContext.OverwriteExternalUpdates();
             }
         }
         catch (Exception ex)
@@ -172,10 +163,7 @@ public class Connector
             {
                 if (Interlocked.Decrement(ref _reentering) == 0)
                 {
-                    if (pocoContext.ExternalUpdateProcessing is not ExternalUpdateProcessing.Never)
-                    {
-                        pocoContext.OverwriteExternalUpdates();
-                    }
+                    pocoContext.OverwriteExternalUpdates();
                 }
             }
             if (stream is { })

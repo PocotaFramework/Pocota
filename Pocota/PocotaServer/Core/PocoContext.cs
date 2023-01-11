@@ -1,5 +1,7 @@
 ﻿using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server.Generic;
+using System.Collections;
+using System.Collections.Immutable;
 using System.Data.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -62,13 +64,58 @@ public class PocoContext : IPocoContext
         BuildingContext context = null!;
         try
         {
+            Stream? output = options.Output;
+            Utf8JsonWriter? mappedJsonWriter = null;
+            bool isEnumerable = typeof(IEnumerable).IsAssignableFrom(type);
+            JsonSerializerOptions? mappedJsonSerializerOptions = null;
+            if (options.Mapper is { } && output is { })
+            {
+                mappedJsonSerializerOptions = BindJsonSerializerOptions(options.JsonSerializerOptions);
+                options.JsonSerializerOptions = null;
+                options.Output = null;
+            }
             context = CreateBuildingContext(options);
-            AddJsonConverters(type, context.TraversalContext!.JsonSerializerOptions!);
-            Utf8JsonWriter jsonWriter = new Utf8JsonWriter(context.BufferWriter!);
+            if (options.Mapper is { } && output is { })
+            {
+                mappedJsonWriter = new Utf8JsonWriter(output);
+                context.OnItem = source =>
+                {
+                    //todo выводить только уникальные, если HighLevelListUniqueness == true
+                    object? result = options.Mapper.GetValue(source);
+                    if(result is { })
+                    {
+                        JsonSerializer.Serialize(mappedJsonWriter, result, options.Mapper.Type, mappedJsonSerializerOptions);
+                    }
+                };
+            }
+            if (type.IsGenericType)
+            {
+                foreach(Type arg in type.GetGenericArguments())
+                {
+                    AddJsonConverters(arg, context.TraversalContext!.JsonSerializerOptions!);
+                    if(mappedJsonSerializerOptions is { })
+                    {
+                        AddJsonConverters(arg, mappedJsonSerializerOptions);
+                    }
+                }
+            }
+            else
+            {
+                AddJsonConverters(type, context.TraversalContext!.JsonSerializerOptions!);
+                if (mappedJsonSerializerOptions is { })
+                {
+                    AddJsonConverters(type, mappedJsonSerializerOptions);
+                }
+            }
+            Utf8JsonWriter jsonWriter = new(context.BufferWriter!);
             context.TraversalContext!.IsHighLevel = true;
             if (context.Log is { }) 
             { 
                 context.Log.StackTrace = Environment.StackTrace; 
+            }
+            if(isEnumerable && mappedJsonWriter is { })
+            {
+                mappedJsonWriter.WriteStartArray();
             }
             JsonSerializer.Serialize(
                     jsonWriter,
@@ -76,6 +123,14 @@ public class PocoContext : IPocoContext
                     type,
                     context.TraversalContext!.JsonSerializerOptions
                 );
+            if (isEnumerable && mappedJsonWriter is { })
+            {
+                mappedJsonWriter.WriteEndArray();
+            }
+            if(mappedJsonWriter is { })
+            {
+                mappedJsonWriter.Flush();
+            }
             object? result = context.TraversalContext.Target;
             context.TraversalContext.Target = null;
             options.Target = PocoBase.ReferenceEquals(result, GetSkipPlaceholder(type)) ? null : result;
@@ -108,6 +163,21 @@ public class PocoContext : IPocoContext
             return context;
         }
         return null;
+    }
+
+    public Property? GetProperty(Type targetType, string propertyName)
+    {
+        ImmutableDictionary<string, Property>? properties = _core.GetPropertiesDictionary(targetType);
+        if (properties is { } && properties.ContainsKey(propertyName))
+        {
+            return properties[propertyName];
+        }
+        return null;
+    }
+
+    public Property? GetProperty<T>(string propertyName)
+    {
+        return GetProperty(typeof(T), propertyName);
     }
 
     internal T FindOrCreateEntity<T>(IPrimaryKey<T> key, out bool isNew) where T : class
@@ -163,7 +233,7 @@ public class PocoContext : IPocoContext
             throw new ArgumentNullException(nameof(options));
         }
         options.JsonSerializerOptions = BindJsonSerializerOptions(options.JsonSerializerOptions);
-        PocoTraversalContext context = (GetTraversalContext(BindJsonSerializerOptions(options.JsonSerializerOptions)) as PocoTraversalContext)!;
+        PocoTraversalContext context = (GetTraversalContext(options.JsonSerializerOptions) as PocoTraversalContext)!;
         context.IsBuilding = true;
         if (options.WithLogging)
         {
@@ -180,5 +250,4 @@ public class PocoContext : IPocoContext
         context.BuildingContext!.OnItem = options.OnItem;
         return context.BuildingContext!;
     }
-
 }

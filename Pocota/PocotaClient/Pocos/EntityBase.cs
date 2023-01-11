@@ -86,15 +86,15 @@ public abstract class EntityBase : PocoBase, IEntity
         return value;
     }
 
-    internal void OverwriteExternalUpdates()
+    internal void OverwriteExternalUpdates(bool overwrite)
     {
-        if(_deferredOverwritings is { })
+        if(_deferredOverwritings is { } && _deferredOverwritings.Count > 0)
         {
             lock (_lock)
             {
                 if (_deferredOverwritings is { } && _deferredOverwritings.Count > 0)
                 {
-                    if((_services.GetRequiredService<IPocoContext>() as PocoContext)!.ExternalUpdateProcessing is ExternalUpdateProcessing.Always)
+                    if(overwrite)
                     {
                         ((IPoco)this).CancelChanges();
                         foreach(var pair in _deferredOverwritings)
@@ -116,7 +116,6 @@ public abstract class EntityBase : PocoBase, IEntity
                             }
                         }
                         ((IPoco)this).AcceptChanges();
-                        Console.WriteLine($"overwrite {GetType()}:{GetHashCode()}: {{{string.Join(',', _deferredOverwritings.Select(e => $"{e.Key}={e.Value.Item2}({e.Value.Item1})"))}}}");
                         _deferredOverwritings.Clear();
                     }
                 }

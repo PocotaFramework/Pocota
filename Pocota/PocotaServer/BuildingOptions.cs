@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using Net.Leksi.Pocota.Common;
+using System.Data.Common;
 using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
@@ -15,4 +16,5 @@ public class BuildingOptions
     public Action<object>? OnItem { get; set; } = null;
     public bool WithScriptTrace { get; set; } = false;
     public bool WithJsonTrace { get; set; } = false;
+    public Property? Mapper { get; set; } = null;
 }

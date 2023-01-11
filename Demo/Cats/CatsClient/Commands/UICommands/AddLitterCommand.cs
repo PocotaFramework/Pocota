@@ -2,6 +2,7 @@
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common;
 using System;
 using System.Windows.Input;
 
@@ -42,7 +43,7 @@ public class AddLitterCommand : ICommand
                 () => 
                 {
                     ILitter newLitter = _services.GetRequiredService<ILitter>();
-                    ((IEntity)newLitter).Create();
+                    ((IProjection)newLitter).As<IEntity>()!.Create();
 
                     if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
                     {
@@ -53,6 +54,7 @@ public class AddLitterCommand : ICommand
                         newLitter.Male = cat;
                     }
                     newLitter.Date = DateOnly.FromDateTime(DateTime.Now);
+                    cat.Litters.Add(newLitter);
                 }
             );
 

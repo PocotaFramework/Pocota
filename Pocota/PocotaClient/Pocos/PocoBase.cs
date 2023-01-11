@@ -52,7 +52,6 @@ public abstract class PocoBase : IPoco
     protected readonly PocotaCore _pocota;
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
-    private ConditionalWeakTable<object, string>? _antiCycleTokens = null;
 
     private readonly HashSet<string> _populatedProperties = new();
 
@@ -182,16 +181,6 @@ public abstract class PocoBase : IPoco
     bool IPoco.IsModified(string property)
     {
         return _modified?.ContainsKey(property) ?? false;
-    }
-
-    bool IPoco.IsLoaded(Type @interface)
-    {
-        return IsLoaded(@interface, new object());
-    }
-
-    bool IPoco.IsLoaded<T>()
-    {
-        return IsLoaded(typeof(T), new object());
     }
 
     void IPoco.TouchProperty(string property)
@@ -380,50 +369,4 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    private bool IsLoaded(Type @interface, object antiCycleToken)
-    {
-        if (_antiCycleTokens is null)
-        {
-            lock (_lock)
-            {
-                if (_antiCycleTokens is null)
-                {
-                    _antiCycleTokens = new ConditionalWeakTable<object, string>();
-                }
-            }
-        }
-        if (!_antiCycleTokens.TryGetValue(antiCycleToken, out var _))
-        {
-            _antiCycleTokens.Add(antiCycleToken, string.Empty);
-            if(_pocota.GetPropertiesDictionary(@interface) is IDictionary<string, Property> properties)
-            {
-                return properties.Values.All(p =>
-                {
-                    if (_populatedProperties.Contains(p.Name))
-                    {
-                        if (typeof(IPoco).IsAssignableFrom(p.Type))
-                        {
-
-                            return ((PocoBase)p.GetValue(this)!)?.IsLoaded(p.Type, antiCycleToken) ?? true;
-                        }
-                        else if (p.IsCollection)
-                        {
-                            IEnumerable en = (IEnumerable)p.GetValue(((IProjection)this).As(@interface)!)!;
-                            foreach (IProjection<PocoBase> item in en)
-                            {
-                                if (!item.As<PocoBase>()!.IsLoaded(p.ItemType!, antiCycleToken))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
-                        return true;
-                    }
-                    return false;
-                });
-            }
-            return true;
-        }
-        return true;
-    }
 }

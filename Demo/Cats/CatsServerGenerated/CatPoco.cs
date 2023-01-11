@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-09T18:09:59                                  //
+// at 2023-01-11T18:42:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1226,6 +1226,18 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             properties.Add(
                 new Property(
+                    "Gender", 
+                    typeof(Gender),
+                    GetGenderValue, 
+                    SetGenderValue, 
+                    target => ((IPoco)((CatICatWithSiblingsProjection)target)._projector).TouchProperty("Gender"), 
+                    false, 
+                    false, 
+                    null
+                )
+            );
+            properties.Add(
+                new Property(
                     "Litter", 
                     typeof(ILitterWithCats),
                     GetLitterValue, 
@@ -1244,6 +1256,12 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly CatPoco _projector;
 
+
+       public Gender Gender 
+        {
+            get => _projector.Gender!;
+            set => _projector.Gender = (Gender)value!;
+        }
 
        public ILitterWithCats? Litter 
         {
@@ -1281,6 +1299,16 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         
 #region Properties Accessors
+
+        private static object? GetGenderValue(object target)
+        {
+            return ((CatICatWithSiblingsProjection)target)._projector.Gender!;
+        }
+
+        private static void SetGenderValue(object target, object? value)
+        {
+             ((CatICatWithSiblingsProjection)target)._projector.Gender = (Gender)value!;
+        }
 
         private static object? GetLitterValue(object target)
         {
@@ -1911,6 +1939,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         if(@interface == typeof(ICatWithSiblings))
         {
             return true
+                && _loaded_gender
                 && _loaded_litter
             ;
         }

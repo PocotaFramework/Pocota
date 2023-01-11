@@ -2,7 +2,7 @@
 // Controller Interface                                    //
 // CatsContract.ICatsController                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-09T18:09:59                                  //
+// at 2023-01-11T18:42:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -29,7 +29,7 @@ public interface ICatsController
     [ExpectedOutputType(typeof(IList<ICattery>))]
     void FindCatteries(ICatteryFilter? filter);
 
-    [ExpectedOutputType(typeof(IList<ICatWithSiblings>))]
+    [ExpectedOutputType(typeof(IList<ILitterWithCats>))]
     void FindLittersWithCats(ICatFilter? filter);
 
     [ExpectedOutputType(typeof(IList<String>))]

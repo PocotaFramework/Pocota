@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-09T18:10:00                                  //
+// at 2023-01-11T18:42:24                                  //
 /////////////////////////////////////////////////////////////
 
 

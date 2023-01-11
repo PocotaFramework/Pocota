@@ -5,10 +5,11 @@ namespace Net.Leksi.Pocota.Client;
 public interface IPocoContext
 {
     event EventHandler<EventArgs> TracedPocosChanged;
+    event EventHandler<EventArgs> ModifiedPocosChanged;
 
-    ExternalUpdateProcessing ExternalUpdateProcessing { get; set; }
     bool TracePocos { get; set; }
     IDictionary<Type, int> TracedPocos { get; }
+    ICollection<IEntity> ModifiedPocos { get; }
 
     JsonSerializerOptions BindJsonSerializerOptions(
         JsonSerializerOptions? options = null, 

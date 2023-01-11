@@ -11,6 +11,7 @@ namespace Net.Leksi.Pocota.Client.Context;
 internal class PocoContext : IPocoContext
 {
     public event EventHandler<EventArgs> TracedPocosChanged;
+    public event EventHandler<EventArgs> ModifiedPocosChanged;
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
@@ -26,7 +27,6 @@ internal class PocoContext : IPocoContext
     internal WeakEventManager PocoChangedEventManager { get; init; } = new();
     internal WeakEventManager PocoStateChangedEventManager { get; init; } = new();
 
-    public ExternalUpdateProcessing ExternalUpdateProcessing { get; set; } = ExternalUpdateProcessing.Never;
     public bool TracePocos {
         get => _tracePocos;
         set
@@ -43,6 +43,8 @@ internal class PocoContext : IPocoContext
     }
 
     public IDictionary<Type, int> TracedPocos => _tracedPocos;
+
+    public ICollection<IEntity> ModifiedPocos => _changedPocos.Keys;
 
     public PocoContext(IServiceProvider services)
     {
@@ -103,13 +105,12 @@ internal class PocoContext : IPocoContext
     {
         foreach (EntityBase entity in _changedPocos.Keys)
         {
-            entity.OverwriteExternalUpdates();
+            entity.OverwriteExternalUpdates(true);
         }
     }
 
     internal void OnPocoStateChanged(object? sender, NotifyPocoStateChangedEventArgs args)
     {
-        Console.WriteLine($"{nameof(OnPocoStateChanged)}> {sender!.GetType()}:{sender.GetHashCode()}, {args.OldState!} -> {args.NewState!}");
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
         {
             _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
@@ -118,11 +119,7 @@ internal class PocoContext : IPocoContext
         {
             _changedPocos.TryRemove((sender as IEntity)!, out string _);
         }
-        Console.WriteLine($"Changed Pocos: {_changedPocos.Count()}");
-        foreach(PocoBase poco in _changedPocos.Keys)
-        {
-            Console.WriteLine($"    {poco.GetType()}:{poco.GetHashCode()} - {((IPoco)poco).PocoState}");
-        }
+        ModifiedPocosChanged?.Invoke(this, new EventArgs());
     }
 
     internal bool TryGetSource(Type type, object[] primaryKey, out object? value)

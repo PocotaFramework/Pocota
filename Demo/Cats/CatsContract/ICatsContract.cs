@@ -45,7 +45,7 @@ public interface ICatsContract
     IList<ICattery> FindCatteries(ICatteryFilter? filter);
 
     [Route("/litters/with/cats")]
-    IList<ICatWithSiblings> FindLittersWithCats(ICatFilter? filter);
+    IList<ILitterWithCats> FindLittersWithCats(ICatFilter? filter);
 
     [Route("/exteriors")]
     IList<string> FindExteriors();

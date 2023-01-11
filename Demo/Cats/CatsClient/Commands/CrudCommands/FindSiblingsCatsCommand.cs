@@ -4,7 +4,7 @@ using System;
 
 namespace CatsClient.Commands;
 
-public class FindSiblingsCatsCommand : FindItemsCommand<ICatWithSiblings, ICatFilter>
+public class FindSiblingsCatsCommand : FindItemsCommand<ILitterWithCats, ICatFilter>
 {
     public FindSiblingsCatsCommand(IServiceProvider services) : base(services)
     {
