@@ -829,6 +829,7 @@ public class CodeGenerator : IModelBuilder
             model.IsEntity = projector.KeysDefinitions.Count > 0;
             model.IsClient = isClient;
 
+            AddUsings(model, typeof(IProperty));
             if (isClient)
             {
                 if (model.IsEntity)
@@ -893,7 +894,7 @@ public class CodeGenerator : IModelBuilder
             {
                 AddUsings(model, typeof(Server.PocoBase));
             }
-            AddUsings(model, typeof(Property));
+            AddUsings(model, typeof(IProperty));
 
             foreach (PropertyInfo pi in request.Interface.GetProperties())
             {

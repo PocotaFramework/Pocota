@@ -15,7 +15,7 @@ public interface IPocoContext
     void AddJsonConverters(Type targetType, JsonSerializerOptions jsonSerializerOptions);
     void AddJsonConverters<TTarget>(JsonSerializerOptions jsonSerializerOptions);
 
-    Property? GetProperty(Type targetType, string propertyName);
-    Property? GetProperty<T>(string propertyName);
+    IProperty? GetProperty(Type targetType, string propertyName);
+    IProperty? GetProperty<T>(string propertyName);
 
 }

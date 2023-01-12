@@ -16,5 +16,5 @@ public class BuildingOptions
     public Action<object>? OnItem { get; set; } = null;
     public bool WithScriptTrace { get; set; } = false;
     public bool WithJsonTrace { get; set; } = false;
-    public Property? Mapper { get; set; } = null;
+    public IProperty? Mapper { get; set; } = null;
 }

@@ -87,7 +87,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
+                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"{Model.ReferencedClass}.{pkm.Property}Prop.IsValueSet(obj)") && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
             {
                 return @Html.Raw($"(entity.PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}");
             }
@@ -113,7 +113,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             @if(pkm.KeyReference is {})
             {
-                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
+                <text>            if(_source.Target is @Model.ReferencedClass obj && @Html.Raw($"{Model.ReferencedClass}.{pkm.Property}Prop.IsValueSet(obj)") && @Html.Raw($"obj.{pkm.Property}") is IEntity entity)
             {
                 @Html.Raw($"(entity.PrimaryKey as {pkm.KeyType})!.{pkm.KeyReference}") = value;
             }

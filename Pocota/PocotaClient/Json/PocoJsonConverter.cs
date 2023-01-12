@@ -21,7 +21,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
     private readonly PocoContext _pocoContext;
-    private readonly ImmutableDictionary<string, Property>? _properties;
+    private readonly ImmutableDictionary<string, IProperty>? _properties;
     private readonly bool _isEntity;
 
     public PocoJsonConverter(IServiceProvider services)
@@ -189,7 +189,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         result.As<PocoBase>()?.StartPopulate(context);
                     }
                     PocoBase? poco = result!.As<PocoBase>();
-                    Property? property = _properties![propertyName];
+                    IProperty? property = _properties![propertyName];
 
                     if (property is { })
                     {
@@ -310,7 +310,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
                 if (context.JsonSerializerOptionsKind is JsonSerializerOptionsKind.Ordinary || projection.As<EnvelopeBase>() is { })
                 {
-                    foreach (Property property in _properties!.Values)
+                    foreach (IProperty property in _properties!.Values)
                     {
                         object? propertytValue = property.GetValue(projection);
                         if (propertytValue is { })

@@ -8,13 +8,13 @@
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name 
     { 
-        get => @fieldName; 
+        get => @if(!pm.IsList && Model.IsEntity) {<text>@Html.Raw($"!_is_set{fieldName} ? throw new {nameof(InvalidOperationException)}(\"The property {pm.Name} is not set!\") :")</text>} @fieldName; 
         @if(!pm.IsReadOnly && !pm.IsList) 
         {
             <text>        set
         {
             @fieldName = value;
-            @Html.Raw($"_loaded{fieldName}") = true;
+            @Html.Raw($"_is_set{fieldName}") = true;
         }
 </text> 
         }

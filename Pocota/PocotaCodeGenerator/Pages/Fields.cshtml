@@ -27,7 +27,11 @@
         if(!pm.IsNullable){<text>!</text>}
     }
     <text>;
-    private bool @Html.Raw($"_loaded{fieldName}") = false;
+    @if (!pm.IsList)
+    {
+        <text>    private bool @Html.Raw($"_is_set{fieldName}") = false;
+</text>
+    }
 </text>
 }
 

@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T11:37:42                                  //
+// at 2023-01-12T18:26:07                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -85,7 +85,7 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     {
         get 
         {
-            if(_source.Target is CatPoco obj && obj.Cattery is IEntity entity)
+            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsValueSet(obj) && obj.Cattery is IEntity entity)
             {
                 return (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery;
             }
@@ -93,7 +93,7 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
         }
         set
         {
-            if(_source.Target is CatPoco obj && obj.Cattery is IEntity entity)
+            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsValueSet(obj) && obj.Cattery is IEntity entity)
             {
                 (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
             }

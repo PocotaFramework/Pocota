@@ -12,8 +12,8 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
 {
     private readonly Dictionary<Type, HashSet<Type>> _jsonConverters = new();
     private readonly HashSet<Type> _currentJsonCoverterTargets = new();
-    private readonly Dictionary<Type, ImmutableDictionary<string, Property>> _propertiesByName = new();
-    private readonly Dictionary<Type, ImmutableList<Property>> _propertiesByOrder = new();
+    private readonly Dictionary<Type, ImmutableDictionary<string, IProperty>> _propertiesByName = new();
+    private readonly Dictionary<Type, ImmutableList<IProperty>> _propertiesByOrder = new();
 
     private bool _calledAt = false;
 
@@ -25,18 +25,18 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
 
     internal IServiceCollection? Services => _services;
 
-    public ImmutableDictionary<string, Property>? GetPropertiesDictionary(Type targetType)
+    public ImmutableDictionary<string, IProperty>? GetPropertiesDictionary(Type targetType)
     {
-        if (_propertiesByName.TryGetValue(targetType, out ImmutableDictionary<string, Property>? result))
+        if (_propertiesByName.TryGetValue(targetType, out ImmutableDictionary<string, IProperty>? result))
         {
             return result;
         }
         return null;
     }
 
-    public ImmutableList<Property>? GetPropertiesList(Type targetType)
+    public ImmutableList<IProperty>? GetPropertiesList(Type targetType)
     {
-        if (_propertiesByOrder.TryGetValue(targetType, out ImmutableList<Property>? result))
+        if (_propertiesByOrder.TryGetValue(targetType, out ImmutableList<IProperty>? result))
         {
             return result;
         }
@@ -196,7 +196,7 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         {
             throw new InvalidOperationException("Forbidden Call!");
         }
-        List<Property> properties = new();
+        List<IProperty> properties = new();
         MethodInfo initProperties = targetType.GetMethod("InitProperties")!;
         initProperties?.Invoke(null, new object[] { properties });
         _propertiesByName.Add(targetType, properties.ToImmutableDictionary(v => v.Name, v => v));

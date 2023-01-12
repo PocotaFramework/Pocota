@@ -5,10 +5,10 @@
 
     void IPoco.Clear()
     {
-        @foreach(PropertyModel pm in Model.Properties)
+        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            <text>        @Html.Raw($"_loaded{fieldName}") = false;
+            <text>        @Html.Raw($"_is_set{fieldName}") = false;
 </text>
         }
     }
@@ -18,7 +18,7 @@
         @foreach(ClassModel @class in Model.Classes){
             <text>        if(@@interface == typeof(@Html.Raw(@class.Interface)))
         {
-            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Select(pm => $"_loaded_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
+            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Where(p => !p.IsList).Select(pm => $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
             ;
         }
 </text>
@@ -35,9 +35,9 @@
     {
         switch(property)
         {
-        @foreach(PropertyModel pm in Model.Properties)
+        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
         {
-            string fieldName = $"_loaded_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+            string fieldName = $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>            case @Html.Raw($"\"{pm.Name}\""):
                 return @fieldName;
 </text>
@@ -51,9 +51,9 @@
     {
         switch(property)
         {
-        @foreach(PropertyModel pm in Model.Properties)
+        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
         {
-            string fieldName = $"_loaded_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+            string fieldName = $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>            case @Html.Raw($"\"{pm.Name}\""):
                 @fieldName = true;
                 break;

@@ -226,22 +226,25 @@ internal class Builder : IBuilder
     {
         if (filter?.Ancestor is { } || filter?.Descendant is { } || filter?.Child is { })
         {
-            if(typeof(T) == typeof(ILitterWithCats))
+            JsonSerializerOptions jsonSerializerOptions = _pocoContext.BindJsonSerializerOptions();
+            if (typeof(T) == typeof(ILitterWithCats))
             {
                 _pocoContext.AddJsonConverters(typeof(ICatWithSiblings), options.JsonSerializerOptions!);
+                _pocoContext.AddJsonConverters(typeof(ICatWithSiblings), jsonSerializerOptions);
                 JsonSerializer.Serialize(
                     options.Output!,
                     FindLittersWithCats(filter, options),
-                    _pocoContext.BindJsonSerializerOptions()
+                    jsonSerializerOptions
                 );
             }
             else
             {
                 _pocoContext.AddJsonConverters<T>(options.JsonSerializerOptions!);
+                _pocoContext.AddJsonConverters<T>(jsonSerializerOptions);
                 JsonSerializer.Serialize(
                     options.Output!,
                     FindCats<T>(filter, options),
-                    _pocoContext.BindJsonSerializerOptions()
+                    jsonSerializerOptions
                 );
             }
         }
@@ -251,7 +254,7 @@ internal class Builder : IBuilder
             options.Script.Mapping = BuildCatsMapping;
 
             //options.Script.WithTrace = true;
-            if(typeof(T) == typeof(ILitterWithCats) || typeof(T) == typeof(ICatWithSiblings))
+            if (typeof(T) == typeof(ILitterWithCats) || typeof(T) == typeof(ICatWithSiblings))
             {
                 options.Script.AddPathHandler("/Litter/Cats", args =>
                 {
@@ -649,29 +652,25 @@ internal class Builder : IBuilder
             {
                 yield return ((IProjection)cat).As<T>()!;
             }
-            if (cat!.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
+            for(int i = 0; i < 2; ++i)
             {
-                catsFilter.Mother = cat;
-                catsFilter.Father = null;
+                if(i == 0)
+                {
+                    catsFilter.Mother = cat;
+                    catsFilter.Father = null;
+                }
+                else
+                {
+                    catsFilter.Father = cat;
+                    catsFilter.Mother = null;
+                }
+                BuildCats<T>(catsFilter, catsOptions);
+                foreach (ICat item in cats.Select(v => ((IProjection)v).As<ICat>()!))
+                {
+                    queue.Enqueue(((IProjection)item).As<T>()!);
+                }
+                cats.Clear();
             }
-            else if (cat!.Gender is Gender.Male || cat.Gender is Gender.MaleCastrate)
-            {
-                catsFilter.Father = cat;
-                catsFilter.Mother = null;
-            }
-            BuildCats<T>(catsFilter, catsOptions);
-            foreach (ICat item in cats.Select(v => ((IProjection)v).As<ICat>()!))
-            {
-                //if (item.Litter is { })
-                //{
-                //    if (catsFilter.Father is { })
-                //    {
-                //        item.Litter.Male = cat;
-                //    }
-                //}
-                queue.Enqueue(((IProjection)item).As<T>()!);
-            }
-            cats.Clear();
         }
     }
 

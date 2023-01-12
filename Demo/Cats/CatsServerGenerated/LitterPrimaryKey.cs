@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T11:37:42                                  //
+// at 2023-01-12T18:26:08                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -79,7 +79,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
             {
                 return (entity.PrimaryKey as CatPrimaryKey)!.IdCat;
             }
@@ -87,7 +87,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
         }
         set
         {
-            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
             {
                 (entity.PrimaryKey as CatPrimaryKey)!.IdCat = value;
             }
@@ -102,7 +102,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
             {
                 return (entity.PrimaryKey as CatPrimaryKey)!.IdCattery;
             }
@@ -110,7 +110,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
         }
         set
         {
-            if(_source.Target is LitterPoco obj && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
             {
                 (entity.PrimaryKey as CatPrimaryKey)!.IdCattery = value;
             }

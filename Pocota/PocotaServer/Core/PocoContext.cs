@@ -173,9 +173,9 @@ public class PocoContext : IPocoContext
         return null;
     }
 
-    public Property? GetProperty(Type targetType, string propertyName)
+    public IProperty? GetProperty(Type targetType, string propertyName)
     {
-        ImmutableDictionary<string, Property>? properties = _core.GetPropertiesDictionary(targetType);
+        ImmutableDictionary<string, IProperty>? properties = _core.GetPropertiesDictionary(targetType);
         if (properties is { } && properties.ContainsKey(propertyName))
         {
             return properties[propertyName];
@@ -183,7 +183,7 @@ public class PocoContext : IPocoContext
         return null;
     }
 
-    public Property? GetProperty<T>(string propertyName)
+    public IProperty? GetProperty<T>(string propertyName)
     {
         return GetProperty(typeof(T), propertyName);
     }

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T11:37:42                                  //
+// at 2023-01-12T18:26:08                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -24,21 +24,34 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 
 
 #region Init Properties
-        public static void InitProperties(List<Property> properties)
+
+        public class SearchRegexProperty: IProperty
         {
-            properties.Add(
-                new Property(
-                    "SearchRegex", 
-                    typeof(String),
-                    GetSearchRegexValue, 
-                    SetSearchRegexValue, 
-                    target => ((IPoco)((CatteryFilterICatteryFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
+            public string Name => "SearchRegex";
+            public bool IsReadOnly => false;
+            public bool IsNullable => true;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((CatteryFilterICatteryFilterProjection)target)._projector._is_set_searchRegex;
+            public object? GetValue(object target)
+            {
+                return ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((CatteryFilterICatteryFilterProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex = (String)value!;
+            }
         }
+        public static void InitProperties(List<IProperty> properties)
+        {
+            properties.Add(new SearchRegexProperty());
+        }
+
 #endregion Init Properties;
 
 
@@ -100,44 +113,41 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             return _projector.GetHashCode();
         }
 
-        
-#region Properties Accessors
-
-        private static object? GetSearchRegexValue(object target)
-        {
-            return ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex;
-        }
-
-        private static void SetSearchRegexValue(object target, object? value)
-        {
-             ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegex = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
 
     }
     #endregion Projection classes
     
     
 #region Init Properties
-    public static void InitProperties(List<Property> properties)
+
+    public class SearchRegexProperty: IProperty
     {
-        properties.Add(
-            new Property(
-                "SearchRegex", 
-                typeof(String),
-                GetSearchRegexValue, 
-                SetSearchRegexValue, 
-                target => ((IPoco)target).TouchProperty("SearchRegex"), 
-                true, 
-                false, 
-                null
-            )
-        );
+        public string Name => "SearchRegex";
+        public bool IsReadOnly => false;
+        public bool IsNullable => true;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((CatteryFilterPoco)target)._is_set_searchRegex;
+        public object? GetValue(object target)
+        {
+            return ((CatteryFilterPoco)target).SearchRegex;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((CatteryFilterPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((CatteryFilterPoco)target).SearchRegex = (String)value!;
+        }
     }
+    public static void InitProperties(List<IProperty> properties)
+    {
+        properties.Add(new SearchRegexProperty());
+    }
+
+       internal static SearchRegexProperty SearchRegexProp = new();
 #endregion Init Properties;
 
     
@@ -145,6 +155,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 #region Fields
 
     private String? _searchRegex = default;
+    private bool _is_set_searchRegex = false;
 
 #endregion Fields;
 
@@ -277,24 +288,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 
 
 #endregion Poco Changed;
-
-
-    
-#region Properties Accessors
-
-    private static object? GetSearchRegexValue(object target)
-    {
-        return ((CatteryFilterPoco)target).SearchRegex;
-    }
-
-    private static void SetSearchRegexValue(object target, object? value)
-    {
-        ((CatteryFilterPoco)target).SearchRegex = (String)value!;
-
-    }
-
-
-#endregion Properties Accessors;
 
 
 

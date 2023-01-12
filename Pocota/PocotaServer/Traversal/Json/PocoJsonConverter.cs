@@ -14,8 +14,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
     private readonly bool _isEntity;
     private readonly PocoContext _pocoContext;
     private readonly Type _actualType;
-    private readonly ImmutableDictionary<string, Property> _propertiesByName;
-    private readonly ImmutableList<Property> _propertiesByOrder;
+    private readonly ImmutableDictionary<string, IProperty> _propertiesByName;
+    private readonly ImmutableList<IProperty> _propertiesByOrder;
 
     public PocoJsonConverter(IServiceProvider services)
     {
@@ -132,7 +132,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 }
 
 
-                if(_propertiesByName.TryGetValue(propertyName, out Property? property))
+                if(_propertiesByName.TryGetValue(propertyName, out IProperty? property))
                 {
                     object? oldValue = property.GetValue(result);
 
@@ -206,9 +206,9 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         }
         IPoco poco = ((IProjection)value).As<IPoco>()!;
 
-        foreach (Property property in _propertiesByOrder)
+        foreach (IProperty property in _propertiesByOrder)
         {
-            if(poco.IsPropertySet(property.Name) && !context.IsPropertySerialized(reference, property.Name))
+            if(!context.IsPropertySerialized(reference, property.Name))
             {
                 object? propertyValue = property.GetValue(value);
                 if(propertyValue is { })

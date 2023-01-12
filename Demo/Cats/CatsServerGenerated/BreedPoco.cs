@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T11:37:42                                  //
+// at 2023-01-12T18:26:07                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -26,57 +26,103 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
 
 #region Init Properties
-        public static void InitProperties(List<Property> properties)
+
+        public class CodeProperty: IProperty
         {
-            properties.Add(
-                new Property(
-                    "Code", 
-                    typeof(String),
-                    GetCodeValue, 
-                    SetCodeValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Code"), 
-                    false, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "Group", 
-                    typeof(String),
-                    GetGroupValue, 
-                    SetGroupValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("Group"), 
-                    false, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "NameEng", 
-                    typeof(String),
-                    GetNameEngValue, 
-                    SetNameEngValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameEng"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
-            properties.Add(
-                new Property(
-                    "NameNat", 
-                    typeof(String),
-                    GetNameNatValue, 
-                    SetNameNatValue, 
-                    target => ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty("NameNat"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
+            public string Name => "Code";
+            public bool IsReadOnly => false;
+            public bool IsNullable => false;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
+            public object? GetValue(object target)
+            {
+                return ((BreedIBreedProjection)target)._projector.Code!;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((BreedIBreedProjection)target)._projector.Code = (String)value!;
+            }
         }
+        public class GroupProperty: IProperty
+        {
+            public string Name => "Group";
+            public bool IsReadOnly => false;
+            public bool IsNullable => false;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
+            public object? GetValue(object target)
+            {
+                return ((BreedIBreedProjection)target)._projector.Group!;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((BreedIBreedProjection)target)._projector.Group = (String)value!;
+            }
+        }
+        public class NameEngProperty: IProperty
+        {
+            public string Name => "NameEng";
+            public bool IsReadOnly => false;
+            public bool IsNullable => true;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public object? GetValue(object target)
+            {
+                return ((BreedIBreedProjection)target)._projector.NameEng;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((BreedIBreedProjection)target)._projector.NameEng = (String)value!;
+            }
+        }
+        public class NameNatProperty: IProperty
+        {
+            public string Name => "NameNat";
+            public bool IsReadOnly => false;
+            public bool IsNullable => true;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public object? GetValue(object target)
+            {
+                return ((BreedIBreedProjection)target)._projector.NameNat;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((BreedIBreedProjection)target)._projector.NameNat = (String)value!;
+            }
+        }
+        public static void InitProperties(List<IProperty> properties)
+        {
+            properties.Add(new CodeProperty());
+            properties.Add(new GroupProperty());
+            properties.Add(new NameEngProperty());
+            properties.Add(new NameNatProperty());
+        }
+
 #endregion Init Properties;
 
 
@@ -137,110 +183,113 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             return _projector.GetHashCode();
         }
 
-        
-#region Properties Accessors
-
-        private static object? GetCodeValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.Code!;
-        }
-
-        private static void SetCodeValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.Code = (String)value!;
-        }
-
-        private static object? GetGroupValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.Group!;
-        }
-
-        private static void SetGroupValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.Group = (String)value!;
-        }
-
-        private static object? GetNameEngValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.NameEng;
-        }
-
-        private static void SetNameEngValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.NameEng = (String?)value;
-        }
-
-        private static object? GetNameNatValue(object target)
-        {
-            return ((BreedIBreedProjection)target)._projector.NameNat;
-        }
-
-        private static void SetNameNatValue(object target, object? value)
-        {
-             ((BreedIBreedProjection)target)._projector.NameNat = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
 
     }
 #endregion Projection classes
 
     
 #region Init Properties
-    public static void InitProperties(List<Property> properties)
+
+    public class CodeProperty: IProperty
     {
-        properties.Add(
-            new Property(
-                "Code", 
-                typeof(String),
-                GetCodeValue, 
-                SetCodeValue, 
-                target => ((IPoco)target).TouchProperty("Code"), 
-                false, 
-                false, 
-                null
-            )
-        );
-        properties.Add(
-            new Property(
-                "Group", 
-                typeof(String),
-                GetGroupValue, 
-                SetGroupValue, 
-                target => ((IPoco)target).TouchProperty("Group"), 
-                false, 
-                false, 
-                null
-            )
-        );
-        properties.Add(
-            new Property(
-                "NameEng", 
-                typeof(String),
-                GetNameEngValue, 
-                SetNameEngValue, 
-                target => ((IPoco)target).TouchProperty("NameEng"), 
-                true, 
-                false, 
-                null
-            )
-        );
-        properties.Add(
-            new Property(
-                "NameNat", 
-                typeof(String),
-                GetNameNatValue, 
-                SetNameNatValue, 
-                target => ((IPoco)target).TouchProperty("NameNat"), 
-                true, 
-                false, 
-                null
-            )
-        );
+        public string Name => "Code";
+        public bool IsReadOnly => false;
+        public bool IsNullable => false;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_code;
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).Code;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((BreedPoco)target).Code = (String)value!;
+        }
     }
+    public class GroupProperty: IProperty
+    {
+        public string Name => "Group";
+        public bool IsReadOnly => false;
+        public bool IsNullable => false;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_group;
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).Group;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((BreedPoco)target).Group = (String)value!;
+        }
+    }
+    public class NameEngProperty: IProperty
+    {
+        public string Name => "NameEng";
+        public bool IsReadOnly => false;
+        public bool IsNullable => true;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).NameEng;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((BreedPoco)target).NameEng = (String)value!;
+        }
+    }
+    public class NameNatProperty: IProperty
+    {
+        public string Name => "NameNat";
+        public bool IsReadOnly => false;
+        public bool IsNullable => true;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).NameNat;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((BreedPoco)target).NameNat = (String)value!;
+        }
+    }
+    public static void InitProperties(List<IProperty> properties)
+    {
+        properties.Add(new CodeProperty());
+        properties.Add(new GroupProperty());
+        properties.Add(new NameEngProperty());
+        properties.Add(new NameNatProperty());
+    }
+
+       internal static CodeProperty CodeProp = new();
+       internal static GroupProperty GroupProp = new();
+       internal static NameEngProperty NameEngProp = new();
+       internal static NameNatProperty NameNatProp = new();
 #endregion Init Properties;
 
 
@@ -248,13 +297,13 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 #region Fields
 
     private String _code = default!;
-    private bool _loaded_code = false;
+    private bool _is_set_code = false;
     private String _group = default!;
-    private bool _loaded_group = false;
+    private bool _is_set_group = false;
     private String? _nameEng = default;
-    private bool _loaded_nameEng = false;
+    private bool _is_set_nameEng = false;
     private String? _nameNat = default;
-    private bool _loaded_nameNat = false;
+    private bool _is_set_nameNat = false;
 
 #endregion Fields;
 
@@ -285,41 +334,41 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public String Code 
     { 
-        get => _code; 
+        get => !_is_set_code ? throw new InvalidOperationException("The property Code is not set!") : _code; 
         set
         {
             _code = value;
-            _loaded_code = true;
+            _is_set_code = true;
         }
     }
 
     public String Group 
     { 
-        get => _group; 
+        get => !_is_set_group ? throw new InvalidOperationException("The property Group is not set!") : _group; 
         set
         {
             _group = value;
-            _loaded_group = true;
+            _is_set_group = true;
         }
     }
 
     public String? NameEng 
     { 
-        get => _nameEng; 
+        get => !_is_set_nameEng ? throw new InvalidOperationException("The property NameEng is not set!") : _nameEng; 
         set
         {
             _nameEng = value;
-            _loaded_nameEng = true;
+            _is_set_nameEng = true;
         }
     }
 
     public String? NameNat 
     { 
-        get => _nameNat; 
+        get => !_is_set_nameNat ? throw new InvalidOperationException("The property NameNat is not set!") : _nameNat; 
         set
         {
             _nameNat = value;
-            _loaded_nameNat = true;
+            _is_set_nameNat = true;
         }
     }
 
@@ -394,10 +443,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     void IPoco.Clear()
     {
-        _loaded_code = false;
-        _loaded_group = false;
-        _loaded_nameEng = false;
-        _loaded_nameNat = false;
+        _is_set_code = false;
+        _is_set_group = false;
+        _is_set_nameEng = false;
+        _is_set_nameNat = false;
     }
 
     bool IPoco.IsLoaded(Type @interface)
@@ -405,10 +454,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         if(@interface == typeof(IBreed))
         {
             return true
-                && _loaded_code
-                && _loaded_group
-                && _loaded_nameEng
-                && _loaded_nameNat
+                && _is_set_code
+                && _is_set_group
+                && _is_set_nameEng
+                && _is_set_nameNat
             ;
         }
         return false;
@@ -424,13 +473,13 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         switch(property)
         {
             case "Code":
-                return _loaded_code;
+                return _is_set_code;
             case "Group":
-                return _loaded_group;
+                return _is_set_group;
             case "NameEng":
-                return _loaded_nameEng;
+                return _is_set_nameEng;
             case "NameNat":
-                return _loaded_nameNat;
+                return _is_set_nameNat;
             default:
                 return false;
         }
@@ -441,72 +490,21 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         switch(property)
         {
             case "Code":
-                _loaded_code = true;
+                _is_set_code = true;
                 break;
             case "Group":
-                _loaded_group = true;
+                _is_set_group = true;
                 break;
             case "NameEng":
-                _loaded_nameEng = true;
+                _is_set_nameEng = true;
                 break;
             case "NameNat":
-                _loaded_nameNat = true;
+                _is_set_nameNat = true;
                 break;
         }
     }
 
 #endregion IPoco;
-
-
-    
-#region Properties Accessors
-
-    private static object? GetCodeValue(object target)
-    {
-        return ((BreedPoco)target).Code;
-    }
-
-    private static void SetCodeValue(object target, object? value)
-    {
-        ((BreedPoco)target).Code = (String)value!;
-
-    }
-
-    private static object? GetGroupValue(object target)
-    {
-        return ((BreedPoco)target).Group;
-    }
-
-    private static void SetGroupValue(object target, object? value)
-    {
-        ((BreedPoco)target).Group = (String)value!;
-
-    }
-
-    private static object? GetNameEngValue(object target)
-    {
-        return ((BreedPoco)target).NameEng;
-    }
-
-    private static void SetNameEngValue(object target, object? value)
-    {
-        ((BreedPoco)target).NameEng = (String)value!;
-
-    }
-
-    private static object? GetNameNatValue(object target)
-    {
-        return ((BreedPoco)target).NameNat;
-    }
-
-    private static void SetNameNatValue(object target, object? value)
-    {
-        ((BreedPoco)target).NameNat = (String)value!;
-
-    }
-
-
-#endregion Properties Accessors;
 
 
 }

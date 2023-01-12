@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T11:37:42                                  //
+// at 2023-01-12T18:26:08                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -25,21 +25,34 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
 
 
 #region Init Properties
-        public static void InitProperties(List<Property> properties)
+
+        public class SearchRegexProperty: IProperty
         {
-            properties.Add(
-                new Property(
-                    "SearchRegex", 
-                    typeof(String),
-                    GetSearchRegexValue, 
-                    SetSearchRegexValue, 
-                    target => ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty("SearchRegex"), 
-                    true, 
-                    false, 
-                    null
-                )
-            );
+            public string Name => "SearchRegex";
+            public bool IsReadOnly => false;
+            public bool IsNullable => true;
+            public bool IsCollection =>  false;
+            public Type Type => typeof(String);
+            public Type? ItemType => null;
+            public bool IsValueSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
+            public object? GetValue(object target)
+            {
+                return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+                ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
+            }
         }
+        public static void InitProperties(List<IProperty> properties)
+        {
+            properties.Add(new SearchRegexProperty());
+        }
+
 #endregion Init Properties;
 
 
@@ -82,44 +95,41 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             return _projector.GetHashCode();
         }
 
-        
-#region Properties Accessors
-
-        private static object? GetSearchRegexValue(object target)
-        {
-            return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
-        }
-
-        private static void SetSearchRegexValue(object target, object? value)
-        {
-             ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String?)value;
-        }
-
-
-#endregion Properties Accessors;
-
-
 
     }
 #endregion Projection classes
 
     
 #region Init Properties
-    public static void InitProperties(List<Property> properties)
+
+    public class SearchRegexProperty: IProperty
     {
-        properties.Add(
-            new Property(
-                "SearchRegex", 
-                typeof(String),
-                GetSearchRegexValue, 
-                SetSearchRegexValue, 
-                target => ((IPoco)target).TouchProperty("SearchRegex"), 
-                true, 
-                false, 
-                null
-            )
-        );
+        public string Name => "SearchRegex";
+        public bool IsReadOnly => false;
+        public bool IsNullable => true;
+        public bool IsCollection =>  false;
+        public Type Type => typeof(String);
+        public Type? ItemType => null;
+        public bool IsValueSet(object target) =>  ((BreedFilterPoco)target)._is_set_searchRegex;
+        public object? GetValue(object target)
+        {
+            return ((BreedFilterPoco)target).SearchRegex;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((BreedFilterPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+            ((BreedFilterPoco)target).SearchRegex = (String)value!;
+        }
     }
+    public static void InitProperties(List<IProperty> properties)
+    {
+        properties.Add(new SearchRegexProperty());
+    }
+
+       internal static SearchRegexProperty SearchRegexProp = new();
 #endregion Init Properties;
 
 
@@ -127,7 +137,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
 #region Fields
 
     private String? _searchRegex = default;
-    private bool _loaded_searchRegex = false;
+    private bool _is_set_searchRegex = false;
 
 #endregion Fields;
 
@@ -158,11 +168,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
 
     public String? SearchRegex 
     { 
-        get => _searchRegex; 
+        get =>  _searchRegex; 
         set
         {
             _searchRegex = value;
-            _loaded_searchRegex = true;
+            _is_set_searchRegex = true;
         }
     }
 
@@ -231,7 +241,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
 
     void IPoco.Clear()
     {
-        _loaded_searchRegex = false;
+        _is_set_searchRegex = false;
     }
 
     bool IPoco.IsLoaded(Type @interface)
@@ -239,7 +249,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         if(@interface == typeof(IBreedFilter))
         {
             return true
-                && _loaded_searchRegex
+                && _is_set_searchRegex
             ;
         }
         return false;
@@ -255,7 +265,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         switch(property)
         {
             case "SearchRegex":
-                return _loaded_searchRegex;
+                return _is_set_searchRegex;
             default:
                 return false;
         }
@@ -266,30 +276,12 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         switch(property)
         {
             case "SearchRegex":
-                _loaded_searchRegex = true;
+                _is_set_searchRegex = true;
                 break;
         }
     }
 
 #endregion IPoco;
-
-
-    
-#region Properties Accessors
-
-    private static object? GetSearchRegexValue(object target)
-    {
-        return ((BreedFilterPoco)target).SearchRegex;
-    }
-
-    private static void SetSearchRegexValue(object target, object? value)
-    {
-        ((BreedFilterPoco)target).SearchRegex = (String)value!;
-
-    }
-
-
-#endregion Properties Accessors;
 
 
 }

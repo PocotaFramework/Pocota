@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-12T11:37:42                                          //
+// at 2023-01-12T18:26:08                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -26,33 +26,55 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
 
 #region Init Properties
-        public static void InitProperties(List<Property> properties)
+
+        public class ModifiedPocosProperty: IProperty
         {
-            properties.Add(
-                new Property(
-                    "ModifiedPocos", 
-                    typeof(IList<Tuple<Type,Int32,PocoState>>),
-                    GetModifiedPocosValue, 
-                    null, 
-                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("ModifiedPocos"), 
-                    false, 
-                    true, 
-                    typeof(Tuple<Type,Int32,PocoState>)
-                )
-            );
-            properties.Add(
-                new Property(
-                    "TracedPocos", 
-                    typeof(IList<Tuple<Type,Int32>>),
-                    GetTracedPocosValue, 
-                    null, 
-                    target => ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty("TracedPocos"), 
-                    false, 
-                    true, 
-                    typeof(Tuple<Type,Int32>)
-                )
-            );
+            public string Name => "ModifiedPocos";
+            public bool IsReadOnly => true;
+            public bool IsNullable => false;
+            public bool IsCollection =>  true;
+            public Type Type => typeof(IList<Tuple<Type,Int32,PocoState>>);
+            public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
+            public bool IsValueSet(object target) =>  true;
+            public object? GetValue(object target)
+            {
+                return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos!;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+            }
         }
+        public class TracedPocosProperty: IProperty
+        {
+            public string Name => "TracedPocos";
+            public bool IsReadOnly => true;
+            public bool IsNullable => false;
+            public bool IsCollection =>  true;
+            public Type Type => typeof(IList<Tuple<Type,Int32>>);
+            public Type? ItemType => typeof(Tuple<Type,Int32>);
+            public bool IsValueSet(object target) =>  true;
+            public object? GetValue(object target)
+            {
+                return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
+            }
+            public void TouchValue(object target)
+            {
+                ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty(Name);
+            }
+            public void SetValue(object target, object? value)
+            {
+            }
+        }
+        public static void InitProperties(List<IProperty> properties)
+        {
+            properties.Add(new ModifiedPocosProperty());
+            properties.Add(new TracedPocosProperty());
+        }
+
 #endregion Init Properties;
 
 
@@ -122,58 +144,63 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             return _projector.GetHashCode();
         }
 
-        
-#region Properties Accessors
-
-        private static object? GetModifiedPocosValue(object target)
-        {
-            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos!;
-        }
-
-
-        private static object? GetTracedPocosValue(object target)
-        {
-            return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
-        }
-
-
-
-#endregion Properties Accessors;
-
-
 
     }
     #endregion Projection classes
     
     
 #region Init Properties
-    public static void InitProperties(List<Property> properties)
+
+    public class ModifiedPocosProperty: IProperty
     {
-        properties.Add(
-            new Property(
-                "ModifiedPocos", 
-                typeof(ObservableCollection<Tuple<Type,Int32,PocoState>>),
-                GetModifiedPocosValue, 
-                null, 
-                target => ((IPoco)target).TouchProperty("ModifiedPocos"), 
-                false, 
-                false, 
-                typeof(Tuple<Type,Int32,PocoState>)
-            )
-        );
-        properties.Add(
-            new Property(
-                "TracedPocos", 
-                typeof(ObservableCollection<Tuple<Type,Int32>>),
-                GetTracedPocosValue, 
-                null, 
-                target => ((IPoco)target).TouchProperty("TracedPocos"), 
-                false, 
-                false, 
-                typeof(Tuple<Type,Int32>)
-            )
-        );
+        public string Name => "ModifiedPocos";
+        public bool IsReadOnly => false;
+        public bool IsNullable => false;
+        public bool IsCollection =>  true;
+        public Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState>>);
+        public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
+        public bool IsValueSet(object target) =>  true;
+        public object? GetValue(object target)
+        {
+            return ((TracedPocosHeartPoco)target).ModifiedPocos;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((TracedPocosHeartPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+        }
     }
+    public class TracedPocosProperty: IProperty
+    {
+        public string Name => "TracedPocos";
+        public bool IsReadOnly => false;
+        public bool IsNullable => false;
+        public bool IsCollection =>  true;
+        public Type Type => typeof(ObservableCollection<Tuple<Type,Int32>>);
+        public Type? ItemType => typeof(Tuple<Type,Int32>);
+        public bool IsValueSet(object target) =>  true;
+        public object? GetValue(object target)
+        {
+            return ((TracedPocosHeartPoco)target).TracedPocos;
+        }
+        public void TouchValue(object target)
+        {
+            ((IPoco)((TracedPocosHeartPoco)target)).TouchProperty(Name);
+        }
+        public void SetValue(object target, object? value)
+        {
+        }
+    }
+    public static void InitProperties(List<IProperty> properties)
+    {
+        properties.Add(new ModifiedPocosProperty());
+        properties.Add(new TracedPocosProperty());
+    }
+
+       internal static ModifiedPocosProperty ModifiedPocosProp = new();
+       internal static TracedPocosProperty TracedPocosProp = new();
 #endregion Init Properties;
 
     
@@ -378,25 +405,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
 
 #endregion Poco Changed;
-
-
-    
-#region Properties Accessors
-
-    private static object? GetModifiedPocosValue(object target)
-    {
-        return ((TracedPocosHeartPoco)target).ModifiedPocos;
-    }
-
-
-    private static object? GetTracedPocosValue(object target)
-    {
-        return ((TracedPocosHeartPoco)target).TracedPocos;
-    }
-
-
-
-#endregion Properties Accessors;
 
 
 

@@ -2,28 +2,82 @@
 @model ClassModel
 @{
     string indent = ViewData.ContainsKey("Projection") ? "    " : string.Empty;
-    string targetForTouch = ViewData.ContainsKey("Projection") ? $"(({Model.ClassName})target)._projector" : "target";
+    bool hasProjector = ViewData.ContainsKey("Projection");
 }
 
 @Html.Raw("#region Init Properties")
-    @Html.Raw(indent)public static void InitProperties(@Html.Raw("List<Property>") properties)
+
+@foreach (PropertyModel pm in Model.Properties)
+{    
+    <text>    @Html.Raw(indent)public class @Html.Raw($"{pm.Name}Property"): IProperty
+    @Html.Raw(indent){
+        @Html.Raw(indent)public string Name => "@pm.Name";
+        @Html.Raw(indent)public bool IsReadOnly => @Html.Raw(pm.IsReadOnly ? "true" : "false");
+        @Html.Raw(indent)public bool IsNullable => @Html.Raw(pm.IsNullable ? "true" : "false");
+        @Html.Raw(indent)public bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public Type Type => typeof(@Html.Raw(pm.Type));
+        @Html.Raw(indent)public Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
+        @Html.Raw(indent)public bool IsValueSet(object target) =>  @Html.Raw(pm.IsList ? "true" : $"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
+        @Html.Raw(indent)public object? GetValue(object target)
+        @Html.Raw(indent){
+            @if (hasProjector)
+            {
+                if(!pm.IsList || !pm.IsProjection)
+                {
+                    <text>            @Html.Raw(indent)return @if (pm.IsProjection) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"(({Model.ClassName})target)._projector.{pm.Name}")@if (pm.IsProjection) { <text>)@Html.Raw($"?.As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+</text>
+                }
+                else 
+                {
+                    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+                    <text>            @Html.Raw(indent)return @Html.Raw($"(({Model.ClassName})target).{fieldName}");
+</text>
+                }
+            }
+            else
+            {
+                <text>            @Html.Raw(indent)return @Html.Raw($"(({Model.ClassName})target).{pm.Name}");
+</text>
+            }
+        @Html.Raw(indent)}
+        @Html.Raw(indent)public void TouchValue(object target)
+        @Html.Raw(indent){
+            @Html.Raw(indent)@Html.Raw($"((IPoco)(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}).TouchProperty(Name)");
+        @Html.Raw(indent)}
+        @Html.Raw(indent)public void SetValue(object target, object? value)
+        @Html.Raw(indent){
+            @if(!pm.IsList)
+            {
+                if(pm.IsProjection)
+                {
+                <text>            @Html.Raw(indent)@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name} = ((IProjection?)value)?.As<{(hasProjector ? pm.Class : pm.Type)}>()!");
+</text>
+                }
+                else
+                {
+                <text>            @Html.Raw(indent)@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name} = ({pm.Type})value!");
+</text>
+                }
+            }
+        @Html.Raw(indent)}
+    @Html.Raw(indent)}
+</text>
+}    
+    @Html.Raw(indent)public static void InitProperties(@Html.Raw("List<IProperty>") properties)
     @Html.Raw(indent){
         @foreach (PropertyModel pm in Model.Properties)
         {    
-            <text>        @Html.Raw(indent)properties.Add(
-            @Html.Raw(indent)new @Html.Raw($"Property(")
-                @Html.Raw(indent)@Html.Raw("\"")@pm.Name@Html.Raw("\""), 
-                @Html.Raw(indent)typeof(@Html.Raw(pm.Type.Trim('?'))),
-                @Html.Raw(indent)@Html.Raw($"Get{pm.Name}Value"), 
-            @if (pm.IsList){<text>                @Html.Raw(indent)null</text>} else {<text>                @Html.Raw(indent)@Html.Raw("Set" + pm.Name + "Value")</text>}, 
-                @Html.Raw(indent)@Html.Raw($"target => ((IPoco){targetForTouch}).TouchProperty(\"{pm.Name}\")"), 
-            @if (!pm.IsNullable){<text>                @Html.Raw(indent)false</text>} else {<text>                @Html.Raw(indent)true</text>}, 
-            @if (pm.IsReadOnly){<text>                @Html.Raw(indent)true</text>} else {<text>                @Html.Raw(indent)false</text>}, 
-            @if (pm.IsList){<text>                @Html.Raw(indent)@Html.Raw($"typeof({(false/*pm.Class is {}*/ ? pm.Class : pm.ItemType)})")</text>} else {<text>                @Html.Raw(indent)null</text>}
-
-            @Html.Raw(indent))
-        @Html.Raw(indent));
+            <text>        @Html.Raw(indent)properties.Add(@Html.Raw($"new {pm.Name}Property()"));
 </text>
         }
     @Html.Raw(indent)}
+
+    @if(!hasProjector)
+    {
+        foreach (PropertyModel pm in Model.Properties)
+        {    
+            <text>       internal static @Html.Raw($"{pm.Name}Property {pm.Name}Prop = new()");
+</text>
+        }
+    }
 @Html.Raw("#endregion Init Properties");

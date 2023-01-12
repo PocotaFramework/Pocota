@@ -133,7 +133,7 @@ public abstract class PocoBase : IPoco
                     _cancellingChanges = true;
                     foreach (var entry in _modified)
                     {
-                        if (_pocota.GetPropertiesDictionary(GetType())?[entry.Key] is Property property && !property.IsCollection)
+                        if (_pocota.GetPropertiesDictionary(GetType())?[entry.Key] is IProperty property && !property.IsCollection)
                         {
                             property.SetValue(this, entry.Value);
                         }
