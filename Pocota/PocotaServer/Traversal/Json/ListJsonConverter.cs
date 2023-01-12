@@ -1,4 +1,6 @@
 ﻿using Net.Leksi.Pocota.Common;
+using System;
+using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -73,29 +75,17 @@ internal class ListJsonConverter<T> : ListJsonConverterBase<T> where T : class
             throw new InvalidOperationException("Unproper using!");
         }
 
-        object[] index = new object[1];
         writer.WriteStartArray();
         bool isHighLevel = context.IsHighLevel;
         context.IsHighLevel = false;
 
-        ListMembersHolder membersHolder = GetListMembersHolder(value.GetType());
-
-        for (int i = 0; ; ++i)
+        if (value is IEnumerable values)
         {
-            context.IsHighLevel = isHighLevel;
-            index[0] = i;
-            try
+            IEnumerator en = values.GetEnumerator();
+            while (en.MoveNext())
             {
-                object? item = membersHolder.Item!.GetValue(value, index);
-                JsonSerializer.Serialize(writer, item, _itemType, options);
-            }
-            catch (TargetInvocationException tiex)
-            {
-                if(tiex.InnerException is ArgumentOutOfRangeException)
-                {
-                    break;
-                }
-                throw;
+                context.IsHighLevel = isHighLevel;
+                JsonSerializer.Serialize(writer, en.Current, _itemType, options);
             }
         }
         writer.WriteEndArray();

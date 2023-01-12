@@ -232,7 +232,7 @@ internal class Builder : IBuilder
                 JsonSerializer.Serialize(
                     options.Output!,
                     FindLittersWithCats(filter, options),
-                    options.JsonSerializerOptions
+                    _pocoContext.BindJsonSerializerOptions()
                 );
             }
             else
@@ -241,7 +241,7 @@ internal class Builder : IBuilder
                 JsonSerializer.Serialize(
                     options.Output!,
                     FindCats<T>(filter, options),
-                    options.JsonSerializerOptions
+                    _pocoContext.BindJsonSerializerOptions()
                 );
             }
         }

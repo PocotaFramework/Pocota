@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Collections;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Net.Leksi.Pocota.Server;
@@ -24,7 +25,7 @@ internal class PocoTraversalConverterFactory : JsonConverterFactory
 
     public override bool CanConvert(Type typeToConvert)
     {
-        if (PocotaCore.IsIList(typeToConvert))
+        if (typeof(IEnumerable).IsAssignableFrom(typeToConvert) && typeToConvert.IsGenericType)
         {
             return CanConvert(typeToConvert.GetGenericArguments()[0]);
         }
@@ -34,7 +35,7 @@ internal class PocoTraversalConverterFactory : JsonConverterFactory
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
         bool building = (_pocoContext.GetTraversalContext(options) as PocoTraversalContext)!.IsBuilding;
-        if (PocotaCore.IsIList(typeToConvert))
+        if (typeof(IEnumerable).IsAssignableFrom(typeToConvert) && typeToConvert.IsGenericType)
         {
             if (building)
             {

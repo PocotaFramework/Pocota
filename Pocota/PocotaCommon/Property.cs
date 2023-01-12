@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata;
-
-namespace Net.Leksi.Pocota.Common;
+﻿namespace Net.Leksi.Pocota.Common;
 
 public class Property
 {

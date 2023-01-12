@@ -222,7 +222,6 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                                 || !isModified
                             );
 
-
                         context!.Target = property.IsCollection
                             ? (
                                 canChangeValue

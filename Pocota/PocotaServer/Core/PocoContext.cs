@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server.Generic;
 using System.Collections;
 using System.Collections.Immutable;
@@ -80,8 +81,15 @@ public class PocoContext : IPocoContext
                 mappedJsonWriter = new Utf8JsonWriter(output);
                 context.OnItem = source =>
                 {
-                    //todo выводить только уникальные, если HighLevelListUniqueness == true
                     object? result = options.Mapper.GetValue(source);
+                    if(
+                        context.TraversalContext!.HighLevelListUniqueness 
+                        && result is IProjection<IEntity> entity 
+                        && !context.TraversalContext!.IsHighLevelListUnique(entity.As<IEntity>()!.PrimaryKey)
+                    )
+                    {
+                        result = null;
+                    }
                     if(result is { })
                     {
                         JsonSerializer.Serialize(mappedJsonWriter, result, options.Mapper.Type, mappedJsonSerializerOptions);
