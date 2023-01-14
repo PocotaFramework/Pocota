@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,16 +36,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(DateOnly);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_date;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_date;
+            public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._projector.Date!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchDate();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterProjection)target)._projector.Date = (DateOnly)value!;
             }
@@ -58,16 +58,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(Int32);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_order;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_order;
+            public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._projector.Order!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchOrder();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterProjection)target)._projector.Order = (Int32)value!;
             }
@@ -80,16 +80,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_female;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_female;
+            public object? Get(object target)
             {
                 return ((IProjection)((LitterILitterProjection)target)._projector.Female)?.As<ICat>()!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchFemale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -102,16 +102,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_male;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_male;
+            public object? Get(object target)
             {
                 return ((IProjection?)((LitterILitterProjection)target)._projector.Male)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchMale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -124,16 +124,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<String>);
             public Type? ItemType => typeof(String);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_strings;
+            public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._projector.Strings!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchStrings();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -145,16 +145,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICat>);
             public Type? ItemType => typeof(ICat);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_cats;
+            public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._cats;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterProjection)target)._projector.TouchCats();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -276,16 +276,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(DateOnly);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_date;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_date;
+            public object? Get(object target)
             {
                 return ((LitterILitterForCatProjection)target)._projector.Date!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForCatProjection)target)._projector.TouchDate();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
             }
@@ -298,16 +298,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(Int32);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_order;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_order;
+            public object? Get(object target)
             {
                 return ((LitterILitterForCatProjection)target)._projector.Order!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForCatProjection)target)._projector.TouchOrder();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
             }
@@ -320,16 +320,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(ICatAsParent);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_female;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_female;
+            public object? Get(object target)
             {
                 return ((IProjection)((LitterILitterForCatProjection)target)._projector.Female)?.As<ICatAsParent>()!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForCatProjection)target)._projector.TouchFemale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -342,16 +342,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(ICatAsParent);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_male;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_male;
+            public object? Get(object target)
             {
                 return ((IProjection?)((LitterILitterForCatProjection)target)._projector.Male)?.As<ICatAsParent>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForCatProjection)target)._projector.TouchMale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -364,16 +364,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_cats;
+            public object? Get(object target)
             {
                 return ((LitterILitterForCatProjection)target)._cats;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForCatProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForCatProjection)target)._projector.TouchCats();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -485,16 +485,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  false;
             public Type Type => typeof(DateOnly);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterILitterForDateProjection)target)._projector._is_set_date;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterForDateProjection)target)._projector._is_set_date;
+            public object? Get(object target)
             {
                 return ((LitterILitterForDateProjection)target)._projector.Date!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterForDateProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterForDateProjection)target)._projector.TouchDate();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
             }
@@ -581,16 +581,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
+            public object? Get(object target)
             {
                 return ((LitterILitterWithCatsProjection)target)._cats;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterILitterWithCatsProjection)target)._projector).TouchProperty(Name);
+                ((LitterILitterWithCatsProjection)target)._projector.TouchCats();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -676,16 +676,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  false;
         public Type Type => typeof(DateOnly);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterPoco)target)._is_set_date;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_date;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Date;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchDate();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterPoco)target).Date = (DateOnly)value!;
         }
@@ -698,16 +698,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  false;
         public Type Type => typeof(Int32);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterPoco)target)._is_set_order;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_order;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Order;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchOrder();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterPoco)target).Order = (Int32)value!;
         }
@@ -720,16 +720,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterPoco)target)._is_set_female;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_female;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Female;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchFemale();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -742,16 +742,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterPoco)target)._is_set_male;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_male;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Male;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchMale();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -764,16 +764,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<String>);
         public Type? ItemType => typeof(String);
-        public bool IsValueSet(object target) =>  true;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_strings;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Strings;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchStrings();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
         }
     }
@@ -785,16 +785,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<CatPoco>);
         public Type? ItemType => typeof(CatPoco);
-        public bool IsValueSet(object target) =>  true;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_cats;
+        public object? Get(object target)
         {
             return ((LitterPoco)target).Cats;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterPoco)target)).TouchProperty(Name);
+            ((LitterPoco)target).TouchCats();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
         }
     }
@@ -830,8 +830,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     private bool _is_set_male = false;
     private readonly ObservableCollection<String> _strings = new();
     private readonly List<String> _initial_strings = new();
+    private bool _is_set_strings = false;
     private readonly ObservableCollection<CatPoco> _cats = new();
     private readonly List<CatPoco> _initial_cats = new();
+    private bool _is_set_cats = false;
 
 #endregion Fields;
 
@@ -1054,6 +1056,31 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchDate()
+    {
+        _is_set_date = true;
+    }
+    public void TouchOrder()
+    {
+        _is_set_order = true;
+    }
+    public void TouchFemale()
+    {
+        _is_set_female = true;
+    }
+    public void TouchMale()
+    {
+        _is_set_male = true;
+    }
+    public void TouchStrings()
+    {
+        _is_set_strings = true;
+    }
+    public void TouchCats()
+    {
+        _is_set_cats = true;
     }
 
 

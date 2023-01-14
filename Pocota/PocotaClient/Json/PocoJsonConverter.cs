@@ -97,7 +97,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     else if (propertyName.Equals(Class))
                     {
                         string? val = JsonSerializer.Deserialize<string>(ref reader);
-                        if (string.IsNullOrEmpty(val) || !val.StartsWith("#"))
+                        if (string.IsNullOrEmpty(val) || !val.StartsWith(PocoTraversalContext.ReferencePrefix))
                         {
                             throw new JsonException("Invalid class reference");
                         }
@@ -120,7 +120,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     else if (propertyName.Equals(Interface))
                     {
                         string? val = JsonSerializer.Deserialize<string>(ref reader);
-                        if (string.IsNullOrEmpty(val) || !val.StartsWith("#"))
+                        if (string.IsNullOrEmpty(val) || !val.StartsWith(PocoTraversalContext.ReferencePrefix))
                         {
                             throw new JsonException("Invalid interface reference");
                         }
@@ -194,7 +194,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     if (property is { })
                     {
 
-                        object? oldValue = property.GetValue(result.As<T>()!);
+                        object? oldValue = property.Get(result.As<T>()!);
 
                         Type typeForDeserialization = property.Type;
 
@@ -242,14 +242,14 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             )
                         )
                         {
-                            property.TouchValue(result.As<T>()!);
+                            property.Touch(result.As<T>()!);
 
                         }
                         else
                         {
                             if (canChangeValue)
                             {
-                                property.SetValue(result.As<T>()!, value);
+                                property.Set(result.As<T>()!, value);
                             }
                             else
                             {
@@ -312,7 +312,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                 {
                     foreach (IProperty property in _properties!.Values)
                     {
-                        object? propertytValue = property.GetValue(projection);
+                        object? propertytValue = property.Get(projection);
                         if (propertytValue is { })
                         {
                             writer.WritePropertyName(property.Name);

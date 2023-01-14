@@ -27,17 +27,13 @@
         if(!pm.IsNullable){<text>!</text>}
     }
     <text>;
-</text>
-    if (pm.IsList)
+    @if (pm.IsList)
     {
         <text>    private readonly @Html.Raw($"List<{pm.ItemType}> _initial{fieldName} = new()");
 </text>
     }
-    else
-    {
-        <text>    private bool @Html.Raw($"_is_set{fieldName}") = false;
+    private bool @Html.Raw($"_is_set{fieldName}") = false;
 </text>
-    }
 }
 
 @Html.Raw("#endregion Fields");

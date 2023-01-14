@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-12T18:26:08                                          //
+// at 2023-01-14T20:09:42                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -36,16 +36,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public bool IsCollection =>  false;
             public Type Type => typeof(EditKind);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_editKind;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_editKind;
+            public object? Get(object target)
             {
                 return ((ViewCatHeartIViewCatHeartProjection)target)._projector.EditKind!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((ViewCatHeartIViewCatHeartProjection)target)._projector).TouchProperty(Name);
+                ((ViewCatHeartIViewCatHeartProjection)target)._projector.TouchEditKind();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((ViewCatHeartIViewCatHeartProjection)target)._projector.EditKind = (EditKind)value!;
             }
@@ -58,16 +58,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public bool IsCollection =>  false;
             public Type Type => typeof(Object);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_littersView;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_littersView;
+            public object? Get(object target)
             {
                 return ((ViewCatHeartIViewCatHeartProjection)target)._projector.LittersView!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((ViewCatHeartIViewCatHeartProjection)target)._projector).TouchProperty(Name);
+                ((ViewCatHeartIViewCatHeartProjection)target)._projector.TouchLittersView();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((ViewCatHeartIViewCatHeartProjection)target)._projector.LittersView = (Object)value!;
             }
@@ -80,16 +80,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_cat;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_cat;
+            public object? Get(object target)
             {
                 return ((IProjection)((ViewCatHeartIViewCatHeartProjection)target)._projector.Cat)?.As<ICat>()!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((ViewCatHeartIViewCatHeartProjection)target)._projector).TouchProperty(Name);
+                ((ViewCatHeartIViewCatHeartProjection)target)._projector.TouchCat();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((ViewCatHeartIViewCatHeartProjection)target)._projector.Cat = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -102,16 +102,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitter>);
             public Type? ItemType => typeof(ILitter);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_selectedLitters;
+            public object? Get(object target)
             {
                 return ((ViewCatHeartIViewCatHeartProjection)target)._selectedLitters;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((ViewCatHeartIViewCatHeartProjection)target)._projector).TouchProperty(Name);
+                ((ViewCatHeartIViewCatHeartProjection)target)._projector.TouchSelectedLitters();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -223,16 +223,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public bool IsCollection =>  false;
         public Type Type => typeof(EditKind);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_editKind;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_editKind;
+        public object? Get(object target)
         {
             return ((ViewCatHeartPoco)target).EditKind;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((ViewCatHeartPoco)target)).TouchProperty(Name);
+            ((ViewCatHeartPoco)target).TouchEditKind();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((ViewCatHeartPoco)target).EditKind = (EditKind)value!;
         }
@@ -245,16 +245,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public bool IsCollection =>  false;
         public Type Type => typeof(Object);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_littersView;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_littersView;
+        public object? Get(object target)
         {
             return ((ViewCatHeartPoco)target).LittersView;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((ViewCatHeartPoco)target)).TouchProperty(Name);
+            ((ViewCatHeartPoco)target).TouchLittersView();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((ViewCatHeartPoco)target).LittersView = (Object)value!;
         }
@@ -267,16 +267,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_cat;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_cat;
+        public object? Get(object target)
         {
             return ((ViewCatHeartPoco)target).Cat;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((ViewCatHeartPoco)target)).TouchProperty(Name);
+            ((ViewCatHeartPoco)target).TouchCat();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((ViewCatHeartPoco)target).Cat = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -289,16 +289,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<LitterPoco>);
         public Type? ItemType => typeof(LitterPoco);
-        public bool IsValueSet(object target) =>  true;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_selectedLitters;
+        public object? Get(object target)
         {
             return ((ViewCatHeartPoco)target).SelectedLitters;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((ViewCatHeartPoco)target)).TouchProperty(Name);
+            ((ViewCatHeartPoco)target).TouchSelectedLitters();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
         }
     }
@@ -328,6 +328,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private bool _is_set_cat = false;
     private readonly ObservableCollection<LitterPoco> _selectedLitters = new();
     private readonly List<LitterPoco> _initial_selectedLitters = new();
+    private bool _is_set_selectedLitters = false;
 
 #endregion Fields;
 
@@ -465,6 +466,23 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchEditKind()
+    {
+        _is_set_editKind = true;
+    }
+    public void TouchLittersView()
+    {
+        _is_set_littersView = true;
+    }
+    public void TouchCat()
+    {
+        _is_set_cat = true;
+    }
+    public void TouchSelectedLitters()
+    {
+        _is_set_selectedLitters = true;
     }
 
     public abstract void LittersSelectionChanged(Object sender, EventArgs e);

@@ -6,7 +6,7 @@ namespace Net.Leksi.Pocota.Client.Json;
 
 public class PocoTraversalContext : IPocoTraversalContext
 {
-    private const string ReferencePrefix = "#";
+    internal const string ReferencePrefix = "@";
 
     private Dictionary<string, object>? _referencedObjects;
     private ConditionalWeakTable<object, string>? _usedObjects;

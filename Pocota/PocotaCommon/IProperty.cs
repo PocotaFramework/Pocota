@@ -9,12 +9,12 @@ public interface IProperty
     Type Type { get; }
     Type? ItemType { get; }
 
-    bool IsValueSet(object target);
+    bool IsSet(object target);
 
-    object? GetValue(object target);
+    object? Get(object target);
 
-    void TouchValue(object target);
+    void Touch(object target);
 
-    void SetValue(object target, object? value);
+    void Set(object target, object? value);
 
 }

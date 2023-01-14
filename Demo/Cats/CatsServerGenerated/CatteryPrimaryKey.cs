@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatteryPrimaryKey                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:07                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -77,7 +77,7 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 
     public Type SourceType => typeof(CatteryPoco);
 
-    public bool IsAssigned => IdCattery != default(Int32);
+    public bool IsAssigned => IdCattery != default;
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
@@ -128,7 +128,7 @@ public class CatteryPrimaryKey: IPrimaryKey<CatteryPoco>, IPrimaryKey<ICattery>
 
     private IEnumerable<string> GetNotAssignedFields()
     {
-        if (IdCattery == default(Int32))
+        if (IdCattery == default)
         {
             yield return "IdCattery";
         }

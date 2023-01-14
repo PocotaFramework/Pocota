@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -79,7 +79,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsSet(obj) && obj.Female is IEntity entity)
             {
                 return (entity.PrimaryKey as CatPrimaryKey)!.IdCat;
             }
@@ -87,7 +87,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
         }
         set
         {
-            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsSet(obj) && obj.Female is IEntity entity)
             {
                 (entity.PrimaryKey as CatPrimaryKey)!.IdCat = value;
             }
@@ -102,7 +102,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
     {
         get 
         {
-            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsSet(obj) && obj.Female is IEntity entity)
             {
                 return (entity.PrimaryKey as CatPrimaryKey)!.IdCattery;
             }
@@ -110,7 +110,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
         }
         set
         {
-            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsValueSet(obj) && obj.Female is IEntity entity)
+            if(_source.Target is LitterPoco obj && LitterPoco.FemaleProp.IsSet(obj) && obj.Female is IEntity entity)
             {
                 (entity.PrimaryKey as CatPrimaryKey)!.IdCattery = value;
             }
@@ -144,7 +144,7 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 
     public Type SourceType => typeof(LitterPoco);
 
-    public bool IsAssigned => IdFemale != default(Int32) && IdFemaleCattery != default(Int32) && IdLitter != default(Int32);
+    public bool IsAssigned => IdFemale != default && IdFemaleCattery != default && IdLitter != default;
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
@@ -202,17 +202,17 @@ public class LitterPrimaryKey: IPrimaryKey<LitterPoco>, IPrimaryKey<ILitter>, IP
 
     private IEnumerable<string> GetNotAssignedFields()
     {
-        if (IdFemale == default(Int32))
+        if (IdFemale == default)
         {
             yield return "IdFemale";
         }
 
-        if (IdFemaleCattery == default(Int32))
+        if (IdFemaleCattery == default)
         {
             yield return "IdFemaleCattery";
         }
 
-        if (IdLitter == default(Int32))
+        if (IdLitter == default)
         {
             yield return "IdLitter";
         }

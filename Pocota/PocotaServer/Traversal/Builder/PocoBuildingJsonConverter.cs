@@ -264,9 +264,9 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     Type propertyType = property.Type;
 
-                    bool isPropertySet = property.IsValueSet(value);
+                    bool isPropertySet = property.IsSet(value);
 
-                    object? propertyValue = isPropertySet ? property.GetValue(value) : default;
+                    object? propertyValue = isPropertySet ? property.Get(value) : default;
 
                     bool isCollectionReentering = property.IsCollection && propertyValue is { } && context.Stack.Contains(propertyValue, ReferenceEqualityComparer.Instance);
 
@@ -352,7 +352,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                 )
                                 {
                                     propertyValue = context.BuildingContext.BuildingEventArgs.Value;
-                                    property.SetValue(value, propertyValue);
+                                    property.Set(value, propertyValue);
                                 }
                             }
                         }
@@ -375,7 +375,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                                 if (property.IsCollection)
                                 {
-                                    property.TouchValue(value);
+                                    property.Touch(value);
                                 }
                                 else
                                 {
@@ -400,7 +400,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                             )
                                         )
                                         {
-                                            property.SetValue(value, context.Target);
+                                            property.Set(value, context.Target);
                                         }
                                     }
                                 }

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,16 +33,16 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
+            public object? Get(object target)
             {
                 return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((BreedFilterIBreedFilterProjection)target)._projector).TouchProperty(Name);
+                ((BreedFilterIBreedFilterProjection)target)._projector.TouchSearchRegex();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
             }
@@ -128,16 +128,16 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((BreedFilterPoco)target)._is_set_searchRegex;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((BreedFilterPoco)target)._is_set_searchRegex;
+        public object? Get(object target)
         {
             return ((BreedFilterPoco)target).SearchRegex;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((BreedFilterPoco)target)).TouchProperty(Name);
+            ((BreedFilterPoco)target).TouchSearchRegex();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((BreedFilterPoco)target).SearchRegex = (String)value!;
         }
@@ -248,6 +248,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchSearchRegex()
+    {
+        _is_set_searchRegex = true;
     }
 
 

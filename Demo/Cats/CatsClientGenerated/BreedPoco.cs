@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,16 +33,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
+            public object? Get(object target)
             {
                 return ((BreedIBreedProjection)target)._projector.Code!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+                ((BreedIBreedProjection)target)._projector.TouchCode();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((BreedIBreedProjection)target)._projector.Code = (String)value!;
             }
@@ -55,16 +55,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
+            public object? Get(object target)
             {
                 return ((BreedIBreedProjection)target)._projector.Group!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+                ((BreedIBreedProjection)target)._projector.TouchGroup();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((BreedIBreedProjection)target)._projector.Group = (String)value!;
             }
@@ -77,16 +77,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public object? Get(object target)
             {
                 return ((BreedIBreedProjection)target)._projector.NameEng;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+                ((BreedIBreedProjection)target)._projector.TouchNameEng();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((BreedIBreedProjection)target)._projector.NameEng = (String)value!;
             }
@@ -99,16 +99,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public object? Get(object target)
             {
                 return ((BreedIBreedProjection)target)._projector.NameNat;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((BreedIBreedProjection)target)._projector).TouchProperty(Name);
+                ((BreedIBreedProjection)target)._projector.TouchNameNat();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((BreedIBreedProjection)target)._projector.NameNat = (String)value!;
             }
@@ -215,16 +215,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_code;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_code;
+        public object? Get(object target)
         {
             return ((BreedPoco)target).Code;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+            ((BreedPoco)target).TouchCode();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((BreedPoco)target).Code = (String)value!;
         }
@@ -237,16 +237,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_group;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_group;
+        public object? Get(object target)
         {
             return ((BreedPoco)target).Group;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+            ((BreedPoco)target).TouchGroup();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((BreedPoco)target).Group = (String)value!;
         }
@@ -259,16 +259,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
+        public object? Get(object target)
         {
             return ((BreedPoco)target).NameEng;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+            ((BreedPoco)target).TouchNameEng();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((BreedPoco)target).NameEng = (String)value!;
         }
@@ -281,16 +281,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
+        public object? Get(object target)
         {
             return ((BreedPoco)target).NameNat;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((BreedPoco)target)).TouchProperty(Name);
+            ((BreedPoco)target).TouchNameNat();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((BreedPoco)target).NameNat = (String)value!;
         }
@@ -462,6 +462,23 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchCode()
+    {
+        _is_set_code = true;
+    }
+    public void TouchGroup()
+    {
+        _is_set_group = true;
+    }
+    public void TouchNameEng()
+    {
+        _is_set_nameEng = true;
+    }
+    public void TouchNameNat()
+    {
+        _is_set_nameNat = true;
     }
 
 

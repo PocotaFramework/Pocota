@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-12T18:26:08                                          //
+// at 2023-01-14T20:09:42                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -35,16 +35,16 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<Tuple<Type,Int32,PocoState>>);
             public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._is_set_modifiedPocos;
+            public object? Get(object target)
             {
                 return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty(Name);
+                ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TouchModifiedPocos();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -56,16 +56,16 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<Tuple<Type,Int32>>);
             public Type? ItemType => typeof(Tuple<Type,Int32>);
-            public bool IsValueSet(object target) =>  true;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._is_set_tracedPocos;
+            public object? Get(object target)
             {
                 return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((TracedPocosHeartITracedPocosHeartProjection)target)._projector).TouchProperty(Name);
+                ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TouchTracedPocos();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
             }
         }
@@ -159,16 +159,16 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState>>);
         public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
-        public bool IsValueSet(object target) =>  true;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target)._is_set_modifiedPocos;
+        public object? Get(object target)
         {
             return ((TracedPocosHeartPoco)target).ModifiedPocos;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((TracedPocosHeartPoco)target)).TouchProperty(Name);
+            ((TracedPocosHeartPoco)target).TouchModifiedPocos();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
         }
     }
@@ -180,16 +180,16 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<Tuple<Type,Int32>>);
         public Type? ItemType => typeof(Tuple<Type,Int32>);
-        public bool IsValueSet(object target) =>  true;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target)._is_set_tracedPocos;
+        public object? Get(object target)
         {
             return ((TracedPocosHeartPoco)target).TracedPocos;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((TracedPocosHeartPoco)target)).TouchProperty(Name);
+            ((TracedPocosHeartPoco)target).TouchTracedPocos();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
         }
     }
@@ -209,8 +209,10 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     private readonly ObservableCollection<Tuple<Type,Int32,PocoState>> _modifiedPocos = new();
     private readonly List<Tuple<Type,Int32,PocoState>> _initial_modifiedPocos = new();
+    private bool _is_set_modifiedPocos = false;
     private readonly ObservableCollection<Tuple<Type,Int32>> _tracedPocos = new();
     private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
+    private bool _is_set_tracedPocos = false;
 
 #endregion Fields;
 
@@ -302,6 +304,15 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchModifiedPocos()
+    {
+        _is_set_modifiedPocos = true;
+    }
+    public void TouchTracedPocos()
+    {
+        _is_set_tracedPocos = true;
     }
 
     public abstract void CollectGarbage();

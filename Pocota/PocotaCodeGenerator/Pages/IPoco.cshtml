@@ -5,7 +5,7 @@
 
     void IPoco.Clear()
     {
-        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
+        @foreach(PropertyModel pm in Model.Properties)
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>        @Html.Raw($"_is_set{fieldName}") = false;
@@ -18,7 +18,7 @@
         @foreach(ClassModel @class in Model.Classes){
             <text>        if(@@interface == typeof(@Html.Raw(@class.Interface)))
         {
-            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Where(p => !p.IsList).Select(pm => $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
+            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Select(pm => $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
             ;
         }
 </text>
@@ -29,37 +29,6 @@
     bool @Html.Raw("IPoco.IsLoaded<T>()")
     {
         return ((IPoco)this).IsLoaded(typeof(T));
-    }
-
-    bool IPoco.IsPropertySet(string property)
-    {
-        switch(property)
-        {
-        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
-        {
-            string fieldName = $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            <text>            case @Html.Raw($"\"{pm.Name}\""):
-                return @fieldName;
-</text>
-        }
-            default:
-                return false;
-        }
-    }
-
-    void IPoco.TouchProperty(string property)
-    {
-        switch(property)
-        {
-        @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsList))
-        {
-            string fieldName = $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            <text>            case @Html.Raw($"\"{pm.Name}\""):
-                @fieldName = true;
-                break;
-</text>
-        }
-        }
     }
 
 @Html.Raw("#endregion IPoco");

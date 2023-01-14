@@ -135,7 +135,7 @@ public abstract class PocoBase : IPoco
                     {
                         if (_pocota.GetPropertiesDictionary(GetType())?[entry.Key] is IProperty property && !property.IsCollection)
                         {
-                            property.SetValue(this, entry.Value);
+                            property.Set(this, entry.Value);
                         }
                     }
                     _modified.Clear();

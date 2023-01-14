@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -34,16 +34,16 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_female;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_female;
+            public object? Get(object target)
             {
                 return ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Female)?.As<ICat>()!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterFilterILitterFilterProjection)target)._projector).TouchProperty(Name);
+                ((LitterFilterILitterFilterProjection)target)._projector.TouchFemale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterFilterILitterFilterProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -56,16 +56,16 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_male;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_male;
+            public object? Get(object target)
             {
                 return ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Male)?.As<ICat>()!;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((LitterFilterILitterFilterProjection)target)._projector).TouchProperty(Name);
+                ((LitterFilterILitterFilterProjection)target)._projector.TouchMale();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((LitterFilterILitterFilterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -139,16 +139,16 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterFilterPoco)target)._is_set_female;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_female;
+        public object? Get(object target)
         {
             return ((LitterFilterPoco)target).Female;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterFilterPoco)target)).TouchProperty(Name);
+            ((LitterFilterPoco)target).TouchFemale();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -161,16 +161,16 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((LitterFilterPoco)target)._is_set_male;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_male;
+        public object? Get(object target)
         {
             return ((LitterFilterPoco)target).Male;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((LitterFilterPoco)target)).TouchProperty(Name);
+            ((LitterFilterPoco)target).TouchMale();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -292,6 +292,15 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         return base.GetHashCode();
     }
 
+    public void TouchFemale()
+    {
+        _is_set_female = true;
+    }
+    public void TouchMale()
+    {
+        _is_set_male = true;
+    }
+
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -325,32 +334,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     bool IPoco.IsLoaded<T>()
     {
         return ((IPoco)this).IsLoaded(typeof(T));
-    }
-
-    bool IPoco.IsPropertySet(string property)
-    {
-        switch(property)
-        {
-            case "Female":
-                return _is_set_female;
-            case "Male":
-                return _is_set_male;
-            default:
-                return false;
-        }
-    }
-
-    void IPoco.TouchProperty(string property)
-    {
-        switch(property)
-        {
-            case "Female":
-                _is_set_female = true;
-                break;
-            case "Male":
-                _is_set_male = true;
-                break;
-        }
     }
 
 #endregion IPoco;

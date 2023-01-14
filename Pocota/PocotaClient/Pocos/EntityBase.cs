@@ -103,9 +103,9 @@ public abstract class EntityBase : PocoBase, IEntity
                             {
                                 if (!property.IsCollection)
                                 {
-                                    property.SetValue(this, pair.Value.Item2);
+                                    property.Set(this, pair.Value.Item2);
                                 }
-                                else if (pair.Value.Item2 is IList src && property.GetValue(this) is IList dst)
+                                else if (pair.Value.Item2 is IList src && property.Get(this) is IList dst)
                                 {
                                     dst.Clear();
                                     foreach (var item in src)

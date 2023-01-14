@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,16 +33,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
+            public object? Get(object target)
             {
                 return ((CatteryICatteryProjection)target)._projector.NameEng;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatteryICatteryProjection)target)._projector).TouchProperty(Name);
+                ((CatteryICatteryProjection)target)._projector.TouchNameEng();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
             }
@@ -55,16 +55,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
+            public object? Get(object target)
             {
                 return ((CatteryICatteryProjection)target)._projector.NameNat;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatteryICatteryProjection)target)._projector).TouchProperty(Name);
+                ((CatteryICatteryProjection)target)._projector.TouchNameNat();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
             }
@@ -157,16 +157,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
+        public object? Get(object target)
         {
             return ((CatteryPoco)target).NameEng;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatteryPoco)target)).TouchProperty(Name);
+            ((CatteryPoco)target).TouchNameEng();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatteryPoco)target).NameEng = (String)value!;
         }
@@ -179,16 +179,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
+        public object? Get(object target)
         {
             return ((CatteryPoco)target).NameNat;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatteryPoco)target)).TouchProperty(Name);
+            ((CatteryPoco)target).TouchNameNat();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatteryPoco)target).NameNat = (String)value!;
         }
@@ -322,6 +322,15 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public void TouchNameEng()
+    {
+        _is_set_nameEng = true;
+    }
+    public void TouchNameNat()
+    {
+        _is_set_nameNat = true;
     }
 
 

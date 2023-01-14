@@ -10,7 +10,7 @@ internal class PocoTraversalContext : IPocoTraversalContext
     private Dictionary<string, object>? _referencedObjects;
     private Dictionary<string, HashSet<string>>? _referencedProperties;
 
-    private const string ReferencePrefix = "#";
+    private const string ReferencePrefix = "@";
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;

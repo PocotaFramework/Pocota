@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:08                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,16 +36,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(DateOnly);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.BornAfter;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchBornAfter();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly)value!;
             }
@@ -58,16 +58,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(DateOnly);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.BornBefore;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchBornBefore();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly)value!;
             }
@@ -80,16 +80,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchExteriorRegex();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String)value!;
             }
@@ -102,16 +102,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(Gender);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_gender;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_gender;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.Gender;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchGender();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender)value!;
             }
@@ -124,16 +124,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.NameRegex;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchNameRegex();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String)value!;
             }
@@ -146,16 +146,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex;
+            public object? Get(object target)
             {
                 return ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchTitleRegex();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String)value!;
             }
@@ -168,16 +168,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchAncestor();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -190,16 +190,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(IBreed);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_breed;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_breed;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchBreed();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
             }
@@ -212,16 +212,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICattery);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_cattery;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_cattery;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchCattery();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
             }
@@ -234,16 +234,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_child;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_child;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchChild();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -256,16 +256,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_descendant;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_descendant;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchDescendant();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -278,16 +278,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_father;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_father;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchFather();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -300,16 +300,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ILitter);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_litter;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_litter;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchLitter();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
             }
@@ -322,16 +322,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_mother;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_mother;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchMother();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -344,16 +344,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public bool IsCollection =>  false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsValueSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_self;
-            public object? GetValue(object target)
+            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_self;
+            public object? Get(object target)
             {
                 return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
             }
-            public void TouchValue(object target)
+            public void Touch(object target)
             {
-                ((IPoco)((CatFilterICatFilterProjection)target)._projector).TouchProperty(Name);
+                ((CatFilterICatFilterProjection)target)._projector.TouchSelf();
             }
-            public void SetValue(object target, object? value)
+            public void Set(object target, object? value)
             {
                 ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>()!;
             }
@@ -518,16 +518,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(DateOnly);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_bornAfter;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornAfter;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).BornAfter;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchBornAfter();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
         }
@@ -540,16 +540,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(DateOnly);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_bornBefore;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornBefore;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).BornBefore;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchBornBefore();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
         }
@@ -562,16 +562,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_exteriorRegex;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_exteriorRegex;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).ExteriorRegex;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchExteriorRegex();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).ExteriorRegex = (String)value!;
         }
@@ -584,16 +584,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(Gender);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_gender;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_gender;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Gender;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchGender();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Gender = (Gender)value!;
         }
@@ -606,16 +606,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_nameRegex;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_nameRegex;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).NameRegex;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchNameRegex();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).NameRegex = (String)value!;
         }
@@ -628,16 +628,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_titleRegex;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_titleRegex;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).TitleRegex;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchTitleRegex();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).TitleRegex = (String)value!;
         }
@@ -650,16 +650,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_ancestor;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_ancestor;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Ancestor;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchAncestor();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -672,16 +672,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(BreedPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_breed;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_breed;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Breed;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchBreed();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
         }
@@ -694,16 +694,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatteryPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_cattery;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_cattery;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Cattery;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchCattery();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
         }
@@ -716,16 +716,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_child;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_child;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Child;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchChild();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Child = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -738,16 +738,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_descendant;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_descendant;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Descendant;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchDescendant();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Descendant = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -760,16 +760,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_father;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_father;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Father;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchFather();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Father = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -782,16 +782,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(LitterPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_litter;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_litter;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Litter;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchLitter();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
         }
@@ -804,16 +804,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_mother;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_mother;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Mother;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchMother();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Mother = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -826,16 +826,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsCollection =>  false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsValueSet(object target) =>  ((CatFilterPoco)target)._is_set_self;
-        public object? GetValue(object target)
+        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_self;
+        public object? Get(object target)
         {
             return ((CatFilterPoco)target).Self;
         }
-        public void TouchValue(object target)
+        public void Touch(object target)
         {
-            ((IPoco)((CatFilterPoco)target)).TouchProperty(Name);
+            ((CatFilterPoco)target).TouchSelf();
         }
-        public void SetValue(object target, object? value)
+        public void Set(object target, object? value)
         {
             ((CatFilterPoco)target).Self = ((IProjection?)value)?.As<CatPoco>()!;
         }
@@ -1139,6 +1139,67 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         return base.GetHashCode();
     }
 
+    public void TouchBornAfter()
+    {
+        _is_set_bornAfter = true;
+    }
+    public void TouchBornBefore()
+    {
+        _is_set_bornBefore = true;
+    }
+    public void TouchExteriorRegex()
+    {
+        _is_set_exteriorRegex = true;
+    }
+    public void TouchGender()
+    {
+        _is_set_gender = true;
+    }
+    public void TouchNameRegex()
+    {
+        _is_set_nameRegex = true;
+    }
+    public void TouchTitleRegex()
+    {
+        _is_set_titleRegex = true;
+    }
+    public void TouchAncestor()
+    {
+        _is_set_ancestor = true;
+    }
+    public void TouchBreed()
+    {
+        _is_set_breed = true;
+    }
+    public void TouchCattery()
+    {
+        _is_set_cattery = true;
+    }
+    public void TouchChild()
+    {
+        _is_set_child = true;
+    }
+    public void TouchDescendant()
+    {
+        _is_set_descendant = true;
+    }
+    public void TouchFather()
+    {
+        _is_set_father = true;
+    }
+    public void TouchLitter()
+    {
+        _is_set_litter = true;
+    }
+    public void TouchMother()
+    {
+        _is_set_mother = true;
+    }
+    public void TouchSelf()
+    {
+        _is_set_self = true;
+    }
+
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -1198,97 +1259,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
     bool IPoco.IsLoaded<T>()
     {
         return ((IPoco)this).IsLoaded(typeof(T));
-    }
-
-    bool IPoco.IsPropertySet(string property)
-    {
-        switch(property)
-        {
-            case "BornAfter":
-                return _is_set_bornAfter;
-            case "BornBefore":
-                return _is_set_bornBefore;
-            case "ExteriorRegex":
-                return _is_set_exteriorRegex;
-            case "Gender":
-                return _is_set_gender;
-            case "NameRegex":
-                return _is_set_nameRegex;
-            case "TitleRegex":
-                return _is_set_titleRegex;
-            case "Ancestor":
-                return _is_set_ancestor;
-            case "Breed":
-                return _is_set_breed;
-            case "Cattery":
-                return _is_set_cattery;
-            case "Child":
-                return _is_set_child;
-            case "Descendant":
-                return _is_set_descendant;
-            case "Father":
-                return _is_set_father;
-            case "Litter":
-                return _is_set_litter;
-            case "Mother":
-                return _is_set_mother;
-            case "Self":
-                return _is_set_self;
-            default:
-                return false;
-        }
-    }
-
-    void IPoco.TouchProperty(string property)
-    {
-        switch(property)
-        {
-            case "BornAfter":
-                _is_set_bornAfter = true;
-                break;
-            case "BornBefore":
-                _is_set_bornBefore = true;
-                break;
-            case "ExteriorRegex":
-                _is_set_exteriorRegex = true;
-                break;
-            case "Gender":
-                _is_set_gender = true;
-                break;
-            case "NameRegex":
-                _is_set_nameRegex = true;
-                break;
-            case "TitleRegex":
-                _is_set_titleRegex = true;
-                break;
-            case "Ancestor":
-                _is_set_ancestor = true;
-                break;
-            case "Breed":
-                _is_set_breed = true;
-                break;
-            case "Cattery":
-                _is_set_cattery = true;
-                break;
-            case "Child":
-                _is_set_child = true;
-                break;
-            case "Descendant":
-                _is_set_descendant = true;
-                break;
-            case "Father":
-                _is_set_father = true;
-                break;
-            case "Litter":
-                _is_set_litter = true;
-                break;
-            case "Mother":
-                _is_set_mother = true;
-                break;
-            case "Self":
-                _is_set_self = true;
-                break;
-        }
     }
 
 #endregion IPoco;

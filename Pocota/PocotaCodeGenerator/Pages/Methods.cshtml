@@ -64,6 +64,15 @@
         return base.GetHashCode();
     }
 
+    @foreach(PropertyModel pm in Model.Properties) 
+    {
+    <text>    public void @Html.Raw($"Touch{pm.Name}()")
+    {
+        _is_set_@Html.Raw($"{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}") = true;
+    }
+</text>
+    }
+
     @foreach(MethodModel mm in Model.Methods)
     {
     <text>    public abstract @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})");

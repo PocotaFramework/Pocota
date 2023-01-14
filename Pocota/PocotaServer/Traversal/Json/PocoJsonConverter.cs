@@ -134,13 +134,13 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
                 if(_propertiesByName.TryGetValue(propertyName, out IProperty? property))
                 {
-                    object? oldValue = property.GetValue(result);
+                    object? oldValue = property.Get(result);
 
                     context!.Target = oldValue;
                     object? value = JsonSerializer.Deserialize(ref reader, property.Type, options);
                     if (!PocoBase.ReferenceEquals(oldValue, value))
                     {
-                        property.SetValue(result, value);
+                        property.Set(result, value);
                     }
                     done = true;
 
@@ -208,9 +208,9 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
 
         foreach (IProperty property in _propertiesByOrder)
         {
-            if(!context.IsPropertySerialized(reference, property.Name))
+            if(property.IsSet(value) && !context.IsPropertySerialized(reference, property.Name))
             {
-                object? propertyValue = property.GetValue(value);
+                object? propertyValue = property.Get(value);
                 if(propertyValue is { })
                 {
                     writer.WritePropertyName(property.Name);

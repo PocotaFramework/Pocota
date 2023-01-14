@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.CatPrimaryKey                          //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:07                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -85,7 +85,7 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
     {
         get 
         {
-            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsValueSet(obj) && obj.Cattery is IEntity entity)
+            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsSet(obj) && obj.Cattery is IEntity entity)
             {
                 return (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery;
             }
@@ -93,7 +93,7 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
         }
         set
         {
-            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsValueSet(obj) && obj.Cattery is IEntity entity)
+            if(_source.Target is CatPoco obj && CatPoco.CatteryProp.IsSet(obj) && obj.Cattery is IEntity entity)
             {
                 (entity.PrimaryKey as CatteryPrimaryKey)!.IdCattery = value;
             }
@@ -107,7 +107,7 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 
     public Type SourceType => typeof(CatPoco);
 
-    public bool IsAssigned => IdCat != default(Int32) && IdCattery != default(Int32);
+    public bool IsAssigned => IdCat != default && IdCattery != default;
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
@@ -161,12 +161,12 @@ public class CatPrimaryKey: IPrimaryKey<CatPoco>, IPrimaryKey<ICat>, IPrimaryKey
 
     private IEnumerable<string> GetNotAssignedFields()
     {
-        if (IdCat == default(Int32))
+        if (IdCat == default)
         {
             yield return "IdCat";
         }
 
-        if (IdCattery == default(Int32))
+        if (IdCattery == default)
         {
             yield return "IdCattery";
         }

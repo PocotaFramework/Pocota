@@ -81,7 +81,7 @@ public class PocoContext : IPocoContext
                 mappedJsonWriter = new Utf8JsonWriter(output);
                 context.OnItem = source =>
                 {
-                    object? result = options.Mapper.GetValue(source);
+                    object? result = options.Mapper.Get(source);
                     if(
                         context.TraversalContext!.HighLevelListUniqueness 
                         && result is IProjection<IEntity> entity 

@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.BreedPrimaryKey                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-12T18:26:07                                  //
+// at 2023-01-14T20:09:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -111,7 +111,7 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     public Type SourceType => typeof(BreedPoco);
 
-    public bool IsAssigned => IdBreed != default(String) && IdGroup != default(String);
+    public bool IsAssigned => IdBreed != default && IdGroup != default;
 
     public IEnumerable<string> Names => s_names.Select(n => n);
 
@@ -168,12 +168,12 @@ public class BreedPrimaryKey: IPrimaryKey<BreedPoco>, IPrimaryKey<IBreed>
 
     private IEnumerable<string> GetNotAssignedFields()
     {
-        if (IdBreed == default(String))
+        if (IdBreed == default)
         {
             yield return "IdBreed";
         }
 
-        if (IdGroup == default(String))
+        if (IdGroup == default)
         {
             yield return "IdGroup";
         }
