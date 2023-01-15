@@ -68,7 +68,17 @@
     {
     <text>    public void @Html.Raw($"Touch{pm.Name}()")
     {
-        _is_set_@Html.Raw($"{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}") = true;
+        @if (!pm.IsList)
+        {
+            <text>        _is_set_@Html.Raw($"{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}") = true;
+</text>
+        }
+        else
+        {
+            <text>        @Html.Raw($"{pm.Name}.Touch()");
+</text>
+        }
+
     }
 </text>
     }

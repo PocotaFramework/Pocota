@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -339,10 +339,12 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     public void TouchFemale()
     {
         _is_set_female = true;
+
     }
     public void TouchMale()
     {
         _is_set_male = true;
+
     }
 
 

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-14T20:09:42                                          //
+// at 2023-01-15T13:32:57                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -102,7 +102,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitter>);
             public Type? ItemType => typeof(ILitter);
-            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector._is_set_selectedLitters;
+            public bool IsSet(object target) =>  ((ViewCatHeartIViewCatHeartProjection)target)._projector.SelectedLitters.IsSet;
             public object? Get(object target)
             {
                 return ((ViewCatHeartIViewCatHeartProjection)target)._selectedLitters;
@@ -289,7 +289,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<LitterPoco>);
         public Type? ItemType => typeof(LitterPoco);
-        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target)._is_set_selectedLitters;
+        public bool IsSet(object target) =>  ((ViewCatHeartPoco)target).SelectedLitters.IsSet;
         public object? Get(object target)
         {
             return ((ViewCatHeartPoco)target).SelectedLitters;
@@ -471,18 +471,22 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     public void TouchEditKind()
     {
         _is_set_editKind = true;
+
     }
     public void TouchLittersView()
     {
         _is_set_littersView = true;
+
     }
     public void TouchCat()
     {
         _is_set_cat = true;
+
     }
     public void TouchSelectedLitters()
     {
-        _is_set_selectedLitters = true;
+        SelectedLitters.Touch();
+
     }
 
     public abstract void LittersSelectionChanged(Object sender, EventArgs e);

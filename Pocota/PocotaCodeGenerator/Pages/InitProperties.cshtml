@@ -8,7 +8,8 @@
 @Html.Raw("#region Init Properties")
 
 @foreach (PropertyModel pm in Model.Properties)
-{    
+{
+    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    @Html.Raw(indent)public class @Html.Raw($"{pm.Name}Property"): IProperty
     @Html.Raw(indent){
         @Html.Raw(indent)public string Name => "@pm.Name";
@@ -17,7 +18,7 @@
         @Html.Raw(indent)public bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
         @Html.Raw(indent)public Type Type => typeof(@Html.Raw(pm.Type));
         @Html.Raw(indent)public Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
-        @Html.Raw(indent)public bool IsSet(object target) =>  @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
+        @Html.Raw(indent)public bool IsSet(object target) =>  @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{(!pm.IsList ? $"_is_set{fieldName}" : $"{pm.Name}.IsSet")}");
         @Html.Raw(indent)public object? Get(object target)
         @Html.Raw(indent){
             @if (hasProjector)
@@ -29,7 +30,6 @@
                 }
                 else 
                 {
-                    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
                     <text>            @Html.Raw(indent)return @Html.Raw($"(({Model.ClassName})target).{fieldName}");
 </text>
                 }

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -298,12 +298,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     private String _code = default!;
     private bool _is_set_code = false;
+
     private String _group = default!;
     private bool _is_set_group = false;
+
     private String? _nameEng = default;
     private bool _is_set_nameEng = false;
+
     private String? _nameNat = default;
     private bool _is_set_nameNat = false;
+
 
 #endregion Fields;
 
@@ -334,7 +338,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public String Code 
     { 
-        get => !_is_set_code ? throw new InvalidOperationException("The property Code is not set!") : _code; 
+        get => !_is_set_code ? throw new PropertyNotSetException("Code") : _code; 
         set
         {
             _code = value;
@@ -344,7 +348,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public String Group 
     { 
-        get => !_is_set_group ? throw new InvalidOperationException("The property Group is not set!") : _group; 
+        get => !_is_set_group ? throw new PropertyNotSetException("Group") : _group; 
         set
         {
             _group = value;
@@ -354,7 +358,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public String? NameEng 
     { 
-        get => !_is_set_nameEng ? throw new InvalidOperationException("The property NameEng is not set!") : _nameEng; 
+        get => !_is_set_nameEng ? throw new PropertyNotSetException("NameEng") : _nameEng; 
         set
         {
             _nameEng = value;
@@ -364,7 +368,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public String? NameNat 
     { 
-        get => !_is_set_nameNat ? throw new InvalidOperationException("The property NameNat is not set!") : _nameNat; 
+        get => !_is_set_nameNat ? throw new PropertyNotSetException("NameNat") : _nameNat; 
         set
         {
             _nameNat = value;
@@ -432,18 +436,22 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     public void TouchCode()
     {
         _is_set_code = true;
+
     }
     public void TouchGroup()
     {
         _is_set_group = true;
+
     }
     public void TouchNameEng()
     {
         _is_set_nameEng = true;
+
     }
     public void TouchNameNat()
     {
         _is_set_nameNat = true;
+
     }
 
 

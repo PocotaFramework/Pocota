@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -191,8 +191,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
 
     private CatPoco _female = default!;
     private bool _is_set_female = false;
+
     private CatPoco _male = default!;
     private bool _is_set_male = false;
+
 
 #endregion Fields;
 
@@ -295,10 +297,12 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     public void TouchFemale()
     {
         _is_set_female = true;
+
     }
     public void TouchMale()
     {
         _is_set_male = true;
+
     }
 
 

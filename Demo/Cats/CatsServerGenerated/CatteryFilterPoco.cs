@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -139,6 +139,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
     private String? _searchRegex = default;
     private bool _is_set_searchRegex = false;
 
+
 #endregion Fields;
 
     
@@ -230,6 +231,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
     public void TouchSearchRegex()
     {
         _is_set_searchRegex = true;
+
     }
 
 

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -882,34 +882,49 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
 
     private DateOnly? _bornAfter = default;
     private bool _is_set_bornAfter = false;
+
     private DateOnly? _bornBefore = default;
     private bool _is_set_bornBefore = false;
+
     private String? _exteriorRegex = default;
     private bool _is_set_exteriorRegex = false;
+
     private Gender? _gender = default;
     private bool _is_set_gender = false;
+
     private String? _nameRegex = default;
     private bool _is_set_nameRegex = false;
+
     private String? _titleRegex = default;
     private bool _is_set_titleRegex = false;
+
     private CatPoco? _ancestor = default;
     private bool _is_set_ancestor = false;
+
     private BreedPoco? _breed = default;
     private bool _is_set_breed = false;
+
     private CatteryPoco? _cattery = default;
     private bool _is_set_cattery = false;
+
     private CatPoco? _child = default;
     private bool _is_set_child = false;
+
     private CatPoco? _descendant = default;
     private bool _is_set_descendant = false;
+
     private CatPoco? _father = default;
     private bool _is_set_father = false;
+
     private LitterPoco? _litter = default;
     private bool _is_set_litter = false;
+
     private CatPoco? _mother = default;
     private bool _is_set_mother = false;
+
     private CatPoco? _self = default;
     private bool _is_set_self = false;
+
 
 #endregion Fields;
 
@@ -1142,62 +1157,77 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
     public void TouchBornAfter()
     {
         _is_set_bornAfter = true;
+
     }
     public void TouchBornBefore()
     {
         _is_set_bornBefore = true;
+
     }
     public void TouchExteriorRegex()
     {
         _is_set_exteriorRegex = true;
+
     }
     public void TouchGender()
     {
         _is_set_gender = true;
+
     }
     public void TouchNameRegex()
     {
         _is_set_nameRegex = true;
+
     }
     public void TouchTitleRegex()
     {
         _is_set_titleRegex = true;
+
     }
     public void TouchAncestor()
     {
         _is_set_ancestor = true;
+
     }
     public void TouchBreed()
     {
         _is_set_breed = true;
+
     }
     public void TouchCattery()
     {
         _is_set_cattery = true;
+
     }
     public void TouchChild()
     {
         _is_set_child = true;
+
     }
     public void TouchDescendant()
     {
         _is_set_descendant = true;
+
     }
     public void TouchFather()
     {
         _is_set_father = true;
+
     }
     public void TouchLitter()
     {
         _is_set_litter = true;
+
     }
     public void TouchMother()
     {
         _is_set_mother = true;
+
     }
     public void TouchSelf()
     {
         _is_set_self = true;
+
     }
 
 

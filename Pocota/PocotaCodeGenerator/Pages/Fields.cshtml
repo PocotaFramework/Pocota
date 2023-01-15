@@ -19,7 +19,7 @@
     <text> @fieldName</text>
     if (pm.IsList)
     {
-        <text> = new()</text>
+        <text> = @Html.Raw($"new(\"{pm.Name}\")")</text>
     } 
     else 
     {
@@ -27,7 +27,12 @@
         if(!pm.IsNullable){<text>!</text>}
     }
     <text>;
-    private bool @Html.Raw($"_is_set{fieldName}") = false;
+    @if (!pm.IsList)
+    {
+        <text>    private bool @Html.Raw($"_is_set{fieldName}") = false;
+</text>
+    }
+
 </text>
 }
 

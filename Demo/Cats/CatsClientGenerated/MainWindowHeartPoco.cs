@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-14T20:09:42                                          //
+// at 2023-01-15T13:32:57                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -302,7 +302,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<IBreed>);
             public Type? ItemType => typeof(IBreed);
-            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector._is_set_breeds;
+            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector.Breeds.IsSet;
             public object? Get(object target)
             {
                 return ((MainWindowHeartIMainWindowHeartProjection)target)._breeds;
@@ -323,7 +323,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatForListing>);
             public Type? ItemType => typeof(ICatForListing);
-            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((MainWindowHeartIMainWindowHeartProjection)target)._cats;
@@ -344,7 +344,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICattery>);
             public Type? ItemType => typeof(ICattery);
-            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector._is_set_catteries;
+            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector.Catteries.IsSet;
             public object? Get(object target)
             {
                 return ((MainWindowHeartIMainWindowHeartProjection)target)._catteries;
@@ -365,7 +365,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatForListing>);
             public Type? ItemType => typeof(ICatForListing);
-            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector._is_set_selectedCats;
+            public bool IsSet(object target) =>  ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SelectedCats.IsSet;
             public object? Get(object target)
             {
                 return ((MainWindowHeartIMainWindowHeartProjection)target)._selectedCats;
@@ -835,7 +835,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<BreedPoco>);
         public Type? ItemType => typeof(BreedPoco);
-        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target)._is_set_breeds;
+        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target).Breeds.IsSet;
         public object? Get(object target)
         {
             return ((MainWindowHeartPoco)target).Breeds;
@@ -856,7 +856,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<CatPoco>);
         public Type? ItemType => typeof(CatPoco);
-        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target)._is_set_cats;
+        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target).Cats.IsSet;
         public object? Get(object target)
         {
             return ((MainWindowHeartPoco)target).Cats;
@@ -877,7 +877,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<CatteryPoco>);
         public Type? ItemType => typeof(CatteryPoco);
-        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target)._is_set_catteries;
+        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target).Catteries.IsSet;
         public object? Get(object target)
         {
             return ((MainWindowHeartPoco)target).Catteries;
@@ -898,7 +898,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<CatPoco>);
         public Type? ItemType => typeof(CatPoco);
-        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target)._is_set_selectedCats;
+        public bool IsSet(object target) =>  ((MainWindowHeartPoco)target).SelectedCats.IsSet;
         public object? Get(object target)
         {
             return ((MainWindowHeartPoco)target).SelectedCats;
@@ -1295,66 +1295,82 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
     public void TouchAllBreeds()
     {
         _is_set_allBreeds = true;
+
     }
     public void TouchAllBreedsCount()
     {
         _is_set_allBreedsCount = true;
+
     }
     public void TouchAllCatteries()
     {
         _is_set_allCatteries = true;
+
     }
     public void TouchAllCatteriesCount()
     {
         _is_set_allCatteriesCount = true;
+
     }
     public void TouchBreedsCount()
     {
         _is_set_breedsCount = true;
+
     }
     public void TouchCatsViewSource()
     {
         _is_set_catsViewSource = true;
+
     }
     public void TouchCatteriesCount()
     {
         _is_set_catteriesCount = true;
+
     }
     public void TouchGetCatsTimeSpent()
     {
         _is_set_getCatsTimeSpent = true;
+
     }
     public void TouchIsCatSelected()
     {
         _is_set_isCatSelected = true;
+
     }
     public void TouchRenderingCatsTimeSpent()
     {
         _is_set_renderingCatsTimeSpent = true;
+
     }
     public void TouchCatFilter()
     {
         _is_set_catFilter = true;
+
     }
     public void TouchSelectedCat()
     {
         _is_set_selectedCat = true;
+
     }
     public void TouchBreeds()
     {
-        _is_set_breeds = true;
+        Breeds.Touch();
+
     }
     public void TouchCats()
     {
-        _is_set_cats = true;
+        Cats.Touch();
+
     }
     public void TouchCatteries()
     {
-        _is_set_catteries = true;
+        Catteries.Touch();
+
     }
     public void TouchSelectedCats()
     {
-        _is_set_selectedCats = true;
+        SelectedCats.Touch();
+
     }
 
     public abstract void AcceptCatFilterChanges();

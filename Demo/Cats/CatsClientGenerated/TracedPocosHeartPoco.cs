@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-14T20:09:42                                          //
+// at 2023-01-15T13:32:57                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -35,7 +35,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<Tuple<Type,Int32,PocoState>>);
             public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
-            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._is_set_modifiedPocos;
+            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos.IsSet;
             public object? Get(object target)
             {
                 return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocos!;
@@ -56,7 +56,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<Tuple<Type,Int32>>);
             public Type? ItemType => typeof(Tuple<Type,Int32>);
-            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._is_set_tracedPocos;
+            public bool IsSet(object target) =>  ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos.IsSet;
             public object? Get(object target)
             {
                 return ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocos!;
@@ -159,7 +159,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState>>);
         public Type? ItemType => typeof(Tuple<Type,Int32,PocoState>);
-        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target)._is_set_modifiedPocos;
+        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target).ModifiedPocos.IsSet;
         public object? Get(object target)
         {
             return ((TracedPocosHeartPoco)target).ModifiedPocos;
@@ -180,7 +180,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<Tuple<Type,Int32>>);
         public Type? ItemType => typeof(Tuple<Type,Int32>);
-        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target)._is_set_tracedPocos;
+        public bool IsSet(object target) =>  ((TracedPocosHeartPoco)target).TracedPocos.IsSet;
         public object? Get(object target)
         {
             return ((TracedPocosHeartPoco)target).TracedPocos;
@@ -308,11 +308,13 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     public void TouchModifiedPocos()
     {
-        _is_set_modifiedPocos = true;
+        ModifiedPocos.Touch();
+
     }
     public void TouchTracedPocos()
     {
-        _is_set_tracedPocos = true;
+        TracedPocos.Touch();
+
     }
 
     public abstract void CollectGarbage();

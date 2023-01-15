@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -124,7 +124,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<String>);
             public Type? ItemType => typeof(String);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_strings;
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Strings.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._projector.Strings!;
@@ -145,7 +145,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICat>);
             public Type? ItemType => typeof(ICat);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._cats;
@@ -345,7 +345,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterForCatProjection)target)._cats;
@@ -524,7 +524,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterWithCatsProjection)target)._cats;
@@ -686,9 +686,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  true;
-        public Type Type => typeof(List<String>);
+        public Type Type => typeof(PocosList<String>);
         public Type? ItemType => typeof(String);
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_strings;
+        public bool IsSet(object target) =>  ((LitterPoco)target).Strings.IsSet;
         public object? Get(object target)
         {
             return ((LitterPoco)target).Strings;
@@ -707,9 +707,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  true;
-        public Type Type => typeof(List<CatPoco>);
+        public Type Type => typeof(PocosList<CatPoco>);
         public Type? ItemType => typeof(CatPoco);
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_cats;
+        public bool IsSet(object target) =>  ((LitterPoco)target).Cats.IsSet;
         public object? Get(object target)
         {
             return ((LitterPoco)target).Cats;
@@ -746,16 +746,20 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     private DateOnly _date = default!;
     private bool _is_set_date = false;
+
     private Int32 _order = default!;
     private bool _is_set_order = false;
+
     private CatPoco _female = default!;
     private bool _is_set_female = false;
+
     private CatPoco? _male = default;
     private bool _is_set_male = false;
-    private readonly List<String> _strings = new();
-    private bool _is_set_strings = false;
-    private readonly List<CatPoco> _cats = new();
-    private bool _is_set_cats = false;
+
+    private readonly PocosList<String> _strings = new("Strings");
+
+    private readonly PocosList<CatPoco> _cats = new("Cats");
+
 
 #endregion Fields;
 
@@ -825,7 +829,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public DateOnly Date 
     { 
-        get => !_is_set_date ? throw new InvalidOperationException("The property Date is not set!") : _date; 
+        get => !_is_set_date ? throw new PropertyNotSetException("Date") : _date; 
         set
         {
             _date = value;
@@ -835,7 +839,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public Int32 Order 
     { 
-        get => !_is_set_order ? throw new InvalidOperationException("The property Order is not set!") : _order; 
+        get => !_is_set_order ? throw new PropertyNotSetException("Order") : _order; 
         set
         {
             _order = value;
@@ -845,7 +849,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public CatPoco Female 
     { 
-        get => !_is_set_female ? throw new InvalidOperationException("The property Female is not set!") : _female; 
+        get => !_is_set_female ? throw new PropertyNotSetException("Female") : _female; 
         set
         {
             _female = value;
@@ -855,7 +859,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public CatPoco? Male 
     { 
-        get => !_is_set_male ? throw new InvalidOperationException("The property Male is not set!") : _male; 
+        get => !_is_set_male ? throw new PropertyNotSetException("Male") : _male; 
         set
         {
             _male = value;
@@ -863,12 +867,12 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         }
     }
 
-    public List<String> Strings 
+    public PocosList<String> Strings 
     { 
         get =>  _strings; 
     }
 
-    public List<CatPoco> Cats 
+    public PocosList<CatPoco> Cats 
     { 
         get =>  _cats; 
     }
@@ -945,26 +949,32 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     public void TouchDate()
     {
         _is_set_date = true;
+
     }
     public void TouchOrder()
     {
         _is_set_order = true;
+
     }
     public void TouchFemale()
     {
         _is_set_female = true;
+
     }
     public void TouchMale()
     {
         _is_set_male = true;
+
     }
     public void TouchStrings()
     {
-        _is_set_strings = true;
+        Strings.Touch();
+
     }
     public void TouchCats()
     {
-        _is_set_cats = true;
+        Cats.Touch();
+
     }
 
 
@@ -985,8 +995,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         _is_set_order = false;
         _is_set_female = false;
         _is_set_male = false;
-        _is_set_strings = false;
-        _is_set_cats = false;
+        Strings.Clear();
+        Cats.Clear();
     }
 
     bool IPoco.IsLoaded(Type @interface)
@@ -998,8 +1008,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 && _is_set_order
                 && _is_set_female
                 && _is_set_male
-                && _is_set_strings
-                && _is_set_cats
+                && Strings.IsSet
+                && Cats.IsSet
             ;
         }
         if(@interface == typeof(ILitterForCat))
@@ -1009,7 +1019,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 && _is_set_order
                 && _is_set_female
                 && _is_set_male
-                && _is_set_cats
+                && Cats.IsSet
             ;
         }
         if(@interface == typeof(ILitterForDate))
@@ -1021,7 +1031,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         if(@interface == typeof(ILitterWithCats))
         {
             return true
-                && _is_set_cats
+                && Cats.IsSet
             ;
         }
         return false;

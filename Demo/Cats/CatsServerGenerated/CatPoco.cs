@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -235,7 +235,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitter>);
             public Type? ItemType => typeof(ILitter);
-            public bool IsSet(object target) =>  ((CatICatProjection)target)._projector._is_set_litters;
+            public bool IsSet(object target) =>  ((CatICatProjection)target)._projector.Litters.IsSet;
             public object? Get(object target)
             {
                 return ((CatICatProjection)target)._litters;
@@ -1121,7 +1121,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitterForCat>);
             public Type? ItemType => typeof(ILitterForCat);
-            public bool IsSet(object target) =>  ((CatICatForViewProjection)target)._projector._is_set_litters;
+            public bool IsSet(object target) =>  ((CatICatForViewProjection)target)._projector.Litters.IsSet;
             public object? Get(object target)
             {
                 return ((CatICatForViewProjection)target)._litters;
@@ -1630,9 +1630,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  true;
-        public Type Type => typeof(List<LitterPoco>);
+        public Type Type => typeof(PocosList<LitterPoco>);
         public Type? ItemType => typeof(LitterPoco);
-        public bool IsSet(object target) =>  ((CatPoco)target)._is_set_litters;
+        public bool IsSet(object target) =>  ((CatPoco)target).Litters.IsSet;
         public object? Get(object target)
         {
             return ((CatPoco)target).Litters;
@@ -1677,24 +1677,33 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private String? _description = default;
     private bool _is_set_description = false;
+
     private String? _exterior = default;
     private bool _is_set_exterior = false;
+
     private Gender _gender = default!;
     private bool _is_set_gender = false;
+
     private String? _nameEng = default;
     private bool _is_set_nameEng = false;
+
     private String? _nameNat = default;
     private bool _is_set_nameNat = false;
+
     private String? _title = default;
     private bool _is_set_title = false;
+
     private BreedPoco _breed = default!;
     private bool _is_set_breed = false;
+
     private CatteryPoco _cattery = default!;
     private bool _is_set_cattery = false;
+
     private LitterPoco? _litter = default;
     private bool _is_set_litter = false;
-    private readonly List<LitterPoco> _litters = new();
-    private bool _is_set_litters = false;
+
+    private readonly PocosList<LitterPoco> _litters = new("Litters");
+
 
 #endregion Fields;
 
@@ -1790,7 +1799,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public String? Description 
     { 
-        get => !_is_set_description ? throw new InvalidOperationException("The property Description is not set!") : _description; 
+        get => !_is_set_description ? throw new PropertyNotSetException("Description") : _description; 
         set
         {
             _description = value;
@@ -1800,7 +1809,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public String? Exterior 
     { 
-        get => !_is_set_exterior ? throw new InvalidOperationException("The property Exterior is not set!") : _exterior; 
+        get => !_is_set_exterior ? throw new PropertyNotSetException("Exterior") : _exterior; 
         set
         {
             _exterior = value;
@@ -1810,7 +1819,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public Gender Gender 
     { 
-        get => !_is_set_gender ? throw new InvalidOperationException("The property Gender is not set!") : _gender; 
+        get => !_is_set_gender ? throw new PropertyNotSetException("Gender") : _gender; 
         set
         {
             _gender = value;
@@ -1820,7 +1829,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public String? NameEng 
     { 
-        get => !_is_set_nameEng ? throw new InvalidOperationException("The property NameEng is not set!") : _nameEng; 
+        get => !_is_set_nameEng ? throw new PropertyNotSetException("NameEng") : _nameEng; 
         set
         {
             _nameEng = value;
@@ -1830,7 +1839,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public String? NameNat 
     { 
-        get => !_is_set_nameNat ? throw new InvalidOperationException("The property NameNat is not set!") : _nameNat; 
+        get => !_is_set_nameNat ? throw new PropertyNotSetException("NameNat") : _nameNat; 
         set
         {
             _nameNat = value;
@@ -1840,7 +1849,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public String? Title 
     { 
-        get => !_is_set_title ? throw new InvalidOperationException("The property Title is not set!") : _title; 
+        get => !_is_set_title ? throw new PropertyNotSetException("Title") : _title; 
         set
         {
             _title = value;
@@ -1850,7 +1859,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public BreedPoco Breed 
     { 
-        get => !_is_set_breed ? throw new InvalidOperationException("The property Breed is not set!") : _breed; 
+        get => !_is_set_breed ? throw new PropertyNotSetException("Breed") : _breed; 
         set
         {
             _breed = value;
@@ -1860,7 +1869,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public CatteryPoco Cattery 
     { 
-        get => !_is_set_cattery ? throw new InvalidOperationException("The property Cattery is not set!") : _cattery; 
+        get => !_is_set_cattery ? throw new PropertyNotSetException("Cattery") : _cattery; 
         set
         {
             _cattery = value;
@@ -1870,7 +1879,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public LitterPoco? Litter 
     { 
-        get => !_is_set_litter ? throw new InvalidOperationException("The property Litter is not set!") : _litter; 
+        get => !_is_set_litter ? throw new PropertyNotSetException("Litter") : _litter; 
         set
         {
             _litter = value;
@@ -1878,7 +1887,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         }
     }
 
-    public List<LitterPoco> Litters 
+    public PocosList<LitterPoco> Litters 
     { 
         get =>  _litters; 
     }
@@ -1963,42 +1972,52 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     public void TouchDescription()
     {
         _is_set_description = true;
+
     }
     public void TouchExterior()
     {
         _is_set_exterior = true;
+
     }
     public void TouchGender()
     {
         _is_set_gender = true;
+
     }
     public void TouchNameEng()
     {
         _is_set_nameEng = true;
+
     }
     public void TouchNameNat()
     {
         _is_set_nameNat = true;
+
     }
     public void TouchTitle()
     {
         _is_set_title = true;
+
     }
     public void TouchBreed()
     {
         _is_set_breed = true;
+
     }
     public void TouchCattery()
     {
         _is_set_cattery = true;
+
     }
     public void TouchLitter()
     {
         _is_set_litter = true;
+
     }
     public void TouchLitters()
     {
-        _is_set_litters = true;
+        Litters.Touch();
+
     }
 
 
@@ -2024,7 +2043,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         _is_set_breed = false;
         _is_set_cattery = false;
         _is_set_litter = false;
-        _is_set_litters = false;
+        Litters.Clear();
     }
 
     bool IPoco.IsLoaded(Type @interface)
@@ -2041,7 +2060,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 && _is_set_breed
                 && _is_set_cattery
                 && _is_set_litter
-                && _is_set_litters
+                && Litters.IsSet
             ;
         }
         if(@interface == typeof(ICatForListing))
@@ -2082,7 +2101,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 && _is_set_breed
                 && _is_set_cattery
                 && _is_set_litter
-                && _is_set_litters
+                && Litters.IsSet
             ;
         }
         if(@interface == typeof(ICatWithSiblings))

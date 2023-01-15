@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -124,7 +124,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<String>);
             public Type? ItemType => typeof(String);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_strings;
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Strings.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._projector.Strings!;
@@ -145,7 +145,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICat>);
             public Type? ItemType => typeof(ICat);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterProjection)target)._cats;
@@ -364,7 +364,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterForCatProjection)target)._cats;
@@ -581,7 +581,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ICatAsSibling>);
             public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
+            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector.Cats.IsSet;
             public object? Get(object target)
             {
                 return ((LitterILitterWithCatsProjection)target)._cats;
@@ -764,7 +764,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<String>);
         public Type? ItemType => typeof(String);
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_strings;
+        public bool IsSet(object target) =>  ((LitterPoco)target).Strings.IsSet;
         public object? Get(object target)
         {
             return ((LitterPoco)target).Strings;
@@ -785,7 +785,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<CatPoco>);
         public Type? ItemType => typeof(CatPoco);
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_cats;
+        public bool IsSet(object target) =>  ((LitterPoco)target).Cats.IsSet;
         public object? Get(object target)
         {
             return ((LitterPoco)target).Cats;
@@ -1061,26 +1061,32 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     public void TouchDate()
     {
         _is_set_date = true;
+
     }
     public void TouchOrder()
     {
         _is_set_order = true;
+
     }
     public void TouchFemale()
     {
         _is_set_female = true;
+
     }
     public void TouchMale()
     {
         _is_set_male = true;
+
     }
     public void TouchStrings()
     {
-        _is_set_strings = true;
+        Strings.Touch();
+
     }
     public void TouchCats()
     {
-        _is_set_cats = true;
+        Cats.Touch();
+
     }
 
 

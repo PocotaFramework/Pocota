@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -235,7 +235,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitter>);
             public Type? ItemType => typeof(ILitter);
-            public bool IsSet(object target) =>  ((CatICatProjection)target)._projector._is_set_litters;
+            public bool IsSet(object target) =>  ((CatICatProjection)target)._projector.Litters.IsSet;
             public object? Get(object target)
             {
                 return ((CatICatProjection)target)._litters;
@@ -1178,7 +1178,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<ILitterForCat>);
             public Type? ItemType => typeof(ILitterForCat);
-            public bool IsSet(object target) =>  ((CatICatForViewProjection)target)._projector._is_set_litters;
+            public bool IsSet(object target) =>  ((CatICatForViewProjection)target)._projector.Litters.IsSet;
             public object? Get(object target)
             {
                 return ((CatICatForViewProjection)target)._litters;
@@ -1746,7 +1746,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public bool IsCollection =>  true;
         public Type Type => typeof(ObservableCollection<LitterPoco>);
         public Type? ItemType => typeof(LitterPoco);
-        public bool IsSet(object target) =>  ((CatPoco)target)._is_set_litters;
+        public bool IsSet(object target) =>  ((CatPoco)target).Litters.IsSet;
         public object? Get(object target)
         {
             return ((CatPoco)target).Litters;
@@ -2147,42 +2147,52 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     public void TouchDescription()
     {
         _is_set_description = true;
+
     }
     public void TouchExterior()
     {
         _is_set_exterior = true;
+
     }
     public void TouchGender()
     {
         _is_set_gender = true;
+
     }
     public void TouchNameEng()
     {
         _is_set_nameEng = true;
+
     }
     public void TouchNameNat()
     {
         _is_set_nameNat = true;
+
     }
     public void TouchTitle()
     {
         _is_set_title = true;
+
     }
     public void TouchBreed()
     {
         _is_set_breed = true;
+
     }
     public void TouchCattery()
     {
         _is_set_cattery = true;
+
     }
     public void TouchLitter()
     {
         _is_set_litter = true;
+
     }
     public void TouchLitters()
     {
-        _is_set_litters = true;
+        Litters.Touch();
+
     }
 
 

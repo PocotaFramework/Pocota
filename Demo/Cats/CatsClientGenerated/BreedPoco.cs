@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -467,18 +467,22 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     public void TouchCode()
     {
         _is_set_code = true;
+
     }
     public void TouchGroup()
     {
         _is_set_group = true;
+
     }
     public void TouchNameEng()
     {
         _is_set_nameEng = true;
+
     }
     public void TouchNameNat()
     {
         _is_set_nameNat = true;
+
     }
 
 

@@ -266,7 +266,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                     bool isPropertySet = property.IsSet(value);
 
-                    object? propertyValue = isPropertySet ? property.Get(value) : default;
+                    object? propertyValue = property.IsCollection || isPropertySet ? property.Get(value) : default;
 
                     bool isCollectionReentering = property.IsCollection && propertyValue is { } && context.Stack.Contains(propertyValue, ReferenceEqualityComparer.Instance);
 

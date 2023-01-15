@@ -7,6 +7,7 @@ using Net.Leksi.Pocota.Client;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Collections;
+using Net.Leksi.Pocota.Server;
 
 namespace TestProject1
 {
@@ -22,7 +23,7 @@ namespace TestProject1
         {
             IHost host = GetHost();
             ObservableCollection<CatPoco> source = new();
-            ProjectionList<CatPoco, ICatForListing> cats = new(source);
+            Net.Leksi.Pocota.Client.ProjectionList<CatPoco, ICatForListing> cats = new(source);
 
             cats.CollectionChanged += Cats_CollectionChanged;
             source.CollectionChanged += Cats_CollectionChanged;
@@ -53,6 +54,23 @@ namespace TestProject1
             cats.Clear();
             Console.WriteLine(cats.Count);
 
+        }
+
+        [Test]
+        public void Test2()
+        {
+            PocosList<string> list = new(string.Empty);
+
+            IList<string> strings = list;
+
+
+            
+            Console.WriteLine(strings.Count);
+            strings.Add("1");
+            Console.WriteLine(strings.Count);
+            Console.WriteLine(strings[0]);
+            Console.WriteLine(list.Count);
+            Console.WriteLine(list[0]);
         }
 
         private void Cats_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -94,14 +112,11 @@ namespace TestProject1
         {
             return Host.CreateDefaultBuilder().ConfigureServices(services => 
             {
-                services.AddPocota
-                (
-                    pocota =>
-                    {
-                        pocota.AddTransient<Cat>();
-                    },
-                    null
-                );
+                Net.Leksi.Pocota.Server.PocotaExtensions.AddPocota(services, pocota =>
+                {
+                    pocota.AddTransient<Cat>();
+                },
+                    null);
 
             }).Build();
         }

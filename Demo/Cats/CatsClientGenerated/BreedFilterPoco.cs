@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -253,6 +253,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
     public void TouchSearchRegex()
     {
         _is_set_searchRegex = true;
+
     }
 
 

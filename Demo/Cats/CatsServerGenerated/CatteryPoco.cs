@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-14T20:09:42                                  //
+// at 2023-01-15T13:32:56                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -192,8 +192,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     private String? _nameEng = default;
     private bool _is_set_nameEng = false;
+
     private String? _nameNat = default;
     private bool _is_set_nameNat = false;
+
 
 #endregion Fields;
 
@@ -224,7 +226,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public String? NameEng 
     { 
-        get => !_is_set_nameEng ? throw new InvalidOperationException("The property NameEng is not set!") : _nameEng; 
+        get => !_is_set_nameEng ? throw new PropertyNotSetException("NameEng") : _nameEng; 
         set
         {
             _nameEng = value;
@@ -234,7 +236,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public String? NameNat 
     { 
-        get => !_is_set_nameNat ? throw new InvalidOperationException("The property NameNat is not set!") : _nameNat; 
+        get => !_is_set_nameNat ? throw new PropertyNotSetException("NameNat") : _nameNat; 
         set
         {
             _nameNat = value;
@@ -302,10 +304,12 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     public void TouchNameEng()
     {
         _is_set_nameEng = true;
+
     }
     public void TouchNameNat()
     {
         _is_set_nameNat = true;
+
     }
 
 

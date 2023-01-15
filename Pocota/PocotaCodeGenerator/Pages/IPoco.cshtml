@@ -7,9 +7,16 @@
     {
         @foreach(PropertyModel pm in Model.Properties)
         {
-            string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            <text>        @Html.Raw($"_is_set{fieldName}") = false;
+            if(!pm.IsList)
+            {
+                string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+                <text>        @Html.Raw($"_is_set{fieldName}") = false;
 </text>
+            }
+            else{
+                <text>        @Html.Raw($"{pm.Name}.Clear()");
+</text>
+            }
         }
     }
 
@@ -18,7 +25,7 @@
         @foreach(ClassModel @class in Model.Classes){
             <text>        if(@@interface == typeof(@Html.Raw(@class.Interface)))
         {
-            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Select(pm => $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}")))}")
+            return @Html.Raw($"{string.Join("\r\n                && ", new string[]{"true"}.Concat(@class.Properties.Select(pm => !pm.IsList ? $"_is_set_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}" : $"{pm.Name}.IsSet")))}")
             ;
         }
 </text>
