@@ -3,26 +3,6 @@
 
 @Html.Raw("#region Collections")
 
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-@foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
-{
-    string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>            case "@pm.Name":
-                return !Enumerable.SequenceEqual(
-                        @Html.Raw($"{fieldName}.OrderBy(o => o.GetHashCode()),") 
-                        @Html.Raw($"_initial{fieldName}.OrderBy(o => o.GetHashCode()),")
-                        ReferenceEqualityComparer.Instance
-                    );
-</text>
-}
-            default:
-                return false;
-        }
-    }
-
     protected override void CancelCollectionsChanges()
     {
 @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))

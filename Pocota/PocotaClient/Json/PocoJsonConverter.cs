@@ -189,7 +189,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         result.As<PocoBase>()?.StartPopulate(context);
                     }
                     PocoBase? poco = result!.As<PocoBase>();
-                    IProperty? property = _properties![propertyName];
+                    Property? property = _properties![propertyName] as Property;
 
                     if (property is { })
                     {
@@ -214,7 +214,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         if (entity is { })
                         {
                             isUnchanged = entity.PocoState is PocoState.Unchanged;
-                            isModified = entity.IsModified(propertyName);
+                            isModified = property.IsModified(entity);
                         }
                         bool canChangeValue = (
                                 poco!.IsEnvelope

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:56                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,19 +36,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target)
-            {
-                return ((CatteryICatteryProjection)target)._projector.NameEng;
-            }
-            public void Touch(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector.TouchNameEng();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
-            }
+            public object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameEng;
+            public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
         }
+
         public class NameNatProperty: IProperty
         {
             public string Name => "NameNat";
@@ -58,19 +50,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target)
-            {
-                return ((CatteryICatteryProjection)target)._projector.NameNat;
-            }
-            public void Touch(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector.TouchNameNat();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
-            }
+            public object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameNat;
+            public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new NameEngProperty());
@@ -141,19 +125,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public Type Type => typeof(String);
         public Type? ItemType => null;
         public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
-        public object? Get(object target)
-        {
-            return ((CatteryPoco)target).NameEng;
-        }
-        public void Touch(object target)
-        {
-            ((CatteryPoco)target).TouchNameEng();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatteryPoco)target).NameEng = (String)value!;
-        }
+        public object? Get(object target) => ((CatteryPoco)target).NameEng;
+        public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
+        public void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
     }
+
     public class NameNatProperty: IProperty
     {
         public string Name => "NameNat";
@@ -163,27 +139,19 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public Type Type => typeof(String);
         public Type? ItemType => null;
         public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
-        public object? Get(object target)
-        {
-            return ((CatteryPoco)target).NameNat;
-        }
-        public void Touch(object target)
-        {
-            ((CatteryPoco)target).TouchNameNat();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatteryPoco)target).NameNat = (String)value!;
-        }
+        public object? Get(object target) => ((CatteryPoco)target).NameNat;
+        public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
+        public void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new NameEngProperty());
         properties.Add(new NameNatProperty());
     }
 
-       internal static NameEngProperty NameEngProp = new();
-       internal static NameNatProperty NameNatProp = new();
+   internal static NameEngProperty s_nameEngProp = new();
+   internal static NameNatProperty s_nameNatProp = new();
 #endregion Init Properties;
 
 
@@ -226,7 +194,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public String? NameEng 
     { 
-        get => !_is_set_nameEng ? throw new PropertyNotSetException("NameEng") : _nameEng; 
+        get => !_is_set_nameEng ? throw new PropertyNotSetException(nameof(NameEng)) : _nameEng; 
         set
         {
             _nameEng = value;
@@ -236,7 +204,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public String? NameNat 
     { 
-        get => !_is_set_nameNat ? throw new PropertyNotSetException("NameNat") : _nameNat; 
+        get => !_is_set_nameNat ? throw new PropertyNotSetException(nameof(NameNat)) : _nameNat; 
         set
         {
             _nameNat = value;
@@ -301,17 +269,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         return base.GetHashCode();
     }
 
-    public void TouchNameEng()
-    {
-        _is_set_nameEng = true;
-
-    }
-    public void TouchNameNat()
-    {
-        _is_set_nameNat = true;
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -334,7 +291,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     {
         if(@interface == typeof(ICattery))
         {
-            return true
+                return true
                 && _is_set_nameEng
                 && _is_set_nameNat
             ;

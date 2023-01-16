@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client.Context;
-using Net.Leksi.Pocota.Client.Json;
+﻿using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
 using System.Collections;
 using System.Collections.Immutable;
@@ -21,6 +19,11 @@ public abstract class EntityBase : PocoBase, IEntity
     ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray();
 
     public EntityBase(IServiceProvider services) : base(services) { }
+
+    void IPoco.AcceptChanges()
+    {
+        throw new InvalidOperationException($"Accepting changes is forbidden for {nameof(IEntity)}!");
+    }
 
     void IEntity.Create()
     {

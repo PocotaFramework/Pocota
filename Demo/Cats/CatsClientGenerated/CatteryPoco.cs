@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:57                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -25,50 +25,40 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
 #region Init Properties
 
-        public class NameEngProperty: IProperty
+        public class NameEngProperty: Property
         {
-            public string Name => "NameEng";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target)
-            {
-                return ((CatteryICatteryProjection)target)._projector.NameEng;
-            }
-            public void Touch(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector.TouchNameEng();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
-            }
+            public override string Name => "NameEng";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameEng;
+            public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
+            public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngModified();
+            public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
+            public override int Position => 0;
         }
-        public class NameNatProperty: IProperty
+
+        public class NameNatProperty: Property
         {
-            public string Name => "NameNat";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target)
-            {
-                return ((CatteryICatteryProjection)target)._projector.NameNat;
-            }
-            public void Touch(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector.TouchNameNat();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
-            }
+            public override string Name => "NameNat";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameNat;
+            public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
+            public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatModified();
+            public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
+            public override int Position => 1;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new NameEngProperty());
@@ -149,58 +139,48 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Init Properties
 
-    public class NameEngProperty: IProperty
+    public class NameEngProperty: Property
     {
-        public string Name => "NameEng";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
-        public object? Get(object target)
-        {
-            return ((CatteryPoco)target).NameEng;
-        }
-        public void Touch(object target)
-        {
-            ((CatteryPoco)target).TouchNameEng();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatteryPoco)target).NameEng = (String)value!;
-        }
+        public override string Name => "NameEng";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
+        public override object? Get(object target) => ((CatteryPoco)target).NameEng;
+        public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
+        public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
+        public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
+        public override int Position => 0;
     }
-    public class NameNatProperty: IProperty
+
+    public class NameNatProperty: Property
     {
-        public string Name => "NameNat";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
-        public object? Get(object target)
-        {
-            return ((CatteryPoco)target).NameNat;
-        }
-        public void Touch(object target)
-        {
-            ((CatteryPoco)target).TouchNameNat();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatteryPoco)target).NameNat = (String)value!;
-        }
+        public override string Name => "NameNat";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
+        public override object? Get(object target) => ((CatteryPoco)target).NameNat;
+        public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
+        public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
+        public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
+        public override int Position => 1;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new NameEngProperty());
         properties.Add(new NameNatProperty());
     }
 
-       internal static NameEngProperty NameEngProp = new();
-       internal static NameNatProperty NameNatProp = new();
+   internal static NameEngProperty s_nameEngProp = new();
+   internal static NameNatProperty s_nameNatProp = new();
 #endregion Init Properties;
 
     
@@ -208,8 +188,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 #region Fields
 
     private String? _nameEng = default;
+    private String?_initial_nameEng = default;
     private bool _is_set_nameEng = false;
     private String? _nameNat = default;
+    private String?_initial_nameNat = default;
     private bool _is_set_nameNat = false;
 
 #endregion Fields;
@@ -241,30 +223,48 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public virtual String? NameEng
     {
-        get => _nameEng;
+        get => _is_set_nameEng ? _nameEng : default!;
         set
         {
             if(_nameEng != value)
             {
-                object? oldValue = _nameEng;
-                _nameEng = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
+                    {
+                        _nameEng = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_nameEng = value;
+                        }
+                        OnPocoChanged(s_nameEngProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? NameNat
     {
-        get => _nameNat;
+        get => _is_set_nameNat ? _nameNat : default!;
         set
         {
             if(_nameNat != value)
             {
-                object? oldValue = _nameNat;
-                _nameNat = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
+                    {
+                        _nameNat = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_nameNat = value;
+                        }
+                        OnPocoChanged(s_nameNatProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
@@ -274,6 +274,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public CatteryPoco(IServiceProvider services) : base(services) 
     { 
+        _propertiesCount = 2;
+        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -324,17 +326,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         return base.GetHashCode();
     }
 
-    public void TouchNameEng()
-    {
-        _is_set_nameEng = true;
-
-    }
-    public void TouchNameNat()
-    {
-        _is_set_nameNat = true;
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -346,15 +337,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     
 #region Collections
-
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
 
     protected override void CancelCollectionsChanges()
     {
@@ -370,6 +352,18 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Poco Changed
 
+
+    private bool IsNameEngInitial() => _initial_nameEng != _nameEng;
+
+    private bool IsNameEngModified() => _is_set_nameEng 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsNameEngInitial();
+
+    private bool IsNameNatInitial() => _initial_nameNat != _nameNat;
+
+    private bool IsNameNatModified() => _is_set_nameNat 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsNameNatInitial();
 
 
 #endregion Poco Changed;

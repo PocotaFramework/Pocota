@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:56                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -35,19 +35,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
-            public object? Get(object target)
-            {
-                return ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
-            }
-            public void Touch(object target)
-            {
-                ((BreedFilterIBreedFilterProjection)target)._projector.TouchSearchRegex();
-            }
-            public void Set(object target, object? value)
-            {
-                ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
-            }
+            public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+            public void Touch(object target) => ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex = true;
+            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new SearchRegexProperty());
@@ -111,25 +103,17 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         public Type Type => typeof(String);
         public Type? ItemType => null;
         public bool IsSet(object target) =>  ((BreedFilterPoco)target)._is_set_searchRegex;
-        public object? Get(object target)
-        {
-            return ((BreedFilterPoco)target).SearchRegex;
-        }
-        public void Touch(object target)
-        {
-            ((BreedFilterPoco)target).TouchSearchRegex();
-        }
-        public void Set(object target, object? value)
-        {
-            ((BreedFilterPoco)target).SearchRegex = (String)value!;
-        }
+        public object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
+        public void Touch(object target) => ((BreedFilterPoco)target)._is_set_searchRegex = true;
+        public void Set(object target, object? value) => ((BreedFilterPoco)target).SearchRegex = (String)value!;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new SearchRegexProperty());
     }
 
-       internal static SearchRegexProperty SearchRegexProp = new();
+   internal static SearchRegexProperty s_searchRegexProp = new();
 #endregion Init Properties;
 
 
@@ -228,12 +212,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         return base.GetHashCode();
     }
 
-    public void TouchSearchRegex()
-    {
-        _is_set_searchRegex = true;
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -255,7 +233,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     {
         if(@interface == typeof(IBreedFilter))
         {
-            return true
+                return true
                 && _is_set_searchRegex
             ;
         }

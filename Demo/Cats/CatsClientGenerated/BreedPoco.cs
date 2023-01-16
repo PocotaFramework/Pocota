@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:57                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -25,94 +25,74 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
 #region Init Properties
 
-        public class CodeProperty: IProperty
+        public class CodeProperty: Property
         {
-            public string Name => "Code";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
-            public object? Get(object target)
-            {
-                return ((BreedIBreedProjection)target)._projector.Code!;
-            }
-            public void Touch(object target)
-            {
-                ((BreedIBreedProjection)target)._projector.TouchCode();
-            }
-            public void Set(object target, object? value)
-            {
-                ((BreedIBreedProjection)target)._projector.Code = (String)value!;
-            }
+            public override string Name => "Code";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
+            public override object? Get(object target) => ((BreedIBreedProjection)target)._projector.Code!;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.Code = (String)value!;
+            public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsCodeModified();
+            public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsCodeInitial();
+            public override int Position => 0;
         }
-        public class GroupProperty: IProperty
+
+        public class GroupProperty: Property
         {
-            public string Name => "Group";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
-            public object? Get(object target)
-            {
-                return ((BreedIBreedProjection)target)._projector.Group!;
-            }
-            public void Touch(object target)
-            {
-                ((BreedIBreedProjection)target)._projector.TouchGroup();
-            }
-            public void Set(object target, object? value)
-            {
-                ((BreedIBreedProjection)target)._projector.Group = (String)value!;
-            }
+            public override string Name => "Group";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
+            public override object? Get(object target) => ((BreedIBreedProjection)target)._projector.Group!;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.Group = (String)value!;
+            public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsGroupModified();
+            public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsGroupInitial();
+            public override int Position => 1;
         }
-        public class NameEngProperty: IProperty
+
+        public class NameEngProperty: Property
         {
-            public string Name => "NameEng";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target)
-            {
-                return ((BreedIBreedProjection)target)._projector.NameEng;
-            }
-            public void Touch(object target)
-            {
-                ((BreedIBreedProjection)target)._projector.TouchNameEng();
-            }
-            public void Set(object target, object? value)
-            {
-                ((BreedIBreedProjection)target)._projector.NameEng = (String)value!;
-            }
+            public override string Name => "NameEng";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public override object? Get(object target) => ((BreedIBreedProjection)target)._projector.NameEng;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.NameEng = (String)value!;
+            public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngModified();
+            public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngInitial();
+            public override int Position => 2;
         }
-        public class NameNatProperty: IProperty
+
+        public class NameNatProperty: Property
         {
-            public string Name => "NameNat";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target)
-            {
-                return ((BreedIBreedProjection)target)._projector.NameNat;
-            }
-            public void Touch(object target)
-            {
-                ((BreedIBreedProjection)target)._projector.TouchNameNat();
-            }
-            public void Set(object target, object? value)
-            {
-                ((BreedIBreedProjection)target)._projector.NameNat = (String)value!;
-            }
+            public override string Name => "NameNat";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public override object? Get(object target) => ((BreedIBreedProjection)target)._projector.NameNat;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.NameNat = (String)value!;
+            public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatModified();
+            public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatInitial();
+            public override int Position => 3;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new CodeProperty());
@@ -207,94 +187,74 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Init Properties
 
-    public class CodeProperty: IProperty
+    public class CodeProperty: Property
     {
-        public string Name => "Code";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_code;
-        public object? Get(object target)
-        {
-            return ((BreedPoco)target).Code;
-        }
-        public void Touch(object target)
-        {
-            ((BreedPoco)target).TouchCode();
-        }
-        public void Set(object target, object? value)
-        {
-            ((BreedPoco)target).Code = (String)value!;
-        }
+        public override string Name => "Code";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((BreedPoco)target)._is_set_code;
+        public override object? Get(object target) => ((BreedPoco)target).Code;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).Code = (String)value!;
+        public override bool IsModified(object target) => ((BreedPoco)target).IsCodeModified();
+        public override bool IsInitial(object target) => ((BreedPoco)target).IsCodeInitial();
+        public override int Position => 0;
     }
-    public class GroupProperty: IProperty
+
+    public class GroupProperty: Property
     {
-        public string Name => "Group";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_group;
-        public object? Get(object target)
-        {
-            return ((BreedPoco)target).Group;
-        }
-        public void Touch(object target)
-        {
-            ((BreedPoco)target).TouchGroup();
-        }
-        public void Set(object target, object? value)
-        {
-            ((BreedPoco)target).Group = (String)value!;
-        }
+        public override string Name => "Group";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((BreedPoco)target)._is_set_group;
+        public override object? Get(object target) => ((BreedPoco)target).Group;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).Group = (String)value!;
+        public override bool IsModified(object target) => ((BreedPoco)target).IsGroupModified();
+        public override bool IsInitial(object target) => ((BreedPoco)target).IsGroupInitial();
+        public override int Position => 1;
     }
-    public class NameEngProperty: IProperty
+
+    public class NameEngProperty: Property
     {
-        public string Name => "NameEng";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
-        public object? Get(object target)
-        {
-            return ((BreedPoco)target).NameEng;
-        }
-        public void Touch(object target)
-        {
-            ((BreedPoco)target).TouchNameEng();
-        }
-        public void Set(object target, object? value)
-        {
-            ((BreedPoco)target).NameEng = (String)value!;
-        }
+        public override string Name => "NameEng";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
+        public override object? Get(object target) => ((BreedPoco)target).NameEng;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).NameEng = (String)value!;
+        public override bool IsModified(object target) => ((BreedPoco)target).IsNameEngModified();
+        public override bool IsInitial(object target) => ((BreedPoco)target).IsNameEngInitial();
+        public override int Position => 2;
     }
-    public class NameNatProperty: IProperty
+
+    public class NameNatProperty: Property
     {
-        public string Name => "NameNat";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
-        public object? Get(object target)
-        {
-            return ((BreedPoco)target).NameNat;
-        }
-        public void Touch(object target)
-        {
-            ((BreedPoco)target).TouchNameNat();
-        }
-        public void Set(object target, object? value)
-        {
-            ((BreedPoco)target).NameNat = (String)value!;
-        }
+        public override string Name => "NameNat";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
+        public override object? Get(object target) => ((BreedPoco)target).NameNat;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).NameNat = (String)value!;
+        public override bool IsModified(object target) => ((BreedPoco)target).IsNameNatModified();
+        public override bool IsInitial(object target) => ((BreedPoco)target).IsNameNatInitial();
+        public override int Position => 3;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new CodeProperty());
@@ -303,10 +263,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         properties.Add(new NameNatProperty());
     }
 
-       internal static CodeProperty CodeProp = new();
-       internal static GroupProperty GroupProp = new();
-       internal static NameEngProperty NameEngProp = new();
-       internal static NameNatProperty NameNatProp = new();
+   internal static CodeProperty s_codeProp = new();
+   internal static GroupProperty s_groupProp = new();
+   internal static NameEngProperty s_nameEngProp = new();
+   internal static NameNatProperty s_nameNatProp = new();
 #endregion Init Properties;
 
     
@@ -314,12 +274,16 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 #region Fields
 
     private String _code = default!;
+    private String?_initial_code = default;
     private bool _is_set_code = false;
     private String _group = default!;
+    private String?_initial_group = default;
     private bool _is_set_group = false;
     private String? _nameEng = default;
+    private String?_initial_nameEng = default;
     private bool _is_set_nameEng = false;
     private String? _nameNat = default;
+    private String?_initial_nameNat = default;
     private bool _is_set_nameNat = false;
 
 #endregion Fields;
@@ -351,60 +315,96 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String Code
     {
-        get => _code;
+        get => _is_set_code ? _code : default!;
         set
         {
             if(_code != value)
             {
-                object oldValue = _code;
-                _code = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_code != value  && (IsBeingPopulated || _is_set_code))
+                    {
+                        _code = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_code = value;
+                        }
+                        OnPocoChanged(s_codeProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String Group
     {
-        get => _group;
+        get => _is_set_group ? _group : default!;
         set
         {
             if(_group != value)
             {
-                object oldValue = _group;
-                _group = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_group != value  && (IsBeingPopulated || _is_set_group))
+                    {
+                        _group = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_group = value;
+                        }
+                        OnPocoChanged(s_groupProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? NameEng
     {
-        get => _nameEng;
+        get => _is_set_nameEng ? _nameEng : default!;
         set
         {
             if(_nameEng != value)
             {
-                object? oldValue = _nameEng;
-                _nameEng = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
+                    {
+                        _nameEng = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_nameEng = value;
+                        }
+                        OnPocoChanged(s_nameEngProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? NameNat
     {
-        get => _nameNat;
+        get => _is_set_nameNat ? _nameNat : default!;
         set
         {
             if(_nameNat != value)
             {
-                object? oldValue = _nameNat;
-                _nameNat = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
+                    {
+                        _nameNat = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_nameNat = value;
+                        }
+                        OnPocoChanged(s_nameNatProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
@@ -414,6 +414,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public BreedPoco(IServiceProvider services) : base(services) 
     { 
+        _propertiesCount = 4;
+        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -464,27 +466,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         return base.GetHashCode();
     }
 
-    public void TouchCode()
-    {
-        _is_set_code = true;
-
-    }
-    public void TouchGroup()
-    {
-        _is_set_group = true;
-
-    }
-    public void TouchNameEng()
-    {
-        _is_set_nameEng = true;
-
-    }
-    public void TouchNameNat()
-    {
-        _is_set_nameNat = true;
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -496,15 +477,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     
 #region Collections
-
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
 
     protected override void CancelCollectionsChanges()
     {
@@ -520,6 +492,30 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Poco Changed
 
+
+    private bool IsCodeInitial() => _initial_code != _code;
+
+    private bool IsCodeModified() => _is_set_code 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsCodeInitial();
+
+    private bool IsGroupInitial() => _initial_group != _group;
+
+    private bool IsGroupModified() => _is_set_group 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsGroupInitial();
+
+    private bool IsNameEngInitial() => _initial_nameEng != _nameEng;
+
+    private bool IsNameEngModified() => _is_set_nameEng 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsNameEngInitial();
+
+    private bool IsNameNatInitial() => _initial_nameNat != _nameNat;
+
+    private bool IsNameNatModified() => _is_set_nameNat 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsNameNatInitial();
 
 
 #endregion Poco Changed;

@@ -16,5 +16,4 @@ public interface IProperty
     void Touch(object target);
 
     void Set(object target, object? value);
-
 }

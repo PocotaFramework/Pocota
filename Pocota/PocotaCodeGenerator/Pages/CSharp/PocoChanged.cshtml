@@ -11,32 +11,95 @@
 </text>
 }
 
-@foreach (PropertyModel pm in Model.Properties.Where(p => p.IsList))
+@foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    protected virtual void @Html.Raw(pm.Name)CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    if(pm.IsList)
     {
-        @if (pm.IsProjection)
+        <text>    protected virtual void @Html.Raw(pm.Name)CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        lock(_lock)
         {
-            <text>        if (e.OldItems is { })
-        {
-            foreach (INotifyPocoChanged item in e.OldItems)
+            @Html.Raw($"_is_set{fieldName}") = e.Action is not NotifyCollectionChangedAction.Reset;
+            if (e.OldItems is { })
             {
-                item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
-            }
-        }
-        if (e.NewItems is { })
-        {
-            foreach (INotifyPocoChanged item in e.NewItems)
-            {
-                item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
-            }
-        }
+                foreach (@Html.Raw(pm.ItemType) item in e.OldItems)
+                {
+                @if (pm.IsProjection)
+                {
+                    <text>                    item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
 </text>
+                }
+                    if(IsBeingPopulated)
+                    {
+                        @Html.Raw($"_initial{fieldName}.Remove(item)");
+                    }
+                }
+            }
+            if (e.NewItems is { })
+            {
+                foreach (@Html.Raw(pm.ItemType) item in e.NewItems)
+                {
+                @if(Model.IsEntity)
+                {
+                    <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))
+                    {
+</text>
+                }
+                @if (pm.IsProjection)
+                {
+                    <text>                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
+</text>
+                }
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated)
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty){
+                        @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"_initial{fieldName}.Add(item)");
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)}
+                @if(Model.IsEntity)
+                {
+                    <text>                    }
+                    else {
+                        @Html.Raw($"{fieldName}.Remove(item)");
+                    }
+</text>
+                }
+                }
+            }
+                @if(Model.IsEntity)
+                {
+                    <text>            if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))
+            {
+</text>
+                }
+            @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"OnPocoChanged(s{fieldName}Prop)");
+            @Html.Raw(Model.IsEntity ? "    " : string.Empty)OnPropertyChanged(nameof(@pm.Name));
+                @if(Model.IsEntity)
+                {
+                    <text>            }
+</text>
+                }
         }
-        @Html.Raw($"OnPocoChanged(_initial{fieldName}, {fieldName}, nameof({pm.Name}))");
-        OnPropertyChanged(nameof(@pm.Name));
     }
+
+    private bool @Html.Raw($"Is{pm.Name}Initial()") => !Enumerable.SequenceEqual(
+            @Html.Raw($"{fieldName}.OrderBy(o => o.GetHashCode()),") 
+            @Html.Raw($"_initial{fieldName}.OrderBy(o => o.GetHashCode()),")
+            ReferenceEqualityComparer.Instance
+        );
+
+
+</text>
+    }
+    else
+    {
+        <text>    private bool @Html.Raw($"Is{pm.Name}Initial()") => @Html.Raw($"_initial{fieldName} != {fieldName}");
+
+</text>
+    }
+
+    <text>    private bool @Html.Raw($"Is{pm.Name}Modified()") => @Html.Raw($"_is_set{fieldName}") 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !@Html.Raw($"Is{pm.Name}Initial()");
 
 </text>
 }

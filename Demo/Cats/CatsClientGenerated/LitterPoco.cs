@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:57                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -28,136 +28,108 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: IProperty
+        public class DateProperty: Property
         {
-            public string Name => "Date";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_date;
-            public object? Get(object target)
-            {
-                return ((LitterILitterProjection)target)._projector.Date!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchDate();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterProjection)target)._projector.Date = (DateOnly)value!;
-            }
+            public override string Name => "Date";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_date;
+            public override object? Get(object target) => ((LitterILitterProjection)target)._projector.Date!;
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_date = true;
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target)._projector.Date = (DateOnly)value!;
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsDateModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsDateInitial();
+            public override int Position => 0;
         }
-        public class OrderProperty: IProperty
+
+        public class OrderProperty: Property
         {
-            public string Name => "Order";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(Int32);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_order;
-            public object? Get(object target)
-            {
-                return ((LitterILitterProjection)target)._projector.Order!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchOrder();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterProjection)target)._projector.Order = (Int32)value!;
-            }
+            public override string Name => "Order";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(Int32);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_order;
+            public override object? Get(object target) => ((LitterILitterProjection)target)._projector.Order!;
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_order = true;
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target)._projector.Order = (Int32)value!;
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsOrderModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsOrderInitial();
+            public override int Position => 1;
         }
-        public class FemaleProperty: IProperty
+
+        public class FemaleProperty: Property
         {
-            public string Name => "Female";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_female;
-            public object? Get(object target)
-            {
-                return ((IProjection)((LitterILitterProjection)target)._projector.Female)?.As<ICat>()!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchFemale();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Female";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_female;
+            public override object? Get(object target) => ((IProjection)((LitterILitterProjection)target)._projector.Female)?.As<ICat>()!;
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_female = true;
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsFemaleModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsFemaleInitial();
+            public override int Position => 2;
         }
-        public class MaleProperty: IProperty
+
+        public class MaleProperty: Property
         {
-            public string Name => "Male";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_male;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((LitterILitterProjection)target)._projector.Male)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchMale();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Male";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_male;
+            public override object? Get(object target) => ((IProjection?)((LitterILitterProjection)target)._projector.Male)?.As<ICat>();
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_male = true;
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsMaleModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsMaleInitial();
+            public override int Position => 3;
         }
-        public class StringsProperty: IProperty
+
+        public class StringsProperty: Property
         {
-            public string Name => "Strings";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  true;
-            public Type Type => typeof(IList<String>);
-            public Type? ItemType => typeof(String);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Strings.IsSet;
-            public object? Get(object target)
-            {
-                return ((LitterILitterProjection)target)._projector.Strings!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchStrings();
-            }
-            public void Set(object target, object? value)
-            {
-            }
+            public override string Name => "Strings";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  true;
+            public override Type Type => typeof(IList<String>);
+            public override Type? ItemType => typeof(String);
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_strings;
+            public override object? Get(object target) => ((LitterILitterProjection)target)._projector.Strings!;
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_strings = true;
+            public override void Set(object target, object? value) => throw new NotImplementedException();
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsStringsModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsStringsInitial();
+            public override int Position => 4;
         }
-        public class CatsProperty: IProperty
+
+        public class CatsProperty: Property
         {
-            public string Name => "Cats";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  true;
-            public Type Type => typeof(IList<ICat>);
-            public Type? ItemType => typeof(ICat);
-            public bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector.Cats.IsSet;
-            public object? Get(object target)
-            {
-                return ((LitterILitterProjection)target)._cats;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterProjection)target)._projector.TouchCats();
-            }
-            public void Set(object target, object? value)
-            {
-            }
+            public override string Name => "Cats";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  true;
+            public override Type Type => typeof(IList<ICat>);
+            public override Type? ItemType => typeof(ICat);
+            public override bool IsSet(object target) =>  ((LitterILitterProjection)target)._projector._is_set_cats;
+            public override object? Get(object target) => ((LitterILitterProjection)target)._cats;
+            public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_cats = true;
+            public override void Set(object target, object? value) => throw new NotImplementedException();
+            public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsCatsModified();
+            public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsCatsInitial();
+            public override int Position => 5;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new DateProperty());
@@ -268,115 +240,91 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: IProperty
+        public class DateProperty: Property
         {
-            public string Name => "Date";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_date;
-            public object? Get(object target)
-            {
-                return ((LitterILitterForCatProjection)target)._projector.Date!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector.TouchDate();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
-            }
+            public override string Name => "Date";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_date;
+            public override object? Get(object target) => ((LitterILitterForCatProjection)target)._projector.Date!;
+            public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date = true;
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
+            public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateModified();
+            public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateInitial();
+            public override int Position => 0;
         }
-        public class OrderProperty: IProperty
+
+        public class OrderProperty: Property
         {
-            public string Name => "Order";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(Int32);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_order;
-            public object? Get(object target)
-            {
-                return ((LitterILitterForCatProjection)target)._projector.Order!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector.TouchOrder();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
-            }
+            public override string Name => "Order";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(Int32);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_order;
+            public override object? Get(object target) => ((LitterILitterForCatProjection)target)._projector.Order!;
+            public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order = true;
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
+            public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderModified();
+            public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderInitial();
+            public override int Position => 1;
         }
-        public class FemaleProperty: IProperty
+
+        public class FemaleProperty: Property
         {
-            public string Name => "Female";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICatAsParent);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_female;
-            public object? Get(object target)
-            {
-                return ((IProjection)((LitterILitterForCatProjection)target)._projector.Female)?.As<ICatAsParent>()!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector.TouchFemale();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Female";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICatAsParent);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_female;
+            public override object? Get(object target) => ((IProjection)((LitterILitterForCatProjection)target)._projector.Female)?.As<ICatAsParent>()!;
+            public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female = true;
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsFemaleModified();
+            public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsFemaleInitial();
+            public override int Position => 2;
         }
-        public class MaleProperty: IProperty
+
+        public class MaleProperty: Property
         {
-            public string Name => "Male";
-            public bool IsReadOnly => true;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICatAsParent);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_male;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((LitterILitterForCatProjection)target)._projector.Male)?.As<ICatAsParent>();
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector.TouchMale();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Male";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICatAsParent);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_male;
+            public override object? Get(object target) => ((IProjection?)((LitterILitterForCatProjection)target)._projector.Male)?.As<ICatAsParent>();
+            public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male = true;
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsMaleModified();
+            public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsMaleInitial();
+            public override int Position => 3;
         }
-        public class CatsProperty: IProperty
+
+        public class CatsProperty: Property
         {
-            public string Name => "Cats";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  true;
-            public Type Type => typeof(IList<ICatAsSibling>);
-            public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector.Cats.IsSet;
-            public object? Get(object target)
-            {
-                return ((LitterILitterForCatProjection)target)._cats;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector.TouchCats();
-            }
-            public void Set(object target, object? value)
-            {
-            }
+            public override string Name => "Cats";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  true;
+            public override Type Type => typeof(IList<ICatAsSibling>);
+            public override Type? ItemType => typeof(ICatAsSibling);
+            public override bool IsSet(object target) =>  ((LitterILitterForCatProjection)target)._projector._is_set_cats;
+            public override object? Get(object target) => ((LitterILitterForCatProjection)target)._cats;
+            public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_cats = true;
+            public override void Set(object target, object? value) => throw new NotImplementedException();
+            public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsCatsModified();
+            public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsCatsInitial();
+            public override int Position => 4;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new DateProperty());
@@ -477,28 +425,23 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: IProperty
+        public class DateProperty: Property
         {
-            public string Name => "Date";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterILitterForDateProjection)target)._projector._is_set_date;
-            public object? Get(object target)
-            {
-                return ((LitterILitterForDateProjection)target)._projector.Date!;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterForDateProjection)target)._projector.TouchDate();
-            }
-            public void Set(object target, object? value)
-            {
-                ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
-            }
+            public override string Name => "Date";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((LitterILitterForDateProjection)target)._projector._is_set_date;
+            public override object? Get(object target) => ((LitterILitterForDateProjection)target)._projector.Date!;
+            public override void Touch(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date = true;
+            public override void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
+            public override bool IsModified(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateModified();
+            public override bool IsInitial(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateInitial();
+            public override int Position => 0;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new DateProperty());
@@ -573,27 +516,23 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class CatsProperty: IProperty
+        public class CatsProperty: Property
         {
-            public string Name => "Cats";
-            public bool IsReadOnly => true;
-            public bool IsNullable => false;
-            public bool IsCollection =>  true;
-            public Type Type => typeof(IList<ICatAsSibling>);
-            public Type? ItemType => typeof(ICatAsSibling);
-            public bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector.Cats.IsSet;
-            public object? Get(object target)
-            {
-                return ((LitterILitterWithCatsProjection)target)._cats;
-            }
-            public void Touch(object target)
-            {
-                ((LitterILitterWithCatsProjection)target)._projector.TouchCats();
-            }
-            public void Set(object target, object? value)
-            {
-            }
+            public override string Name => "Cats";
+            public override bool IsReadOnly => true;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  true;
+            public override Type Type => typeof(IList<ICatAsSibling>);
+            public override Type? ItemType => typeof(ICatAsSibling);
+            public override bool IsSet(object target) =>  ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
+            public override object? Get(object target) => ((LitterILitterWithCatsProjection)target)._cats;
+            public override void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_cats = true;
+            public override void Set(object target, object? value) => throw new NotImplementedException();
+            public override bool IsModified(object target) => ((LitterILitterWithCatsProjection)target)._projector.IsCatsModified();
+            public override bool IsInitial(object target) => ((LitterILitterWithCatsProjection)target)._projector.IsCatsInitial();
+            public override int Position => 0;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new CatsProperty());
@@ -668,136 +607,108 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     
 #region Init Properties
 
-    public class DateProperty: IProperty
+    public class DateProperty: Property
     {
-        public string Name => "Date";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(DateOnly);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_date;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Date;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchDate();
-        }
-        public void Set(object target, object? value)
-        {
-            ((LitterPoco)target).Date = (DateOnly)value!;
-        }
+        public override string Name => "Date";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(DateOnly);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_date;
+        public override object? Get(object target) => ((LitterPoco)target).Date;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_date = true;
+        public override void Set(object target, object? value) => ((LitterPoco)target).Date = (DateOnly)value!;
+        public override bool IsModified(object target) => ((LitterPoco)target).IsDateModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsDateInitial();
+        public override int Position => 0;
     }
-    public class OrderProperty: IProperty
+
+    public class OrderProperty: Property
     {
-        public string Name => "Order";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(Int32);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_order;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Order;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchOrder();
-        }
-        public void Set(object target, object? value)
-        {
-            ((LitterPoco)target).Order = (Int32)value!;
-        }
+        public override string Name => "Order";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(Int32);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_order;
+        public override object? Get(object target) => ((LitterPoco)target).Order;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_order = true;
+        public override void Set(object target, object? value) => ((LitterPoco)target).Order = (Int32)value!;
+        public override bool IsModified(object target) => ((LitterPoco)target).IsOrderModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsOrderInitial();
+        public override int Position => 1;
     }
-    public class FemaleProperty: IProperty
+
+    public class FemaleProperty: Property
     {
-        public string Name => "Female";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_female;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Female;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchFemale();
-        }
-        public void Set(object target, object? value)
-        {
-            ((LitterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Female";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_female;
+        public override object? Get(object target) => ((LitterPoco)target).Female;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_female = true;
+        public override void Set(object target, object? value) => ((LitterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((LitterPoco)target).IsFemaleModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsFemaleInitial();
+        public override int Position => 2;
     }
-    public class MaleProperty: IProperty
+
+    public class MaleProperty: Property
     {
-        public string Name => "Male";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterPoco)target)._is_set_male;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Male;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchMale();
-        }
-        public void Set(object target, object? value)
-        {
-            ((LitterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Male";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_male;
+        public override object? Get(object target) => ((LitterPoco)target).Male;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_male = true;
+        public override void Set(object target, object? value) => ((LitterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((LitterPoco)target).IsMaleModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsMaleInitial();
+        public override int Position => 3;
     }
-    public class StringsProperty: IProperty
+
+    public class StringsProperty: Property
     {
-        public string Name => "Strings";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  true;
-        public Type Type => typeof(ObservableCollection<String>);
-        public Type? ItemType => typeof(String);
-        public bool IsSet(object target) =>  ((LitterPoco)target).Strings.IsSet;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Strings;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchStrings();
-        }
-        public void Set(object target, object? value)
-        {
-        }
+        public override string Name => "Strings";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  true;
+        public override Type Type => typeof(ObservableCollection<String>);
+        public override Type? ItemType => typeof(String);
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_strings;
+        public override object? Get(object target) => ((LitterPoco)target).Strings;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_strings = true;
+        public override void Set(object target, object? value) => throw new NotImplementedException();
+        public override bool IsModified(object target) => ((LitterPoco)target).IsStringsModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsStringsInitial();
+        public override int Position => 4;
     }
-    public class CatsProperty: IProperty
+
+    public class CatsProperty: Property
     {
-        public string Name => "Cats";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  true;
-        public Type Type => typeof(ObservableCollection<CatPoco>);
-        public Type? ItemType => typeof(CatPoco);
-        public bool IsSet(object target) =>  ((LitterPoco)target).Cats.IsSet;
-        public object? Get(object target)
-        {
-            return ((LitterPoco)target).Cats;
-        }
-        public void Touch(object target)
-        {
-            ((LitterPoco)target).TouchCats();
-        }
-        public void Set(object target, object? value)
-        {
-        }
+        public override string Name => "Cats";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  true;
+        public override Type Type => typeof(ObservableCollection<CatPoco>);
+        public override Type? ItemType => typeof(CatPoco);
+        public override bool IsSet(object target) =>  ((LitterPoco)target)._is_set_cats;
+        public override object? Get(object target) => ((LitterPoco)target).Cats;
+        public override void Touch(object target) => ((LitterPoco)target)._is_set_cats = true;
+        public override void Set(object target, object? value) => throw new NotImplementedException();
+        public override bool IsModified(object target) => ((LitterPoco)target).IsCatsModified();
+        public override bool IsInitial(object target) => ((LitterPoco)target).IsCatsInitial();
+        public override int Position => 5;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new DateProperty());
@@ -808,12 +719,12 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         properties.Add(new CatsProperty());
     }
 
-       internal static DateProperty DateProp = new();
-       internal static OrderProperty OrderProp = new();
-       internal static FemaleProperty FemaleProp = new();
-       internal static MaleProperty MaleProp = new();
-       internal static StringsProperty StringsProp = new();
-       internal static CatsProperty CatsProp = new();
+   internal static DateProperty s_dateProp = new();
+   internal static OrderProperty s_orderProp = new();
+   internal static FemaleProperty s_femaleProp = new();
+   internal static MaleProperty s_maleProp = new();
+   internal static StringsProperty s_stringsProp = new();
+   internal static CatsProperty s_catsProp = new();
 #endregion Init Properties;
 
     
@@ -821,12 +732,16 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 #region Fields
 
     private DateOnly _date = default!;
+    private DateOnly?_initial_date = default;
     private bool _is_set_date = false;
     private Int32 _order = default!;
+    private Int32?_initial_order = default;
     private bool _is_set_order = false;
     private CatPoco _female = default!;
+    private CatPoco?_initial_female = default;
     private bool _is_set_female = false;
     private CatPoco? _male = default;
+    private CatPoco?_initial_male = default;
     private bool _is_set_male = false;
     private readonly ObservableCollection<String> _strings = new();
     private readonly List<String> _initial_strings = new();
@@ -903,89 +818,125 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual DateOnly Date
     {
-        get => _date;
+        get => _is_set_date ? _date : default!;
         set
         {
             if(_date != value)
             {
-                object oldValue = _date;
-                _date = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_date != value  && (IsBeingPopulated || _is_set_date))
+                    {
+                        _date = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_date = value;
+                        }
+                        OnPocoChanged(s_dateProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual Int32 Order
     {
-        get => _order;
+        get => _is_set_order ? _order : default!;
         set
         {
             if(_order != value)
             {
-                object oldValue = _order;
-                _order = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_order != value  && (IsBeingPopulated || _is_set_order))
+                    {
+                        _order = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_order = value;
+                        }
+                        OnPocoChanged(s_orderProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual CatPoco Female
     {
-        get => _female;
+        get => _is_set_female ? _female : default!;
         set
         {
             if(_female != value)
             {
-                object oldValue = _female;
-                if(_female is {})
+                lock(_lock)
                 {
-                    _female.PocoChanged -= FemalePocoChanged;
+                    if(_female != value  && (IsBeingPopulated || _is_set_female))
+                    {
+                        if(_female is {})
+                        {
+                            _female.PocoChanged -= FemalePocoChanged;
+                        }
+                        _female = value;
+                        if(_female is {})
+                        {
+                            _female.PocoChanged += FemalePocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_female = value;
+                        }
+                        OnPocoChanged(s_femaleProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _female = value;
-                if(_female is {})
-                {
-                    _female.PocoChanged += FemalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Male
     {
-        get => _male;
+        get => _is_set_male ? _male : default!;
         set
         {
             if(_male != value)
             {
-                object? oldValue = _male;
-                if(_male is {})
+                lock(_lock)
                 {
-                    _male.PocoChanged -= MalePocoChanged;
+                    if(_male != value  && (IsBeingPopulated || _is_set_male))
+                    {
+                        if(_male is {})
+                        {
+                            _male.PocoChanged -= MalePocoChanged;
+                        }
+                        _male = value;
+                        if(_male is {})
+                        {
+                            _male.PocoChanged += MalePocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_male = value;
+                        }
+                        OnPocoChanged(s_maleProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _male = value;
-                if(_male is {})
-                {
-                    _male.PocoChanged += MalePocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual ObservableCollection<String> Strings
     {
-        get => _strings;
+        get => _is_set_strings ? _strings : default!;
         set => throw new NotImplementedException();
     }
 
     public virtual ObservableCollection<CatPoco> Cats
     {
-        get => _cats;
+        get => _is_set_cats ? _cats : default!;
         set => throw new NotImplementedException();
     }
 
@@ -994,6 +945,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public LitterPoco(IServiceProvider services) : base(services) 
     { 
+        _propertiesCount = 6;
+        _modifiedProperties = new int[_propertiesCount];
         _strings.CollectionChanged += StringsCollectionChanged;
         _cats.CollectionChanged += CatsCollectionChanged;
     }
@@ -1058,37 +1011,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         return base.GetHashCode();
     }
 
-    public void TouchDate()
-    {
-        _is_set_date = true;
-
-    }
-    public void TouchOrder()
-    {
-        _is_set_order = true;
-
-    }
-    public void TouchFemale()
-    {
-        _is_set_female = true;
-
-    }
-    public void TouchMale()
-    {
-        _is_set_male = true;
-
-    }
-    public void TouchStrings()
-    {
-        Strings.Touch();
-
-    }
-    public void TouchCats()
-    {
-        Cats.Touch();
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -1100,27 +1022,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     
 #region Collections
-
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            case "Strings":
-                return !Enumerable.SequenceEqual(
-                        _strings.OrderBy(o => o.GetHashCode()), 
-                        _initial_strings.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            case "Cats":
-                return !Enumerable.SequenceEqual(
-                        _cats.OrderBy(o => o.GetHashCode()), 
-                        _initial_cats.OrderBy(o => o.GetHashCode()),
-                        ReferenceEqualityComparer.Instance
-                    );
-            default:
-                return false;
-        }
-    }
 
     protected override void CancelCollectionsChanges()
     {
@@ -1181,31 +1082,131 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     protected virtual void CatsPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
 
 
+    private bool IsDateInitial() => _initial_date != _date;
+
+    private bool IsDateModified() => _is_set_date 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsDateInitial();
+
+    private bool IsOrderInitial() => _initial_order != _order;
+
+    private bool IsOrderModified() => _is_set_order 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsOrderInitial();
+
+    private bool IsFemaleInitial() => _initial_female != _female;
+
+    private bool IsFemaleModified() => _is_set_female 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsFemaleInitial();
+
+    private bool IsMaleInitial() => _initial_male != _male;
+
+    private bool IsMaleModified() => _is_set_male 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsMaleInitial();
+
     protected virtual void StringsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        OnPocoChanged(_initial_strings, _strings, nameof(Strings));
-        OnPropertyChanged(nameof(Strings));
+        lock(_lock)
+        {
+            _is_set_strings = e.Action is not NotifyCollectionChangedAction.Reset;
+            if (e.OldItems is { })
+            {
+                foreach (String item in e.OldItems)
+                {
+                    if(IsBeingPopulated)
+                    {
+                        _initial_strings.Remove(item);
+                    }
+                }
+            }
+            if (e.NewItems is { })
+            {
+                foreach (String item in e.NewItems)
+                {
+                    if(IsBeingPopulated || _is_set_strings)
+                    {
+                        if(IsBeingPopulated)
+                        {
+                            _initial_strings.Add(item);
+                        }
+                    }
+                    else {
+                        _strings.Remove(item);
+                    }
+                }
+            }
+            if(IsBeingPopulated || _is_set_strings)
+            {
+                OnPocoChanged(s_stringsProp);
+                OnPropertyChanged(nameof(Strings));
+            }
+        }
     }
+
+    private bool IsStringsInitial() => !Enumerable.SequenceEqual(
+            _strings.OrderBy(o => o.GetHashCode()), 
+            _initial_strings.OrderBy(o => o.GetHashCode()),
+            ReferenceEqualityComparer.Instance
+        );
+
+
+    private bool IsStringsModified() => _is_set_strings 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsStringsInitial();
 
     protected virtual void CatsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (e.OldItems is { })
+        lock(_lock)
         {
-            foreach (INotifyPocoChanged item in e.OldItems)
+            _is_set_cats = e.Action is not NotifyCollectionChangedAction.Reset;
+            if (e.OldItems is { })
             {
-                item.PocoChanged -= CatsPocoChanged;
+                foreach (CatPoco item in e.OldItems)
+                {
+                    item.PocoChanged -= CatsPocoChanged;
+                    if(IsBeingPopulated)
+                    {
+                        _initial_cats.Remove(item);
+                    }
+                }
+            }
+            if (e.NewItems is { })
+            {
+                foreach (CatPoco item in e.NewItems)
+                {
+                    if(IsBeingPopulated || _is_set_cats)
+                    {
+                        item.PocoChanged += CatsPocoChanged;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_cats.Add(item);
+                        }
+                    }
+                    else {
+                        _cats.Remove(item);
+                    }
+                }
+            }
+            if(IsBeingPopulated || _is_set_cats)
+            {
+                OnPocoChanged(s_catsProp);
+                OnPropertyChanged(nameof(Cats));
             }
         }
-        if (e.NewItems is { })
-        {
-            foreach (INotifyPocoChanged item in e.NewItems)
-            {
-                item.PocoChanged += CatsPocoChanged;
-            }
-        }
-        OnPocoChanged(_initial_cats, _cats, nameof(Cats));
-        OnPropertyChanged(nameof(Cats));
     }
+
+    private bool IsCatsInitial() => !Enumerable.SequenceEqual(
+            _cats.OrderBy(o => o.GetHashCode()), 
+            _initial_cats.OrderBy(o => o.GetHashCode()),
+            ReferenceEqualityComparer.Instance
+        );
+
+
+    private bool IsCatsModified() => _is_set_cats 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsCatsInitial();
 
 
 #endregion Poco Changed;

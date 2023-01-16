@@ -8,7 +8,7 @@
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
-        get => @fieldName;
+        get => @Html.Raw($"_is_set{fieldName}") ? @fieldName : default!;
     @if(!pm.IsReadOnly)
     {
         if(pm.IsList)
@@ -22,26 +22,35 @@
         {
             if(@fieldName != value)
             {
-                @Html.Raw("object")@if (pm.IsNullable) {<text>?</text> } oldValue = @fieldName;
-                @if(pm.IsProjection)
+                lock(_lock)
                 {
-                    <text>                if(@fieldName is {})
-                {
-                    @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged;")
-                }
+                    if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))</text>})
+                    {
+                        @if(pm.IsProjection)
+                        {
+                            <text>                        if(@fieldName is {})
+                        {
+                            @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
+                        }
 </text>   
-                }
-                @fieldName = value;
-                @if(pm.IsProjection)
-                {
-                    <text>                if(@fieldName is {})
-                {
-                    @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged;")
-                }
+                        }
+                        @fieldName = value;
+                        @if(pm.IsProjection)
+                        {
+                            <text>                        if(@fieldName is {})
+                        {
+                            @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged");
+                        }
 </text>   
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            @Html.Raw($"_initial{fieldName}") = value;
+                        }
+                        OnPocoChanged(@Html.Raw($"s{fieldName}Prop"));
+                        OnPropertyChanged();
+                    }
                 }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
 </text>

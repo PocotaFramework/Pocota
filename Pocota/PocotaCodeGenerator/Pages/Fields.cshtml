@@ -19,7 +19,7 @@
     <text> @fieldName</text>
     if (pm.IsList)
     {
-        <text> = @Html.Raw($"new(\"{pm.Name}\")")</text>
+        <text> = @Html.Raw($"new(nameof({pm.Name}))")</text>
     } 
     else 
     {

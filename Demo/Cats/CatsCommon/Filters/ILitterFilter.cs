@@ -6,4 +6,5 @@ public interface ILitterFilter
 {
     ICat Female { get; set; }
     ICat Male { get; set; }
+    IList<string> Strings { get; set; }
 }

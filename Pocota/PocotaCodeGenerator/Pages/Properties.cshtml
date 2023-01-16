@@ -10,7 +10,7 @@
     { 
         get => @if (!pm.IsList && Model.IsEntity)
         {
-            <text>@Html.Raw($"!_is_set{fieldName} ? throw new {nameof(PropertyNotSetException)}(\"{pm.Name}\") :")</text>
+            <text>@Html.Raw($"!_is_set{fieldName} ? throw new {nameof(PropertyNotSetException)}(nameof({pm.Name})) :")</text>
         } @fieldName; 
         @if(!pm.IsReadOnly && !pm.IsList) 
         {

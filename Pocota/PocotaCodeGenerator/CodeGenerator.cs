@@ -986,6 +986,7 @@ public class CodeGenerator : IModelBuilder
                     },
                     Parent = model,
                     Interface = MakeTypeName(projection),
+                    IsClient = isClient,
                 };
                 if (isClient)
                 {

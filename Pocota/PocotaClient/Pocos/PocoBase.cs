@@ -3,8 +3,6 @@ using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Common.Generic;
-using System.Collections;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -53,17 +51,18 @@ public abstract class PocoBase : IPoco
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
 
-    private readonly HashSet<string> _populatedProperties = new();
-
     protected bool _isCreated = false;
 
     protected bool _cancellingChanges = false;
 
-    protected Dictionary<string, object?>? _modified = null;
+    protected int _countModified = 0;
     protected PocoState _pocoState = PocoState.Uncertain;
     protected readonly object _lock = new();
 
     protected readonly IServiceProvider _services;
+
+    protected int[] _modifiedProperties;
+    protected int _propertiesCount = 0;
 
     internal abstract bool IsEnvelope { get; }
 
@@ -84,7 +83,7 @@ public abstract class PocoBase : IPoco
         {
             lock (_lock)
             {
-                if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
+                if (_pocoState is PocoState.Unchanged && _countModified > 0)
                 {
                     return PocoState.Modified;
                 }
@@ -126,19 +125,14 @@ public abstract class PocoBase : IPoco
                     _pocoState = PocoState.Unchanged;
                 }
             }
-            else if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
+            else if (_pocoState is PocoState.Unchanged && _countModified > 0)
             {
                 try
                 {
                     _cancellingChanges = true;
-                    foreach (var entry in _modified)
-                    {
-                        if (_pocota.GetPropertiesDictionary(GetType())?[entry.Key] is IProperty property && !property.IsCollection)
-                        {
-                            property.Set(this, entry.Value);
-                        }
-                    }
-                    _modified.Clear();
+
+                    //todo restore initials
+                    _countModified = 0;
                     CancelCollectionsChanges();
                     _cancellingChanges = false;
                 }
@@ -164,9 +158,10 @@ public abstract class PocoBase : IPoco
         lock (_lock)
         {
             PocoState oldPocoState = ((IPoco)this).PocoState;
-            if (_modified is { })
+            if (_countModified > 0)
             {
-                _modified.Clear();
+                //todo reset initials
+                _countModified = 0;
             }
             AcceptCollectionsChanges();
             _pocoState = PocoState.Unchanged;
@@ -174,33 +169,6 @@ public abstract class PocoBase : IPoco
             if (oldPocoState != newPocoState)
             {
                 OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
-            }
-        }
-    }
-
-    bool IPoco.IsModified(string property)
-    {
-        return _modified?.ContainsKey(property) ?? false;
-    }
-
-    void IPoco.TouchProperty(string property)
-    {
-        lock (_lock)
-        {
-            if (_populaters.Count > 0)
-            {
-                _populatedProperties.Add(property!);
-            }
-        }
-    }
-
-    void IPoco.Invalidate()
-    {
-        lock (_lock)
-        {
-            if (_populaters.Count == 0)
-            {
-                _populatedProperties.Clear();
             }
         }
     }
@@ -271,13 +239,11 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    protected abstract bool IsCollectionChanged(string property);
-
     protected abstract void AcceptCollectionsChanges();
 
     protected abstract void CancelCollectionsChanges();
 
-    protected virtual void OnPocoChanged(object? oldValue, object? newValue, [CallerMemberName] string? property = null)
+    protected virtual void OnPocoChanged(Property property)
     {
         lock (_lock)
         {
@@ -292,34 +258,34 @@ public abstract class PocoBase : IPoco
                             throw new InvalidOperationException($"{((IPoco)this).PocoState} Poco cannot be modified!");
                         }
                         PocoState oldPocoState = ((IPoco)this).PocoState;
-                        if (_modified is null)
-                        {
-                            _modified = new Dictionary<string, object?>();
-                        }
-                        if (_pocota.GetPropertiesDictionary(GetType())![property!].IsCollection)
-                        {
-                            if (IsCollectionChanged(property!))
-                            {
-                                _modified.TryAdd(property!, oldValue);
-                            }
-                            else
-                            {
-                                _modified.Remove(property!);
-                            }
-                        }
-                        else if (
-                            (oldValue is { } && !oldValue.Equals(newValue) || newValue is { } && !newValue.Equals(oldValue))
-                            && !(_modified.TryAdd(property!, oldValue))
-                            && (
-                                _modified[property!] is null && newValue is null
-                                || (
-                                    _modified[property!] is { } && newValue is { } && _modified[property!]!.Equals(newValue)
-                                )
-                            )
-                        )
-                        {
-                            _modified.Remove(property!);
-                        }
+                        //if (_countModified is null)
+                        //{
+                        //    _countModified = new Dictionary<string, object?>();
+                        //}
+                        //if (_pocota.GetPropertiesDictionary(GetType())![property!].IsCollection)
+                        //{
+                        //    if (IsCollectionChanged(property!))
+                        //    {
+                        //        _countModified.TryAdd(property!, oldValue);
+                        //    }
+                        //    else
+                        //    {
+                        //        _countModified.Remove(property!);
+                        //    }
+                        //}
+                        //else if (
+                        //    (oldValue is { } && !oldValue.Equals(newValue) || newValue is { } && !newValue.Equals(oldValue))
+                        //    && !(_countModified.TryAdd(property!, oldValue))
+                        //    && (
+                        //        _countModified[property!] is null && newValue is null
+                        //        || (
+                        //            _countModified[property!] is { } && newValue is { } && _countModified[property!]!.Equals(newValue)
+                        //        )
+                        //    )
+                        //)
+                        //{
+                        //    _countModified.Remove(property!);
+                        //}
 
                         PocoState newPocoState = ((IPoco)this).PocoState;
 
@@ -337,10 +303,6 @@ public abstract class PocoBase : IPoco
                         OnPocoChanged(new NotifyPocoChangedEventArgs());
                     }
                 }
-            }
-            else
-            {
-                _populatedProperties.Add(property!);
             }
         }
     }

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-15T13:32:57                                  //
+// at 2023-01-16T18:41:15                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -27,336 +27,261 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
 #region Init Properties
 
-        public class BornAfterProperty: IProperty
+        public class BornAfterProperty: Property
         {
-            public string Name => "BornAfter";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.BornAfter;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchBornAfter();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly)value!;
-            }
+            public override string Name => "BornAfter";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfter;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornAfterModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornAfterInitial();
+            public override int Position => 0;
         }
-        public class BornBeforeProperty: IProperty
+
+        public class BornBeforeProperty: Property
         {
-            public string Name => "BornBefore";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.BornBefore;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchBornBefore();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly)value!;
-            }
+            public override string Name => "BornBefore";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBefore;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornBeforeModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornBeforeInitial();
+            public override int Position => 1;
         }
-        public class ExteriorRegexProperty: IProperty
+
+        public class ExteriorRegexProperty: Property
         {
-            public string Name => "ExteriorRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchExteriorRegex();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String)value!;
-            }
+            public override string Name => "ExteriorRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsExteriorRegexModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsExteriorRegexInitial();
+            public override int Position => 2;
         }
-        public class GenderProperty: IProperty
+
+        public class GenderProperty: Property
         {
-            public string Name => "Gender";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(Gender);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_gender;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.Gender;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchGender();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender)value!;
-            }
+            public override string Name => "Gender";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(Gender);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_gender;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.Gender;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_gender = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsGenderModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsGenderInitial();
+            public override int Position => 3;
         }
-        public class NameRegexProperty: IProperty
+
+        public class NameRegexProperty: Property
         {
-            public string Name => "NameRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.NameRegex;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchNameRegex();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String)value!;
-            }
+            public override string Name => "NameRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegex;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsNameRegexModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsNameRegexInitial();
+            public override int Position => 4;
         }
-        public class TitleRegexProperty: IProperty
+
+        public class TitleRegexProperty: Property
         {
-            public string Name => "TitleRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex;
-            public object? Get(object target)
-            {
-                return ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchTitleRegex();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String)value!;
-            }
+            public override string Name => "TitleRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String)value!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsTitleRegexModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsTitleRegexInitial();
+            public override int Position => 5;
         }
-        public class AncestorProperty: IProperty
+
+        public class AncestorProperty: Property
         {
-            public string Name => "Ancestor";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchAncestor();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Ancestor";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsAncestorModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsAncestorInitial();
+            public override int Position => 6;
         }
-        public class BreedProperty: IProperty
+
+        public class BreedProperty: Property
         {
-            public string Name => "Breed";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(IBreed);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_breed;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchBreed();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
-            }
+            public override string Name => "Breed";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(IBreed);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_breed;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_breed = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBreedModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBreedInitial();
+            public override int Position => 7;
         }
-        public class CatteryProperty: IProperty
+
+        public class CatteryProperty: Property
         {
-            public string Name => "Cattery";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICattery);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_cattery;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchCattery();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
-            }
+            public override string Name => "Cattery";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICattery);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_cattery;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_cattery = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsCatteryModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsCatteryInitial();
+            public override int Position => 8;
         }
-        public class ChildProperty: IProperty
+
+        public class ChildProperty: Property
         {
-            public string Name => "Child";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_child;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchChild();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Child";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_child;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_child = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsChildModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsChildInitial();
+            public override int Position => 9;
         }
-        public class DescendantProperty: IProperty
+
+        public class DescendantProperty: Property
         {
-            public string Name => "Descendant";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_descendant;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchDescendant();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Descendant";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_descendant;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_descendant = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsDescendantModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsDescendantInitial();
+            public override int Position => 10;
         }
-        public class FatherProperty: IProperty
+
+        public class FatherProperty: Property
         {
-            public string Name => "Father";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_father;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchFather();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Father";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_father;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_father = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsFatherModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsFatherInitial();
+            public override int Position => 11;
         }
-        public class LitterProperty: IProperty
+
+        public class LitterProperty: Property
         {
-            public string Name => "Litter";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ILitter);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_litter;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchLitter();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
-            }
+            public override string Name => "Litter";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ILitter);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_litter;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_litter = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsLitterModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsLitterInitial();
+            public override int Position => 12;
         }
-        public class MotherProperty: IProperty
+
+        public class MotherProperty: Property
         {
-            public string Name => "Mother";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_mother;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchMother();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Mother";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_mother;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_mother = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsMotherModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsMotherInitial();
+            public override int Position => 13;
         }
-        public class SelfProperty: IProperty
+
+        public class SelfProperty: Property
         {
-            public string Name => "Self";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_self;
-            public object? Get(object target)
-            {
-                return ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
-            }
-            public void Touch(object target)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.TouchSelf();
-            }
-            public void Set(object target, object? value)
-            {
-                ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>()!;
-            }
+            public override string Name => "Self";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_self;
+            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
+            public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_self = true;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>()!;
+            public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsSelfModified();
+            public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsSelfInitial();
+            public override int Position => 14;
         }
+
         public static void InitProperties(List<IProperty> properties)
         {
             properties.Add(new BornAfterProperty());
@@ -528,336 +453,261 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     
 #region Init Properties
 
-    public class BornAfterProperty: IProperty
+    public class BornAfterProperty: Property
     {
-        public string Name => "BornAfter";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(DateOnly);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornAfter;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).BornAfter;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchBornAfter();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
-        }
+        public override string Name => "BornAfter";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(DateOnly);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornAfter;
+        public override object? Get(object target) => ((CatFilterPoco)target).BornAfter;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_bornAfter = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsBornAfterModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornAfterInitial();
+        public override int Position => 0;
     }
-    public class BornBeforeProperty: IProperty
+
+    public class BornBeforeProperty: Property
     {
-        public string Name => "BornBefore";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(DateOnly);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornBefore;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).BornBefore;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchBornBefore();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
-        }
+        public override string Name => "BornBefore";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(DateOnly);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_bornBefore;
+        public override object? Get(object target) => ((CatFilterPoco)target).BornBefore;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_bornBefore = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsBornBeforeModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornBeforeInitial();
+        public override int Position => 1;
     }
-    public class ExteriorRegexProperty: IProperty
+
+    public class ExteriorRegexProperty: Property
     {
-        public string Name => "ExteriorRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_exteriorRegex;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).ExteriorRegex;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchExteriorRegex();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).ExteriorRegex = (String)value!;
-        }
+        public override string Name => "ExteriorRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_exteriorRegex;
+        public override object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_exteriorRegex = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).ExteriorRegex = (String)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsExteriorRegexModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsExteriorRegexInitial();
+        public override int Position => 2;
     }
-    public class GenderProperty: IProperty
+
+    public class GenderProperty: Property
     {
-        public string Name => "Gender";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(Gender);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_gender;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Gender;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchGender();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Gender = (Gender)value!;
-        }
+        public override string Name => "Gender";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(Gender);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_gender;
+        public override object? Get(object target) => ((CatFilterPoco)target).Gender;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_gender = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Gender = (Gender)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsGenderModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsGenderInitial();
+        public override int Position => 3;
     }
-    public class NameRegexProperty: IProperty
+
+    public class NameRegexProperty: Property
     {
-        public string Name => "NameRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_nameRegex;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).NameRegex;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchNameRegex();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).NameRegex = (String)value!;
-        }
+        public override string Name => "NameRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_nameRegex;
+        public override object? Get(object target) => ((CatFilterPoco)target).NameRegex;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_nameRegex = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).NameRegex = (String)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsNameRegexModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsNameRegexInitial();
+        public override int Position => 4;
     }
-    public class TitleRegexProperty: IProperty
+
+    public class TitleRegexProperty: Property
     {
-        public string Name => "TitleRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_titleRegex;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).TitleRegex;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchTitleRegex();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).TitleRegex = (String)value!;
-        }
+        public override string Name => "TitleRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_titleRegex;
+        public override object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_titleRegex = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).TitleRegex = (String)value!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsTitleRegexModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsTitleRegexInitial();
+        public override int Position => 5;
     }
-    public class AncestorProperty: IProperty
+
+    public class AncestorProperty: Property
     {
-        public string Name => "Ancestor";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_ancestor;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Ancestor;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchAncestor();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Ancestor";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_ancestor;
+        public override object? Get(object target) => ((CatFilterPoco)target).Ancestor;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_ancestor = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsAncestorModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsAncestorInitial();
+        public override int Position => 6;
     }
-    public class BreedProperty: IProperty
+
+    public class BreedProperty: Property
     {
-        public string Name => "Breed";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(BreedPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_breed;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Breed;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchBreed();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
-        }
+        public override string Name => "Breed";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(BreedPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_breed;
+        public override object? Get(object target) => ((CatFilterPoco)target).Breed;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_breed = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsBreedModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBreedInitial();
+        public override int Position => 7;
     }
-    public class CatteryProperty: IProperty
+
+    public class CatteryProperty: Property
     {
-        public string Name => "Cattery";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatteryPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_cattery;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Cattery;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchCattery();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
-        }
+        public override string Name => "Cattery";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatteryPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_cattery;
+        public override object? Get(object target) => ((CatFilterPoco)target).Cattery;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_cattery = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsCatteryModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsCatteryInitial();
+        public override int Position => 8;
     }
-    public class ChildProperty: IProperty
+
+    public class ChildProperty: Property
     {
-        public string Name => "Child";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_child;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Child;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchChild();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Child = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Child";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_child;
+        public override object? Get(object target) => ((CatFilterPoco)target).Child;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_child = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Child = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsChildModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsChildInitial();
+        public override int Position => 9;
     }
-    public class DescendantProperty: IProperty
+
+    public class DescendantProperty: Property
     {
-        public string Name => "Descendant";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_descendant;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Descendant;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchDescendant();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Descendant = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Descendant";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_descendant;
+        public override object? Get(object target) => ((CatFilterPoco)target).Descendant;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_descendant = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Descendant = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsDescendantModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsDescendantInitial();
+        public override int Position => 10;
     }
-    public class FatherProperty: IProperty
+
+    public class FatherProperty: Property
     {
-        public string Name => "Father";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_father;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Father;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchFather();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Father = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Father";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_father;
+        public override object? Get(object target) => ((CatFilterPoco)target).Father;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_father = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Father = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsFatherModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsFatherInitial();
+        public override int Position => 11;
     }
-    public class LitterProperty: IProperty
+
+    public class LitterProperty: Property
     {
-        public string Name => "Litter";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(LitterPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_litter;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Litter;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchLitter();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
-        }
+        public override string Name => "Litter";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(LitterPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_litter;
+        public override object? Get(object target) => ((CatFilterPoco)target).Litter;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_litter = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsLitterModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsLitterInitial();
+        public override int Position => 12;
     }
-    public class MotherProperty: IProperty
+
+    public class MotherProperty: Property
     {
-        public string Name => "Mother";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_mother;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Mother;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchMother();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Mother = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Mother";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_mother;
+        public override object? Get(object target) => ((CatFilterPoco)target).Mother;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_mother = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Mother = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsMotherModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsMotherInitial();
+        public override int Position => 13;
     }
-    public class SelfProperty: IProperty
+
+    public class SelfProperty: Property
     {
-        public string Name => "Self";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_self;
-        public object? Get(object target)
-        {
-            return ((CatFilterPoco)target).Self;
-        }
-        public void Touch(object target)
-        {
-            ((CatFilterPoco)target).TouchSelf();
-        }
-        public void Set(object target, object? value)
-        {
-            ((CatFilterPoco)target).Self = ((IProjection?)value)?.As<CatPoco>()!;
-        }
+        public override string Name => "Self";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) =>  ((CatFilterPoco)target)._is_set_self;
+        public override object? Get(object target) => ((CatFilterPoco)target).Self;
+        public override void Touch(object target) => ((CatFilterPoco)target)._is_set_self = true;
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).Self = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((CatFilterPoco)target).IsSelfModified();
+        public override bool IsInitial(object target) => ((CatFilterPoco)target).IsSelfInitial();
+        public override int Position => 14;
     }
+
     public static void InitProperties(List<IProperty> properties)
     {
         properties.Add(new BornAfterProperty());
@@ -877,21 +727,21 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         properties.Add(new SelfProperty());
     }
 
-       internal static BornAfterProperty BornAfterProp = new();
-       internal static BornBeforeProperty BornBeforeProp = new();
-       internal static ExteriorRegexProperty ExteriorRegexProp = new();
-       internal static GenderProperty GenderProp = new();
-       internal static NameRegexProperty NameRegexProp = new();
-       internal static TitleRegexProperty TitleRegexProp = new();
-       internal static AncestorProperty AncestorProp = new();
-       internal static BreedProperty BreedProp = new();
-       internal static CatteryProperty CatteryProp = new();
-       internal static ChildProperty ChildProp = new();
-       internal static DescendantProperty DescendantProp = new();
-       internal static FatherProperty FatherProp = new();
-       internal static LitterProperty LitterProp = new();
-       internal static MotherProperty MotherProp = new();
-       internal static SelfProperty SelfProp = new();
+   internal static BornAfterProperty s_bornAfterProp = new();
+   internal static BornBeforeProperty s_bornBeforeProp = new();
+   internal static ExteriorRegexProperty s_exteriorRegexProp = new();
+   internal static GenderProperty s_genderProp = new();
+   internal static NameRegexProperty s_nameRegexProp = new();
+   internal static TitleRegexProperty s_titleRegexProp = new();
+   internal static AncestorProperty s_ancestorProp = new();
+   internal static BreedProperty s_breedProp = new();
+   internal static CatteryProperty s_catteryProp = new();
+   internal static ChildProperty s_childProp = new();
+   internal static DescendantProperty s_descendantProp = new();
+   internal static FatherProperty s_fatherProp = new();
+   internal static LitterProperty s_litterProp = new();
+   internal static MotherProperty s_motherProp = new();
+   internal static SelfProperty s_selfProp = new();
 #endregion Init Properties;
 
     
@@ -899,34 +749,49 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 #region Fields
 
     private DateOnly? _bornAfter = default;
+    private DateOnly?_initial_bornAfter = default;
     private bool _is_set_bornAfter = false;
     private DateOnly? _bornBefore = default;
+    private DateOnly?_initial_bornBefore = default;
     private bool _is_set_bornBefore = false;
     private String? _exteriorRegex = default;
+    private String?_initial_exteriorRegex = default;
     private bool _is_set_exteriorRegex = false;
     private Gender? _gender = default;
+    private Gender?_initial_gender = default;
     private bool _is_set_gender = false;
     private String? _nameRegex = default;
+    private String?_initial_nameRegex = default;
     private bool _is_set_nameRegex = false;
     private String? _titleRegex = default;
+    private String?_initial_titleRegex = default;
     private bool _is_set_titleRegex = false;
     private CatPoco? _ancestor = default;
+    private CatPoco?_initial_ancestor = default;
     private bool _is_set_ancestor = false;
     private BreedPoco? _breed = default;
+    private BreedPoco?_initial_breed = default;
     private bool _is_set_breed = false;
     private CatteryPoco? _cattery = default;
+    private CatteryPoco?_initial_cattery = default;
     private bool _is_set_cattery = false;
     private CatPoco? _child = default;
+    private CatPoco?_initial_child = default;
     private bool _is_set_child = false;
     private CatPoco? _descendant = default;
+    private CatPoco?_initial_descendant = default;
     private bool _is_set_descendant = false;
     private CatPoco? _father = default;
+    private CatPoco?_initial_father = default;
     private bool _is_set_father = false;
     private LitterPoco? _litter = default;
+    private LitterPoco?_initial_litter = default;
     private bool _is_set_litter = false;
     private CatPoco? _mother = default;
+    private CatPoco?_initial_mother = default;
     private bool _is_set_mother = false;
     private CatPoco? _self = default;
+    private CatPoco?_initial_self = default;
     private bool _is_set_self = false;
 
 #endregion Fields;
@@ -958,297 +823,432 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual DateOnly? BornAfter
     {
-        get => _bornAfter;
+        get => _is_set_bornAfter ? _bornAfter : default!;
         set
         {
             if(_bornAfter != value)
             {
-                object? oldValue = _bornAfter;
-                _bornAfter = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_bornAfter != value )
+                    {
+                        _bornAfter = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_bornAfter = value;
+                        }
+                        OnPocoChanged(s_bornAfterProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual DateOnly? BornBefore
     {
-        get => _bornBefore;
+        get => _is_set_bornBefore ? _bornBefore : default!;
         set
         {
             if(_bornBefore != value)
             {
-                object? oldValue = _bornBefore;
-                _bornBefore = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_bornBefore != value )
+                    {
+                        _bornBefore = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_bornBefore = value;
+                        }
+                        OnPocoChanged(s_bornBeforeProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? ExteriorRegex
     {
-        get => _exteriorRegex;
+        get => _is_set_exteriorRegex ? _exteriorRegex : default!;
         set
         {
             if(_exteriorRegex != value)
             {
-                object? oldValue = _exteriorRegex;
-                _exteriorRegex = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_exteriorRegex != value )
+                    {
+                        _exteriorRegex = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_exteriorRegex = value;
+                        }
+                        OnPocoChanged(s_exteriorRegexProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual Gender? Gender
     {
-        get => _gender;
+        get => _is_set_gender ? _gender : default!;
         set
         {
             if(_gender != value)
             {
-                object? oldValue = _gender;
-                _gender = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_gender != value )
+                    {
+                        _gender = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_gender = value;
+                        }
+                        OnPocoChanged(s_genderProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? NameRegex
     {
-        get => _nameRegex;
+        get => _is_set_nameRegex ? _nameRegex : default!;
         set
         {
             if(_nameRegex != value)
             {
-                object? oldValue = _nameRegex;
-                _nameRegex = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_nameRegex != value )
+                    {
+                        _nameRegex = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_nameRegex = value;
+                        }
+                        OnPocoChanged(s_nameRegexProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual String? TitleRegex
     {
-        get => _titleRegex;
+        get => _is_set_titleRegex ? _titleRegex : default!;
         set
         {
             if(_titleRegex != value)
             {
-                object? oldValue = _titleRegex;
-                _titleRegex = value;
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
+                lock(_lock)
+                {
+                    if(_titleRegex != value )
+                    {
+                        _titleRegex = value;
+                        if (IsBeingPopulated)
+                        {
+                            _initial_titleRegex = value;
+                        }
+                        OnPocoChanged(s_titleRegexProp);
+                        OnPropertyChanged();
+                    }
+                }
             }
         }
     }
 
     public virtual CatPoco? Ancestor
     {
-        get => _ancestor;
+        get => _is_set_ancestor ? _ancestor : default!;
         set
         {
             if(_ancestor != value)
             {
-                object? oldValue = _ancestor;
-                if(_ancestor is {})
+                lock(_lock)
                 {
-                    _ancestor.PocoChanged -= AncestorPocoChanged;
+                    if(_ancestor != value )
+                    {
+                        if(_ancestor is {})
+                        {
+                            _ancestor.PocoChanged -= AncestorPocoChanged;
+                        }
+                        _ancestor = value;
+                        if(_ancestor is {})
+                        {
+                            _ancestor.PocoChanged += AncestorPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_ancestor = value;
+                        }
+                        OnPocoChanged(s_ancestorProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _ancestor = value;
-                if(_ancestor is {})
-                {
-                    _ancestor.PocoChanged += AncestorPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual BreedPoco? Breed
     {
-        get => _breed;
+        get => _is_set_breed ? _breed : default!;
         set
         {
             if(_breed != value)
             {
-                object? oldValue = _breed;
-                if(_breed is {})
+                lock(_lock)
                 {
-                    _breed.PocoChanged -= BreedPocoChanged;
+                    if(_breed != value )
+                    {
+                        if(_breed is {})
+                        {
+                            _breed.PocoChanged -= BreedPocoChanged;
+                        }
+                        _breed = value;
+                        if(_breed is {})
+                        {
+                            _breed.PocoChanged += BreedPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_breed = value;
+                        }
+                        OnPocoChanged(s_breedProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _breed = value;
-                if(_breed is {})
-                {
-                    _breed.PocoChanged += BreedPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatteryPoco? Cattery
     {
-        get => _cattery;
+        get => _is_set_cattery ? _cattery : default!;
         set
         {
             if(_cattery != value)
             {
-                object? oldValue = _cattery;
-                if(_cattery is {})
+                lock(_lock)
                 {
-                    _cattery.PocoChanged -= CatteryPocoChanged;
+                    if(_cattery != value )
+                    {
+                        if(_cattery is {})
+                        {
+                            _cattery.PocoChanged -= CatteryPocoChanged;
+                        }
+                        _cattery = value;
+                        if(_cattery is {})
+                        {
+                            _cattery.PocoChanged += CatteryPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_cattery = value;
+                        }
+                        OnPocoChanged(s_catteryProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _cattery = value;
-                if(_cattery is {})
-                {
-                    _cattery.PocoChanged += CatteryPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Child
     {
-        get => _child;
+        get => _is_set_child ? _child : default!;
         set
         {
             if(_child != value)
             {
-                object? oldValue = _child;
-                if(_child is {})
+                lock(_lock)
                 {
-                    _child.PocoChanged -= ChildPocoChanged;
+                    if(_child != value )
+                    {
+                        if(_child is {})
+                        {
+                            _child.PocoChanged -= ChildPocoChanged;
+                        }
+                        _child = value;
+                        if(_child is {})
+                        {
+                            _child.PocoChanged += ChildPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_child = value;
+                        }
+                        OnPocoChanged(s_childProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _child = value;
-                if(_child is {})
-                {
-                    _child.PocoChanged += ChildPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Descendant
     {
-        get => _descendant;
+        get => _is_set_descendant ? _descendant : default!;
         set
         {
             if(_descendant != value)
             {
-                object? oldValue = _descendant;
-                if(_descendant is {})
+                lock(_lock)
                 {
-                    _descendant.PocoChanged -= DescendantPocoChanged;
+                    if(_descendant != value )
+                    {
+                        if(_descendant is {})
+                        {
+                            _descendant.PocoChanged -= DescendantPocoChanged;
+                        }
+                        _descendant = value;
+                        if(_descendant is {})
+                        {
+                            _descendant.PocoChanged += DescendantPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_descendant = value;
+                        }
+                        OnPocoChanged(s_descendantProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _descendant = value;
-                if(_descendant is {})
-                {
-                    _descendant.PocoChanged += DescendantPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Father
     {
-        get => _father;
+        get => _is_set_father ? _father : default!;
         set
         {
             if(_father != value)
             {
-                object? oldValue = _father;
-                if(_father is {})
+                lock(_lock)
                 {
-                    _father.PocoChanged -= FatherPocoChanged;
+                    if(_father != value )
+                    {
+                        if(_father is {})
+                        {
+                            _father.PocoChanged -= FatherPocoChanged;
+                        }
+                        _father = value;
+                        if(_father is {})
+                        {
+                            _father.PocoChanged += FatherPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_father = value;
+                        }
+                        OnPocoChanged(s_fatherProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _father = value;
-                if(_father is {})
-                {
-                    _father.PocoChanged += FatherPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual LitterPoco? Litter
     {
-        get => _litter;
+        get => _is_set_litter ? _litter : default!;
         set
         {
             if(_litter != value)
             {
-                object? oldValue = _litter;
-                if(_litter is {})
+                lock(_lock)
                 {
-                    _litter.PocoChanged -= LitterPocoChanged;
+                    if(_litter != value )
+                    {
+                        if(_litter is {})
+                        {
+                            _litter.PocoChanged -= LitterPocoChanged;
+                        }
+                        _litter = value;
+                        if(_litter is {})
+                        {
+                            _litter.PocoChanged += LitterPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_litter = value;
+                        }
+                        OnPocoChanged(s_litterProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _litter = value;
-                if(_litter is {})
-                {
-                    _litter.PocoChanged += LitterPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Mother
     {
-        get => _mother;
+        get => _is_set_mother ? _mother : default!;
         set
         {
             if(_mother != value)
             {
-                object? oldValue = _mother;
-                if(_mother is {})
+                lock(_lock)
                 {
-                    _mother.PocoChanged -= MotherPocoChanged;
+                    if(_mother != value )
+                    {
+                        if(_mother is {})
+                        {
+                            _mother.PocoChanged -= MotherPocoChanged;
+                        }
+                        _mother = value;
+                        if(_mother is {})
+                        {
+                            _mother.PocoChanged += MotherPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_mother = value;
+                        }
+                        OnPocoChanged(s_motherProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _mother = value;
-                if(_mother is {})
-                {
-                    _mother.PocoChanged += MotherPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
 
     public virtual CatPoco? Self
     {
-        get => _self;
+        get => _is_set_self ? _self : default!;
         set
         {
             if(_self != value)
             {
-                object? oldValue = _self;
-                if(_self is {})
+                lock(_lock)
                 {
-                    _self.PocoChanged -= SelfPocoChanged;
+                    if(_self != value )
+                    {
+                        if(_self is {})
+                        {
+                            _self.PocoChanged -= SelfPocoChanged;
+                        }
+                        _self = value;
+                        if(_self is {})
+                        {
+                            _self.PocoChanged += SelfPocoChanged;
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            _initial_self = value;
+                        }
+                        OnPocoChanged(s_selfProp);
+                        OnPropertyChanged();
+                    }
                 }
-                _self = value;
-                if(_self is {})
-                {
-                    _self.PocoChanged += SelfPocoChanged;
-                }
-                OnPocoChanged(oldValue, value);
-                OnPropertyChanged();
             }
         }
     }
@@ -1258,6 +1258,8 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public CatFilterPoco(IServiceProvider services) : base(services) 
     { 
+        _propertiesCount = 15;
+        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -1304,82 +1306,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         return base.GetHashCode();
     }
 
-    public void TouchBornAfter()
-    {
-        _is_set_bornAfter = true;
-
-    }
-    public void TouchBornBefore()
-    {
-        _is_set_bornBefore = true;
-
-    }
-    public void TouchExteriorRegex()
-    {
-        _is_set_exteriorRegex = true;
-
-    }
-    public void TouchGender()
-    {
-        _is_set_gender = true;
-
-    }
-    public void TouchNameRegex()
-    {
-        _is_set_nameRegex = true;
-
-    }
-    public void TouchTitleRegex()
-    {
-        _is_set_titleRegex = true;
-
-    }
-    public void TouchAncestor()
-    {
-        _is_set_ancestor = true;
-
-    }
-    public void TouchBreed()
-    {
-        _is_set_breed = true;
-
-    }
-    public void TouchCattery()
-    {
-        _is_set_cattery = true;
-
-    }
-    public void TouchChild()
-    {
-        _is_set_child = true;
-
-    }
-    public void TouchDescendant()
-    {
-        _is_set_descendant = true;
-
-    }
-    public void TouchFather()
-    {
-        _is_set_father = true;
-
-    }
-    public void TouchLitter()
-    {
-        _is_set_litter = true;
-
-    }
-    public void TouchMother()
-    {
-        _is_set_mother = true;
-
-    }
-    public void TouchSelf()
-    {
-        _is_set_self = true;
-
-    }
-
 
     private void ProjectionCreated(Type @interface, IProjection projection)
     {
@@ -1391,15 +1317,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     
 #region Collections
-
-    protected override bool IsCollectionChanged(string property)
-    {
-        switch(property)
-        {
-            default:
-                return false;
-        }
-    }
 
     protected override void CancelCollectionsChanges()
     {
@@ -1433,6 +1350,96 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     protected virtual void SelfPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Self));
 
+
+    private bool IsBornAfterInitial() => _initial_bornAfter != _bornAfter;
+
+    private bool IsBornAfterModified() => _is_set_bornAfter 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsBornAfterInitial();
+
+    private bool IsBornBeforeInitial() => _initial_bornBefore != _bornBefore;
+
+    private bool IsBornBeforeModified() => _is_set_bornBefore 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsBornBeforeInitial();
+
+    private bool IsExteriorRegexInitial() => _initial_exteriorRegex != _exteriorRegex;
+
+    private bool IsExteriorRegexModified() => _is_set_exteriorRegex 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsExteriorRegexInitial();
+
+    private bool IsGenderInitial() => _initial_gender != _gender;
+
+    private bool IsGenderModified() => _is_set_gender 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsGenderInitial();
+
+    private bool IsNameRegexInitial() => _initial_nameRegex != _nameRegex;
+
+    private bool IsNameRegexModified() => _is_set_nameRegex 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsNameRegexInitial();
+
+    private bool IsTitleRegexInitial() => _initial_titleRegex != _titleRegex;
+
+    private bool IsTitleRegexModified() => _is_set_titleRegex 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsTitleRegexInitial();
+
+    private bool IsAncestorInitial() => _initial_ancestor != _ancestor;
+
+    private bool IsAncestorModified() => _is_set_ancestor 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsAncestorInitial();
+
+    private bool IsBreedInitial() => _initial_breed != _breed;
+
+    private bool IsBreedModified() => _is_set_breed 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsBreedInitial();
+
+    private bool IsCatteryInitial() => _initial_cattery != _cattery;
+
+    private bool IsCatteryModified() => _is_set_cattery 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsCatteryInitial();
+
+    private bool IsChildInitial() => _initial_child != _child;
+
+    private bool IsChildModified() => _is_set_child 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsChildInitial();
+
+    private bool IsDescendantInitial() => _initial_descendant != _descendant;
+
+    private bool IsDescendantModified() => _is_set_descendant 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsDescendantInitial();
+
+    private bool IsFatherInitial() => _initial_father != _father;
+
+    private bool IsFatherModified() => _is_set_father 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsFatherInitial();
+
+    private bool IsLitterInitial() => _initial_litter != _litter;
+
+    private bool IsLitterModified() => _is_set_litter 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsLitterInitial();
+
+    private bool IsMotherInitial() => _initial_mother != _mother;
+
+    private bool IsMotherModified() => _is_set_mother 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsMotherInitial();
+
+    private bool IsSelfInitial() => _initial_self != _self;
+
+    private bool IsSelfModified() => _is_set_self 
+        && ((IPoco)this).PocoState is PocoState.Modified
+                && !IsSelfInitial();
 
 
 #endregion Poco Changed;
