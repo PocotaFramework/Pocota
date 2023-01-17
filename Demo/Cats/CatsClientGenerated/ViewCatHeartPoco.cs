@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-16T18:41:15                                          //
+// at 2023-01-17T15:18:11                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -272,10 +272,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         properties.Add(new SelectedLittersProperty());
     }
 
-   internal static EditKindProperty s_editKindProp = new();
-   internal static LittersViewProperty s_littersViewProp = new();
-   internal static CatProperty s_catProp = new();
-   internal static SelectedLittersProperty s_selectedLittersProp = new();
+   public static EditKindProperty EditKindProp = new();
+   public static LittersViewProperty LittersViewProp = new();
+   public static CatProperty CatProp = new();
+   public static SelectedLittersProperty SelectedLittersProp = new();
 #endregion Init Properties;
 
     

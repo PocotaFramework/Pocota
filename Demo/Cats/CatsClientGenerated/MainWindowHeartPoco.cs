@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-16T18:41:15                                          //
+// at 2023-01-17T15:18:11                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -779,22 +779,22 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         properties.Add(new SelectedCatsProperty());
     }
 
-   internal static AllBreedsProperty s_allBreedsProp = new();
-   internal static AllBreedsCountProperty s_allBreedsCountProp = new();
-   internal static AllCatteriesProperty s_allCatteriesProp = new();
-   internal static AllCatteriesCountProperty s_allCatteriesCountProp = new();
-   internal static BreedsCountProperty s_breedsCountProp = new();
-   internal static CatsViewSourceProperty s_catsViewSourceProp = new();
-   internal static CatteriesCountProperty s_catteriesCountProp = new();
-   internal static GetCatsTimeSpentProperty s_getCatsTimeSpentProp = new();
-   internal static IsCatSelectedProperty s_isCatSelectedProp = new();
-   internal static RenderingCatsTimeSpentProperty s_renderingCatsTimeSpentProp = new();
-   internal static CatFilterProperty s_catFilterProp = new();
-   internal static SelectedCatProperty s_selectedCatProp = new();
-   internal static BreedsProperty s_breedsProp = new();
-   internal static CatsProperty s_catsProp = new();
-   internal static CatteriesProperty s_catteriesProp = new();
-   internal static SelectedCatsProperty s_selectedCatsProp = new();
+   public static AllBreedsProperty AllBreedsProp = new();
+   public static AllBreedsCountProperty AllBreedsCountProp = new();
+   public static AllCatteriesProperty AllCatteriesProp = new();
+   public static AllCatteriesCountProperty AllCatteriesCountProp = new();
+   public static BreedsCountProperty BreedsCountProp = new();
+   public static CatsViewSourceProperty CatsViewSourceProp = new();
+   public static CatteriesCountProperty CatteriesCountProp = new();
+   public static GetCatsTimeSpentProperty GetCatsTimeSpentProp = new();
+   public static IsCatSelectedProperty IsCatSelectedProp = new();
+   public static RenderingCatsTimeSpentProperty RenderingCatsTimeSpentProp = new();
+   public static CatFilterProperty CatFilterProp = new();
+   public static SelectedCatProperty SelectedCatProp = new();
+   public static BreedsProperty BreedsProp = new();
+   public static CatsProperty CatsProp = new();
+   public static CatteriesProperty CatteriesProp = new();
+   public static SelectedCatsProperty SelectedCatsProp = new();
 #endregion Init Properties;
 
     

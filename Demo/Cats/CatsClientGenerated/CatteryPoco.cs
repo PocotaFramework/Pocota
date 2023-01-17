@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -179,8 +179,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         properties.Add(new NameNatProperty());
     }
 
-   internal static NameEngProperty s_nameEngProp = new();
-   internal static NameNatProperty s_nameNatProp = new();
+   public static NameEngProperty NameEngProp = new();
+   public static NameNatProperty NameNatProp = new();
 #endregion Init Properties;
 
     

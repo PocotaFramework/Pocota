@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -586,12 +586,12 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         properties.Add(new CatsProperty());
     }
 
-   internal static DateProperty s_dateProp = new();
-   internal static OrderProperty s_orderProp = new();
-   internal static FemaleProperty s_femaleProp = new();
-   internal static MaleProperty s_maleProp = new();
-   internal static StringsProperty s_stringsProp = new();
-   internal static CatsProperty s_catsProp = new();
+   public static DateProperty DateProp = new();
+   public static OrderProperty OrderProp = new();
+   public static FemaleProperty FemaleProp = new();
+   public static MaleProperty MaleProp = new();
+   public static StringsProperty StringsProp = new();
+   public static CatsProperty CatsProp = new();
 #endregion Init Properties;
 
 

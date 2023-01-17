@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -263,10 +263,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         properties.Add(new NameNatProperty());
     }
 
-   internal static CodeProperty s_codeProp = new();
-   internal static GroupProperty s_groupProp = new();
-   internal static NameEngProperty s_nameEngProp = new();
-   internal static NameNatProperty s_nameNatProp = new();
+   public static CodeProperty CodeProp = new();
+   public static GroupProperty GroupProp = new();
+   public static NameEngProperty NameEngProp = new();
+   public static NameNatProperty NameNatProp = new();
 #endregion Init Properties;
 
     

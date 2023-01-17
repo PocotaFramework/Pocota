@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -619,21 +619,21 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         properties.Add(new SelfProperty());
     }
 
-   internal static BornAfterProperty s_bornAfterProp = new();
-   internal static BornBeforeProperty s_bornBeforeProp = new();
-   internal static ExteriorRegexProperty s_exteriorRegexProp = new();
-   internal static GenderProperty s_genderProp = new();
-   internal static NameRegexProperty s_nameRegexProp = new();
-   internal static TitleRegexProperty s_titleRegexProp = new();
-   internal static AncestorProperty s_ancestorProp = new();
-   internal static BreedProperty s_breedProp = new();
-   internal static CatteryProperty s_catteryProp = new();
-   internal static ChildProperty s_childProp = new();
-   internal static DescendantProperty s_descendantProp = new();
-   internal static FatherProperty s_fatherProp = new();
-   internal static LitterProperty s_litterProp = new();
-   internal static MotherProperty s_motherProp = new();
-   internal static SelfProperty s_selfProp = new();
+   public static BornAfterProperty BornAfterProp = new();
+   public static BornBeforeProperty BornBeforeProp = new();
+   public static ExteriorRegexProperty ExteriorRegexProp = new();
+   public static GenderProperty GenderProp = new();
+   public static NameRegexProperty NameRegexProp = new();
+   public static TitleRegexProperty TitleRegexProp = new();
+   public static AncestorProperty AncestorProp = new();
+   public static BreedProperty BreedProp = new();
+   public static CatteryProperty CatteryProp = new();
+   public static ChildProperty ChildProp = new();
+   public static DescendantProperty DescendantProp = new();
+   public static FatherProperty FatherProp = new();
+   public static LitterProperty LitterProp = new();
+   public static MotherProperty MotherProp = new();
+   public static SelfProperty SelfProp = new();
 #endregion Init Properties;
 
 

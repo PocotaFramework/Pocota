@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -224,9 +224,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         properties.Add(new StringsProperty());
     }
 
-   internal static FemaleProperty s_femaleProp = new();
-   internal static MaleProperty s_maleProp = new();
-   internal static StringsProperty s_stringsProp = new();
+   public static FemaleProperty FemaleProp = new();
+   public static MaleProperty MaleProp = new();
+   public static StringsProperty StringsProp = new();
 #endregion Init Properties;
 
     

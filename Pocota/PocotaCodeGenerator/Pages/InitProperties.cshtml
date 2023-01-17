@@ -78,7 +78,7 @@
     {
         foreach (PropertyModel pm in Model.Properties)
         {    
-            <text>   internal static @Html.Raw($"{pm.Name}Property s_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}Prop = new()");
+            <text>   public static @Html.Raw($"{pm.Name}Property {pm.Name}Prop = new()");
 </text>
         }
     }

@@ -48,6 +48,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         }
         ++context.BuildingContext!.Level;
         context.Stack.Push(value);
+        bool isValuePushed = true;
 
         IPrimaryKey<T>? primaryKey = null;
         bool alreadyExists = false;
@@ -209,7 +210,11 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
 
                 return;
             }
-            context.Stack.Pop(value);
+            if (isValuePushed)
+            {
+                context.Stack.Pop(value);
+                isValuePushed = false;
+            }
             if (_isEntity)
             {
                 value = _pocoContext.FindOrCreateEntity(primaryKey!, out isNew);
@@ -220,6 +225,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             }
 
             context.Stack.Push(value);
+            isValuePushed = true;
 
             reference = context.GetReference(((IProjection)value).As<IPoco>()!, out alreadyExists);
             if (context.BuildingContext.Name is { })
@@ -423,7 +429,10 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
         finally
         {
             --context.BuildingContext!.Level;
-            context.Stack.Pop(value);
+            if (isValuePushed)
+            {
+                context.Stack.Pop(value);
+            }
             if (isHighLevel && (context.BuildingContext.Log?.Failed ?? false))
             {
                 context.BuildingContext.Log?.Throw();

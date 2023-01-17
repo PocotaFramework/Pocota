@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-16T18:41:15                                  //
+// at 2023-01-17T15:18:11                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1270,16 +1270,16 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         properties.Add(new LittersProperty());
     }
 
-   internal static DescriptionProperty s_descriptionProp = new();
-   internal static ExteriorProperty s_exteriorProp = new();
-   internal static GenderProperty s_genderProp = new();
-   internal static NameEngProperty s_nameEngProp = new();
-   internal static NameNatProperty s_nameNatProp = new();
-   internal static TitleProperty s_titleProp = new();
-   internal static BreedProperty s_breedProp = new();
-   internal static CatteryProperty s_catteryProp = new();
-   internal static LitterProperty s_litterProp = new();
-   internal static LittersProperty s_littersProp = new();
+   public static DescriptionProperty DescriptionProp = new();
+   public static ExteriorProperty ExteriorProp = new();
+   public static GenderProperty GenderProp = new();
+   public static NameEngProperty NameEngProp = new();
+   public static NameNatProperty NameNatProp = new();
+   public static TitleProperty TitleProp = new();
+   public static BreedProperty BreedProp = new();
+   public static CatteryProperty CatteryProp = new();
+   public static LitterProperty LitterProp = new();
+   public static LittersProperty LittersProp = new();
 #endregion Init Properties;
 
 

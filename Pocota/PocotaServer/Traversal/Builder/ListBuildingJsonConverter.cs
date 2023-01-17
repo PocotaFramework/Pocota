@@ -34,7 +34,7 @@ internal class ListBuildingJsonConverter<T> : ListJsonConverterBase<T> where T :
         {
             throw new InvalidOperationException("Unproper using!");
         }
-
+        bool isValuePushed = false;
         try
         {
             writer.WriteStartArray();
@@ -52,6 +52,7 @@ internal class ListBuildingJsonConverter<T> : ListJsonConverterBase<T> where T :
             }
 
             context.Stack.Push(value);
+            isValuePushed = true;
 
 
             Type itemType = _itemType;
@@ -86,7 +87,10 @@ internal class ListBuildingJsonConverter<T> : ListJsonConverterBase<T> where T :
         }
         finally
         {
-            context.Stack.Pop(value);
+            if (isValuePushed)
+            {
+                context.Stack.Pop(value);
+            }
         }
     }
 

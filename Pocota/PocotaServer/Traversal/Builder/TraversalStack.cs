@@ -27,11 +27,11 @@ public class TraversalStack : IReadOnlyList<object>
 
     internal void Pop(object value)
     {
-        if(_source.Count == 0)
+        if (_source.Count == 0)
         {
             throw new InvalidOperationException("Empty");
         }
-        if(value != _source.Last())
+        if (value != _source.Last())
         {
             throw new ArgumentException(nameof(value));
         }
