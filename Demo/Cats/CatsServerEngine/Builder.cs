@@ -253,7 +253,7 @@ internal class Builder : IBuilder
             options.Script = _services.GetRequiredService<BuildingScript>();
             options.Script.Mapping = BuildCatsMapping;
 
-            //options.Script.WithTrace = true;
+            options.Script.WithTrace = true;
             if (typeof(T) == typeof(ILitterWithCats) || typeof(T) == typeof(ICatWithSiblings))
             {
                 options.Script.AddPathHandler("/Litter/Cats", args =>
@@ -261,7 +261,7 @@ internal class Builder : IBuilder
                     ICatFilter filter = _services.GetRequiredService<ICatFilter>();
                     filter.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
                     BuildingScript script = _services.GetRequiredService<BuildingScript>();
-                    //script.WithTrace = true;
+                    script.WithTrace = true;
                     script.Mapping = BuildCatsLitterWithCatsMapping;
                     args.UseSpinner(SpinCats(filter), script);
                 });
