@@ -8,7 +8,7 @@
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
-        get => @Html.Raw($"_is_set{fieldName}") ? @fieldName : default!;
+        get => @if(Model.IsEntity){<text>@Html.Raw($"!_is_set{fieldName}") ? default! : </text>}@fieldName;
     @if(!pm.IsReadOnly)
     {
         if(pm.IsList)
@@ -35,6 +35,20 @@
 </text>   
                         }
                         @fieldName = value;
+                        @if (!Model.IsEntity)
+                        {
+                            <text>                        @Html.Raw($"_is_set{fieldName}") = true;
+</text>
+                        }
+                        if (IsBeingPopulated)
+                        {
+                            @Html.Raw($"_initial{fieldName}") = value;
+                            @if (Model.IsEntity)
+                            {
+                                <text>                            @Html.Raw($"_is_set{fieldName}") = true;
+</text>
+                            }
+                        }
                         @if(pm.IsProjection)
                         {
                             <text>                        if(@fieldName is {})
@@ -43,11 +57,7 @@
                         }
 </text>   
                         }
-                        if (IsBeingPopulated)
-                        {
-                            @Html.Raw($"_initial{fieldName}") = value;
-                        }
-                        OnPocoChanged(@Html.Raw($"s{fieldName}Prop"));
+                        OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
                         OnPropertyChanged();
                     }
                 }

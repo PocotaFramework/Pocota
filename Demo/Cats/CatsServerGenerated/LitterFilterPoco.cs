@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -11,6 +11,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
+using System.Collections.Generic;
 
 namespace CatsCommon.Filters;
 
@@ -36,9 +37,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_female;
-            public object? Get(object target) => ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Female)?.As<ICat>()!;
+            public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Female;
             public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_female = true;
-            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
         }
 
         public class MaleProperty: IProperty
@@ -50,9 +51,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_male;
-            public object? Get(object target) => ((IProjection)((LitterFilterILitterFilterProjection)target)._projector.Male)?.As<ICat>()!;
+            public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Male;
             public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_male = true;
-            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
         }
 
         public class StringsProperty: IProperty
@@ -63,9 +64,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsCollection =>  true;
             public Type Type => typeof(IList<String>);
             public Type? ItemType => typeof(String);
-            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector.Strings.IsSet;
-            public object? Get(object target) => ((LitterFilterILitterFilterProjection)target)._projector.Strings!;
-            public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._strings.Touch();
+            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_strings;
+            public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Strings;
+            public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_strings = true;
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -84,19 +85,19 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         private readonly LitterFilterPoco _projector;
 
 
-       public ICat Female 
+        public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
             set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
-       public ICat Male 
+        public ICat Male 
         {
             get => ((IProjection)_projector.Male)?.As<ICat>()!;
             set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
-       public IList<String> Strings 
+        public IList<String> Strings 
         {
             get => _projector.Strings!;
             set => throw new NotImplementedException();
@@ -129,7 +130,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         {
             return _projector.GetHashCode();
         }
-
 
     }
 #endregion Projection classes
@@ -171,11 +171,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  true;
-        public Type Type => typeof(PocosList<String>);
+        public Type Type => typeof(List<String>);
         public Type? ItemType => typeof(String);
-        public bool IsSet(object target) =>  ((LitterFilterPoco)target).Strings.IsSet;
+        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_strings;
         public object? Get(object target) => ((LitterFilterPoco)target).Strings;
-        public void Touch(object target) => ((LitterFilterPoco)target)._strings.Touch();
+        public void Touch(object target) => ((LitterFilterPoco)target)._is_set_strings = true;
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 
@@ -201,7 +201,8 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     private CatPoco _male = default!;
     private bool _is_set_male = false;
 
-    private readonly PocosList<String> _strings = new(nameof(Strings));
+    private readonly List<String> _strings = new();
+    private bool _is_set_strings = false;
 
 
 #endregion Fields;
@@ -237,7 +238,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         set
         {
             _female = value;
-            _is_set_female = true;
+
         }
     }
 
@@ -247,11 +248,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         set
         {
             _male = value;
-            _is_set_male = true;
+
         }
     }
 
-    public PocosList<String> Strings 
+    public List<String> Strings 
     { 
         get =>  _strings; 
     }
@@ -330,10 +331,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     {
         if(@interface == typeof(ILitterFilter))
         {
-                return true
+            return true
                 && _is_set_female
                 && _is_set_male
-                && _strings.IsSet
+                && _is_set_strings
             ;
         }
         return false;
@@ -345,6 +346,5 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     }
 
 #endregion IPoco;
-
 
 }

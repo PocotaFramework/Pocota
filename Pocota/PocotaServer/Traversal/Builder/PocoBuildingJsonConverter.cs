@@ -341,6 +341,10 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                                     }
                                     else
                                     {
+                                        if (property.IsCollection)
+                                        {
+                                            property.Touch(value);
+                                        }
                                         context.BuildingContext.Log?.UpdateEntry(null, BuildingEventResult.Matched);
                                     }
                                 }
@@ -379,11 +383,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                             {
                                 JsonSerializer.Serialize(writer, propertyValue, typeForSerialization, options);
 
-                                if (property.IsCollection)
-                                {
-                                    property.Touch(value);
-                                }
-                                else
+                                if (!property.IsCollection)
                                 {
                                     if (isPoco)
                                     {

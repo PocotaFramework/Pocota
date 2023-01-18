@@ -928,7 +928,7 @@ public class CodeGenerator : IModelBuilder
                     }
                     else
                     {
-                        AddUsings(model, typeof(PocosList<>));
+                        AddUsings(model, typeof(List<>));
                     }
                     if (_projectorsByProjections.ContainsKey(itemType))
                     {
@@ -947,7 +947,7 @@ public class CodeGenerator : IModelBuilder
                     }
                     else
                     {
-                        propertyModel.Type = MakeTypeName(typeof(PocosList<object>)).Replace(MakeTypeName(typeof(object)), propertyModel.ItemType);
+                        propertyModel.Type = MakeTypeName(typeof(List<object>)).Replace(MakeTypeName(typeof(object)), propertyModel.ItemType);
                     }
                     propertyModel.IsNullable = false;
                 }
@@ -987,6 +987,7 @@ public class CodeGenerator : IModelBuilder
                     Parent = model,
                     Interface = MakeTypeName(projection),
                     IsClient = isClient,
+                    IsEntity = model.IsEntity
                 };
                 if (isClient)
                 {

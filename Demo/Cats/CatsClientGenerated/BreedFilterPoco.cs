@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -34,12 +34,14 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
-            public override object? Get(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+            public override object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public override void Touch(object target) => ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex = true;
-            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
+            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SearchRegex = (String)value!;
             public override bool IsModified(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.IsSearchRegexModified();
             public override bool IsInitial(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.IsSearchRegexInitial();
-            public override int Position => 0;
+            public override void CancelChange(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegexCancelChange();
+            public override void AcceptChange(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegexAcceptChange();
+
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -70,7 +72,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         private readonly BreedFilterPoco _projector;
 
 
-       public String? SearchRegex 
+        public String? SearchRegex 
         {
             get => _projector.SearchRegex;
             set => _projector.SearchRegex = (String?)value;
@@ -108,7 +110,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
             return _projector.GetHashCode();
         }
 
-
     }
     #endregion Projection classes
     
@@ -129,7 +130,9 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public override void Set(object target, object? value) => ((BreedFilterPoco)target).SearchRegex = (String)value!;
         public override bool IsModified(object target) => ((BreedFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((BreedFilterPoco)target).IsSearchRegexInitial();
-        public override int Position => 0;
+        public override void CancelChange(object target) => ((BreedFilterPoco)target).SearchRegexCancelChange();
+        public override void AcceptChange(object target) => ((BreedFilterPoco)target).SearchRegexAcceptChange();
+
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -145,7 +148,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 #region Fields
 
     private String? _searchRegex = default;
-    private String?_initial_searchRegex = default;
+    private String? _initial_searchRegex = default;
     private bool _is_set_searchRegex = false;
 
 #endregion Fields;
@@ -177,7 +180,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 
     public virtual String? SearchRegex
     {
-        get => _is_set_searchRegex ? _searchRegex : default!;
+        get => _searchRegex;
         set
         {
             if(_searchRegex != value)
@@ -187,11 +190,12 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
                     if(_searchRegex != value )
                     {
                         _searchRegex = value;
+                        _is_set_searchRegex = true;
                         if (IsBeingPopulated)
                         {
                             _initial_searchRegex = value;
                         }
-                        OnPocoChanged(s_searchRegexProp);
+                        OnPocoChanged(SearchRegexProp);
                         OnPropertyChanged();
                     }
                 }
@@ -204,8 +208,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 
     public BreedFilterPoco(IServiceProvider services) : base(services) 
     { 
-        _propertiesCount = 1;
-        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -262,20 +264,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 
 
     
-#region Collections
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-    
-#endregion Collections;
-
-
-    
 #region Poco Changed
 
 
@@ -285,9 +273,20 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsSearchRegexInitial();
 
+    private void SearchRegexCancelChange()
+    {
+        _searchRegex = _initial_searchRegex;
+
+    }
+
+    private void SearchRegexAcceptChange()
+    {
+
+    }
+
+
 
 #endregion Poco Changed;
-
 
 
 }

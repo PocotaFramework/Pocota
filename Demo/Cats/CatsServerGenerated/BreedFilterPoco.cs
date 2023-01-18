@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -35,9 +35,9 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex;
-            public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex;
+            public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public void Touch(object target) => ((BreedFilterIBreedFilterProjection)target)._projector._is_set_searchRegex = true;
-            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegex = (String)value!;
+            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SearchRegex = (String)value!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -53,7 +53,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         private readonly BreedFilterPoco _projector;
 
 
-       public String? SearchRegex 
+        public String? SearchRegex 
         {
             get => _projector.SearchRegex;
             set => _projector.SearchRegex = (String?)value;
@@ -86,7 +86,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         {
             return _projector.GetHashCode();
         }
-
 
     }
 #endregion Projection classes
@@ -157,7 +156,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         set
         {
             _searchRegex = value;
-            _is_set_searchRegex = true;
+
         }
     }
 
@@ -233,7 +232,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     {
         if(@interface == typeof(IBreedFilter))
         {
-                return true
+            return true
                 && _is_set_searchRegex
             ;
         }
@@ -246,6 +245,5 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     }
 
 #endregion IPoco;
-
 
 }

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,9 +36,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
-            public object? Get(object target) => ((BreedIBreedProjection)target)._projector.Code!;
+            public object? Get(object target) => ((BreedIBreedProjection)target).Code;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.Code = (String)value!;
+            public void Set(object target, object? value) => ((BreedIBreedProjection)target).Code = (String)value!;
         }
 
         public class GroupProperty: IProperty
@@ -50,9 +50,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
-            public object? Get(object target) => ((BreedIBreedProjection)target)._projector.Group!;
+            public object? Get(object target) => ((BreedIBreedProjection)target).Group;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.Group = (String)value!;
+            public void Set(object target, object? value) => ((BreedIBreedProjection)target).Group = (String)value!;
         }
 
         public class NameEngProperty: IProperty
@@ -64,9 +64,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target) => ((BreedIBreedProjection)target)._projector.NameEng;
+            public object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.NameEng = (String)value!;
+            public void Set(object target, object? value) => ((BreedIBreedProjection)target).NameEng = (String)value!;
         }
 
         public class NameNatProperty: IProperty
@@ -78,9 +78,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public Type Type => typeof(String);
             public Type? ItemType => null;
             public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target) => ((BreedIBreedProjection)target)._projector.NameNat;
+            public object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target)._projector.NameNat = (String)value!;
+            public void Set(object target, object? value) => ((BreedIBreedProjection)target).NameNat = (String)value!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -99,25 +99,25 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         private readonly BreedPoco _projector;
 
 
-       public String Code 
+        public String Code 
         {
             get => _projector.Code!;
             set => _projector.Code = (String)value!;
         }
 
-       public String Group 
+        public String Group 
         {
             get => _projector.Group!;
             set => _projector.Group = (String)value!;
         }
 
-       public String? NameEng 
+        public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-       public String? NameNat 
+        public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -150,7 +150,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         {
             return _projector.GetHashCode();
         }
-
 
     }
 #endregion Projection classes
@@ -278,7 +277,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         set
         {
             _code = value;
-            _is_set_code = true;
+           _is_set_code = true;
+
         }
     }
 
@@ -288,7 +288,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         set
         {
             _group = value;
-            _is_set_group = true;
+           _is_set_group = true;
+
         }
     }
 
@@ -298,7 +299,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         set
         {
             _nameEng = value;
-            _is_set_nameEng = true;
+           _is_set_nameEng = true;
+
         }
     }
 
@@ -308,7 +310,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         set
         {
             _nameNat = value;
-            _is_set_nameNat = true;
+           _is_set_nameNat = true;
+
         }
     }
 
@@ -393,7 +396,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     {
         if(@interface == typeof(IBreed))
         {
-                return true
+            return true
                 && _is_set_code
                 && _is_set_group
                 && _is_set_nameEng
@@ -409,6 +412,5 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     }
 
 #endregion IPoco;
-
 
 }

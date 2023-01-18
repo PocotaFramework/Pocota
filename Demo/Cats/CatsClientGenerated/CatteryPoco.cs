@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -34,12 +34,14 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
-            public override object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameEng;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameEng = (String)value!;
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
-            public override int Position => 0;
+            public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameEngCancelChange();
+            public override void AcceptChange(object target) => throw new InvalidOperationException();
+
         }
 
         public class NameNatProperty: Property
@@ -51,12 +53,14 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
-            public override object? Get(object target) => ((CatteryICatteryProjection)target)._projector.NameNat;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target)._projector.NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameNat = (String)value!;
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
-            public override int Position => 1;
+            public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameNatCancelChange();
+            public override void AcceptChange(object target) => throw new InvalidOperationException();
+
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -88,13 +92,13 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         private readonly CatteryPoco _projector;
 
 
-       public String? NameEng 
+        public String? NameEng 
         {
             get => _projector.NameEng;
             set => _projector.NameEng = (String?)value;
         }
 
-       public String? NameNat 
+        public String? NameNat 
         {
             get => _projector.NameNat;
             set => _projector.NameNat = (String?)value;
@@ -132,7 +136,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             return _projector.GetHashCode();
         }
 
-
     }
     #endregion Projection classes
     
@@ -153,7 +156,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
-        public override int Position => 0;
+        public override void CancelChange(object target) => ((CatteryPoco)target).NameEngCancelChange();
+        public override void AcceptChange(object target) => throw new InvalidOperationException();
+
     }
 
     public class NameNatProperty: Property
@@ -170,7 +175,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
-        public override int Position => 1;
+        public override void CancelChange(object target) => ((CatteryPoco)target).NameNatCancelChange();
+        public override void AcceptChange(object target) => throw new InvalidOperationException();
+
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -188,10 +195,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 #region Fields
 
     private String? _nameEng = default;
-    private String?_initial_nameEng = default;
+    private String? _initial_nameEng = default;
     private bool _is_set_nameEng = false;
     private String? _nameNat = default;
-    private String?_initial_nameNat = default;
+    private String? _initial_nameNat = default;
     private bool _is_set_nameNat = false;
 
 #endregion Fields;
@@ -223,7 +230,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public virtual String? NameEng
     {
-        get => _is_set_nameEng ? _nameEng : default!;
+        get => !_is_set_nameEng ? default! : _nameEng;
         set
         {
             if(_nameEng != value)
@@ -236,8 +243,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                         if (IsBeingPopulated)
                         {
                             _initial_nameEng = value;
+                            _is_set_nameEng = true;
                         }
-                        OnPocoChanged(s_nameEngProp);
+                        OnPocoChanged(NameEngProp);
                         OnPropertyChanged();
                     }
                 }
@@ -247,7 +255,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public virtual String? NameNat
     {
-        get => _is_set_nameNat ? _nameNat : default!;
+        get => !_is_set_nameNat ? default! : _nameNat;
         set
         {
             if(_nameNat != value)
@@ -260,8 +268,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                         if (IsBeingPopulated)
                         {
                             _initial_nameNat = value;
+                            _is_set_nameNat = true;
                         }
-                        OnPocoChanged(s_nameNatProp);
+                        OnPocoChanged(NameNatProp);
                         OnPropertyChanged();
                     }
                 }
@@ -274,8 +283,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public CatteryPoco(IServiceProvider services) : base(services) 
     { 
-        _propertiesCount = 2;
-        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -336,20 +343,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
 
     
-#region Collections
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-    
-#endregion Collections;
-
-
-    
 #region Poco Changed
 
 
@@ -359,15 +352,30 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameEngInitial();
 
+    private void NameEngCancelChange()
+    {
+        _nameEng = _initial_nameEng;
+
+    }
+
+
+
     private bool IsNameNatInitial() => _initial_nameNat != _nameNat;
 
     private bool IsNameNatModified() => _is_set_nameNat 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameNatInitial();
 
+    private void NameNatCancelChange()
+    {
+        _nameNat = _initial_nameNat;
+
+    }
+
+
+
 
 #endregion Poco Changed;
-
 
 
 }

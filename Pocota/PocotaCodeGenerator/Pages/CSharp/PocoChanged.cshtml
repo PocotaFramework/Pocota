@@ -20,7 +20,6 @@
     {
         lock(_lock)
         {
-            @Html.Raw($"_is_set{fieldName}") = e.Action is not NotifyCollectionChangedAction.Reset;
             if (e.OldItems is { })
             {
                 foreach (@Html.Raw(pm.ItemType) item in e.OldItems)
@@ -71,7 +70,7 @@
             {
 </text>
                 }
-            @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"OnPocoChanged(s{fieldName}Prop)");
+            @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"OnPocoChanged({@pm.Name}Prop)");
             @Html.Raw(Model.IsEntity ? "    " : string.Empty)OnPropertyChanged(nameof(@pm.Name));
                 @if(Model.IsEntity)
                 {
@@ -100,6 +99,36 @@
     <text>    private bool @Html.Raw($"Is{pm.Name}Modified()") => @Html.Raw($"_is_set{fieldName}") 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !@Html.Raw($"Is{pm.Name}Initial()");
+
+    private void @Html.Raw($"{pm.Name}CancelChange()")
+    {
+        @if(pm.IsList)
+        {
+            <text>        @Html.Raw($"{fieldName}.Clear()");
+        foreach(var item in @Html.Raw($"_initial{fieldName}"))
+        {
+            @Html.Raw($"{fieldName}.Add(item)");
+        }
+
+</text>
+        }
+        else
+        {
+            <text>        @Html.Raw($"{fieldName} = _initial{fieldName}");
+
+</text>
+        }
+    }
+
+    @if(!Model.IsEntity)
+    {
+        <text>    private void @Html.Raw($"{pm.Name}AcceptChange()")
+    {
+
+    }
+</text>
+    }
+
 
 </text>
 }

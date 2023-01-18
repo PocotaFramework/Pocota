@@ -34,7 +34,7 @@
     }
     else 
     {
-        <text>    private @Html.Raw($"{pm.Type}?_initial{fieldName} = default");
+        <text>    private @Html.Raw($"{pm.Type}{(pm.IsNullable ? "?" : string.Empty)} _initial{fieldName} = default");
 </text>
     }
     private bool @Html.Raw($"_is_set{fieldName}") = false;

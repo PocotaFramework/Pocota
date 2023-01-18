@@ -214,7 +214,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         if (entity is { })
                         {
                             isUnchanged = entity.PocoState is PocoState.Unchanged;
-                            isModified = property.IsModified(entity);
+                            isModified = property.IsModified(result);
                         }
                         bool canChangeValue = (
                                 poco!.IsEnvelope

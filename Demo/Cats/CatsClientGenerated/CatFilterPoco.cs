@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-17T15:18:11                                  //
+// at 2023-01-18T18:51:06                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,12 +36,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfter;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornAfter;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_bornAfter = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.BornAfter = (DateOnly)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).BornAfter = (DateOnly)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornAfterModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornAfterInitial();
-            public override int Position => 0;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfterCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfterAcceptChange();
+
         }
 
         public class BornBeforeProperty: Property
@@ -53,12 +55,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBefore;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornBefore;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_bornBefore = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.BornBefore = (DateOnly)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).BornBefore = (DateOnly)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornBeforeModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornBeforeInitial();
-            public override int Position => 1;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBeforeCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBeforeAcceptChange();
+
         }
 
         public class ExteriorRegexProperty: Property
@@ -70,12 +74,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).ExteriorRegex;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_exteriorRegex = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegex = (String)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).ExteriorRegex = (String)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsExteriorRegexModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsExteriorRegexInitial();
-            public override int Position => 2;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegexCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegexAcceptChange();
+
         }
 
         public class GenderProperty: Property
@@ -87,12 +93,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(Gender);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_gender;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.Gender;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Gender;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_gender = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Gender = (Gender)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Gender = (Gender)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsGenderModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsGenderInitial();
-            public override int Position => 3;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.GenderCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.GenderAcceptChange();
+
         }
 
         public class NameRegexProperty: Property
@@ -104,12 +112,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).NameRegex;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_nameRegex = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.NameRegex = (String)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).NameRegex = (String)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsNameRegexModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsNameRegexInitial();
-            public override int Position => 4;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegexCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegexAcceptChange();
+
         }
 
         public class TitleRegexProperty: Property
@@ -121,12 +131,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex;
-            public override object? Get(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegex;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).TitleRegex;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_titleRegex = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.TitleRegex = (String)value!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).TitleRegex = (String)value!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsTitleRegexModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsTitleRegexInitial();
-            public override int Position => 5;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegexCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegexAcceptChange();
+
         }
 
         public class AncestorProperty: Property
@@ -138,12 +150,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Ancestor)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Ancestor;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_ancestor = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Ancestor = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsAncestorModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsAncestorInitial();
-            public override int Position => 6;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.AncestorCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.AncestorAcceptChange();
+
         }
 
         public class BreedProperty: Property
@@ -155,12 +169,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_breed;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Breed)?.As<IBreed>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Breed;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_breed = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Breed = ((IProjection?)value)?.As<IBreed>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBreedModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBreedInitial();
-            public override int Position => 7;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BreedCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BreedAcceptChange();
+
         }
 
         public class CatteryProperty: Property
@@ -172,12 +188,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_cattery;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Cattery)?.As<ICattery>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Cattery;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_cattery = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Cattery = ((IProjection?)value)?.As<ICattery>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsCatteryModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsCatteryInitial();
-            public override int Position => 8;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.CatteryCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.CatteryAcceptChange();
+
         }
 
         public class ChildProperty: Property
@@ -189,12 +207,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_child;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Child)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Child;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_child = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Child = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Child = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsChildModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsChildInitial();
-            public override int Position => 9;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ChildCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ChildAcceptChange();
+
         }
 
         public class DescendantProperty: Property
@@ -206,12 +226,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_descendant;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Descendant)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Descendant;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_descendant = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Descendant = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Descendant = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsDescendantModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsDescendantInitial();
-            public override int Position => 10;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.DescendantCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.DescendantAcceptChange();
+
         }
 
         public class FatherProperty: Property
@@ -223,12 +245,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_father;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Father)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Father;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_father = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Father = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Father = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsFatherModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsFatherInitial();
-            public override int Position => 11;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.FatherCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.FatherAcceptChange();
+
         }
 
         public class LitterProperty: Property
@@ -240,12 +264,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ILitter);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_litter;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Litter)?.As<ILitter>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Litter;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Litter = ((IProjection?)value)?.As<ILitter>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsLitterInitial();
-            public override int Position => 12;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.LitterCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.LitterAcceptChange();
+
         }
 
         public class MotherProperty: Property
@@ -257,12 +283,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_mother;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Mother)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Mother;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_mother = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Mother = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Mother = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsMotherModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsMotherInitial();
-            public override int Position => 13;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.MotherCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.MotherAcceptChange();
+
         }
 
         public class SelfProperty: Property
@@ -274,12 +302,14 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) =>  ((CatFilterICatFilterProjection)target)._projector._is_set_self;
-            public override object? Get(object target) => ((IProjection?)((CatFilterICatFilterProjection)target)._projector.Self)?.As<ICat>();
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Self;
             public override void Touch(object target) => ((CatFilterICatFilterProjection)target)._projector._is_set_self = true;
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target)._projector.Self = ((IProjection?)value)?.As<CatPoco>()!;
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).Self = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((CatFilterICatFilterProjection)target)._projector.IsSelfModified();
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsSelfInitial();
-            public override int Position => 14;
+            public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.SelfCancelChange();
+            public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.SelfAcceptChange();
+
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -324,91 +354,91 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         private readonly CatFilterPoco _projector;
 
 
-       public DateOnly? BornAfter 
+        public DateOnly? BornAfter 
         {
             get => _projector.BornAfter;
             set => _projector.BornAfter = (DateOnly?)value;
         }
 
-       public DateOnly? BornBefore 
+        public DateOnly? BornBefore 
         {
             get => _projector.BornBefore;
             set => _projector.BornBefore = (DateOnly?)value;
         }
 
-       public String? ExteriorRegex 
+        public String? ExteriorRegex 
         {
             get => _projector.ExteriorRegex;
             set => _projector.ExteriorRegex = (String?)value;
         }
 
-       public Gender? Gender 
+        public Gender? Gender 
         {
             get => _projector.Gender;
             set => _projector.Gender = (Gender?)value;
         }
 
-       public String? NameRegex 
+        public String? NameRegex 
         {
             get => _projector.NameRegex;
             set => _projector.NameRegex = (String?)value;
         }
 
-       public String? TitleRegex 
+        public String? TitleRegex 
         {
             get => _projector.TitleRegex;
             set => _projector.TitleRegex = (String?)value;
         }
 
-       public ICat? Ancestor 
+        public ICat? Ancestor 
         {
             get => ((IProjection?)_projector.Ancestor)?.As<ICat>();
             set => _projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
         }
 
-       public IBreed? Breed 
+        public IBreed? Breed 
         {
             get => ((IProjection?)_projector.Breed)?.As<IBreed>();
             set => _projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
         }
 
-       public ICattery? Cattery 
+        public ICattery? Cattery 
         {
             get => ((IProjection?)_projector.Cattery)?.As<ICattery>();
             set => _projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
         }
 
-       public ICat? Child 
+        public ICat? Child 
         {
             get => ((IProjection?)_projector.Child)?.As<ICat>();
             set => _projector.Child = ((IProjection?)value)?.As<CatPoco>();
         }
 
-       public ICat? Descendant 
+        public ICat? Descendant 
         {
             get => ((IProjection?)_projector.Descendant)?.As<ICat>();
             set => _projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
         }
 
-       public ICat? Father 
+        public ICat? Father 
         {
             get => ((IProjection?)_projector.Father)?.As<ICat>();
             set => _projector.Father = ((IProjection?)value)?.As<CatPoco>();
         }
 
-       public ILitter? Litter 
+        public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
             set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
-       public ICat? Mother 
+        public ICat? Mother 
         {
             get => ((IProjection?)_projector.Mother)?.As<ICat>();
             set => _projector.Mother = ((IProjection?)value)?.As<CatPoco>();
         }
 
-       public ICat? Self 
+        public ICat? Self 
         {
             get => ((IProjection?)_projector.Self)?.As<ICat>();
             set => _projector.Self = ((IProjection?)value)?.As<CatPoco>();
@@ -446,7 +476,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             return _projector.GetHashCode();
         }
 
-
     }
     #endregion Projection classes
     
@@ -467,7 +496,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsBornAfterModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornAfterInitial();
-        public override int Position => 0;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).BornAfterCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).BornAfterAcceptChange();
+
     }
 
     public class BornBeforeProperty: Property
@@ -484,7 +515,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsBornBeforeModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornBeforeInitial();
-        public override int Position => 1;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).BornBeforeCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).BornBeforeAcceptChange();
+
     }
 
     public class ExteriorRegexProperty: Property
@@ -501,7 +534,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).ExteriorRegex = (String)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsExteriorRegexModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsExteriorRegexInitial();
-        public override int Position => 2;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).ExteriorRegexCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).ExteriorRegexAcceptChange();
+
     }
 
     public class GenderProperty: Property
@@ -518,7 +553,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Gender = (Gender)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsGenderModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsGenderInitial();
-        public override int Position => 3;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).GenderCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).GenderAcceptChange();
+
     }
 
     public class NameRegexProperty: Property
@@ -535,7 +572,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).NameRegex = (String)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsNameRegexModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsNameRegexInitial();
-        public override int Position => 4;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).NameRegexCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).NameRegexAcceptChange();
+
     }
 
     public class TitleRegexProperty: Property
@@ -552,7 +591,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).TitleRegex = (String)value!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsTitleRegexModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsTitleRegexInitial();
-        public override int Position => 5;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).TitleRegexCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).TitleRegexAcceptChange();
+
     }
 
     public class AncestorProperty: Property
@@ -569,7 +610,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsAncestorModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsAncestorInitial();
-        public override int Position => 6;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).AncestorCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).AncestorAcceptChange();
+
     }
 
     public class BreedProperty: Property
@@ -586,7 +629,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsBreedModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBreedInitial();
-        public override int Position => 7;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).BreedCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).BreedAcceptChange();
+
     }
 
     public class CatteryProperty: Property
@@ -603,7 +648,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsCatteryModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsCatteryInitial();
-        public override int Position => 8;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).CatteryCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).CatteryAcceptChange();
+
     }
 
     public class ChildProperty: Property
@@ -620,7 +667,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Child = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsChildModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsChildInitial();
-        public override int Position => 9;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).ChildCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).ChildAcceptChange();
+
     }
 
     public class DescendantProperty: Property
@@ -637,7 +686,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Descendant = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsDescendantModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsDescendantInitial();
-        public override int Position => 10;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).DescendantCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).DescendantAcceptChange();
+
     }
 
     public class FatherProperty: Property
@@ -654,7 +705,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Father = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsFatherModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsFatherInitial();
-        public override int Position => 11;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).FatherCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).FatherAcceptChange();
+
     }
 
     public class LitterProperty: Property
@@ -671,7 +724,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsLitterModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsLitterInitial();
-        public override int Position => 12;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).LitterCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).LitterAcceptChange();
+
     }
 
     public class MotherProperty: Property
@@ -688,7 +743,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Mother = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsMotherModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsMotherInitial();
-        public override int Position => 13;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).MotherCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).MotherAcceptChange();
+
     }
 
     public class SelfProperty: Property
@@ -705,7 +762,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override void Set(object target, object? value) => ((CatFilterPoco)target).Self = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((CatFilterPoco)target).IsSelfModified();
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsSelfInitial();
-        public override int Position => 14;
+        public override void CancelChange(object target) => ((CatFilterPoco)target).SelfCancelChange();
+        public override void AcceptChange(object target) => ((CatFilterPoco)target).SelfAcceptChange();
+
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -749,49 +808,49 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 #region Fields
 
     private DateOnly? _bornAfter = default;
-    private DateOnly?_initial_bornAfter = default;
+    private DateOnly? _initial_bornAfter = default;
     private bool _is_set_bornAfter = false;
     private DateOnly? _bornBefore = default;
-    private DateOnly?_initial_bornBefore = default;
+    private DateOnly? _initial_bornBefore = default;
     private bool _is_set_bornBefore = false;
     private String? _exteriorRegex = default;
-    private String?_initial_exteriorRegex = default;
+    private String? _initial_exteriorRegex = default;
     private bool _is_set_exteriorRegex = false;
     private Gender? _gender = default;
-    private Gender?_initial_gender = default;
+    private Gender? _initial_gender = default;
     private bool _is_set_gender = false;
     private String? _nameRegex = default;
-    private String?_initial_nameRegex = default;
+    private String? _initial_nameRegex = default;
     private bool _is_set_nameRegex = false;
     private String? _titleRegex = default;
-    private String?_initial_titleRegex = default;
+    private String? _initial_titleRegex = default;
     private bool _is_set_titleRegex = false;
     private CatPoco? _ancestor = default;
-    private CatPoco?_initial_ancestor = default;
+    private CatPoco? _initial_ancestor = default;
     private bool _is_set_ancestor = false;
     private BreedPoco? _breed = default;
-    private BreedPoco?_initial_breed = default;
+    private BreedPoco? _initial_breed = default;
     private bool _is_set_breed = false;
     private CatteryPoco? _cattery = default;
-    private CatteryPoco?_initial_cattery = default;
+    private CatteryPoco? _initial_cattery = default;
     private bool _is_set_cattery = false;
     private CatPoco? _child = default;
-    private CatPoco?_initial_child = default;
+    private CatPoco? _initial_child = default;
     private bool _is_set_child = false;
     private CatPoco? _descendant = default;
-    private CatPoco?_initial_descendant = default;
+    private CatPoco? _initial_descendant = default;
     private bool _is_set_descendant = false;
     private CatPoco? _father = default;
-    private CatPoco?_initial_father = default;
+    private CatPoco? _initial_father = default;
     private bool _is_set_father = false;
     private LitterPoco? _litter = default;
-    private LitterPoco?_initial_litter = default;
+    private LitterPoco? _initial_litter = default;
     private bool _is_set_litter = false;
     private CatPoco? _mother = default;
-    private CatPoco?_initial_mother = default;
+    private CatPoco? _initial_mother = default;
     private bool _is_set_mother = false;
     private CatPoco? _self = default;
-    private CatPoco?_initial_self = default;
+    private CatPoco? _initial_self = default;
     private bool _is_set_self = false;
 
 #endregion Fields;
@@ -823,7 +882,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual DateOnly? BornAfter
     {
-        get => _is_set_bornAfter ? _bornAfter : default!;
+        get => _bornAfter;
         set
         {
             if(_bornAfter != value)
@@ -833,11 +892,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_bornAfter != value )
                     {
                         _bornAfter = value;
+                        _is_set_bornAfter = true;
                         if (IsBeingPopulated)
                         {
                             _initial_bornAfter = value;
                         }
-                        OnPocoChanged(s_bornAfterProp);
+                        OnPocoChanged(BornAfterProp);
                         OnPropertyChanged();
                     }
                 }
@@ -847,7 +907,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual DateOnly? BornBefore
     {
-        get => _is_set_bornBefore ? _bornBefore : default!;
+        get => _bornBefore;
         set
         {
             if(_bornBefore != value)
@@ -857,11 +917,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_bornBefore != value )
                     {
                         _bornBefore = value;
+                        _is_set_bornBefore = true;
                         if (IsBeingPopulated)
                         {
                             _initial_bornBefore = value;
                         }
-                        OnPocoChanged(s_bornBeforeProp);
+                        OnPocoChanged(BornBeforeProp);
                         OnPropertyChanged();
                     }
                 }
@@ -871,7 +932,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual String? ExteriorRegex
     {
-        get => _is_set_exteriorRegex ? _exteriorRegex : default!;
+        get => _exteriorRegex;
         set
         {
             if(_exteriorRegex != value)
@@ -881,11 +942,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_exteriorRegex != value )
                     {
                         _exteriorRegex = value;
+                        _is_set_exteriorRegex = true;
                         if (IsBeingPopulated)
                         {
                             _initial_exteriorRegex = value;
                         }
-                        OnPocoChanged(s_exteriorRegexProp);
+                        OnPocoChanged(ExteriorRegexProp);
                         OnPropertyChanged();
                     }
                 }
@@ -895,7 +957,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual Gender? Gender
     {
-        get => _is_set_gender ? _gender : default!;
+        get => _gender;
         set
         {
             if(_gender != value)
@@ -905,11 +967,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_gender != value )
                     {
                         _gender = value;
+                        _is_set_gender = true;
                         if (IsBeingPopulated)
                         {
                             _initial_gender = value;
                         }
-                        OnPocoChanged(s_genderProp);
+                        OnPocoChanged(GenderProp);
                         OnPropertyChanged();
                     }
                 }
@@ -919,7 +982,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual String? NameRegex
     {
-        get => _is_set_nameRegex ? _nameRegex : default!;
+        get => _nameRegex;
         set
         {
             if(_nameRegex != value)
@@ -929,11 +992,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_nameRegex != value )
                     {
                         _nameRegex = value;
+                        _is_set_nameRegex = true;
                         if (IsBeingPopulated)
                         {
                             _initial_nameRegex = value;
                         }
-                        OnPocoChanged(s_nameRegexProp);
+                        OnPocoChanged(NameRegexProp);
                         OnPropertyChanged();
                     }
                 }
@@ -943,7 +1007,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual String? TitleRegex
     {
-        get => _is_set_titleRegex ? _titleRegex : default!;
+        get => _titleRegex;
         set
         {
             if(_titleRegex != value)
@@ -953,11 +1017,12 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                     if(_titleRegex != value )
                     {
                         _titleRegex = value;
+                        _is_set_titleRegex = true;
                         if (IsBeingPopulated)
                         {
                             _initial_titleRegex = value;
                         }
-                        OnPocoChanged(s_titleRegexProp);
+                        OnPocoChanged(TitleRegexProp);
                         OnPropertyChanged();
                     }
                 }
@@ -967,7 +1032,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Ancestor
     {
-        get => _is_set_ancestor ? _ancestor : default!;
+        get => _ancestor;
         set
         {
             if(_ancestor != value)
@@ -981,15 +1046,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _ancestor.PocoChanged -= AncestorPocoChanged;
                         }
                         _ancestor = value;
-                        if(_ancestor is {})
-                        {
-                            _ancestor.PocoChanged += AncestorPocoChanged;
-                        }
+                        _is_set_ancestor = true;
                         if (IsBeingPopulated)
                         {
                             _initial_ancestor = value;
                         }
-                        OnPocoChanged(s_ancestorProp);
+                        if(_ancestor is {})
+                        {
+                            _ancestor.PocoChanged += AncestorPocoChanged;
+                        }
+                        OnPocoChanged(AncestorProp);
                         OnPropertyChanged();
                     }
                 }
@@ -999,7 +1065,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual BreedPoco? Breed
     {
-        get => _is_set_breed ? _breed : default!;
+        get => _breed;
         set
         {
             if(_breed != value)
@@ -1013,15 +1079,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _breed.PocoChanged -= BreedPocoChanged;
                         }
                         _breed = value;
-                        if(_breed is {})
-                        {
-                            _breed.PocoChanged += BreedPocoChanged;
-                        }
+                        _is_set_breed = true;
                         if (IsBeingPopulated)
                         {
                             _initial_breed = value;
                         }
-                        OnPocoChanged(s_breedProp);
+                        if(_breed is {})
+                        {
+                            _breed.PocoChanged += BreedPocoChanged;
+                        }
+                        OnPocoChanged(BreedProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1031,7 +1098,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatteryPoco? Cattery
     {
-        get => _is_set_cattery ? _cattery : default!;
+        get => _cattery;
         set
         {
             if(_cattery != value)
@@ -1045,15 +1112,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _cattery.PocoChanged -= CatteryPocoChanged;
                         }
                         _cattery = value;
-                        if(_cattery is {})
-                        {
-                            _cattery.PocoChanged += CatteryPocoChanged;
-                        }
+                        _is_set_cattery = true;
                         if (IsBeingPopulated)
                         {
                             _initial_cattery = value;
                         }
-                        OnPocoChanged(s_catteryProp);
+                        if(_cattery is {})
+                        {
+                            _cattery.PocoChanged += CatteryPocoChanged;
+                        }
+                        OnPocoChanged(CatteryProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1063,7 +1131,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Child
     {
-        get => _is_set_child ? _child : default!;
+        get => _child;
         set
         {
             if(_child != value)
@@ -1077,15 +1145,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _child.PocoChanged -= ChildPocoChanged;
                         }
                         _child = value;
-                        if(_child is {})
-                        {
-                            _child.PocoChanged += ChildPocoChanged;
-                        }
+                        _is_set_child = true;
                         if (IsBeingPopulated)
                         {
                             _initial_child = value;
                         }
-                        OnPocoChanged(s_childProp);
+                        if(_child is {})
+                        {
+                            _child.PocoChanged += ChildPocoChanged;
+                        }
+                        OnPocoChanged(ChildProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1095,7 +1164,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Descendant
     {
-        get => _is_set_descendant ? _descendant : default!;
+        get => _descendant;
         set
         {
             if(_descendant != value)
@@ -1109,15 +1178,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _descendant.PocoChanged -= DescendantPocoChanged;
                         }
                         _descendant = value;
-                        if(_descendant is {})
-                        {
-                            _descendant.PocoChanged += DescendantPocoChanged;
-                        }
+                        _is_set_descendant = true;
                         if (IsBeingPopulated)
                         {
                             _initial_descendant = value;
                         }
-                        OnPocoChanged(s_descendantProp);
+                        if(_descendant is {})
+                        {
+                            _descendant.PocoChanged += DescendantPocoChanged;
+                        }
+                        OnPocoChanged(DescendantProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1127,7 +1197,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Father
     {
-        get => _is_set_father ? _father : default!;
+        get => _father;
         set
         {
             if(_father != value)
@@ -1141,15 +1211,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _father.PocoChanged -= FatherPocoChanged;
                         }
                         _father = value;
-                        if(_father is {})
-                        {
-                            _father.PocoChanged += FatherPocoChanged;
-                        }
+                        _is_set_father = true;
                         if (IsBeingPopulated)
                         {
                             _initial_father = value;
                         }
-                        OnPocoChanged(s_fatherProp);
+                        if(_father is {})
+                        {
+                            _father.PocoChanged += FatherPocoChanged;
+                        }
+                        OnPocoChanged(FatherProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1159,7 +1230,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual LitterPoco? Litter
     {
-        get => _is_set_litter ? _litter : default!;
+        get => _litter;
         set
         {
             if(_litter != value)
@@ -1173,15 +1244,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _litter.PocoChanged -= LitterPocoChanged;
                         }
                         _litter = value;
-                        if(_litter is {})
-                        {
-                            _litter.PocoChanged += LitterPocoChanged;
-                        }
+                        _is_set_litter = true;
                         if (IsBeingPopulated)
                         {
                             _initial_litter = value;
                         }
-                        OnPocoChanged(s_litterProp);
+                        if(_litter is {})
+                        {
+                            _litter.PocoChanged += LitterPocoChanged;
+                        }
+                        OnPocoChanged(LitterProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1191,7 +1263,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Mother
     {
-        get => _is_set_mother ? _mother : default!;
+        get => _mother;
         set
         {
             if(_mother != value)
@@ -1205,15 +1277,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _mother.PocoChanged -= MotherPocoChanged;
                         }
                         _mother = value;
-                        if(_mother is {})
-                        {
-                            _mother.PocoChanged += MotherPocoChanged;
-                        }
+                        _is_set_mother = true;
                         if (IsBeingPopulated)
                         {
                             _initial_mother = value;
                         }
-                        OnPocoChanged(s_motherProp);
+                        if(_mother is {})
+                        {
+                            _mother.PocoChanged += MotherPocoChanged;
+                        }
+                        OnPocoChanged(MotherProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1223,7 +1296,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public virtual CatPoco? Self
     {
-        get => _is_set_self ? _self : default!;
+        get => _self;
         set
         {
             if(_self != value)
@@ -1237,15 +1310,16 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
                             _self.PocoChanged -= SelfPocoChanged;
                         }
                         _self = value;
-                        if(_self is {})
-                        {
-                            _self.PocoChanged += SelfPocoChanged;
-                        }
+                        _is_set_self = true;
                         if (IsBeingPopulated)
                         {
                             _initial_self = value;
                         }
-                        OnPocoChanged(s_selfProp);
+                        if(_self is {})
+                        {
+                            _self.PocoChanged += SelfPocoChanged;
+                        }
+                        OnPocoChanged(SelfProp);
                         OnPropertyChanged();
                     }
                 }
@@ -1258,8 +1332,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
     public CatFilterPoco(IServiceProvider services) : base(services) 
     { 
-        _propertiesCount = 15;
-        _modifiedProperties = new int[_propertiesCount];
     }
 
     
@@ -1316,20 +1388,6 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
 
     
-#region Collections
-
-    protected override void CancelCollectionsChanges()
-    {
-    }
-
-    protected override void AcceptCollectionsChanges()
-    {
-    }
-    
-#endregion Collections;
-
-
-    
 #region Poco Changed
 
     protected virtual void AncestorPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Ancestor));
@@ -1357,11 +1415,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsBornAfterInitial();
 
+    private void BornAfterCancelChange()
+    {
+        _bornAfter = _initial_bornAfter;
+
+    }
+
+    private void BornAfterAcceptChange()
+    {
+
+    }
+
+
     private bool IsBornBeforeInitial() => _initial_bornBefore != _bornBefore;
 
     private bool IsBornBeforeModified() => _is_set_bornBefore 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsBornBeforeInitial();
+
+    private void BornBeforeCancelChange()
+    {
+        _bornBefore = _initial_bornBefore;
+
+    }
+
+    private void BornBeforeAcceptChange()
+    {
+
+    }
+
 
     private bool IsExteriorRegexInitial() => _initial_exteriorRegex != _exteriorRegex;
 
@@ -1369,11 +1451,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsExteriorRegexInitial();
 
+    private void ExteriorRegexCancelChange()
+    {
+        _exteriorRegex = _initial_exteriorRegex;
+
+    }
+
+    private void ExteriorRegexAcceptChange()
+    {
+
+    }
+
+
     private bool IsGenderInitial() => _initial_gender != _gender;
 
     private bool IsGenderModified() => _is_set_gender 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsGenderInitial();
+
+    private void GenderCancelChange()
+    {
+        _gender = _initial_gender;
+
+    }
+
+    private void GenderAcceptChange()
+    {
+
+    }
+
 
     private bool IsNameRegexInitial() => _initial_nameRegex != _nameRegex;
 
@@ -1381,11 +1487,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameRegexInitial();
 
+    private void NameRegexCancelChange()
+    {
+        _nameRegex = _initial_nameRegex;
+
+    }
+
+    private void NameRegexAcceptChange()
+    {
+
+    }
+
+
     private bool IsTitleRegexInitial() => _initial_titleRegex != _titleRegex;
 
     private bool IsTitleRegexModified() => _is_set_titleRegex 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsTitleRegexInitial();
+
+    private void TitleRegexCancelChange()
+    {
+        _titleRegex = _initial_titleRegex;
+
+    }
+
+    private void TitleRegexAcceptChange()
+    {
+
+    }
+
 
     private bool IsAncestorInitial() => _initial_ancestor != _ancestor;
 
@@ -1393,11 +1523,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsAncestorInitial();
 
+    private void AncestorCancelChange()
+    {
+        _ancestor = _initial_ancestor;
+
+    }
+
+    private void AncestorAcceptChange()
+    {
+
+    }
+
+
     private bool IsBreedInitial() => _initial_breed != _breed;
 
     private bool IsBreedModified() => _is_set_breed 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsBreedInitial();
+
+    private void BreedCancelChange()
+    {
+        _breed = _initial_breed;
+
+    }
+
+    private void BreedAcceptChange()
+    {
+
+    }
+
 
     private bool IsCatteryInitial() => _initial_cattery != _cattery;
 
@@ -1405,11 +1559,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsCatteryInitial();
 
+    private void CatteryCancelChange()
+    {
+        _cattery = _initial_cattery;
+
+    }
+
+    private void CatteryAcceptChange()
+    {
+
+    }
+
+
     private bool IsChildInitial() => _initial_child != _child;
 
     private bool IsChildModified() => _is_set_child 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsChildInitial();
+
+    private void ChildCancelChange()
+    {
+        _child = _initial_child;
+
+    }
+
+    private void ChildAcceptChange()
+    {
+
+    }
+
 
     private bool IsDescendantInitial() => _initial_descendant != _descendant;
 
@@ -1417,11 +1595,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsDescendantInitial();
 
+    private void DescendantCancelChange()
+    {
+        _descendant = _initial_descendant;
+
+    }
+
+    private void DescendantAcceptChange()
+    {
+
+    }
+
+
     private bool IsFatherInitial() => _initial_father != _father;
 
     private bool IsFatherModified() => _is_set_father 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsFatherInitial();
+
+    private void FatherCancelChange()
+    {
+        _father = _initial_father;
+
+    }
+
+    private void FatherAcceptChange()
+    {
+
+    }
+
 
     private bool IsLitterInitial() => _initial_litter != _litter;
 
@@ -1429,11 +1631,35 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsLitterInitial();
 
+    private void LitterCancelChange()
+    {
+        _litter = _initial_litter;
+
+    }
+
+    private void LitterAcceptChange()
+    {
+
+    }
+
+
     private bool IsMotherInitial() => _initial_mother != _mother;
 
     private bool IsMotherModified() => _is_set_mother 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsMotherInitial();
+
+    private void MotherCancelChange()
+    {
+        _mother = _initial_mother;
+
+    }
+
+    private void MotherAcceptChange()
+    {
+
+    }
+
 
     private bool IsSelfInitial() => _initial_self != _self;
 
@@ -1441,9 +1667,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsSelfInitial();
 
+    private void SelfCancelChange()
+    {
+        _self = _initial_self;
+
+    }
+
+    private void SelfAcceptChange()
+    {
+
+    }
+
+
 
 #endregion Poco Changed;
-
 
 
 }

@@ -47,11 +47,23 @@
         @foreach(PropertyModel pm in Model.Properties)
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            <text>       public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
+            <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if((!pm.IsList || !pm.IsProjection) && !pm.IsIndependent){
                 <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)?@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
+            }
+            else if(pm.IsList) 
+            {
+                if(Model.IsClient)
+                {
+                    <text>@Html.Raw($"_projector._is_set{fieldName} ? {fieldName} : default!");
+</text>
+                }
+                else{
+                    <text>@Html.Raw($"_projector._is_set{fieldName} ? {fieldName} : throw new PropertyNotSetException(nameof({pm.Name}))");
+</text>
+                }
             }
             else {
                 <text>@fieldName;
@@ -94,7 +106,7 @@
             @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList && p.Class is {}))
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-                <text>            @fieldName = new(@Html.Raw($"(({Model.Parent!.ClassName})_projector).{pm.Name}"));
+    <text>            @fieldName = new(@Html.Raw($"(({Model.Parent!.ClassName})_projector).{fieldName}"));
 </text>
             }
         }
@@ -136,7 +148,5 @@
         {
             return _projector.GetHashCode();
         }
-
-        @*@Html.Partial("ProjectionPropertiesAccessors")*@
 
     }

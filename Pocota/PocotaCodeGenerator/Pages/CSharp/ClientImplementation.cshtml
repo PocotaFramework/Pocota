@@ -35,8 +35,6 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     public @Html.Raw($"{Model.ClassName}(IServiceProvider services) : base(services)") 
     { 
-        _propertiesCount = @Model.Properties.Count;
-        _modifiedProperties = new int[_propertiesCount];
         @foreach(PropertyModel pm in Model.Properties.Where(p => p.IsList))
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
@@ -47,11 +45,7 @@ class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
     @Html.Partial("Methods", Model)
 
-    @Html.Partial("Collections", Model)
-
     @Html.Partial("PocoChanged", Model)
-
-@*    @Html.Partial("PropertiesAccessors", Model)*@
 
 }
 
