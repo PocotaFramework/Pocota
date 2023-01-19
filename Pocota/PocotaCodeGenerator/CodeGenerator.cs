@@ -903,13 +903,15 @@ public class CodeGenerator : IModelBuilder
                     Name = pi.Name,
                     IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                     IsReadOnly = false,
-                    IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { }
+                    IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { },
+                    IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property == pi && v.KeyReference is null)
                 };
-                if (_projectorsByProjections.ContainsKey(pi.PropertyType))
+                if (_projectorsByProjections.TryGetValue(pi.PropertyType, out ProjectorHolder? ph))
                 {
                     AddUsings(model, _projectorsByProjections[pi.PropertyType].Interface);
-                    propertyModel.IsProjection = true;
+                    propertyModel.IsPoco = true;
                     propertyModel.Class = MakeTypeName(pi.PropertyType);
+                    propertyModel.IsEntity = ph.KeysDefinitions.Count > 0;
                 }
                 if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                 {
@@ -930,10 +932,11 @@ public class CodeGenerator : IModelBuilder
                     {
                         AddUsings(model, typeof(List<>));
                     }
-                    if (_projectorsByProjections.ContainsKey(itemType))
+                    if (_projectorsByProjections.TryGetValue(itemType, out ProjectorHolder? ph1))
                     {
                         AddUsings(model, _projectorsByProjections[itemType].Interface);
-                        propertyModel.IsProjection = true;
+                        propertyModel.IsPoco = true;
+                        propertyModel.IsEntity = ph1.KeysDefinitions.Count > 0;
                         propertyModel.ItemType = MakePocoClassName(_projectorsByProjections[itemType].Interface);
                     }
                     else
@@ -951,7 +954,7 @@ public class CodeGenerator : IModelBuilder
                     }
                     propertyModel.IsNullable = false;
                 }
-                else if (propertyModel.IsProjection)
+                else if (propertyModel.IsPoco)
                 {
                     propertyModel.Type = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
                 }
@@ -994,33 +997,10 @@ public class CodeGenerator : IModelBuilder
                     projectionModel.Interfaces.Add(MakeTypeName(typeof(INotifyPropertyChanged)));
                 }
 
-                HashSet<string> keysProperties = new();
-
-                foreach (string name in projector.KeysDefinitions.Keys)
-                {
-                    PrimaryKeyDefinition key = projector.KeysDefinitions[name];
-
-                    if(key.Property is { })
-                    {
-                        keysProperties.Add(key.Property.Name);
-                    }
-
-                }
-
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
-                    keysProperties.Remove(pi.Name);
-                    AddPropertyModel(projectionModel, pi, false);
-                }
-                if(false/*keysProperties.Count > 0*/)
-                {
-                    foreach (PropertyInfo pi in request.Interface.GetProperties())
-                    {
-                        if (keysProperties.Contains(pi.Name))
-                        {
-                            AddPropertyModel(projectionModel, pi, true);
-                        }
-                    }
+                    PropertyModel pm = AddPropertyModel(projectionModel, pi, false);
+                    pm.IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property is { } && v.KeyReference is null && v.Property.Name.Equals(pi.Name));
                 }
 
                 projectionModel.Properties.Sort();
@@ -1062,7 +1042,7 @@ public class CodeGenerator : IModelBuilder
         }
     }
 
-    private void AddPropertyModel(ClassModel projectionModel, PropertyInfo pi, bool isHidden)
+    private PropertyModel AddPropertyModel(ClassModel projectionModel, PropertyInfo pi, bool isHidden)
     {
         PropertyModel propertyModel = new()
         {
@@ -1070,20 +1050,26 @@ public class CodeGenerator : IModelBuilder
             Type = MakeTypeName(pi.PropertyType),
             IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
             IsReadOnly = !pi.CanWrite,
-            IsProjection = _projectorsByProjections.ContainsKey(pi.PropertyType),
             IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
             IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { },
         };
-        if (propertyModel.IsProjection)
+        if (_projectorsByProjections.TryGetValue(pi.PropertyType, out ProjectorHolder? ph))
+        {
+            propertyModel.IsPoco = true;
+            propertyModel.IsEntity = ph.KeysDefinitions.Count > 0;
+
+        }
+        if (propertyModel.IsPoco)
         {
             propertyModel.Class = MakePocoClassName(_projectorsByProjections[pi.PropertyType].Interface);
         }
         if (propertyModel.IsList)
         {
             Type itemType = pi.PropertyType.GetGenericArguments()[0];
-            if (_projectorsByProjections.ContainsKey(itemType))
+            if (_projectorsByProjections.TryGetValue(itemType, out ProjectorHolder? ph1))
             {
-                propertyModel.IsProjection = true;
+                propertyModel.IsPoco = true;
+                propertyModel.IsEntity = ph1.KeysDefinitions.Count > 0;
                 propertyModel.ItemType = MakeTypeName(itemType);
                 propertyModel.Class = MakePocoClassName(_projectorsByProjections[itemType].Interface);
             }
@@ -1094,6 +1080,7 @@ public class CodeGenerator : IModelBuilder
             propertyModel.IsNullable = false;
         }
         projectionModel.Properties.Add(propertyModel);
+        return propertyModel;
     }
 
     private void InitClassModel(ClassModel model, GeneratingRequest request)

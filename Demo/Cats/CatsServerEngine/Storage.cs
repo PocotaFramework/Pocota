@@ -85,7 +85,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
 
         SqlCommand sqlCommand = new();
 
-        StringBuilder sb = new(@"SELECT IdLitter, IdFemale, IdFemaleCattery, IdMale, IdMaleCattery
+        StringBuilder sb = new(@"SELECT IdLitter, IdFemale, IdFemaleCattery, IdMale, IdMaleCattery, Date
             FROM Litters");
 
 

@@ -1,11 +1,13 @@
 ﻿using CatsContract;
 using CatsServerDebug.Converters;
+using CatsServerEngineDebug;
 using CatsServerEngineDebug.ControllersImpl;
 using CatsServerEngineDebug.Converters;
 using Microsoft.AspNetCore.Http.Features;
 using Net.Leksi.Pocota.Asp;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
+using System.Security.Cryptography;
 using System.Web;
 
 namespace CatsServerEngine;
@@ -24,6 +26,7 @@ public static class CatsServerExtensions
             connectionString)
         );
 
+        services.AddScoped<RequestStartTime>();
 
         services.AddTransient<ICatsController, CatsController>();
         services.AddTransient<IBuilder, Builder>();
@@ -41,14 +44,11 @@ public static class CatsServerExtensions
     {
         app.Use(async (context, next) =>
         {
-            DateTime start = DateTime.Now;
             if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
             {
-                if(!DateTime.TryParse(context.Request.Headers[Constants.RequestStartTimeHeaderName][0], out start))
-                {
-                    start = DateTime.Now;
-                }
-                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} started: {start:O}");
+                RequestStartTime rst = context.RequestServices.GetRequiredService<RequestStartTime>();
+                rst.StartTime = DateTime.Now;
+                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} started: {rst.StartTime:O}");
             }
             var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
             if (syncIOFeature != null)
@@ -59,7 +59,7 @@ public static class CatsServerExtensions
             if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
             {
                 DateTime stop = DateTime.Now;
-                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} done: {stop:o}, elapsed: {stop - start}");
+                Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} done: {stop:o}, elapsed: {stop - context.RequestServices.GetRequiredService<RequestStartTime>().StartTime}");
             }
         });
 

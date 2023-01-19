@@ -3,7 +3,7 @@
 
 @Html.Raw("#region Poco Changed")
 
-@foreach (PropertyModel pm in Model.Properties.Where(p => p.IsProjection))
+@foreach (PropertyModel pm in Model.Properties.Where(p => p.IsPoco))
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
@@ -24,7 +24,7 @@
             {
                 foreach (@Html.Raw(pm.ItemType) item in e.OldItems)
                 {
-                @if (pm.IsProjection)
+                @if (pm.IsPoco)
                 {
                     <text>                    item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
 </text>
@@ -45,7 +45,7 @@
                     {
 </text>
                 }
-                @if (pm.IsProjection)
+                @if (pm.IsPoco)
                 {
                     <text>                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
 </text>
@@ -91,13 +91,13 @@
     }
     else
     {
-        <text>    private bool @Html.Raw($"Is{pm.Name}Initial()") => @Html.Raw($"_initial{fieldName} != {fieldName}");
+        <text>    private bool @Html.Raw($"Is{pm.Name}Initial()") => @Html.Raw($"_initial{fieldName} == {fieldName}");
 
 </text>
     }
 
-    <text>    private bool @Html.Raw($"Is{pm.Name}Modified()") => @Html.Raw($"_is_set{fieldName}") 
-        && ((IPoco)this).PocoState is PocoState.Modified
+    <text>    private bool @Html.Raw($"Is{pm.Name}Modified()") => @if(Model.IsEntity){<text>@Html.Raw($"_is_set{fieldName}") 
+        && </text>}((IPoco)this).PocoState is PocoState.Modified
                 && !@Html.Raw($"Is{pm.Name}Initial()");
 
     private void @Html.Raw($"{pm.Name}CancelChange()")
@@ -124,7 +124,15 @@
     {
         <text>    private void @Html.Raw($"{pm.Name}AcceptChange()")
     {
+        @if(pm.IsList)
+        {
 
+        }
+        else 
+        {
+            <text>        @Html.Raw($"_initial{fieldName} = {fieldName}");
+</text>
+        }
     }
 </text>
     }

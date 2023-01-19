@@ -17,16 +17,53 @@
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsReadOnly => @Html.Raw(pm.IsReadOnly ? "true" : "false");
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsNullable => @Html.Raw(pm.IsNullable ? "true" : "false");
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsPoco =>  @Html.Raw(pm.IsPoco && !pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsEntity => @Html.Raw(pm.IsEntity && !pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsKeyPart => @Html.Raw(pm.IsKeyPart ? "true" : "false");
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}Type Type => typeof(@Html.Raw(pm.Type));
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsSet(object target) =>  @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName}");
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsSet(object target) => @if(Model.IsEntity)
+        {
+            <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName}")</text>
+        }
+        else
+        {
+            <text>true</text>
+        };
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}object? Get(object target) => @Html.Raw($"(({Model.ClassName})target).{pm.Name}");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Touch(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} = true");
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Touch(object target) @if(Model.IsEntity)
+        {
+            <text>=> @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} = true");
+</text>
+        }
+        else
+        {
+            <text>
+            { }
+</text>
+        }
+        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Unset(object target)
+            {@if(Model.IsEntity)
+                {
+                    <text>
+                @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} = false");
+                    @if(pm.IsList)
+                    {
+                        <text>                @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{fieldName}.Clear()");
+</text>
+                    }
+                    else
+                    {
+                        <text>                @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{fieldName} = default!");
+</text>
+                    }
+           </text>
+                } }
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Set(object target, object? value) => @if(!pm.IsList)
             {
                 if(pm.IsReadOnly)
                 {
-                    if(pm.IsProjection)
+                    if(pm.IsPoco)
                     {
                         <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name} = ((IProjection?)value)?.As<{(hasProjector ? pm.Class : pm.Type)}>()!")</text>
                     }
@@ -37,7 +74,7 @@
                 }
                 else
                 {
-                    if(pm.IsProjection)
+                    if(pm.IsPoco)
                     {
                         <text>@Html.Raw($"(({Model.ClassName})target).{pm.Name} = ((IProjection?)value)?.As<{pm.Type}>()!")</text>
                     }
@@ -52,14 +89,13 @@
                 <text>throw new NotImplementedException()</text>
             };
         @if(Model.IsClient)
-            {
-                <text>        @Html.Raw(indent)public override bool IsModified(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Is{pm.Name}Modified()");
+        {
+            <text>        @Html.Raw(indent)public override bool IsModified(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Is{pm.Name}Modified()");
         @Html.Raw(indent)public override bool IsInitial(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Is{pm.Name}Initial()");
         @Html.Raw(indent)public override void CancelChange(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name}CancelChange()");
         @Html.Raw(indent)public override void AcceptChange(object target) => @if(Model.IsEntity){<text>throw new InvalidOperationException()</text>} else {<text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name}AcceptChange()")</text>};
-
 </text>
-            }
+        }
     @Html.Raw(indent)}
 
 </text>

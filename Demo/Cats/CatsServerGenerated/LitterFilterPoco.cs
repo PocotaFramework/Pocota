@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-18T18:51:06                                  //
+// at 2023-01-19T17:07:25                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -34,11 +34,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsReadOnly => false;
             public bool IsNullable => false;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  true;
+            public bool IsEntity => true;
+            public bool IsKeyPart => false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_female;
+            public bool IsSet(object target) => true;
             public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Female;
-            public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_female = true;
+            public void Touch(object target) 
+            { }
+            public void Unset(object target)
+            { }
             public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
         }
 
@@ -48,11 +54,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsReadOnly => false;
             public bool IsNullable => false;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  true;
+            public bool IsEntity => true;
+            public bool IsKeyPart => false;
             public Type Type => typeof(ICat);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_male;
+            public bool IsSet(object target) => true;
             public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Male;
-            public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_male = true;
+            public void Touch(object target) 
+            { }
+            public void Unset(object target)
+            { }
             public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
         }
 
@@ -62,11 +74,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public bool IsReadOnly => false;
             public bool IsNullable => false;
             public bool IsCollection =>  true;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(IList<String>);
             public Type? ItemType => typeof(String);
-            public bool IsSet(object target) =>  ((LitterFilterILitterFilterProjection)target)._projector._is_set_strings;
+            public bool IsSet(object target) => true;
             public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Strings;
-            public void Touch(object target) => ((LitterFilterILitterFilterProjection)target)._projector._is_set_strings = true;
+            public void Touch(object target) 
+            { }
+            public void Unset(object target)
+            { }
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -143,11 +161,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  true;
+        public bool IsEntity => true;
+        public bool IsKeyPart => false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_female;
+        public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Female;
-        public void Touch(object target) => ((LitterFilterPoco)target)._is_set_female = true;
+        public void Touch(object target) 
+            { }
+        public void Unset(object target)
+            { }
         public void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -157,11 +181,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  true;
+        public bool IsEntity => true;
+        public bool IsKeyPart => false;
         public Type Type => typeof(CatPoco);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_male;
+        public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Male;
-        public void Touch(object target) => ((LitterFilterPoco)target)._is_set_male = true;
+        public void Touch(object target) 
+            { }
+        public void Unset(object target)
+            { }
         public void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -171,11 +201,17 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  true;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(List<String>);
         public Type? ItemType => typeof(String);
-        public bool IsSet(object target) =>  ((LitterFilterPoco)target)._is_set_strings;
+        public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Strings;
-        public void Touch(object target) => ((LitterFilterPoco)target)._is_set_strings = true;
+        public void Touch(object target) 
+            { }
+        public void Unset(object target)
+            { }
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 
@@ -323,7 +359,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     void IPoco.Clear()
     {
         _is_set_female = false;
+        _female = default!;
         _is_set_male = false;
+        _male = default!;
+        _is_set_strings = false;
         _strings.Clear();
     }
 

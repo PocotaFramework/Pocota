@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-18T18:51:06                                  //
+// at 2023-01-19T17:07:25                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -32,11 +32,17 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
             public bool IsReadOnly => false;
             public bool IsNullable => true;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatteryFilterICatteryFilterProjection)target)._projector._is_set_searchRegex;
+            public bool IsSet(object target) => true;
             public object? Get(object target) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex;
-            public void Touch(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector._is_set_searchRegex = true;
+            public void Touch(object target) 
+            { }
+            public void Unset(object target)
+            { }
             public void Set(object target, object? value) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex = (String)value!;
         }
 
@@ -99,11 +105,17 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
         public bool IsReadOnly => false;
         public bool IsNullable => true;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatteryFilterPoco)target)._is_set_searchRegex;
+        public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatteryFilterPoco)target).SearchRegex;
-        public void Touch(object target) => ((CatteryFilterPoco)target)._is_set_searchRegex = true;
+        public void Touch(object target) 
+            { }
+        public void Unset(object target)
+            { }
         public void Set(object target, object? value) => ((CatteryFilterPoco)target).SearchRegex = (String)value!;
     }
 
@@ -226,6 +238,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
     void IPoco.Clear()
     {
         _is_set_searchRegex = false;
+        _searchRegex = default!;
     }
 
     bool IPoco.IsLoaded(Type @interface)

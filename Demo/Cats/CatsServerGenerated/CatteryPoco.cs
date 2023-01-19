@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-18T18:51:06                                  //
+// at 2023-01-19T17:07:25                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,11 +33,19 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsReadOnly => false;
             public bool IsNullable => true;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
+            public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
+            public void Unset(object target)
+            {
+                ((CatteryICatteryProjection)target)._projector._is_set_nameEng = false;
+                ((CatteryICatteryProjection)target)._projector._nameEng = default!;
+            }
             public void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameEng = (String)value!;
         }
 
@@ -47,11 +55,19 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsReadOnly => false;
             public bool IsNullable => true;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
+            public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
+            public void Unset(object target)
+            {
+                ((CatteryICatteryProjection)target)._projector._is_set_nameNat = false;
+                ((CatteryICatteryProjection)target)._projector._nameNat = default!;
+            }
             public void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameNat = (String)value!;
         }
 
@@ -121,11 +137,19 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsReadOnly => false;
         public bool IsNullable => true;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameEng;
+        public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
         public object? Get(object target) => ((CatteryPoco)target).NameEng;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
+        public void Unset(object target)
+            {
+                ((CatteryPoco)target)._is_set_nameEng = false;
+                ((CatteryPoco)target)._nameEng = default!;
+            }
         public void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
     }
 
@@ -135,11 +159,19 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsReadOnly => false;
         public bool IsNullable => true;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((CatteryPoco)target)._is_set_nameNat;
+        public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
         public object? Get(object target) => ((CatteryPoco)target).NameNat;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
+        public void Unset(object target)
+            {
+                ((CatteryPoco)target)._is_set_nameNat = false;
+                ((CatteryPoco)target)._nameNat = default!;
+            }
         public void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
     }
 
@@ -285,7 +317,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     void IPoco.Clear()
     {
         _is_set_nameEng = false;
+        _nameEng = default!;
         _is_set_nameNat = false;
+        _nameNat = default!;
     }
 
     bool IPoco.IsLoaded(Type @interface)

@@ -26,7 +26,7 @@
                 {
                     if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))</text>})
                     {
-                        @if(pm.IsProjection)
+                        @if(pm.IsPoco)
                         {
                             <text>                        if(@fieldName is {})
                         {
@@ -35,7 +35,7 @@
 </text>   
                         }
                         @fieldName = value;
-                        @if (!Model.IsEntity)
+                        @if (Model.IsEntity)
                         {
                             <text>                        @Html.Raw($"_is_set{fieldName}") = true;
 </text>
@@ -49,7 +49,7 @@
 </text>
                             }
                         }
-                        @if(pm.IsProjection)
+                        @if(pm.IsPoco)
                         {
                             <text>                        if(@fieldName is {})
                         {

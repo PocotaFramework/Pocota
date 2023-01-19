@@ -49,11 +49,11 @@
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
-            get => @if((!pm.IsList || !pm.IsProjection) && !pm.IsIndependent){
-                <text>@if (pm.IsProjection && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsProjection && !pm.IsList) { <text>)?@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+            get => @if((!pm.IsList || !pm.IsPoco) && !pm.IsIndependent){
+                <text>@if (pm.IsPoco && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsPoco && !pm.IsList) { <text>)?@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
-            else if(pm.IsList) 
+            else if(pm.IsList && Model.IsEntity) 
             {
                 if(Model.IsClient)
                 {
@@ -83,7 +83,7 @@
                 }
                 else
                 {
-                <text>            set => @Html.Raw($"_projector.{pm.Name} = ")@if (pm.IsProjection) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsProjection ? "!" : string.Empty)}")@if (pm.IsProjection) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                <text>            set => @Html.Raw($"_projector.{pm.Name} = ")@if (pm.IsPoco) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsPoco ? "!" : string.Empty)}")@if (pm.IsPoco) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
                 }
             }

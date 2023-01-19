@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-18T18:51:06                                  //
+// at 2023-01-19T17:07:26                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -31,17 +31,22 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             public override bool IsReadOnly => false;
             public override bool IsNullable => true;
             public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) =>  ((CatteryFilterICatteryFilterProjection)target)._projector._is_set_searchRegex;
+            public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex;
-            public override void Touch(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector._is_set_searchRegex = true;
+            public override void Touch(object target) 
+            { }
+            public override void Unset(object target)
+            { }
             public override void Set(object target, object? value) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex = (String)value!;
             public override bool IsModified(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexModified();
             public override bool IsInitial(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexInitial();
             public override void CancelChange(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegexCancelChange();
             public override void AcceptChange(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegexAcceptChange();
-
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -122,17 +127,22 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
         public override bool IsReadOnly => false;
         public override bool IsNullable => true;
         public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) =>  ((CatteryFilterPoco)target)._is_set_searchRegex;
+        public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((CatteryFilterPoco)target).SearchRegex;
-        public override void Touch(object target) => ((CatteryFilterPoco)target)._is_set_searchRegex = true;
+        public override void Touch(object target) 
+            { }
+        public override void Unset(object target)
+            { }
         public override void Set(object target, object? value) => ((CatteryFilterPoco)target).SearchRegex = (String)value!;
         public override bool IsModified(object target) => ((CatteryFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((CatteryFilterPoco)target).IsSearchRegexInitial();
         public override void CancelChange(object target) => ((CatteryFilterPoco)target).SearchRegexCancelChange();
         public override void AcceptChange(object target) => ((CatteryFilterPoco)target).SearchRegexAcceptChange();
-
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -148,8 +158,8 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 #region Fields
 
     private String? _searchRegex = default;
-    private String? _initial_searchRegex = default;
-    private bool _is_set_searchRegex = false;
+    private String? _initial_searchRegex = default!;
+    
 
 #endregion Fields;
 
@@ -190,7 +200,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
                     if(_searchRegex != value )
                     {
                         _searchRegex = value;
-                        _is_set_searchRegex = true;
                         if (IsBeingPopulated)
                         {
                             _initial_searchRegex = value;
@@ -267,10 +276,9 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 #region Poco Changed
 
 
-    private bool IsSearchRegexInitial() => _initial_searchRegex != _searchRegex;
+    private bool IsSearchRegexInitial() => _initial_searchRegex == _searchRegex;
 
-    private bool IsSearchRegexModified() => _is_set_searchRegex 
-        && ((IPoco)this).PocoState is PocoState.Modified
+    private bool IsSearchRegexModified() => ((IPoco)this).PocoState is PocoState.Modified
                 && !IsSearchRegexInitial();
 
     private void SearchRegexCancelChange()
@@ -281,7 +289,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 
     private void SearchRegexAcceptChange()
     {
-
+        _initial_searchRegex = _searchRegex;
     }
 
 

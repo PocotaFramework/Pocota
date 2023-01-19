@@ -15,7 +15,7 @@ internal class PocoContext : IPocoContext
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
-    private readonly ConcurrentDictionary<Type, int> _tracedPocos = new();
+    private readonly Dictionary<Type, int> _tracedPocos = new();
     private readonly Dictionary<Type, Dictionary<object?[], WeakReference>> _cachedObjects = new();
     private readonly object _getSourceLock = new();
     private readonly object _externalUpdatesLock = new();
@@ -177,7 +177,17 @@ internal class PocoContext : IPocoContext
         }
         if (_tracePocos)
         {
-            _tracedPocos.AddOrUpdate(poco.GetType(), 1, (t, i) => i + 1);
+            lock (_tracedPocos)
+            {
+                if (!_tracedPocos.ContainsKey(poco.GetType()))
+                {
+                    _tracedPocos.Add(poco.GetType(), 1);
+                }
+                else
+                {
+                    ++_tracedPocos[poco.GetType()];
+                }
+            }
             if (_freezeTracingPocosReenters == 0)
             {
                 TracedPocosChanged?.Invoke(this, new EventArgs());

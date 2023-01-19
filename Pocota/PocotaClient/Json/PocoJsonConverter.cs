@@ -85,8 +85,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                         reference = reader.GetString();
                         if (reference is { })
                         {
-                            result = (IProjection<T>)context!.ResolveReference(reference)!;
-                            result?.As<PocoBase>()?.StartPopulate(context); ;
+                            result = (IProjection<T>?)((IProjection<T>?)context!.ResolveReference(reference))?.As<T>();
+                            result?.As<PocoBase>()?.StartPopulate(context);
                         }
                         else
                         {
@@ -194,12 +194,11 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     if (property is { })
                     {
 
-                        object? oldValue = property.Get(result.As<T>()!);
-
                         Type typeForDeserialization = property.Type;
 
                         if (property.IsCollection)
                         {
+                            property.Touch(result);
                             context!.ItemType = property.ItemType;
                         }
                         else
@@ -207,6 +206,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             typeForDeserialization = property.Type;
                             context!.ItemType = null;
                         }
+
+                        object? oldValue = property.Get(result);
 
                         bool isUnchanged = true;
                         bool isModified = false;
@@ -242,14 +243,16 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             )
                         )
                         {
-                            property.Touch(result.As<T>()!);
-
+                            if(!property.IsCollection)
+                            {
+                                property.Touch(result);
+                            }
                         }
                         else
                         {
                             if (canChangeValue)
                             {
-                                property.Set(result.As<T>()!, value);
+                                property.Set(result, value);
                             }
                             else
                             {
@@ -265,7 +268,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     }
                 }
             }
-            return result?.As<T>();
+            return (T?)result;
         }
         finally
         {

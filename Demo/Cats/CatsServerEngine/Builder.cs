@@ -2,10 +2,12 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using CatsServerDebug.Converters;
+using CatsServerEngineDebug;
 using CatsServerEngineDebug.Converters;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System.Data.Common;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -186,7 +188,6 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/IdFemaleCattery", "IdMotherCattery")
         .AddPathMapEntry("/Description", "OwnerInfo")
         .AddPathMapEntry("/Litter/Male", BuildingScript.KeyOnly)
-        //.AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
         .AddPathMapEntry("/Litter/Male/IdCat", "IdFather")
         .AddPathMapEntry("/Litter/Male/IdCattery", "IdFatherCattery")
         .AddPathMapEntry("/Litter/Date", "Date", typeof(DateOnlyConverter))
@@ -197,6 +198,10 @@ internal class Builder : IBuilder
         ;
 
     private static BuildingScriptMapping BuildCatsLitterWithCatsMapping = new BuildingScriptMapping("BuildCatsLitterWithCatsMapping")
+            .AddPathMapEntry("/Female", BuildingScript.KeyOnly)
+            .AddPathMapEntry("/Male", BuildingScript.KeyOnly)
+            .AddPathMapEntry("/Male/IdCat", "IdFather")
+            .AddPathMapEntry("/Male/IdCattery", "IdFatherCattery")
             .AddPathMapEntry("/Cats/[]/IdCat", "IdCat")
             .AddPathMapEntry("/Cats/[]/IdCattery", "IdCattery")
             .AddPathMapEntry("/Cats/[]/Breed/IdBreed", "IdBreed")
@@ -232,7 +237,7 @@ internal class Builder : IBuilder
                 _pocoContext.AddJsonConverters(typeof(ICatWithSiblings), options.JsonSerializerOptions!);
                 _pocoContext.AddJsonConverters(typeof(ICatWithSiblings), jsonSerializerOptions);
                 JsonSerializer.Serialize(
-                    options.Output!,
+                    new Utf8JsonWriter(options.Output!),
                     FindLittersWithCats(filter, options),
                     jsonSerializerOptions
                 );
@@ -242,7 +247,7 @@ internal class Builder : IBuilder
                 _pocoContext.AddJsonConverters<T>(options.JsonSerializerOptions!);
                 _pocoContext.AddJsonConverters<T>(jsonSerializerOptions);
                 JsonSerializer.Serialize(
-                    options.Output!,
+                    new Utf8JsonWriter(options.Output!),
                     FindCats<T>(filter, options),
                     jsonSerializerOptions
                 );
@@ -302,7 +307,7 @@ internal class Builder : IBuilder
 
     private IEnumerable<ILitterWithCats> FindLittersWithCats(ICatFilter filter, BuildingOptions options)
     {
-        return FindCats<ICatWithSiblings>(filter, options).Select(cat => cat.Litter)!;
+        return FindCats<ICatWithSiblings>(filter, options).Select(cat => cat.Litter).Where(litter => litter is { })!;
     }
 
     private IEnumerable<T> FindCats<T>(ICatFilter? filter, BuildingOptions options) where T : class
@@ -551,10 +556,13 @@ internal class Builder : IBuilder
             Target = litters,
         };
         littersOptions.Script = _services.GetRequiredService<BuildingScript>();
+        littersOptions.Script.WithTrace = true;
+        littersOptions.Script.AddPathMapEntry("/Date", "Date", typeof(DateOnlyConverter));
         littersOptions.Script.AddPathMapEntry("/Cats", BuildingScript.Skip);
         littersOptions.Script.AddPathMapEntry("/Male", BuildingScript.KeyOnly);
-        littersOptions.Script.AddPathMapEntry("/Male/IdCat", "/IdMale");
-        littersOptions.Script.AddPathMapEntry("/Male/IdCattery", "/IdMaleCattery");
+        littersOptions.Script.AddPathMapEntry("/Male/IdCat", "IdMale");
+        littersOptions.Script.AddPathMapEntry("/Male/IdCattery", "IdMaleCattery");
+        littersOptions.Script.AddPathMapEntry("/Female", BuildingScript.KeyOnly);
 
         BuildCats<T>(catsFilter, catsOptions);
         foreach (T item in cats)
@@ -650,6 +658,7 @@ internal class Builder : IBuilder
             ICat cat = ((IProjection)queue.Dequeue()).As<ICat>()!;
             if (!PocoBase.ReferenceEquals(cat, filter.Ancestor) && TestFilter(filter, cat))
             {
+
                 yield return ((IProjection)cat).As<T>()!;
             }
             for(int i = 0; i < 2; ++i)

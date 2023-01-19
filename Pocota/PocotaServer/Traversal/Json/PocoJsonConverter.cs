@@ -230,5 +230,9 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             }
         }
         writer.WriteEndObject();
+        if (isHighLevel)
+        {
+            writer.Flush();
+        }
     }
 }

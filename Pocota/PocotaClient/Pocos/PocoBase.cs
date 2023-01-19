@@ -253,7 +253,7 @@ public abstract class PocoBase : IPoco
                             throw new InvalidOperationException($"{((IPoco)this).PocoState} Poco cannot be modified!");
                         }
                         PocoState oldPocoState = ((IPoco)this).PocoState;
-                        if (property.IsModified(this))
+                        if (!property.IsInitial(this))
                         {
                             (_modified ?? (_modified = new HashSet<IProperty>())).Add(property);
                         }

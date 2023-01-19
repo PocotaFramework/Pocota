@@ -7,7 +7,9 @@ public class PropertyModel: IComparable<PropertyModel>
     public bool IsReadOnly { get; internal set; } = false;
     public bool IsNullable { get; internal set; } = false;
     public bool IsList { get; internal set; } = false;
-    public bool IsProjection { get; internal set; } = false;
+    public bool IsPoco { get; internal set; } = false;
+    public bool IsEntity { get; internal set; } = false;
+    public bool IsKeyPart { get; internal set; } = false;
     public string? ItemType { get; internal set; } = null;
     public string? Class { get; internal set; } = null;
     public Dictionary<string, string> Interfaces { get; init; } = new();
@@ -21,8 +23,8 @@ public class PropertyModel: IComparable<PropertyModel>
         }
         if (other.IsList && !IsList) return -1;
         if (!other.IsList && IsList) return 1;
-        if (other.IsProjection && !IsProjection) return -1;
-        if (!other.IsProjection && IsProjection) return 1;
+        if (other.IsPoco && !IsPoco) return -1;
+        if (!other.IsPoco && IsPoco) return 1;
         return Name.CompareTo(other.Name);
     }
 }

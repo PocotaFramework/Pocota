@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-18T18:51:06                                  //
+// at 2023-01-19T17:07:25                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -33,11 +33,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsReadOnly => false;
             public bool IsNullable => false;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => true;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_code;
+            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_code;
             public object? Get(object target) => ((BreedIBreedProjection)target).Code;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
+            public void Unset(object target)
+            {
+                ((BreedIBreedProjection)target)._projector._is_set_code = false;
+                ((BreedIBreedProjection)target)._projector._code = default!;
+            }
             public void Set(object target, object? value) => ((BreedIBreedProjection)target).Code = (String)value!;
         }
 
@@ -47,11 +55,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsReadOnly => false;
             public bool IsNullable => false;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => true;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_group;
+            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_group;
             public object? Get(object target) => ((BreedIBreedProjection)target).Group;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
+            public void Unset(object target)
+            {
+                ((BreedIBreedProjection)target)._projector._is_set_group = false;
+                ((BreedIBreedProjection)target)._projector._group = default!;
+            }
             public void Set(object target, object? value) => ((BreedIBreedProjection)target).Group = (String)value!;
         }
 
@@ -61,11 +77,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsReadOnly => false;
             public bool IsNullable => true;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
             public object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
+            public void Unset(object target)
+            {
+                ((BreedIBreedProjection)target)._projector._is_set_nameEng = false;
+                ((BreedIBreedProjection)target)._projector._nameEng = default!;
+            }
             public void Set(object target, object? value) => ((BreedIBreedProjection)target).NameEng = (String)value!;
         }
 
@@ -75,11 +99,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public bool IsReadOnly => false;
             public bool IsNullable => true;
             public bool IsCollection =>  false;
+            public bool IsPoco =>  false;
+            public bool IsEntity => false;
+            public bool IsKeyPart => false;
             public Type Type => typeof(String);
             public Type? ItemType => null;
-            public bool IsSet(object target) =>  ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
             public object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
+            public void Unset(object target)
+            {
+                ((BreedIBreedProjection)target)._projector._is_set_nameNat = false;
+                ((BreedIBreedProjection)target)._projector._nameNat = default!;
+            }
             public void Set(object target, object? value) => ((BreedIBreedProjection)target).NameNat = (String)value!;
         }
 
@@ -163,11 +195,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => true;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_code;
+        public bool IsSet(object target) => ((BreedPoco)target)._is_set_code;
         public object? Get(object target) => ((BreedPoco)target).Code;
         public void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
+        public void Unset(object target)
+            {
+                ((BreedPoco)target)._is_set_code = false;
+                ((BreedPoco)target)._code = default!;
+            }
         public void Set(object target, object? value) => ((BreedPoco)target).Code = (String)value!;
     }
 
@@ -177,11 +217,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsReadOnly => false;
         public bool IsNullable => false;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => true;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_group;
+        public bool IsSet(object target) => ((BreedPoco)target)._is_set_group;
         public object? Get(object target) => ((BreedPoco)target).Group;
         public void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
+        public void Unset(object target)
+            {
+                ((BreedPoco)target)._is_set_group = false;
+                ((BreedPoco)target)._group = default!;
+            }
         public void Set(object target, object? value) => ((BreedPoco)target).Group = (String)value!;
     }
 
@@ -191,11 +239,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsReadOnly => false;
         public bool IsNullable => true;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameEng;
+        public bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
         public object? Get(object target) => ((BreedPoco)target).NameEng;
         public void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
+        public void Unset(object target)
+            {
+                ((BreedPoco)target)._is_set_nameEng = false;
+                ((BreedPoco)target)._nameEng = default!;
+            }
         public void Set(object target, object? value) => ((BreedPoco)target).NameEng = (String)value!;
     }
 
@@ -205,11 +261,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public bool IsReadOnly => false;
         public bool IsNullable => true;
         public bool IsCollection =>  false;
+        public bool IsPoco =>  false;
+        public bool IsEntity => false;
+        public bool IsKeyPart => false;
         public Type Type => typeof(String);
         public Type? ItemType => null;
-        public bool IsSet(object target) =>  ((BreedPoco)target)._is_set_nameNat;
+        public bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;
         public object? Get(object target) => ((BreedPoco)target).NameNat;
         public void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
+        public void Unset(object target)
+            {
+                ((BreedPoco)target)._is_set_nameNat = false;
+                ((BreedPoco)target)._nameNat = default!;
+            }
         public void Set(object target, object? value) => ((BreedPoco)target).NameNat = (String)value!;
     }
 
@@ -387,9 +451,13 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     void IPoco.Clear()
     {
         _is_set_code = false;
+        _code = default!;
         _is_set_group = false;
+        _group = default!;
         _is_set_nameEng = false;
+        _nameEng = default!;
         _is_set_nameNat = false;
+        _nameNat = default!;
     }
 
     bool IPoco.IsLoaded(Type @interface)
