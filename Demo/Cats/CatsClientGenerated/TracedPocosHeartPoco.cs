@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-19T17:07:26                                          //
+// at 2023-01-20T11:35:30                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -10,6 +10,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -49,6 +50,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsInitial(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.IsModifiedPocosInitial();
             public override void CancelChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocosCancelChange();
             public override void AcceptChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocosAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class TracedPocosProperty: Property
@@ -73,6 +75,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsInitial(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.IsTracedPocosInitial();
             public override void CancelChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocosCancelChange();
             public override void AcceptChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocosAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -170,14 +173,15 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((TracedPocosHeartPoco)target).ModifiedPocos;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => throw new NotImplementedException();
         public override bool IsModified(object target) => ((TracedPocosHeartPoco)target).IsModifiedPocosModified();
         public override bool IsInitial(object target) => ((TracedPocosHeartPoco)target).IsModifiedPocosInitial();
         public override void CancelChange(object target) => ((TracedPocosHeartPoco)target).ModifiedPocosCancelChange();
         public override void AcceptChange(object target) => ((TracedPocosHeartPoco)target).ModifiedPocosAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class TracedPocosProperty: Property
@@ -194,14 +198,15 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((TracedPocosHeartPoco)target).TracedPocos;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => throw new NotImplementedException();
         public override bool IsModified(object target) => ((TracedPocosHeartPoco)target).IsTracedPocosModified();
         public override bool IsInitial(object target) => ((TracedPocosHeartPoco)target).IsTracedPocosInitial();
         public override void CancelChange(object target) => ((TracedPocosHeartPoco)target).TracedPocosCancelChange();
         public override void AcceptChange(object target) => ((TracedPocosHeartPoco)target).TracedPocosAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public static void InitProperties(List<IProperty> properties)

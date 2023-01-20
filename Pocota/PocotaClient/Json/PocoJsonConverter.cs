@@ -227,7 +227,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             ? (
                                 canChangeValue
                                 ? oldValue
-                                : ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
+                                : null//((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, Activator.CreateInstance(typeof(List<>).MakeGenericType(context.ItemType!)))
                                 
                             )
                             : null;
@@ -256,7 +256,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                             }
                             else
                             {
-                                ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, value);
+                               // ((EntityBase?)entity)!.DeferredOverwriting(context, propertyName, value);
                             }
                         }
                         done = true;

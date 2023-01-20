@@ -7,6 +7,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -1000,6 +1001,19 @@ public class CodeGenerator : IModelBuilder
                 foreach (PropertyInfo pi in projection.GetProperties())
                 {
                     PropertyModel pm = AddPropertyModel(projectionModel, pi, false);
+                    if (pm.IsList)
+                    {
+                        if (isClient)
+                        {
+                            AddUsings(model, typeof(Client.ProjectionList<,>));
+                            AddUsings(model, typeof(ProjectionListBase<,>));
+                            AddUsings(model, typeof(IList));
+                        }
+                        else
+                        {
+                            AddUsings(model, typeof(Server.ProjectionList<,>));
+                        }
+                    }
                     pm.IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property is { } && v.KeyReference is null && v.Property.Name.Equals(pi.Name));
                 }
 

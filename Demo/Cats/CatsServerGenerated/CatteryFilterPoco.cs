@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -113,9 +113,9 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatteryFilterPoco)target).SearchRegex;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatteryFilterPoco)target).SearchRegex = (String)value!;
     }
 

@@ -8,10 +8,6 @@ namespace Net.Leksi.Pocota.Client;
 
 public abstract class EntityBase : PocoBase, IEntity
 {
-    private ConditionalWeakTable<PocoTraversalContext, object>? _overwriters = null;
-    private Dictionary<string, Tuple<int, object?>> _deferredOverwritings = null;
-    private int _overwritersGenId = 0;
-
     internal object[]? PrimaryKey { get; set; } = null;
 
     internal override bool IsEnvelope => false;
@@ -62,68 +58,4 @@ public abstract class EntityBase : PocoBase, IEntity
             OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
         }
     }
-
-    internal object? DeferredOverwriting(PocoTraversalContext context, string property, object? value)
-    {
-        lock (_lock)
-        {
-            if (_overwriters is null)
-            {
-                _overwriters = new ConditionalWeakTable<PocoTraversalContext, object>();
-                _deferredOverwritings = new Dictionary<string, Tuple<int, object?>>();
-            }
-            if (!_overwriters.TryGetValue(context, out object? id))
-            {
-                id = ++_overwritersGenId;
-                _overwriters.Add(context, id);
-            }
-            if(!_deferredOverwritings.TryGetValue(property, out Tuple<int, object?>? pair))
-            {
-                _deferredOverwritings.Add(property, new Tuple<int, object?>((int)id, value));
-            }
-            else if((int)id >= pair.Item1)
-            {
-                _deferredOverwritings[property] = new Tuple<int, object?>((int)id, value);
-            }
-        }
-        return value;
-    }
-
-    internal void OverwriteExternalUpdates(bool overwrite)
-    {
-        if(_deferredOverwritings is { } && _deferredOverwritings.Count > 0)
-        {
-            lock (_lock)
-            {
-                if (_deferredOverwritings is { } && _deferredOverwritings.Count > 0)
-                {
-                    if(overwrite)
-                    {
-                        ((IPoco)this).CancelChanges();
-                        foreach(var pair in _deferredOverwritings)
-                        {
-                            if(_pocota.GetPropertiesDictionary(GetType())?[pair.Key] is IProperty property)
-                            {
-                                if (!property.IsCollection)
-                                {
-                                    property.Set(this, pair.Value.Item2);
-                                }
-                                else if (pair.Value.Item2 is IList src && property.Get(this) is IList dst)
-                                {
-                                    dst.Clear();
-                                    foreach (var item in src)
-                                    {
-                                        dst.Add(item);
-                                    }
-                                }
-                            }
-                        }
-                        ((IPoco)this).AcceptChanges();
-                        _deferredOverwritings.Clear();
-                    }
-                }
-            }
-        }
-    }
-
 }

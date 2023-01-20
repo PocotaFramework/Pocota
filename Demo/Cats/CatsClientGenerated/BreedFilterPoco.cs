@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -47,6 +47,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
             public override bool IsInitial(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.IsSearchRegexInitial();
             public override void CancelChange(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegexCancelChange();
             public override void AcceptChange(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegexAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -135,14 +136,15 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => ((BreedFilterPoco)target).SearchRegex = (String)value!;
         public override bool IsModified(object target) => ((BreedFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((BreedFilterPoco)target).IsSearchRegexInitial();
         public override void CancelChange(object target) => ((BreedFilterPoco)target).SearchRegexCancelChange();
         public override void AcceptChange(object target) => ((BreedFilterPoco)target).SearchRegexAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public static void InitProperties(List<IProperty> properties)

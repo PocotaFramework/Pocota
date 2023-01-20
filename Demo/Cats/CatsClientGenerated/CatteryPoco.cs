@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -49,6 +49,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng ? ((CatteryICatteryProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -75,6 +76,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat ? ((CatteryICatteryProjection)target)._projector._initial_nameNat : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -171,15 +173,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override object? Get(object target) => ((CatteryPoco)target).NameEng;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
         public override void Unset(object target)
-            {
-                ((CatteryPoco)target)._is_set_nameEng = false;
-                ((CatteryPoco)target)._nameEng = default!;
-            }
+        {
+            ((CatteryPoco)target)._is_set_nameEng = false;
+            ((CatteryPoco)target)._nameEng = default!;
+        }
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameEngCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => ((CatteryPoco)target)._is_set_nameEng ? ((CatteryPoco)target)._initial_nameEng : default!;
     }
 
     public class NameNatProperty: Property
@@ -197,15 +200,16 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override object? Get(object target) => ((CatteryPoco)target).NameNat;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
         public override void Unset(object target)
-            {
-                ((CatteryPoco)target)._is_set_nameNat = false;
-                ((CatteryPoco)target)._nameNat = default!;
-            }
+        {
+            ((CatteryPoco)target)._is_set_nameNat = false;
+            ((CatteryPoco)target)._nameNat = default!;
+        }
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameNatCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => ((CatteryPoco)target)._is_set_nameNat ? ((CatteryPoco)target)._initial_nameNat : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)

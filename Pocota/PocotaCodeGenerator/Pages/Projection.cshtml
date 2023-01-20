@@ -39,7 +39,13 @@
             }
             else 
             {
-        <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
+                <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
+                @if (Model.IsClient)
+            {
+                <text>            private readonly @Html.Raw($"ProjectionListBase<{pm.Class},{pm.ItemType}> _initial{fieldName};")
+</text>
+            }
+
 </text>
             }
         }
@@ -107,6 +113,11 @@
             {
                 string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>            @fieldName = new(@Html.Raw($"(({Model.Parent!.ClassName})_projector).{fieldName}"));
+            @if(Model.IsClient)
+            {
+                <text>            @Html.Raw($"_initial{@fieldName} = new((({Model.Parent!.ClassName})_projector)._initial{fieldName}"));
+</text>
+            }
 </text>
             }
         }

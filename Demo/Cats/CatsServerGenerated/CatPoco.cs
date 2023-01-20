@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -271,6 +271,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly CatPoco _projector;
 
         private readonly ProjectionList<LitterPoco,ILitter> _litters;
+
 
         public String? Description 
         {
@@ -1156,6 +1157,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
 
+
         public String? Description 
         {
             get => _projector.Description;
@@ -1437,10 +1439,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Description;
         public void Touch(object target) => ((CatPoco)target)._is_set_description = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_description = false;
-                ((CatPoco)target)._description = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_description = false;
+            ((CatPoco)target)._description = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Description = (String)value!;
     }
 
@@ -1459,10 +1461,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Exterior;
         public void Touch(object target) => ((CatPoco)target)._is_set_exterior = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_exterior = false;
-                ((CatPoco)target)._exterior = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_exterior = false;
+            ((CatPoco)target)._exterior = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Exterior = (String)value!;
     }
 
@@ -1481,10 +1483,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Gender;
         public void Touch(object target) => ((CatPoco)target)._is_set_gender = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_gender = false;
-                ((CatPoco)target)._gender = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_gender = false;
+            ((CatPoco)target)._gender = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Gender = (Gender)value!;
     }
 
@@ -1503,10 +1505,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).NameEng;
         public void Touch(object target) => ((CatPoco)target)._is_set_nameEng = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_nameEng = false;
-                ((CatPoco)target)._nameEng = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_nameEng = false;
+            ((CatPoco)target)._nameEng = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).NameEng = (String)value!;
     }
 
@@ -1525,10 +1527,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).NameNat;
         public void Touch(object target) => ((CatPoco)target)._is_set_nameNat = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_nameNat = false;
-                ((CatPoco)target)._nameNat = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_nameNat = false;
+            ((CatPoco)target)._nameNat = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).NameNat = (String)value!;
     }
 
@@ -1547,10 +1549,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Title;
         public void Touch(object target) => ((CatPoco)target)._is_set_title = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_title = false;
-                ((CatPoco)target)._title = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_title = false;
+            ((CatPoco)target)._title = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Title = (String)value!;
     }
 
@@ -1569,10 +1571,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Breed;
         public void Touch(object target) => ((CatPoco)target)._is_set_breed = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_breed = false;
-                ((CatPoco)target)._breed = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_breed = false;
+            ((CatPoco)target)._breed = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
     }
 
@@ -1591,10 +1593,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Cattery;
         public void Touch(object target) => ((CatPoco)target)._is_set_cattery = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_cattery = false;
-                ((CatPoco)target)._cattery = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_cattery = false;
+            ((CatPoco)target)._cattery = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
     }
 
@@ -1613,10 +1615,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Litter;
         public void Touch(object target) => ((CatPoco)target)._is_set_litter = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_litter = false;
-                ((CatPoco)target)._litter = default!;
-            }
+        {
+            ((CatPoco)target)._is_set_litter = false;
+            ((CatPoco)target)._litter = default!;
+        }
         public void Set(object target, object? value) => ((CatPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
     }
 
@@ -1635,10 +1637,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public object? Get(object target) => ((CatPoco)target).Litters;
         public void Touch(object target) => ((CatPoco)target)._is_set_litters = true;
         public void Unset(object target)
-            {
-                ((CatPoco)target)._is_set_litters = false;
-                ((CatPoco)target)._litters.Clear();
-            }
+        {
+            ((CatPoco)target)._is_set_litters = false;
+            ((CatPoco)target)._litters.Clear();
+        }
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 

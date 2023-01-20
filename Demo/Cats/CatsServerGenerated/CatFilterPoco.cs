@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -493,9 +493,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).BornAfter;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).BornAfter = (DateOnly)value!;
     }
 
@@ -513,9 +513,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).BornBefore;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).BornBefore = (DateOnly)value!;
     }
 
@@ -533,9 +533,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).ExteriorRegex = (String)value!;
     }
 
@@ -553,9 +553,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Gender;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Gender = (Gender)value!;
     }
 
@@ -573,9 +573,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).NameRegex;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).NameRegex = (String)value!;
     }
 
@@ -593,9 +593,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).TitleRegex = (String)value!;
     }
 
@@ -613,9 +613,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Ancestor;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Ancestor = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -633,9 +633,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Breed;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
     }
 
@@ -653,9 +653,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Cattery;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
     }
 
@@ -673,9 +673,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Child;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Child = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -693,9 +693,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Descendant;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Descendant = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -713,9 +713,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Father;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Father = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -733,9 +733,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Litter;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
     }
 
@@ -753,9 +753,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Mother;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Mother = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -773,9 +773,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((CatFilterPoco)target).Self;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((CatFilterPoco)target).Self = ((IProjection?)value)?.As<CatPoco>()!;
     }
 

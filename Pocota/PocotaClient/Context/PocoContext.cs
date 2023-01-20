@@ -101,14 +101,6 @@ internal class PocoContext : IPocoContext
         AddJsonConverters(typeof(TTarget), jsonSerializerOptions);
     }
 
-    internal void OverwriteExternalUpdates()
-    {
-        foreach (EntityBase entity in _changedPocos.Keys)
-        {
-            entity.OverwriteExternalUpdates(true);
-        }
-    }
-
     internal void OnPocoStateChanged(object? sender, NotifyPocoStateChangedEventArgs args)
     {
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)

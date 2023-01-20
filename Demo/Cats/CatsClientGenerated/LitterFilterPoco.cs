@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:26                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -11,6 +11,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -50,6 +51,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.FemaleCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.FemaleAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class MaleProperty: Property
@@ -74,6 +76,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.MaleCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.MaleAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class StringsProperty: Property
@@ -98,6 +101,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsStringsInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.StringsCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.StringsAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -200,14 +204,15 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((LitterFilterPoco)target).Female;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsFemaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsFemaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).FemaleCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).FemaleAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class MaleProperty: Property
@@ -224,14 +229,15 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((LitterFilterPoco)target).Male;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsMaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsMaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).MaleCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).MaleAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class StringsProperty: Property
@@ -248,14 +254,15 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((LitterFilterPoco)target).Strings;
         public override void Touch(object target) 
-            { }
+        { }
         public override void Unset(object target)
-            { }
+        { }
         public override void Set(object target, object? value) => throw new NotImplementedException();
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsStringsModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsStringsInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).StringsCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).StringsAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public static void InitProperties(List<IProperty> properties)

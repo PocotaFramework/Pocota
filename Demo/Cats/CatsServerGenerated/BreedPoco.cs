@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -204,10 +204,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public object? Get(object target) => ((BreedPoco)target).Code;
         public void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
         public void Unset(object target)
-            {
-                ((BreedPoco)target)._is_set_code = false;
-                ((BreedPoco)target)._code = default!;
-            }
+        {
+            ((BreedPoco)target)._is_set_code = false;
+            ((BreedPoco)target)._code = default!;
+        }
         public void Set(object target, object? value) => ((BreedPoco)target).Code = (String)value!;
     }
 
@@ -226,10 +226,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public object? Get(object target) => ((BreedPoco)target).Group;
         public void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
         public void Unset(object target)
-            {
-                ((BreedPoco)target)._is_set_group = false;
-                ((BreedPoco)target)._group = default!;
-            }
+        {
+            ((BreedPoco)target)._is_set_group = false;
+            ((BreedPoco)target)._group = default!;
+        }
         public void Set(object target, object? value) => ((BreedPoco)target).Group = (String)value!;
     }
 
@@ -248,10 +248,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public object? Get(object target) => ((BreedPoco)target).NameEng;
         public void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
         public void Unset(object target)
-            {
-                ((BreedPoco)target)._is_set_nameEng = false;
-                ((BreedPoco)target)._nameEng = default!;
-            }
+        {
+            ((BreedPoco)target)._is_set_nameEng = false;
+            ((BreedPoco)target)._nameEng = default!;
+        }
         public void Set(object target, object? value) => ((BreedPoco)target).NameEng = (String)value!;
     }
 
@@ -270,10 +270,10 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public object? Get(object target) => ((BreedPoco)target).NameNat;
         public void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
         public void Unset(object target)
-            {
-                ((BreedPoco)target)._is_set_nameNat = false;
-                ((BreedPoco)target)._nameNat = default!;
-            }
+        {
+            ((BreedPoco)target)._is_set_nameNat = false;
+            ((BreedPoco)target)._nameNat = default!;
+        }
         public void Set(object target, object? value) => ((BreedPoco)target).NameNat = (String)value!;
     }
 

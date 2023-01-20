@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.Pocota.Common;
+using System.Collections;
 
 namespace Net.Leksi.Pocota.Client
 {
@@ -24,5 +25,6 @@ namespace Net.Leksi.Pocota.Client
         public abstract bool IsInitial(object target);
         public abstract void CancelChange(object target);
         public abstract void AcceptChange(object target);
+        public abstract object? GetInitial(object target);
     }
 }

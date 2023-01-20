@@ -47,7 +47,6 @@ public abstract class PocoBase : IPoco
 
     private readonly Dictionary<PocoTraversalContext, int> _populaters = new(ReferenceEqualityComparer.Instance);
     private readonly PocoContext _pocoContext;
-    protected readonly PocotaCore _pocota;
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
     private HashSet<IProperty>? _modified = null;
@@ -92,7 +91,6 @@ public abstract class PocoBase : IPoco
     public PocoBase(IServiceProvider services)
     {
         _services = services;
-        _pocota = _services.GetRequiredService<PocotaCore>();
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _pocoContext.PocoInstantiated(this);
     }
@@ -100,6 +98,32 @@ public abstract class PocoBase : IPoco
     ~PocoBase()
     {
         _pocoContext.PocoFinalized(this);
+    }
+
+    void IPoco.AcceptChanges()
+    {
+        if (!IsEnvelope && (_pocoState is PocoState.Uncertain || _pocoState is PocoState.Deleted))
+        {
+            throw new InvalidOperationException($"{((IPoco)this).PocoState} Poco cannot be processed!");
+        }
+        lock (_lock)
+        {
+            PocoState oldPocoState = ((IPoco)this).PocoState;
+            if (_modified is { } && _modified.Count > 0)
+            {
+                foreach (Property property in _modified)
+                {
+                    property.AcceptChange(this);
+                }
+                _modified.Clear();
+            }
+            _pocoState = PocoState.Unchanged;
+            PocoState newPocoState = ((IPoco)this).PocoState;
+            if (oldPocoState != newPocoState)
+            {
+                OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
+            }
+        }
     }
 
     void IPoco.CancelChanges()
@@ -142,32 +166,6 @@ public abstract class PocoBase : IPoco
                     _cancellingChanges = false;
                 }
             }
-            PocoState newPocoState = ((IPoco)this).PocoState;
-            if (oldPocoState != newPocoState)
-            {
-                OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
-            }
-        }
-    }
-
-    void IPoco.AcceptChanges()
-    {
-        if (!IsEnvelope && (_pocoState is PocoState.Uncertain || _pocoState is PocoState.Deleted))
-        {
-            throw new InvalidOperationException($"{((IPoco)this).PocoState} Poco cannot be processed!");
-        }
-        lock (_lock)
-        {
-            PocoState oldPocoState = ((IPoco)this).PocoState;
-            if (_modified is { } && _modified.Count > 0)
-            {
-                foreach (Property property in _modified)
-                {
-                    property.AcceptChange(this);
-                }
-                _modified.Clear();
-            }
-            _pocoState = PocoState.Unchanged;
             PocoState newPocoState = ((IPoco)this).PocoState;
             if (oldPocoState != newPocoState)
             {

@@ -13,7 +13,6 @@ public class Connector
 {
     protected readonly IServiceProvider _services;
     protected HttpClient _httpClient = new();
-    private int _reentering = 0;
 
     public HttpStatusCode StatusCode { get; protected set; }
 
@@ -57,7 +56,6 @@ public class Connector
     {
         context.Caller = caller;
         TieStream? stream = null;
-        bool reenteringCompleted = false;
         PocoContext pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         try
         {
@@ -75,7 +73,6 @@ public class Connector
 
             context!.OnReceived?.Invoke(context);
 
-            Interlocked.Increment(ref _reentering);
             IAsyncEnumerator<T?> en = JsonSerializer.DeserializeAsyncEnumerable<T>(
                 stream,
                 jsonSerializerOptions,
@@ -90,21 +87,9 @@ public class Connector
             }
 
             context!.OnDone?.Invoke(null, context);
-            if(Interlocked.Decrement(ref _reentering) == 0)
-            {
-                reenteringCompleted = true;
-                pocoContext.OverwriteExternalUpdates();
-            }
         }
         catch (Exception ex)
         {
-            if (!reenteringCompleted)
-            {
-                if (Interlocked.Decrement(ref _reentering) == 0)
-                {
-                    pocoContext.OverwriteExternalUpdates();
-                }
-            }
             if (stream is { })
             {
                 new StreamReader(stream).ReadToEnd();
@@ -126,7 +111,6 @@ public class Connector
     {
         context.Caller = caller;
         TieStream? stream = null;
-        bool reenteringCompleted = false;
         PocoContext pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         try
         {
@@ -144,28 +128,14 @@ public class Connector
 
             context!.OnReceived?.Invoke(context);
 
-            Interlocked.Increment(ref _reentering);
-
             context.OnItem?.Invoke(await JsonSerializer.DeserializeAsync<T>(
                 stream,
                 jsonSerializerOptions,
                 context?.CancellationToken ?? CancellationToken.None
             ));
-            if (Interlocked.Decrement(ref _reentering) == 0)
-            {
-                reenteringCompleted = true;
-                pocoContext.OverwriteExternalUpdates();
-            }
         }
         catch (Exception ex)
         {
-            if (!reenteringCompleted)
-            {
-                if (Interlocked.Decrement(ref _reentering) == 0)
-                {
-                    pocoContext.OverwriteExternalUpdates();
-                }
-            }
             if (stream is { })
             {
                 new StreamReader(stream).ReadToEnd();

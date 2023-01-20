@@ -1,5 +1,4 @@
 ﻿using Net.Leksi.Pocota.Common;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;

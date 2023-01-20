@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -169,9 +169,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Female;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -189,9 +189,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Male;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -209,9 +209,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((LitterFilterPoco)target).Strings;
         public void Touch(object target) 
-            { }
+        { }
         public void Unset(object target)
-            { }
+        { }
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 

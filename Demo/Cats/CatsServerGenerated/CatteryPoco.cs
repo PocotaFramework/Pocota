@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-19T17:07:25                                  //
+// at 2023-01-20T11:35:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -146,10 +146,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public object? Get(object target) => ((CatteryPoco)target).NameEng;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
         public void Unset(object target)
-            {
-                ((CatteryPoco)target)._is_set_nameEng = false;
-                ((CatteryPoco)target)._nameEng = default!;
-            }
+        {
+            ((CatteryPoco)target)._is_set_nameEng = false;
+            ((CatteryPoco)target)._nameEng = default!;
+        }
         public void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
     }
 
@@ -168,10 +168,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public object? Get(object target) => ((CatteryPoco)target).NameNat;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
         public void Unset(object target)
-            {
-                ((CatteryPoco)target)._is_set_nameNat = false;
-                ((CatteryPoco)target)._nameNat = default!;
-            }
+        {
+            ((CatteryPoco)target)._is_set_nameNat = false;
+            ((CatteryPoco)target)._nameNat = default!;
+        }
         public void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
     }
 
