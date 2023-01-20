@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-20T11:35:29                                          //
+// at 2023-01-20T19:22:14                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -160,7 +160,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         private readonly ViewCatHeartPoco _projector;
 
         private readonly ProjectionList<LitterPoco,ILitter> _selectedLitters;
-            private readonly ProjectionListBase<LitterPoco,ILitter> _initial_selectedLitters;
+        private readonly ProjectionListBase<LitterPoco,ILitter> _initial_selectedLitters;
 
 
         public EditKind EditKind 

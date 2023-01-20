@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-20T11:35:30                                          //
+// at 2023-01-20T19:22:14                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -475,16 +475,16 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
         private Object _catsViewSource = null!;
         private readonly ProjectionList<BreedPoco,IBreed> _breeds;
-            private readonly ProjectionListBase<BreedPoco,IBreed> _initial_breeds;
+        private readonly ProjectionListBase<BreedPoco,IBreed> _initial_breeds;
 
         private readonly ProjectionList<CatPoco,ICatForListing> _cats;
-            private readonly ProjectionListBase<CatPoco,ICatForListing> _initial_cats;
+        private readonly ProjectionListBase<CatPoco,ICatForListing> _initial_cats;
 
         private readonly ProjectionList<CatteryPoco,ICattery> _catteries;
-            private readonly ProjectionListBase<CatteryPoco,ICattery> _initial_catteries;
+        private readonly ProjectionListBase<CatteryPoco,ICattery> _initial_catteries;
 
         private readonly ProjectionList<CatPoco,ICatForListing> _selectedCats;
-            private readonly ProjectionListBase<CatPoco,ICatForListing> _initial_selectedCats;
+        private readonly ProjectionListBase<CatPoco,ICatForListing> _initial_selectedCats;
 
 
         public List<IBreed> AllBreeds 

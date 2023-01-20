@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T11:35:29                                  //
+// at 2023-01-20T19:22:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -49,7 +49,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng ? ((CatteryICatteryProjection)target)._projector._initial_nameEng : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class NameNatProperty: Property
@@ -76,7 +76,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat ? ((CatteryICatteryProjection)target)._projector._initial_nameNat : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -182,7 +182,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameEngCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((CatteryPoco)target)._is_set_nameEng ? ((CatteryPoco)target)._initial_nameEng : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class NameNatProperty: Property
@@ -209,7 +209,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameNatCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((CatteryPoco)target)._is_set_nameNat ? ((CatteryPoco)target)._initial_nameNat : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public static void InitProperties(List<IProperty> properties)

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T11:35:29                                  //
+// at 2023-01-20T19:22:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -53,7 +53,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.DateCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_date ? ((LitterILitterProjection)target)._projector._initial_date : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class OrderProperty: Property
@@ -80,7 +80,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsOrderInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.OrderCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_order ? ((LitterILitterProjection)target)._projector._initial_order : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class FemaleProperty: Property
@@ -107,7 +107,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.FemaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_female ? ((LitterILitterProjection)target)._projector._initial_female : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class MaleProperty: Property
@@ -134,7 +134,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.MaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_male ? ((LitterILitterProjection)target)._projector._initial_male : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class StringsProperty: Property
@@ -161,7 +161,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsStringsInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.StringsCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_strings ? ((LitterILitterProjection)target)._initial_strings : default!;
+            public override object? GetInitial(object target) => ((LitterILitterProjection)target)._projector._is_set_strings ? ((LitterILitterProjection)target)._projector._initial_strings : default!;
         }
 
         public class CatsProperty: Property
@@ -224,7 +224,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         private readonly LitterPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICat> _cats;
-            private readonly ProjectionListBase<CatPoco,ICat> _initial_cats;
+        private readonly ProjectionListBase<CatPoco,ICat> _initial_cats;
 
 
         public DateOnly Date 
@@ -327,7 +327,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.DateCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date ? ((LitterILitterForCatProjection)target)._projector._initial_date : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class OrderProperty: Property
@@ -354,7 +354,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.OrderCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order ? ((LitterILitterForCatProjection)target)._projector._initial_order : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class FemaleProperty: Property
@@ -381,7 +381,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.FemaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female ? ((LitterILitterForCatProjection)target)._projector._initial_female : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class MaleProperty: Property
@@ -408,7 +408,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.MaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male ? ((LitterILitterForCatProjection)target)._projector._initial_male : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class CatsProperty: Property
@@ -470,7 +470,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         private readonly LitterPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
-            private readonly ProjectionListBase<CatPoco,ICatAsSibling> _initial_cats;
+        private readonly ProjectionListBase<CatPoco,ICatAsSibling> _initial_cats;
 
 
         public DateOnly Date 
@@ -564,7 +564,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterForDateProjection)target)._projector.DateCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date ? ((LitterILitterForDateProjection)target)._projector._initial_date : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -664,7 +664,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterWithCatsProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterILitterWithCatsProjection)target)._projector.FemaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female ? ((LitterILitterWithCatsProjection)target)._projector._initial_female : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class MaleProperty: Property
@@ -691,7 +691,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsInitial(object target) => ((LitterILitterWithCatsProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterILitterWithCatsProjection)target)._projector.MaleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male ? ((LitterILitterWithCatsProjection)target)._projector._initial_male : default!;
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
         public class CatsProperty: Property
@@ -751,7 +751,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         private readonly LitterPoco _projector;
 
         private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
-            private readonly ProjectionListBase<CatPoco,ICatAsSibling> _initial_cats;
+        private readonly ProjectionListBase<CatPoco,ICatAsSibling> _initial_cats;
 
 
         public ICatAsParent Female 
@@ -833,7 +833,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsInitial(object target) => ((LitterPoco)target).IsDateInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).DateCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((LitterPoco)target)._is_set_date ? ((LitterPoco)target)._initial_date : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class OrderProperty: Property
@@ -860,7 +860,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsInitial(object target) => ((LitterPoco)target).IsOrderInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).OrderCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((LitterPoco)target)._is_set_order ? ((LitterPoco)target)._initial_order : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class FemaleProperty: Property
@@ -887,7 +887,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsInitial(object target) => ((LitterPoco)target).IsFemaleInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).FemaleCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((LitterPoco)target)._is_set_female ? ((LitterPoco)target)._initial_female : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class MaleProperty: Property
@@ -914,7 +914,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsInitial(object target) => ((LitterPoco)target).IsMaleInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).MaleCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((LitterPoco)target)._is_set_male ? ((LitterPoco)target)._initial_male : default!;
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
     public class StringsProperty: Property

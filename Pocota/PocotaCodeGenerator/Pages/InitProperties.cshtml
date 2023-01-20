@@ -94,9 +94,9 @@
         @Html.Raw(indent)public override bool IsInitial(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Is{pm.Name}Initial()");
         @Html.Raw(indent)public override void CancelChange(object target) => @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name}CancelChange()");
         @Html.Raw(indent)public override void AcceptChange(object target) => @if(Model.IsEntity){<text>throw new InvalidOperationException()</text>} else {<text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name}AcceptChange()")</text>};
-        @Html.Raw(indent)public override object? GetInitial(object target) => @if (Model.IsEntity)
+        @Html.Raw(indent)public override object? GetInitial(object target) => @if (Model.IsEntity && pm.IsList)
         {
-            <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} ? (({Model.ClassName})target){(pm.IsList ? string.Empty : $"{(hasProjector ? "._projector" : string.Empty)}")}._initial{fieldName} : default!")</text>
+            <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} ? (({Model.ClassName})target){(pm.Class is {} ? string.Empty : $"{(hasProjector ? "._projector" : string.Empty)}")}._initial{fieldName} : default!")</text>
         }
         else
         {

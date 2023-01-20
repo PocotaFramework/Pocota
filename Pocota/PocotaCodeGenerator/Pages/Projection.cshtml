@@ -42,7 +42,7 @@
                 <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
                 @if (Model.IsClient)
             {
-                <text>            private readonly @Html.Raw($"ProjectionListBase<{pm.Class},{pm.ItemType}> _initial{fieldName};")
+                <text>        private readonly @Html.Raw($"ProjectionListBase<{pm.Class},{pm.ItemType}> _initial{fieldName};")
 </text>
             }
 
