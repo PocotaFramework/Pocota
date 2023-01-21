@@ -34,10 +34,17 @@
                         }
 </text>   
                         }
-                        @fieldName = value;
                         @if (Model.IsEntity)
                         {
-                            <text>                        @Html.Raw($"_is_set{fieldName}") = true;
+                        <text>                        if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
+                        {
+                            @fieldName = value;
+                        }
+</text>
+                        }
+                        else 
+                        {
+                            <text>                        @fieldName = value;
 </text>
                         }
                         if (IsBeingPopulated)

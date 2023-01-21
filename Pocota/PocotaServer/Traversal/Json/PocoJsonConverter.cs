@@ -68,8 +68,8 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
             bool done = false;
             if (!done && propertyName[0] == '$')
             {
-                if (propertyName.Equals(PocoTraversalConverterFactory.Id)
-                    || propertyName.Equals(PocoTraversalConverterFactory.Ref))
+                if (propertyName.Equals(Constants.Id)
+                    || propertyName.Equals(Constants.Ref))
                 {
                     if (!reader.Read())
                     {
@@ -86,7 +86,7 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
                     }
                     done = true;
                 }
-                else if (propertyName.Equals(PocoTraversalConverterFactory.Key))
+                else if (propertyName.Equals(Constants.Key))
                 {
                     primaryKey = _services.GetRequiredService<IPrimaryKey<T>>();
 
@@ -186,21 +186,21 @@ internal class PocoJsonConverter<T> : JsonConverter<T> where T : class
         writer.WriteStartObject();
 
         string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
-        writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
+        writer.WriteString(Constants.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
 
         if (alreadyExists)
         {
 
-            writer.WriteString(PocoTraversalConverterFactory.Ref, reference);
+            writer.WriteString(Constants.Ref, reference);
         }
         else
         {
-            writer.WriteString(PocoTraversalConverterFactory.Id, reference);
+            writer.WriteString(Constants.Id, reference);
             string classReference = context.GetReference(_actualType, out bool isClassFound);
-            writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
+            writer.WriteString(Constants.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
             if (_isEntity)
             {
-                writer.WritePropertyName(PocoTraversalConverterFactory.Key);
+                writer.WritePropertyName(Constants.Key);
                 JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
             }
         }

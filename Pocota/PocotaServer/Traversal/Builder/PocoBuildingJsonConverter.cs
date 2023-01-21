@@ -240,21 +240,21 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
             context.BuildingContext.BufferWriter!.Path.Last().Value = value;
 
             string interfaceReference = context.GetReference(typeof(T), out bool isInterfaceFound);
-            writer.WriteString(PocoTraversalConverterFactory.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
+            writer.WriteString(Constants.Interface, $"{interfaceReference}{(isInterfaceFound ? string.Empty : $":{typeof(T)}")}");
 
             if (alreadyExists)
             {
 
-                writer.WriteString(PocoTraversalConverterFactory.Ref, reference);
+                writer.WriteString(Constants.Ref, reference);
             }
             else
             {
-                writer.WriteString(PocoTraversalConverterFactory.Id, reference);
+                writer.WriteString(Constants.Id, reference);
                 string classReference = context.GetReference(_actualType, out bool isClassFound);
-                writer.WriteString(PocoTraversalConverterFactory.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
+                writer.WriteString(Constants.Class, $"{classReference}{(isClassFound ? string.Empty : $":{_actualType}")}");
                 if (_isEntity)
                 {
-                    writer.WritePropertyName(PocoTraversalConverterFactory.Key);
+                    writer.WritePropertyName(Constants.Key);
                     JsonSerializer.Serialize<object[]?>(writer, primaryKey!.Items.ToArray()!);
                 }
             }

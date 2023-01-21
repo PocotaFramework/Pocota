@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Net.Leksi.Pocota.Common;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 
@@ -9,8 +10,6 @@ internal class PocoTraversalContext : IPocoTraversalContext
     private ConditionalWeakTable<object, string>? _usedObjects;
     private Dictionary<string, object>? _referencedObjects;
     private Dictionary<string, HashSet<string>>? _referencedProperties;
-
-    private const string ReferencePrefix = "*";
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
@@ -68,7 +67,7 @@ internal class PocoTraversalContext : IPocoTraversalContext
         alreadyExists = _usedObjects!.TryGetValue(source, out string? reference);
         if (!alreadyExists)
         {
-            reference = $"{ReferencePrefix}{++_genUsedObjectRef}";
+            reference = $"{Constants.ReferencePrefix}{++_genUsedObjectRef}";
             _usedObjects!.Add(source, reference);
         }
         return reference!;

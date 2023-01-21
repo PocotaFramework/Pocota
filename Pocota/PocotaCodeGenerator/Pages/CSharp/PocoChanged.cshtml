@@ -118,6 +118,9 @@
 
 </text>
         }
+        OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
+        OnPropertyChanged(@Html.Raw($"\"{pm.Name}\""));
+
     }
 
     @if(!Model.IsEntity)

@@ -44,7 +44,7 @@ public static class CatsServerExtensions
     {
         app.Use(async (context, next) =>
         {
-            if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
+            if (context.Request.Headers.ContainsKey(Constants.RequestTimingHeaderName))
             {
                 RequestStartTime rst = context.RequestServices.GetRequiredService<RequestStartTime>();
                 rst.StartTime = DateTime.Now;
@@ -56,7 +56,7 @@ public static class CatsServerExtensions
                 syncIOFeature.AllowSynchronousIO = true;
             }
             await next?.Invoke()!;
-            if (context.Request.Headers.ContainsKey(Constants.RequestStartTimeHeaderName))
+            if (context.Request.Headers.ContainsKey(Constants.RequestTimingHeaderName))
             {
                 DateTime stop = DateTime.Now;
                 Console.WriteLine($"Request {HttpUtility.UrlDecode(context.Request.Path)} done: {stop:o}, elapsed: {stop - context.RequestServices.GetRequiredService<RequestStartTime>().StartTime}");

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-20T19:22:14                                          //
+// at 2023-01-21T15:08:49                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -554,6 +554,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         _editKind = _initial_editKind;
 
+        OnPocoChanged(EditKindProp);
+        OnPropertyChanged("EditKind");
+
     }
 
     private void EditKindAcceptChange()
@@ -571,6 +574,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         _littersView = _initial_littersView;
 
+        OnPocoChanged(LittersViewProp);
+        OnPropertyChanged("LittersView");
+
     }
 
     private void LittersViewAcceptChange()
@@ -587,6 +593,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private void CatCancelChange()
     {
         _cat = _initial_cat;
+
+        OnPocoChanged(CatProp);
+        OnPropertyChanged("Cat");
 
     }
 
@@ -644,6 +653,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         {
             _selectedLitters.Add(item);
         }
+
+        OnPocoChanged(SelectedLittersProp);
+        OnPropertyChanged("SelectedLitters");
 
     }
 

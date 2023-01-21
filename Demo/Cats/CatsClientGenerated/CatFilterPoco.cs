@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1583,6 +1583,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _bornAfter = _initial_bornAfter;
 
+        OnPocoChanged(BornAfterProp);
+        OnPropertyChanged("BornAfter");
+
     }
 
     private void BornAfterAcceptChange()
@@ -1599,6 +1602,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void BornBeforeCancelChange()
     {
         _bornBefore = _initial_bornBefore;
+
+        OnPocoChanged(BornBeforeProp);
+        OnPropertyChanged("BornBefore");
 
     }
 
@@ -1617,6 +1623,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _exteriorRegex = _initial_exteriorRegex;
 
+        OnPocoChanged(ExteriorRegexProp);
+        OnPropertyChanged("ExteriorRegex");
+
     }
 
     private void ExteriorRegexAcceptChange()
@@ -1633,6 +1642,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void GenderCancelChange()
     {
         _gender = _initial_gender;
+
+        OnPocoChanged(GenderProp);
+        OnPropertyChanged("Gender");
 
     }
 
@@ -1651,6 +1663,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _nameRegex = _initial_nameRegex;
 
+        OnPocoChanged(NameRegexProp);
+        OnPropertyChanged("NameRegex");
+
     }
 
     private void NameRegexAcceptChange()
@@ -1667,6 +1682,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void TitleRegexCancelChange()
     {
         _titleRegex = _initial_titleRegex;
+
+        OnPocoChanged(TitleRegexProp);
+        OnPropertyChanged("TitleRegex");
 
     }
 
@@ -1685,6 +1703,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _ancestor = _initial_ancestor;
 
+        OnPocoChanged(AncestorProp);
+        OnPropertyChanged("Ancestor");
+
     }
 
     private void AncestorAcceptChange()
@@ -1701,6 +1722,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void BreedCancelChange()
     {
         _breed = _initial_breed;
+
+        OnPocoChanged(BreedProp);
+        OnPropertyChanged("Breed");
 
     }
 
@@ -1719,6 +1743,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _cattery = _initial_cattery;
 
+        OnPocoChanged(CatteryProp);
+        OnPropertyChanged("Cattery");
+
     }
 
     private void CatteryAcceptChange()
@@ -1735,6 +1762,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void ChildCancelChange()
     {
         _child = _initial_child;
+
+        OnPocoChanged(ChildProp);
+        OnPropertyChanged("Child");
 
     }
 
@@ -1753,6 +1783,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _descendant = _initial_descendant;
 
+        OnPocoChanged(DescendantProp);
+        OnPropertyChanged("Descendant");
+
     }
 
     private void DescendantAcceptChange()
@@ -1769,6 +1802,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void FatherCancelChange()
     {
         _father = _initial_father;
+
+        OnPocoChanged(FatherProp);
+        OnPropertyChanged("Father");
 
     }
 
@@ -1787,6 +1823,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _litter = _initial_litter;
 
+        OnPocoChanged(LitterProp);
+        OnPropertyChanged("Litter");
+
     }
 
     private void LitterAcceptChange()
@@ -1804,6 +1843,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     {
         _mother = _initial_mother;
 
+        OnPocoChanged(MotherProp);
+        OnPropertyChanged("Mother");
+
     }
 
     private void MotherAcceptChange()
@@ -1820,6 +1862,9 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     private void SelfCancelChange()
     {
         _self = _initial_self;
+
+        OnPocoChanged(SelfProp);
+        OnPropertyChanged("Self");
 
     }
 

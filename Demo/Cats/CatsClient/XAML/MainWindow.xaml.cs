@@ -253,9 +253,9 @@ public partial class MainWindow : Window
         FindBreedsCommand.Execute(
             new FindItemsCommand<IBreed, IBreedFilter>.Parameter { Filter = BreedFilter, Target = Heart.Breeds }
         );
-        FindCatteriesCommand.Execute(
-            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
-        );
+        //FindCatteriesCommand.Execute(
+        //    new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
+        //);
     }
 
     private void GetCatsCommand_Executed(object? sender, CrudCommandExecutedEventArgs e)
@@ -285,6 +285,9 @@ public partial class MainWindow : Window
         {
             _connectingDialog!.DialogResult = true;
         }
+        FindCatteriesCommand.Execute(
+            new FindItemsCommand<ICattery, ICatteryFilter>.Parameter { Filter = CatteryFilter, Target = Heart.Catteries }
+        );
     }
 
     private void FindCatteriesCommand_ExecutedFirst(object? sender, EventArgs e)

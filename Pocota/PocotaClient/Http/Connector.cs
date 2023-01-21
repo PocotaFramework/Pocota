@@ -165,7 +165,7 @@ public class Connector
     {
         if (context!.RequestStartTime is DateTime dt)
         {
-            context.HttpRequest!.Headers.Add(Constants.RequestStartTimeHeaderName, dt.ToString("o"));
+            context.HttpRequest!.Headers.Add(Constants.RequestTimingHeaderName, dt.ToString("o"));
         }
         HttpResponseMessage response = await _httpClient.SendAsync(
                 context.HttpRequest!,

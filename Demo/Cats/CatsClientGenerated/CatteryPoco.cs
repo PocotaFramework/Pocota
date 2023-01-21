@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -273,8 +273,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                 {
                     if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
                     {
-                        _nameEng = value;
-                        _is_set_nameEng = true;
+                        if (!IsBeingPopulated || IsNameEngInitial())
+                        {
+                            _nameEng = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_nameEng = value;
@@ -299,8 +301,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                 {
                     if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
                     {
-                        _nameNat = value;
-                        _is_set_nameNat = true;
+                        if (!IsBeingPopulated || IsNameNatInitial())
+                        {
+                            _nameNat = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_nameNat = value;
@@ -392,6 +396,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     {
         _nameEng = _initial_nameEng;
 
+        OnPocoChanged(NameEngProp);
+        OnPropertyChanged("NameEng");
+
     }
 
 
@@ -405,6 +412,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     private void NameNatCancelChange()
     {
         _nameNat = _initial_nameNat;
+
+        OnPocoChanged(NameNatProp);
+        OnPropertyChanged("NameNat");
 
     }
 

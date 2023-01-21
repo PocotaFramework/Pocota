@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -2182,8 +2182,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_description != value  && (IsBeingPopulated || _is_set_description))
                     {
-                        _description = value;
-                        _is_set_description = true;
+                        if (!IsBeingPopulated || IsDescriptionInitial())
+                        {
+                            _description = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_description = value;
@@ -2208,8 +2210,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_exterior != value  && (IsBeingPopulated || _is_set_exterior))
                     {
-                        _exterior = value;
-                        _is_set_exterior = true;
+                        if (!IsBeingPopulated || IsExteriorInitial())
+                        {
+                            _exterior = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_exterior = value;
@@ -2234,8 +2238,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_gender != value  && (IsBeingPopulated || _is_set_gender))
                     {
-                        _gender = value;
-                        _is_set_gender = true;
+                        if (!IsBeingPopulated || IsGenderInitial())
+                        {
+                            _gender = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_gender = value;
@@ -2260,8 +2266,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
                     {
-                        _nameEng = value;
-                        _is_set_nameEng = true;
+                        if (!IsBeingPopulated || IsNameEngInitial())
+                        {
+                            _nameEng = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_nameEng = value;
@@ -2286,8 +2294,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
                     {
-                        _nameNat = value;
-                        _is_set_nameNat = true;
+                        if (!IsBeingPopulated || IsNameNatInitial())
+                        {
+                            _nameNat = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_nameNat = value;
@@ -2312,8 +2322,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 {
                     if(_title != value  && (IsBeingPopulated || _is_set_title))
                     {
-                        _title = value;
-                        _is_set_title = true;
+                        if (!IsBeingPopulated || IsTitleInitial())
+                        {
+                            _title = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_title = value;
@@ -2342,8 +2354,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         {
                             _breed.PocoChanged -= BreedPocoChanged;
                         }
-                        _breed = value;
-                        _is_set_breed = true;
+                        if (!IsBeingPopulated || IsBreedInitial())
+                        {
+                            _breed = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_breed = value;
@@ -2376,8 +2390,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         {
                             _cattery.PocoChanged -= CatteryPocoChanged;
                         }
-                        _cattery = value;
-                        _is_set_cattery = true;
+                        if (!IsBeingPopulated || IsCatteryInitial())
+                        {
+                            _cattery = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_cattery = value;
@@ -2410,8 +2426,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         {
                             _litter.PocoChanged -= LitterPocoChanged;
                         }
-                        _litter = value;
-                        _is_set_litter = true;
+                        if (!IsBeingPopulated || IsLitterInitial())
+                        {
+                            _litter = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_litter = value;
@@ -2542,6 +2560,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         _description = _initial_description;
 
+        OnPocoChanged(DescriptionProp);
+        OnPropertyChanged("Description");
+
     }
 
 
@@ -2555,6 +2576,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void ExteriorCancelChange()
     {
         _exterior = _initial_exterior;
+
+        OnPocoChanged(ExteriorProp);
+        OnPropertyChanged("Exterior");
 
     }
 
@@ -2570,6 +2594,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         _gender = _initial_gender;
 
+        OnPocoChanged(GenderProp);
+        OnPropertyChanged("Gender");
+
     }
 
 
@@ -2583,6 +2610,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void NameEngCancelChange()
     {
         _nameEng = _initial_nameEng;
+
+        OnPocoChanged(NameEngProp);
+        OnPropertyChanged("NameEng");
 
     }
 
@@ -2598,6 +2628,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         _nameNat = _initial_nameNat;
 
+        OnPocoChanged(NameNatProp);
+        OnPropertyChanged("NameNat");
+
     }
 
 
@@ -2611,6 +2644,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void TitleCancelChange()
     {
         _title = _initial_title;
+
+        OnPocoChanged(TitleProp);
+        OnPropertyChanged("Title");
 
     }
 
@@ -2626,6 +2662,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         _breed = _initial_breed;
 
+        OnPocoChanged(BreedProp);
+        OnPropertyChanged("Breed");
+
     }
 
 
@@ -2640,6 +2679,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         _cattery = _initial_cattery;
 
+        OnPocoChanged(CatteryProp);
+        OnPropertyChanged("Cattery");
+
     }
 
 
@@ -2653,6 +2695,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void LitterCancelChange()
     {
         _litter = _initial_litter;
+
+        OnPocoChanged(LitterProp);
+        OnPropertyChanged("Litter");
 
     }
 
@@ -2716,6 +2761,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             _litters.Add(item);
         }
+
+        OnPocoChanged(LittersProp);
+        OnPropertyChanged("Litters");
 
     }
 

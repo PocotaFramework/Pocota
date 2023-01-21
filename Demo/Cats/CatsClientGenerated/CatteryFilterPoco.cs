@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -286,6 +286,9 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
     private void SearchRegexCancelChange()
     {
         _searchRegex = _initial_searchRegex;
+
+        OnPocoChanged(SearchRegexProp);
+        OnPropertyChanged("SearchRegex");
 
     }
 

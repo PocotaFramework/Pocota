@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -466,6 +466,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     {
         _female = _initial_female;
 
+        OnPocoChanged(FemaleProp);
+        OnPropertyChanged("Female");
+
     }
 
     private void FemaleAcceptChange()
@@ -482,6 +485,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     private void MaleCancelChange()
     {
         _male = _initial_male;
+
+        OnPocoChanged(MaleProp);
+        OnPropertyChanged("Male");
 
     }
 
@@ -537,6 +543,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         {
             _strings.Add(item);
         }
+
+        OnPocoChanged(StringsProp);
+        OnPropertyChanged("Strings");
 
     }
 

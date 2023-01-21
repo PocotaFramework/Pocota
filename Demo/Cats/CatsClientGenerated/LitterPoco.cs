@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-20T19:22:14                                  //
+// at 2023-01-21T15:08:49                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1095,8 +1095,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 {
                     if(_date != value  && (IsBeingPopulated || _is_set_date))
                     {
-                        _date = value;
-                        _is_set_date = true;
+                        if (!IsBeingPopulated || IsDateInitial())
+                        {
+                            _date = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_date = value;
@@ -1121,8 +1123,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 {
                     if(_order != value  && (IsBeingPopulated || _is_set_order))
                     {
-                        _order = value;
-                        _is_set_order = true;
+                        if (!IsBeingPopulated || IsOrderInitial())
+                        {
+                            _order = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_order = value;
@@ -1151,8 +1155,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                         {
                             _female.PocoChanged -= FemalePocoChanged;
                         }
-                        _female = value;
-                        _is_set_female = true;
+                        if (!IsBeingPopulated || IsFemaleInitial())
+                        {
+                            _female = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_female = value;
@@ -1185,8 +1191,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                         {
                             _male.PocoChanged -= MalePocoChanged;
                         }
-                        _male = value;
-                        _is_set_male = true;
+                        if (!IsBeingPopulated || IsMaleInitial())
+                        {
+                            _male = value;
+                        }
                         if (IsBeingPopulated)
                         {
                             _initial_male = value;
@@ -1314,6 +1322,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     {
         _date = _initial_date;
 
+        OnPocoChanged(DateProp);
+        OnPropertyChanged("Date");
+
     }
 
 
@@ -1327,6 +1338,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     private void OrderCancelChange()
     {
         _order = _initial_order;
+
+        OnPocoChanged(OrderProp);
+        OnPropertyChanged("Order");
 
     }
 
@@ -1342,6 +1356,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     {
         _female = _initial_female;
 
+        OnPocoChanged(FemaleProp);
+        OnPropertyChanged("Female");
+
     }
 
 
@@ -1355,6 +1372,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     private void MaleCancelChange()
     {
         _male = _initial_male;
+
+        OnPocoChanged(MaleProp);
+        OnPropertyChanged("Male");
 
     }
 
@@ -1416,6 +1436,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             _strings.Add(item);
         }
+
+        OnPocoChanged(StringsProp);
+        OnPropertyChanged("Strings");
 
     }
 
@@ -1479,6 +1502,9 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             _cats.Add(item);
         }
+
+        OnPocoChanged(CatsProp);
+        OnPropertyChanged("Cats");
 
     }
 
