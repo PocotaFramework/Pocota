@@ -14,11 +14,14 @@ public class ViewCatHeart : ViewCatHeartPoco
         get => base.Cat;
         set
         {
-            base.Cat = value;
-            if (base.Cat is { })
+            if(base.Cat != value)
             {
-                _littersViewSource.Source = base.Cat.Litters;
-                base.LittersView = _littersViewSource.View;
+                base.Cat = value;
+                if (base.Cat is { })
+                {
+                    _littersViewSource.Source = base.Cat.Litters;
+                    base.LittersView = _littersViewSource.View;
+                }
             }
         }
     }

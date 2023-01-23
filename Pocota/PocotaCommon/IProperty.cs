@@ -15,5 +15,4 @@ public interface IProperty
     object? Get(object target);
     void Touch(object target);
     void Set(object target, object? value);
-    void Unset(object target);
 }

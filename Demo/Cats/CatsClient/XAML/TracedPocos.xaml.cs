@@ -3,16 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 
-namespace CatsClient.XAML
+namespace CatsClient
 {
     public partial class TracedPocos : Window
     {
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
+        public CancelChangesCommand CancelChangesCommand { get; init; }
 
         public TracedPocos(IServiceProvider services)
         {
             Heart = services.GetRequiredService<ITracedPocosHeart>();
+            CancelChangesCommand = new();
             InitializeComponent();
         }
 

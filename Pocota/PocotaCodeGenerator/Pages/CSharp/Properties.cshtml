@@ -8,7 +8,7 @@
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
-        get => @if(Model.IsEntity){<text>@Html.Raw($"!_is_set{fieldName}") ? default! : </text>}@fieldName;
+        get => @if(Model.IsEntity){<text>@Html.Raw($"!Is{pm.Name}Set() && ((IEntity)this).PocoState is not PocoState.Created") ? default! : </text>}@fieldName;
     @if(!pm.IsReadOnly)
     {
         if(pm.IsList)
@@ -24,7 +24,7 @@
             {
                 lock(_lock)
                 {
-                    if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))</text>})
+                    if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)</text>})
                     {
                         @if(pm.IsPoco)
                         {
@@ -47,7 +47,7 @@
                             <text>                        @fieldName = value;
 </text>
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
                         {
                             @Html.Raw($"_initial{fieldName}") = value;
                             @if (Model.IsEntity)

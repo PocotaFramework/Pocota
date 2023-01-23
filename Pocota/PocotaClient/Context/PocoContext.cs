@@ -101,20 +101,7 @@ internal class PocoContext : IPocoContext
         AddJsonConverters(typeof(TTarget), jsonSerializerOptions);
     }
 
-    internal void OnPocoStateChanged(object? sender, NotifyPocoStateChangedEventArgs args)
-    {
-        if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
-        {
-            _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
-        }
-        else
-        {
-            _changedPocos.TryRemove((sender as IEntity)!, out string _);
-        }
-        ModifiedPocosChanged?.Invoke(this, new EventArgs());
-    }
-
-    internal bool TryGetSource(Type type, object[] primaryKey, out object? value)
+    public bool TryGetSource(Type type, object[] primaryKey, out object? value)
     {
         lock (_getSourceLock)
         {
@@ -153,12 +140,25 @@ internal class PocoContext : IPocoContext
                     ((IProjection)value).As<EntityBase>()!.PrimaryKey = primaryKey;
                 }
             }
-            if(value is null)
+            if (value is null)
             {
                 throw new InvalidOperationException();
             }
             return res;
         }
+    }
+
+    internal void OnPocoStateChanged(object? sender, NotifyPocoStateChangedEventArgs args)
+    {
+        if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
+        {
+            _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
+        }
+        else
+        {
+            _changedPocos.TryRemove((sender as IEntity)!, out string _);
+        }
+        ModifiedPocosChanged?.Invoke(this, new EventArgs());
     }
 
     internal void PocoInstantiated(PocoBase poco)

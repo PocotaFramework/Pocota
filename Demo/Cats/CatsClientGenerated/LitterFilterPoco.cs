@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,8 +44,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Female;
             public override void Touch(object target) 
             { }
-            public override void Unset(object target)
-            { }
             public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleModified();
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleInitial();
@@ -69,8 +67,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Male;
             public override void Touch(object target) 
             { }
-            public override void Unset(object target)
-            { }
             public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
             public override bool IsModified(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleModified();
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleInitial();
@@ -93,8 +89,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Strings;
             public override void Touch(object target) 
-            { }
-            public override void Unset(object target)
             { }
             public override void Set(object target, object? value) => throw new NotImplementedException();
             public override bool IsModified(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsStringsModified();
@@ -205,8 +199,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? Get(object target) => ((LitterFilterPoco)target).Female;
         public override void Touch(object target) 
         { }
-        public override void Unset(object target)
-        { }
         public override void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsFemaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsFemaleInitial();
@@ -230,8 +222,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? Get(object target) => ((LitterFilterPoco)target).Male;
         public override void Touch(object target) 
         { }
-        public override void Unset(object target)
-        { }
         public override void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsMaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsMaleInitial();
@@ -254,8 +244,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((LitterFilterPoco)target).Strings;
         public override void Touch(object target) 
-        { }
-        public override void Unset(object target)
         { }
         public override void Set(object target, object? value) => throw new NotImplementedException();
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsStringsModified();
@@ -334,7 +322,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                             _female.PocoChanged -= FemalePocoChanged;
                         }
                         _female = value;
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated )
                         {
                             _initial_female = value;
                         }
@@ -366,7 +354,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                             _male.PocoChanged -= MalePocoChanged;
                         }
                         _male = value;
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated )
                         {
                             _initial_male = value;
                         }
@@ -462,6 +450,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     private bool IsFemaleModified() => ((IPoco)this).PocoState is PocoState.Modified
                 && !IsFemaleInitial();
 
+
     private void FemaleCancelChange()
     {
         _female = _initial_female;
@@ -481,6 +470,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
     private bool IsMaleModified() => ((IPoco)this).PocoState is PocoState.Modified
                 && !IsMaleInitial();
+
 
     private void MaleCancelChange()
     {
@@ -505,7 +495,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 foreach (String item in e.OldItems)
                 {
-                    if(IsBeingPopulated)
+                    if(IsBeingPopulated )
                     {
                         _initial_strings.Remove(item);
                     }
@@ -515,7 +505,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 foreach (String item in e.NewItems)
                 {
-                    if(IsBeingPopulated)
+                    if(IsBeingPopulated )
                     {
                         _initial_strings.Add(item);
                     }
@@ -526,7 +516,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         }
     }
 
-    private bool IsStringsInitial() => !Enumerable.SequenceEqual(
+    private bool IsStringsInitial() => Enumerable.SequenceEqual(
             _strings.OrderBy(o => o.GetHashCode()), 
             _initial_strings.OrderBy(o => o.GetHashCode()),
             ReferenceEqualityComparer.Instance
@@ -536,12 +526,22 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     private bool IsStringsModified() => ((IPoco)this).PocoState is PocoState.Modified
                 && !IsStringsInitial();
 
+
     private void StringsCancelChange()
     {
-        _strings.Clear();
+        for(int i = _strings.Count - 1; i >= 0; --i)
+        {
+            if(!_initial_strings.Contains(_strings[i]))
+            {
+                _strings.RemoveAt(i);
+            }
+        }
         foreach(var item in _initial_strings)
         {
-            _strings.Add(item);
+            if(!_strings.Contains(item))
+            {
+                _strings.Add(item);
+            }
         }
 
         OnPocoChanged(StringsProp);

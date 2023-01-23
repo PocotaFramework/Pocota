@@ -1,5 +1,4 @@
 ﻿using CatsClient.Commands;
-using CatsClient.XAML;
 using CatsCommon;
 using CatsCommon.Filters;
 using CatsCommon.JsonConverters;
@@ -60,6 +59,9 @@ public class Program
                 services.AddTransient<StopGetCatsCommand>();
                 services.AddTransient<FindSiblingsCatsCommand>();
                 services.AddTransient<AddLitterCommand>();
+
+                services.AddScoped<CopyEntitiesReferencesCommand>();
+                services.AddScoped<PasteParentCommand>();
 
                 services.AddTransient<SiblingCatsConverter>();
             });

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -39,8 +39,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex;
             public override void Touch(object target) 
-            { }
-            public override void Unset(object target)
             { }
             public override void Set(object target, object? value) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex = (String)value!;
             public override bool IsModified(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexModified();
@@ -137,8 +135,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
         public override object? Get(object target) => ((CatteryFilterPoco)target).SearchRegex;
         public override void Touch(object target) 
         { }
-        public override void Unset(object target)
-        { }
         public override void Set(object target, object? value) => ((CatteryFilterPoco)target).SearchRegex = (String)value!;
         public override bool IsModified(object target) => ((CatteryFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((CatteryFilterPoco)target).IsSearchRegexInitial();
@@ -202,7 +198,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
                     if(_searchRegex != value )
                     {
                         _searchRegex = value;
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated )
                         {
                             _initial_searchRegex = value;
                         }
@@ -282,6 +278,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
 
     private bool IsSearchRegexModified() => ((IPoco)this).PocoState is PocoState.Modified
                 && !IsSearchRegexInitial();
+
 
     private void SearchRegexCancelChange()
     {

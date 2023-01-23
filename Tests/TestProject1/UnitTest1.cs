@@ -59,18 +59,9 @@ namespace TestProject1
         [Test]
         public void Test2()
         {
-            PocosList<string> list = new(string.Empty);
+            Net.Leksi.Pocota.Client.ProjectionList<LitterPoco, ILitter> pl = new(new ObservableCollection<LitterPoco>());
 
-            IList<string> strings = list;
-
-
-            
-            Console.WriteLine(strings.Count);
-            strings.Add("1");
-            Console.WriteLine(strings.Count);
-            Console.WriteLine(strings[0]);
-            Console.WriteLine(list.Count);
-            Console.WriteLine(list[0]);
+            Console.WriteLine(pl is ICollection<IProjection<LitterPoco>>);
         }
 
         private void Cats_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)

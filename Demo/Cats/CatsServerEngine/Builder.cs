@@ -97,6 +97,7 @@ internal class Builder : IBuilder
         .AddPathMapEntry("/Litter/Male/Exterior", "DadExterior")
         .AddPathMapEntry("/Litter/Male/Title", "DadTitle")
         .AddPathMapEntry("/Litter/Cats", BuildingScript.Skip)
+
         ;
 
     private static BuildingScriptMapping BuildCatLitterWithCatsMapping = new BuildingScriptMapping("BuildCatsLitterWithCatsMapping")
@@ -156,19 +157,7 @@ internal class Builder : IBuilder
 
             script.AddPathHandler("/Litters/[]/Cats", args =>
             {
-                if (typeof(T) == typeof(ICatWithSiblings))
-                {
-                    ICatFilter filter1 = _services.GetRequiredService<ICatFilter>();
-                    filter1.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
-                    BuildingScript script1 = _services.GetRequiredService<BuildingScript>();
-                    //script.WithTrace = true;
-                    script1.Mapping = BuildCatsLitterWithCatsMapping;
-                    args.UseSpinner(SpinCats(filter1), script1);
-                }
-                else
-                {
-                    args.Skip();
-                }
+                HandleLitterCats<T>(args);
             });
 
 
@@ -177,6 +166,23 @@ internal class Builder : IBuilder
 
         options.Spinner = SpinCat(self);
         _pocoContext.Build<T>(options);
+    }
+
+    private void HandleLitterCats<T>(BuildingEventArgs args) where T : class
+    {
+        if (typeof(T) == typeof(ICatForView))
+        {
+            ICatFilter filter1 = _services.GetRequiredService<ICatFilter>();
+            filter1.Litter = ((IProjection)args.GetOwner(1)!).As<ILitter>();
+            BuildingScript script1 = _services.GetRequiredService<BuildingScript>();
+            //script.WithTrace = true;
+            script1.Mapping = BuildCatsLitterWithCatsMapping;
+            args.UseSpinner(SpinCats(filter1), script1);
+        }
+        else
+        {
+            args.Skip();
+        }
     }
 
     private static BuildingScriptMapping BuildCatsMapping = new BuildingScriptMapping("BuildCatsMapping")

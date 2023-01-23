@@ -29,7 +29,7 @@
                     <text>                    item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
 </text>
                 }
-                    if(IsBeingPopulated)
+                    if(IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
                     {
                         @Html.Raw($"_initial{fieldName}.Remove(item)");
                     }
@@ -41,7 +41,7 @@
                 {
                 @if(Model.IsEntity)
                 {
-                    <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))
+                    <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
                     {
 </text>
                 }
@@ -50,7 +50,7 @@
                     <text>                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
 </text>
                 }
-                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated)
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty){
                         @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"_initial{fieldName}.Add(item)");
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty)}
@@ -66,7 +66,7 @@
             }
                 @if(Model.IsEntity)
                 {
-                    <text>            if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))
+                    <text>            if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
             {
 </text>
                 }
@@ -80,7 +80,7 @@
         }
     }
 
-    private bool @Html.Raw($"Is{pm.Name}Initial()") => !Enumerable.SequenceEqual(
+    private bool @Html.Raw($"Is{pm.Name}Initial()") => Enumerable.SequenceEqual(
             @Html.Raw($"{fieldName}.OrderBy(o => o.GetHashCode()),") 
             @Html.Raw($"_initial{fieldName}.OrderBy(o => o.GetHashCode()),")
             ReferenceEqualityComparer.Instance
@@ -100,14 +100,29 @@
         && </text>}((IPoco)this).PocoState is PocoState.Modified
                 && !@Html.Raw($"Is{pm.Name}Initial()");
 
+    @if(Model.IsEntity)
+    {
+        <text>    private bool @Html.Raw($"Is{pm.Name}Set()") => @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created;
+</text>
+    }
+
     private void @Html.Raw($"{pm.Name}CancelChange()")
     {
         @if(pm.IsList)
         {
-            <text>        @Html.Raw($"{fieldName}.Clear()");
+            <text>        for(int i = @Html.Raw($"{fieldName}.Count") - 1; i >= 0; --i)
+        {
+            if(!@Html.Raw($"_initial{fieldName}.Contains({fieldName}[i])"))
+            {
+                @Html.Raw($"{fieldName}.RemoveAt(i)");
+            }
+        }
         foreach(var item in @Html.Raw($"_initial{fieldName}"))
         {
-            @Html.Raw($"{fieldName}.Add(item)");
+            if(!@Html.Raw($"{fieldName}.Contains(item)"))
+            {
+                @Html.Raw($"{fieldName}.Add(item)");
+            }
         }
 
 </text>

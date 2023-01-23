@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local:BindingProxy x:Key="TrueIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}"/>
+        <local:BindingProxy x:Key="TrueIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}" />
         <local:BindingProxy x:Key="TrueIfNotEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
         <local:BindingProxy x:Key="TrueIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
         <local:BindingProxy x:Key="VisibleIfNotReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
@@ -19,6 +19,7 @@
         <local:BindingProxy x:Key="MotherProxy" Data="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
         <local:BindingProxy x:Key="FatherProxy" Data="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
         <local:BindingProxy x:Key="GendersProxy" Data="{Binding Path=Genders, Mode=OneWay}"/>
+        <local:BindingProxy x:Key="PasteParentCommandProxy" Data="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Window.Title>
         <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="Title">
@@ -366,11 +367,11 @@
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Порода" CellTemplate="{StaticResource Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Breed.NameNat}" />
                     <DataGridTemplateColumn Header="Питомник" CellTemplate="{StaticResource Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Cattery.NameNat}" />
-                    <DataGridTextColumn Header="Имя" Binding="{Binding NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Имя" Binding="{Binding NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                     <DataGridTemplateColumn Header="Пол" CellTemplate="{StaticResource Gender}" CellEditingTemplate="{StaticResource Editing.Gender}" />
-                    <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Титул" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Титул" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
@@ -490,23 +491,29 @@
                     <DataGridTemplateColumn Header="Самка:Порода" CellTemplate="{StaticResource Female.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Breed.NameNat}" />
                     <DataGridTemplateColumn Header="Самка:Питомник" CellTemplate="{StaticResource Female.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Cattery.NameNat}" />
                     <DataGridTemplateColumn Header="Самка:Дата рождения" CellTemplate="{StaticResource Female.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Female.Litter.Date}" />
-                    <DataGridTextColumn Header="Самка:Имя" Binding="{Binding Female.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самка:Name" Binding="{Binding Female.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Имя" Binding="{Binding Female.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Name" Binding="{Binding Female.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                     <DataGridTemplateColumn Header="Самка:Пол" CellTemplate="{StaticResource Female.Gender}" CellEditingTemplate="{StaticResource Editing.Female.Gender}" />
-                    <DataGridTextColumn Header="Самка:Экстерьер" Binding="{Binding Female.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самка:Титул" Binding="{Binding Female.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Экстерьер" Binding="{Binding Female.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самка:Титул" Binding="{Binding Female.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                     <DataGridTemplateColumn Header="Самец:Порода" CellTemplate="{StaticResource Male.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Breed.NameNat}" />
                     <DataGridTemplateColumn Header="Самец:Питомник" CellTemplate="{StaticResource Male.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Cattery.NameNat}" />
                     <DataGridTemplateColumn Header="Самец:Дата рождения" CellTemplate="{StaticResource Male.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Male.Litter.Date}" />
-                    <DataGridTextColumn Header="Самец:Имя" Binding="{Binding Male.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самец:Name" Binding="{Binding Male.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Имя" Binding="{Binding Male.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Name" Binding="{Binding Male.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                     <DataGridTemplateColumn Header="Самец:Пол" CellTemplate="{StaticResource Male.Gender}" CellEditingTemplate="{StaticResource Editing.Male.Gender}" />
-                    <DataGridTextColumn Header="Самец:Экстерьер" Binding="{Binding Male.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самец:Титул" Binding="{Binding Male.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Экстерьер" Binding="{Binding Male.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    <DataGridTextColumn Header="Самец:Титул" Binding="{Binding Male.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
                 </DataGrid.Columns>
                 <DataGrid.ContextMenu>
                     <ContextMenu>
-                        <MenuItem x:Name="SetParent" IsEnabled="{Binding Data, Source={StaticResource TrueIfEditInline}}" Click="MenuItem_Click">
+                        <MenuItem x:Name="SetParent" Command="{Binding Data, Source={StaticResource PasteParentCommandProxy}}">
+                            <MenuItem.CommandParameter>
+                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                    <Binding Path="Data" Source="{StaticResource TrueIfEditInline}"  Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.CommandParameter>
                             <MenuItem.Header>
                                 <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="SetParentHeader">
                                     <Binding Path="Heart.Cat" Mode="OneWay"/>

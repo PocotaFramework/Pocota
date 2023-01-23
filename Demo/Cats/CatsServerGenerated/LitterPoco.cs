@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -42,11 +42,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterProjection)target).Date;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_date = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_date = false;
-                ((LitterILitterProjection)target)._projector._date = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterProjection)target).Date = (DateOnly)value!;
         }
 
@@ -64,11 +59,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterProjection)target).Order;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_order = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_order = false;
-                ((LitterILitterProjection)target)._projector._order = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterProjection)target).Order = (Int32)value!;
         }
 
@@ -86,11 +76,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterProjection)target).Female;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_female = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_female = false;
-                ((LitterILitterProjection)target)._projector._female = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
         }
 
@@ -108,11 +93,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterProjection)target).Male;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_male = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_male = false;
-                ((LitterILitterProjection)target)._projector._male = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
         }
 
@@ -130,11 +110,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_strings;
             public object? Get(object target) => ((LitterILitterProjection)target).Strings;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_strings = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_strings = false;
-                ((LitterILitterProjection)target)._projector._strings.Clear();
-            }
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -152,11 +127,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_cats;
             public object? Get(object target) => ((LitterILitterProjection)target).Cats;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_cats = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterProjection)target)._projector._is_set_cats = false;
-                ((LitterILitterProjection)target)._projector._cats.Clear();
-            }
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -265,11 +235,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector._is_set_date = false;
-                ((LitterILitterForCatProjection)target)._projector._date = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
         }
 
@@ -287,11 +252,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Order;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector._is_set_order = false;
-                ((LitterILitterForCatProjection)target)._projector._order = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
         }
 
@@ -309,11 +269,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Female;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector._is_set_female = false;
-                ((LitterILitterForCatProjection)target)._projector._female = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
         }
 
@@ -331,11 +286,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Male;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector._is_set_male = false;
-                ((LitterILitterForCatProjection)target)._projector._male = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
         }
 
@@ -353,11 +303,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_cats;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Cats;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_cats = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForCatProjection)target)._projector._is_set_cats = false;
-                ((LitterILitterForCatProjection)target)._projector._cats.Clear();
-            }
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -456,11 +401,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForDateProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterForDateProjection)target)._projector._is_set_date = false;
-                ((LitterILitterForDateProjection)target)._projector._date = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
         }
 
@@ -532,11 +472,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterWithCatsProjection)target).Female;
             public void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterWithCatsProjection)target)._projector._is_set_female = false;
-                ((LitterILitterWithCatsProjection)target)._projector._female = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
         }
 
@@ -554,11 +489,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterWithCatsProjection)target).Male;
             public void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterWithCatsProjection)target)._projector._is_set_male = false;
-                ((LitterILitterWithCatsProjection)target)._projector._male = default!;
-            }
             public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
         }
 
@@ -576,11 +506,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
             public object? Get(object target) => ((LitterILitterWithCatsProjection)target).Cats;
             public void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_cats = true;
-            public void Unset(object target)
-            {
-                ((LitterILitterWithCatsProjection)target)._projector._is_set_cats = false;
-                ((LitterILitterWithCatsProjection)target)._projector._cats.Clear();
-            }
             public void Set(object target, object? value) => throw new NotImplementedException();
         }
 
@@ -665,11 +590,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_date;
         public object? Get(object target) => ((LitterPoco)target).Date;
         public void Touch(object target) => ((LitterPoco)target)._is_set_date = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_date = false;
-            ((LitterPoco)target)._date = default!;
-        }
         public void Set(object target, object? value) => ((LitterPoco)target).Date = (DateOnly)value!;
     }
 
@@ -687,11 +607,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_order;
         public object? Get(object target) => ((LitterPoco)target).Order;
         public void Touch(object target) => ((LitterPoco)target)._is_set_order = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_order = false;
-            ((LitterPoco)target)._order = default!;
-        }
         public void Set(object target, object? value) => ((LitterPoco)target).Order = (Int32)value!;
     }
 
@@ -709,11 +624,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_female;
         public object? Get(object target) => ((LitterPoco)target).Female;
         public void Touch(object target) => ((LitterPoco)target)._is_set_female = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_female = false;
-            ((LitterPoco)target)._female = default!;
-        }
         public void Set(object target, object? value) => ((LitterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -731,11 +641,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_male;
         public object? Get(object target) => ((LitterPoco)target).Male;
         public void Touch(object target) => ((LitterPoco)target)._is_set_male = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_male = false;
-            ((LitterPoco)target)._male = default!;
-        }
         public void Set(object target, object? value) => ((LitterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
     }
 
@@ -753,11 +658,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_strings;
         public object? Get(object target) => ((LitterPoco)target).Strings;
         public void Touch(object target) => ((LitterPoco)target)._is_set_strings = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_strings = false;
-            ((LitterPoco)target)._strings.Clear();
-        }
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 
@@ -775,11 +675,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_cats;
         public object? Get(object target) => ((LitterPoco)target).Cats;
         public void Touch(object target) => ((LitterPoco)target)._is_set_cats = true;
-        public void Unset(object target)
-        {
-            ((LitterPoco)target)._is_set_cats = false;
-            ((LitterPoco)target)._cats.Clear();
-        }
         public void Set(object target, object? value) => throw new NotImplementedException();
     }
 

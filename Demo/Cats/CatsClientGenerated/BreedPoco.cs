@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,14 +36,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsKeyPart => true;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_code;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsCodeSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Code;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
-            public override void Unset(object target)
-            {
-                ((BreedIBreedProjection)target)._projector._is_set_code = false;
-                ((BreedIBreedProjection)target)._projector._code = default!;
-            }
             public override void Set(object target, object? value) => ((BreedIBreedProjection)target).Code = (String)value!;
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsCodeModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsCodeInitial();
@@ -63,14 +58,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsKeyPart => true;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_group;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsGroupSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Group;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
-            public override void Unset(object target)
-            {
-                ((BreedIBreedProjection)target)._projector._is_set_group = false;
-                ((BreedIBreedProjection)target)._projector._group = default!;
-            }
             public override void Set(object target, object? value) => ((BreedIBreedProjection)target).Group = (String)value!;
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsGroupModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsGroupInitial();
@@ -90,14 +80,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsKeyPart => false;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public override void Unset(object target)
-            {
-                ((BreedIBreedProjection)target)._projector._is_set_nameEng = false;
-                ((BreedIBreedProjection)target)._projector._nameEng = default!;
-            }
             public override void Set(object target, object? value) => ((BreedIBreedProjection)target).NameEng = (String)value!;
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngInitial();
@@ -117,14 +102,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsKeyPart => false;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public override void Unset(object target)
-            {
-                ((BreedIBreedProjection)target)._projector._is_set_nameNat = false;
-                ((BreedIBreedProjection)target)._projector._nameNat = default!;
-            }
             public override void Set(object target, object? value) => ((BreedIBreedProjection)target).NameNat = (String)value!;
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatInitial();
@@ -237,14 +217,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsKeyPart => true;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_code;
+        public override bool IsSet(object target) => ((BreedPoco)target).IsCodeSet();
         public override object? Get(object target) => ((BreedPoco)target).Code;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
-        public override void Unset(object target)
-        {
-            ((BreedPoco)target)._is_set_code = false;
-            ((BreedPoco)target)._code = default!;
-        }
         public override void Set(object target, object? value) => ((BreedPoco)target).Code = (String)value!;
         public override bool IsModified(object target) => ((BreedPoco)target).IsCodeModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsCodeInitial();
@@ -264,14 +239,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsKeyPart => true;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_group;
+        public override bool IsSet(object target) => ((BreedPoco)target).IsGroupSet();
         public override object? Get(object target) => ((BreedPoco)target).Group;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
-        public override void Unset(object target)
-        {
-            ((BreedPoco)target)._is_set_group = false;
-            ((BreedPoco)target)._group = default!;
-        }
         public override void Set(object target, object? value) => ((BreedPoco)target).Group = (String)value!;
         public override bool IsModified(object target) => ((BreedPoco)target).IsGroupModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsGroupInitial();
@@ -291,14 +261,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsKeyPart => false;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
+        public override bool IsSet(object target) => ((BreedPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((BreedPoco)target).NameEng;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public override void Unset(object target)
-        {
-            ((BreedPoco)target)._is_set_nameEng = false;
-            ((BreedPoco)target)._nameEng = default!;
-        }
         public override void Set(object target, object? value) => ((BreedPoco)target).NameEng = (String)value!;
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameEngInitial();
@@ -318,14 +283,9 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsKeyPart => false;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;
+        public override bool IsSet(object target) => ((BreedPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((BreedPoco)target).NameNat;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public override void Unset(object target)
-        {
-            ((BreedPoco)target)._is_set_nameNat = false;
-            ((BreedPoco)target)._nameNat = default!;
-        }
         public override void Set(object target, object? value) => ((BreedPoco)target).NameNat = (String)value!;
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameNatInitial();
@@ -398,20 +358,20 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String Code
     {
-        get => !_is_set_code ? default! : _code;
+        get => !IsCodeSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _code;
         set
         {
             if(_code != value)
             {
                 lock(_lock)
                 {
-                    if(_code != value  && (IsBeingPopulated || _is_set_code))
+                    if(_code != value  && (IsBeingPopulated || _is_set_code || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsCodeInitial())
                         {
                             _code = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_code = value;
                             _is_set_code = true;
@@ -426,20 +386,20 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String Group
     {
-        get => !_is_set_group ? default! : _group;
+        get => !IsGroupSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _group;
         set
         {
             if(_group != value)
             {
                 lock(_lock)
                 {
-                    if(_group != value  && (IsBeingPopulated || _is_set_group))
+                    if(_group != value  && (IsBeingPopulated || _is_set_group || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsGroupInitial())
                         {
                             _group = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_group = value;
                             _is_set_group = true;
@@ -454,20 +414,20 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String? NameEng
     {
-        get => !_is_set_nameEng ? default! : _nameEng;
+        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
         set
         {
             if(_nameEng != value)
             {
                 lock(_lock)
                 {
-                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
+                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsNameEngInitial())
                         {
                             _nameEng = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_nameEng = value;
                             _is_set_nameEng = true;
@@ -482,20 +442,20 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String? NameNat
     {
-        get => !_is_set_nameNat ? default! : _nameNat;
+        get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
         set
         {
             if(_nameNat != value)
             {
                 lock(_lock)
                 {
-                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
+                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsNameNatInitial())
                         {
                             _nameNat = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_nameNat = value;
                             _is_set_nameNat = true;
@@ -582,6 +542,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsCodeInitial();
 
+    private bool IsCodeSet() => _is_set_code || ((IEntity)this).PocoState is PocoState.Created;
+
     private void CodeCancelChange()
     {
         _code = _initial_code;
@@ -598,6 +560,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     private bool IsGroupModified() => _is_set_group 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsGroupInitial();
+
+    private bool IsGroupSet() => _is_set_group || ((IEntity)this).PocoState is PocoState.Created;
 
     private void GroupCancelChange()
     {
@@ -616,6 +580,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameEngInitial();
 
+    private bool IsNameEngSet() => _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created;
+
     private void NameEngCancelChange()
     {
         _nameEng = _initial_nameEng;
@@ -632,6 +598,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     private bool IsNameNatModified() => _is_set_nameNat 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameNatInitial();
+
+    private bool IsNameNatSet() => _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created;
 
     private void NameNatCancelChange()
     {

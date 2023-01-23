@@ -1,5 +1,4 @@
 ﻿using CatsClient.Commands;
-using CatsClient.XAML;
 using CatsCommon;
 using CatsCommon.Filters;
 using CatsCommon.Model;
@@ -59,6 +58,7 @@ public partial class MainWindow : Window
     public ResetCatReferenceCommand ResetCatReferenceCommand { get; init; }
     public ViewCatCommand ViewCatCommand { get; init; }
     public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; }
+    public CopyEntitiesReferencesCommand CopyEntityReferenceCommand { get; init; }
 
     public CatsConnector Connector { get; init; }
 
@@ -106,6 +106,8 @@ public partial class MainWindow : Window
         CloseAllWindowsCommand = new CloseAllWindowsCommand();
 
         ViewCatCommand = services.GetRequiredService<ViewCatCommand>();
+
+        CopyEntityReferenceCommand = services.GetRequiredService<CopyEntitiesReferencesCommand>();
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
 

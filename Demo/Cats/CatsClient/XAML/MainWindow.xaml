@@ -9,6 +9,7 @@
         Title="Кошки" Height="468" Width="800" MinWidth="800" MinHeight="277" DataContext="{Binding RelativeSource={RelativeSource Self}}" 
         x:Name="TheMainWindow" WindowStartupLocation="CenterScreen" Closing="TheMainWindow_Closing">
     <Window.Resources>
+        <local:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top" >
@@ -308,6 +309,9 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="Копировать ссылку" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
+                              CommandParameter="{Binding Path=Heart.SelectedCat, Mode=OneWay}"/>
+                    <Separator/>
                     <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">
                         <MenuItem x:Name="AsDescendant" Click="Descendant_Click" Header="... Потомка"></MenuItem>
                         <MenuItem x:Name="AsAncestor" Click="Descendant_Click" Header="... Предка"></MenuItem>

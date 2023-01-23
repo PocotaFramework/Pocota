@@ -20,4 +20,5 @@ public interface IPocoContext
     void AddJsonConverters(Type targetType, JsonSerializerOptions jsonSerializerOptions);
     void AddJsonConverters<TTarget>(JsonSerializerOptions jsonSerializerOptions);
 
+    bool TryGetSource(Type type, object[] primaryKey, out object? value);
 }

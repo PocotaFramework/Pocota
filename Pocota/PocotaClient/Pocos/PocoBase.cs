@@ -139,14 +139,14 @@ public abstract class PocoBase : IPoco
             {
                 if (_isCreated)
                 {
-                    _pocoState = PocoState.Uncertain;
+                    _pocoState = PocoState.Created;
                 }
                 else
                 {
                     _pocoState = PocoState.Unchanged;
                 }
             }
-            else if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
+            if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
             {
                 try
                 {

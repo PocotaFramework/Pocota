@@ -24,7 +24,7 @@
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsSet(object target) => @if(Model.IsEntity)
         {
-            <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName}")</text>
+            <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{(Model.IsClient ? $"Is{pm.Name}Set()" : $"_is_set{fieldName}")}")</text>
         }
         else
         {
@@ -42,23 +42,6 @@
         @Html.Raw(indent){ }
 </text>
         }
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Unset(object target)
-        @Html.Raw(indent){@if (Model.IsEntity)
-            {
-                <text>
-            @Html.Raw(indent)@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} = false");
-                @if(pm.IsList)
-                {
-                    <text>            @Html.Raw(indent)@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{fieldName}.Clear()");
-</text>
-                }
-                else
-                {
-                    <text>            @Html.Raw(indent)@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{fieldName} = default!");
-</text>
-                }
-       @Html.Raw(indent)</text>
-            } }
         @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Set(object target, object? value) => @if(!pm.IsList)
             {
                 if(pm.IsReadOnly)

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,14 +36,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsKeyPart => false;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
+            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public override void Unset(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector._is_set_nameEng = false;
-                ((CatteryICatteryProjection)target)._projector._nameEng = default!;
-            }
             public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameEng = (String)value!;
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
@@ -63,14 +58,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsKeyPart => false;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
-            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
+            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public override void Unset(object target)
-            {
-                ((CatteryICatteryProjection)target)._projector._is_set_nameNat = false;
-                ((CatteryICatteryProjection)target)._projector._nameNat = default!;
-            }
             public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameNat = (String)value!;
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
@@ -169,14 +159,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsKeyPart => false;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
+        public override bool IsSet(object target) => ((CatteryPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameEng;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public override void Unset(object target)
-        {
-            ((CatteryPoco)target)._is_set_nameEng = false;
-            ((CatteryPoco)target)._nameEng = default!;
-        }
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
@@ -196,14 +181,9 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsKeyPart => false;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
-        public override bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
+        public override bool IsSet(object target) => ((CatteryPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameNat;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public override void Unset(object target)
-        {
-            ((CatteryPoco)target)._is_set_nameNat = false;
-            ((CatteryPoco)target)._nameNat = default!;
-        }
         public override void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
@@ -264,20 +244,20 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public virtual String? NameEng
     {
-        get => !_is_set_nameEng ? default! : _nameEng;
+        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
         set
         {
             if(_nameEng != value)
             {
                 lock(_lock)
                 {
-                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng))
+                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsNameEngInitial())
                         {
                             _nameEng = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_nameEng = value;
                             _is_set_nameEng = true;
@@ -292,20 +272,20 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     public virtual String? NameNat
     {
-        get => !_is_set_nameNat ? default! : _nameNat;
+        get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
         set
         {
             if(_nameNat != value)
             {
                 lock(_lock)
                 {
-                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat))
+                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
                     {
                         if (!IsBeingPopulated || IsNameNatInitial())
                         {
                             _nameNat = value;
                         }
-                        if (IsBeingPopulated)
+                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                         {
                             _initial_nameNat = value;
                             _is_set_nameNat = true;
@@ -392,6 +372,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameEngInitial();
 
+    private bool IsNameEngSet() => _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created;
+
     private void NameEngCancelChange()
     {
         _nameEng = _initial_nameEng;
@@ -408,6 +390,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     private bool IsNameNatModified() => _is_set_nameNat 
         && ((IPoco)this).PocoState is PocoState.Modified
                 && !IsNameNatInitial();
+
+    private bool IsNameNatSet() => _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created;
 
     private void NameNatCancelChange()
     {

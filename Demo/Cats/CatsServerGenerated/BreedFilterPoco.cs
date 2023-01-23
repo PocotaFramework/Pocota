@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-21T15:08:49                                  //
+// at 2023-01-23T13:54:27                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -40,8 +40,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             public bool IsSet(object target) => true;
             public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public void Touch(object target) 
-            { }
-            public void Unset(object target)
             { }
             public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SearchRegex = (String)value!;
         }
@@ -113,8 +111,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         public bool IsSet(object target) => true;
         public object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
         public void Touch(object target) 
-        { }
-        public void Unset(object target)
         { }
         public void Set(object target, object? value) => ((BreedFilterPoco)target).SearchRegex = (String)value!;
     }

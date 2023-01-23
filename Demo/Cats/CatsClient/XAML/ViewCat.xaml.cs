@@ -32,6 +32,8 @@ public partial class ViewCat : Window
     public ViewCatCommand ViewMotherCommand { get; init; }
     public ViewCatCommand ViewFatherCommand { get; init; }
 
+    public PasteParentCommand PasteParentCommand { get; init; }
+
     public bool IsLitterSelected => LittersDataGrid.SelectedItems.Count == 1;
 
     public ViewCat(IServiceProvider services)
@@ -43,6 +45,7 @@ public partial class ViewCat : Window
         AddLitterCommand = _services.GetRequiredService<AddLitterCommand>();
         ViewMotherCommand = _services.GetRequiredService<ViewCatCommand>();
         ViewFatherCommand = _services.GetRequiredService<ViewCatCommand>();
+        PasteParentCommand = _services.GetRequiredService<PasteParentCommand>();
 
         Heart = _services.GetRequiredService<IViewCatHeart>();
 
