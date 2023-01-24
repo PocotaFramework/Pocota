@@ -74,6 +74,10 @@ public class PasteParentCommand : ICommand
 
     public void Execute(object? parameter)
     {
-        throw new NotImplementedException();
+        if (CanExecute(parameter))
+        {
+            object?[] values = parameter as object?[] ?? new object?[] { parameter };
+            IEntity[]? references = _services.GetRequiredService<CopyEntitiesReferencesCommand>().PasteEntitiesReferences();
+        }
     }
 }
