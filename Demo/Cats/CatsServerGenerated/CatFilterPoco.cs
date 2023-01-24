@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-23T13:54:27                                  //
+// at 2023-01-24T16:07:37                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1019,7 +1019,10 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         {
             return this;
         }
-        
+        if(type == GetType())
+        {
+            return this;
+        }
         return null;
     }
 

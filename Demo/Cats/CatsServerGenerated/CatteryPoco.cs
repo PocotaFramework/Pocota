@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-23T13:54:27                                  //
+// at 2023-01-24T16:07:37                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -268,7 +268,10 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         {
             return this;
         }
-        
+        if(type == GetType())
+        {
+            return this;
+        }
         return null;
     }
 

@@ -309,7 +309,7 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Копировать ссылку" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
+                    <MenuItem Header="Копировать" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
                               CommandParameter="{Binding Path=Heart.SelectedCat, Mode=OneWay}"/>
                     <Separator/>
                     <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">
@@ -320,7 +320,7 @@
                         <MenuItem x:Name="AsParent" Click="Descendant_Click" Header="... Родителя"></MenuItem>
                         <MenuItem x:Name="AsSelf" Click="Descendant_Click" Header="... Себя"></MenuItem>
                     </MenuItem>
-                    <MenuItem x:Name="ShowCat" Click="Descendant_Click" IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}" Header="Просмотр">
+                    <MenuItem x:Name="ShowCat" Click="Descendant_Click" IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}" Header="Открыть">
                     </MenuItem>
                 </ContextMenu>
             </DataGrid.ContextMenu>

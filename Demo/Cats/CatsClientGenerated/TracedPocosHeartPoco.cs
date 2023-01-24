@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-23T13:54:27                                          //
+// at 2023-01-24T16:07:37                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -300,7 +300,10 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         {
             return this;
         }
-        
+        if(type == GetType())
+        {
+            return this;
+        }
         return null;
     }
 

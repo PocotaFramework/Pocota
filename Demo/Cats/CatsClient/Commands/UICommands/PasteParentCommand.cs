@@ -48,7 +48,6 @@ public class PasteParentCommand : ICommand
                     && proj.As<ICat>() is ICat cat
                 )
                 {
-                    Console.WriteLine(string.Join(',', Clipboard.GetDataObject().GetFormats()));
                     IEntity[]? references = _services.GetRequiredService<CopyEntitiesReferencesCommand>().PasteEntitiesReferences();
                     return
                         references is { }

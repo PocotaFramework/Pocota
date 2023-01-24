@@ -150,8 +150,13 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         }
         Type pocoType;
         List<Type> types = new();
-        for (pocoType = item.ImplementationType; pocoType.BaseType is { } && typeof(IProjection).IsAssignableFrom(pocoType); pocoType = pocoType.BaseType)
+        for (
+            pocoType = item.ImplementationType; 
+            pocoType.BaseType is { } && typeof(IProjection).IsAssignableFrom(pocoType); 
+            pocoType = pocoType.BaseType
+        )
         {
+            _services!.Add(new(pocoType, item.ImplementationType, ServiceLifetime.Transient));
             if (pocoType.BaseType is null || !typeof(IProjection).IsAssignableFrom(pocoType.BaseType))
             {
                 break;
@@ -162,12 +167,10 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
         _actualTypes.Add(pocoType, pocoType);
         foreach (Type type in types)
         {
-             _propertiesByName.Add(type, _propertiesByName[pocoType]);
+            _propertiesByName.Add(type, _propertiesByName[pocoType]);
             _propertiesByOrder.Add(type, _propertiesByOrder[pocoType]);
             _actualTypes.Add(type, pocoType);
         }
-        ServiceDescriptor descriptor = new(pocoType, item.ImplementationType, ServiceLifetime.Transient);
-        _services!.Add(descriptor);
         foreach (Type type in pocoType.GetNestedTypes())
         {
             if (typeof(IProjection).IsAssignableFrom(type))
@@ -181,12 +184,17 @@ public abstract class PocotaCoreBase: IJsonSerializerConfiguration
                     _propertiesByOrder.Add(@interface, _propertiesByOrder[type]);
 
                     _actualTypes.Add(@interface, pocoType);
-                    descriptor = new ServiceDescriptor(@interface, (IServiceProvider serviceProvider) =>
-                    {
-                        IProjection poco = (serviceProvider.GetRequiredService(pocoType) as IProjection)!;
-                        return poco.As(@interface)!;
-                    }, ServiceLifetime.Transient);
-                    _services.Add(descriptor);
+                    _services!.Add(
+                        new ServiceDescriptor (
+                            @interface, 
+                            (IServiceProvider serviceProvider) =>
+                            {
+                                IProjection poco = (serviceProvider.GetRequiredService(pocoType) as IProjection)!;
+                                return poco.As(@interface)!;
+                            }, 
+                            ServiceLifetime.Transient
+                        )
+                    );
                 }
             }
         }

@@ -54,8 +54,13 @@ public class CopyEntitiesReferencesCommand : ICommand
         {
             DataObject data = new();
             string json = JsonSerializer.Serialize(
-                    values.Select(v => new Tuple<string, object[]>(v.GetType().FullName!, ((IProjection)v).As<IEntity>()!.PrimaryKey!.Value.ToArray()))
-                );
+                values.Select(v => ((IProjection)v).As<IEntity>()!).Select(
+                    v => new Tuple<string, object[]>(
+                        v.GetType().FullName!, 
+                        v.PrimaryKey!.Value.ToArray()
+                    )
+                )
+            );
             data.SetData(
                 typeof(IEntity),
                 json
@@ -77,11 +82,9 @@ public class CopyEntitiesReferencesCommand : ICommand
         if (retrievedData.GetDataPresent(typeof(IEntity)))
         {
             string json = retrievedData.GetData(typeof(IEntity))?.ToString() ?? "[]";
-            Console.WriteLine(json);
-            Tuple<string, object[]>[]? arr = JsonSerializer.Deserialize<Tuple<string, object[]>[]>(json);
+            Tuple<string, string[]>[]? arr = JsonSerializer.Deserialize<Tuple<string, string[]>[]>(json);
             if(arr is {} && arr.Length > 0)
             {
-                Console.WriteLine($"{arr[0].Item1}, [{string.Join(',', arr[0].Item2)}]");
                 return arr.Select(v => 
                 {
                     return _pocoContext.TryGetSource(Type.GetType(arr[0].Item1)!, arr[0].Item2, out object? result) ? (IEntity)result! : null!;
