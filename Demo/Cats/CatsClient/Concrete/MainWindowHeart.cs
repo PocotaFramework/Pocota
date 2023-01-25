@@ -14,8 +14,6 @@ namespace CatsClient;
 
 public class MainWindowHeart : MainWindowHeartPoco
 {
-    private readonly List<CollectionViewSource> _collectionViewSources = new();
-
     public MainWindowHeart(IServiceProvider services) : base(services)
     {
         CatFilter = _services.GetRequiredService<CatFilterPoco>();

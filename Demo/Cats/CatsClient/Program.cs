@@ -30,7 +30,7 @@ public class Program
                     configurePocos: serv =>
                     {
                         serv.AddTransient<Cat>();
-                        serv.AddTransient<LitterPoco>();
+                        serv.AddTransient<Litter>();
                         serv.AddTransient<BreedPoco>();
                         serv.AddTransient<CatteryPoco>();
                         serv.AddTransient<CatFilter>();

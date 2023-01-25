@@ -59,6 +59,7 @@ public partial class MainWindow : Window
     public ViewCatCommand ViewCatCommand { get; init; }
     public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; }
     public CopyEntitiesReferencesCommand CopyEntityReferenceCommand { get; init; }
+    public SetCatFilterCommand SetCatFilterCommand { get; init; }
 
     public CatsConnector Connector { get; init; }
 
@@ -108,6 +109,8 @@ public partial class MainWindow : Window
         ViewCatCommand = services.GetRequiredService<ViewCatCommand>();
 
         CopyEntityReferenceCommand = services.GetRequiredService<CopyEntitiesReferencesCommand>();
+
+        SetCatFilterCommand = new SetCatFilterCommand();
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
 
@@ -348,52 +351,6 @@ public partial class MainWindow : Window
 
         }
 
-    }
-
-    private void Descendant_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is MenuItem item)
-        {
-            ICat? cat = ((IProjection?)Heart.SelectedCat)?.As<ICat>();
-            switch (item.Name)
-            {
-                case "AsDescendant":
-                    Heart.CatFilter.Descendant = cat;
-                    break;
-                case "AsAncestor":
-                    Heart.CatFilter.Ancestor = cat;
-                    break;
-                case "AsLitter":
-                    Heart.CatFilter.Litter = cat?.Litter;
-                    break;
-                case "AsChild":
-                    Heart.CatFilter.Child = cat;
-                    break;
-                case "AsParent":
-                    if(cat is { })
-                    {
-                        if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
-                        {
-                            Heart.CatFilter.Mother = cat;
-                        }
-                        else
-                        {
-                            Heart.CatFilter.Father = cat;
-                        }
-                    }
-                    break;
-                case "AsSelf":
-                    Heart.CatFilter.Self = cat;
-                    break;
-                case "ShowCat":
-                    if (ViewCatCommand.CanExecute(cat))
-                    {
-                        ViewCatCommand.Execute(cat);
-                    }
-                    break;
-            }
-            CommandManager.InvalidateRequerySuggested();
-        }
     }
 
     private void TheMainWindow_Closing(object sender, CancelEventArgs e)

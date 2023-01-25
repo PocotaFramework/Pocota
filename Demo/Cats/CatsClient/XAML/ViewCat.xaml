@@ -320,233 +320,328 @@
                          />
             </StackPanel>
         </Grid>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Top">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Однопомётники "/>
-            </StackPanel>
-            <DataGrid x:Name="SameLitterCatsDataGrid" ItemsSource="{Binding Heart.Cat.Litter.Cats}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}" 
+        <StatusBar DockPanel.Dock="Bottom" Width="auto"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="10"/>
+                <RowDefinition/>
+                <RowDefinition Height="10"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Vertical" Grid.Row="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Однопомётники "/>
+                </StackPanel>
+                <DataGrid x:Name="SameLitterCatsDataGrid" ItemsSource="{Binding Heart.Cat.Litter.Cats}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}" 
                   AutoGenerateColumns="False">
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="Breed.NameNat" >
-                        <TextBlock Text="{Binding Breed.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Breed.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Breed, UpdateSourceTrigger=PropertyChanged}" 
+                    <DataGrid.Resources>
+                        <DataTemplate x:Key="Breed.NameNat" >
+                            <TextBlock Text="{Binding Breed.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Breed.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Breed, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
                             />
-                            <TextBox Text="{Binding Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Gender" >
-                        <TextBlock Text="{Binding Gender, Converter={local:GenderConverter}}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Gender">
-                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                                <TextBox Text="{Binding Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Gender" >
+                            <TextBlock Text="{Binding Gender, Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Gender">
+                            <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
                             SelectedItem="{Binding Path=Gender, UpdateSourceTrigger=PropertyChanged}"
                             >
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Cattery.NameNat" >
-                        <TextBlock Text="{Binding Cattery.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Cattery.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Cattery.NameNat" >
+                            <TextBlock Text="{Binding Cattery.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Cattery.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Cattery, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
                             />
-                            <TextBox Text="{Binding Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Порода" CellTemplate="{StaticResource Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Breed.NameNat}" />
-                    <DataGridTemplateColumn Header="Питомник" CellTemplate="{StaticResource Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Cattery.NameNat}" />
-                    <DataGridTextColumn Header="Имя" Binding="{Binding NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Name" Binding="{Binding NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTemplateColumn Header="Пол" CellTemplate="{StaticResource Gender}" CellEditingTemplate="{StaticResource Editing.Gender}" />
-                    <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Титул" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </StackPanel>
-        <StatusBar DockPanel.Dock="Bottom" Width="auto">
-        </StatusBar>
-        <StackPanel Orientation="Vertical">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Помёты "/>
-                <TextBlock Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}">
-                    <Hyperlink Command="{Binding AddLitterCommand}" CommandParameter="{Binding Heart.Cat}">[Добавить]</Hyperlink>
-                </TextBlock>
+                                <TextBox Text="{Binding Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Порода" CellTemplate="{StaticResource Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Breed.NameNat}" />
+                        <DataGridTemplateColumn Header="Питомник" CellTemplate="{StaticResource Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Cattery.NameNat}" />
+                        <DataGridTextColumn Header="Имя" Binding="{Binding NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTemplateColumn Header="Пол" CellTemplate="{StaticResource Gender}" CellEditingTemplate="{StaticResource Editing.Gender}" />
+                        <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Титул" Binding="{Binding Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
             </StackPanel>
-            <DataGrid x:Name="LittersDataGrid" ItemsSource="{Binding Heart.LittersView}" 
+            <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Vertical" Grid.Row="2">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Помёты "/>
+                    <TextBlock Visibility="{Binding Data, Source={StaticResource VisibleIfEditInline}}">
+                    <Hyperlink Command="{Binding AddLitterCommand}" CommandParameter="{Binding Heart.Cat}">[Добавить]</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+                <DataGrid x:Name="LittersDataGrid" ItemsSource="{Binding Heart.LittersView}" 
                       IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
                   AutoGenerateColumns="False">
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="Date" >
-                        <TextBlock Text="{Binding Date}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Date">
-                        <DatePicker SelectedDate="{Binding Path=Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Female.Litter.Date" >
-                        <TextBlock Text="{Binding Female.Litter.Date}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Female.Litter.Date">
-                        <DatePicker SelectedDate="{Binding Path=Female.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Male.Litter.Date" >
-                        <TextBlock Text="{Binding Male.Litter.Date}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Male.Litter.Date">
-                        <DatePicker SelectedDate="{Binding Path=Male.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Female.Cattery.NameNat" >
-                        <TextBlock Text="{Binding Female.Cattery.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Female.Cattery.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                    <DataGrid.Resources>
+                        <DataTemplate x:Key="Date" >
+                            <TextBlock Text="{Binding Date}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Date">
+                            <DatePicker SelectedDate="{Binding Path=Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Female.Litter.Date" >
+                            <TextBlock Text="{Binding Female.Litter.Date}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Female.Litter.Date">
+                            <DatePicker SelectedDate="{Binding Path=Female.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Male.Litter.Date" >
+                            <TextBlock Text="{Binding Male.Litter.Date}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Male.Litter.Date">
+                            <DatePicker SelectedDate="{Binding Path=Male.Litter.Date, UpdateSourceTrigger=PropertyChanged, Converter={local:DateOnlyConverter}}"  />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Female.Cattery.NameNat" >
+                            <TextBlock Text="{Binding Female.Cattery.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Female.Cattery.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Cattery, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
                             />
-                            <TextBox Text="{Binding Female.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Male.Cattery.NameNat" >
-                        <TextBlock Text="{Binding Male.Cattery.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Male.Cattery.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Cattery, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding Female.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Male.Cattery.NameNat" >
+                            <TextBlock Text="{Binding Male.Cattery.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Male.Cattery.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Cattery, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource CatteriesProxy}}" 
                             />
-                            <TextBox Text="{Binding Male.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Female.Breed.NameNat" >
-                        <TextBlock Text="{Binding Female.Breed.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Female.Breed.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Breed, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding Male.Cattery.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Female.Breed.NameNat" >
+                            <TextBlock Text="{Binding Female.Breed.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Female.Breed.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Female.Breed, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
                             />
-                            <TextBox Text="{Binding Female.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Male.Breed.NameNat" >
-                        <TextBlock Text="{Binding Male.Breed.NameNat}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Male.Breed.NameNat">
-                        <StackPanel>
-                            <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Breed, UpdateSourceTrigger=PropertyChanged}" 
+                                <TextBox Text="{Binding Female.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Male.Breed.NameNat" >
+                            <TextBlock Text="{Binding Male.Breed.NameNat}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Male.Breed.NameNat">
+                            <StackPanel>
+                                <ComboBox DisplayMemberPath="NameNat" SelectedItem="{Binding Path=Male.Breed, UpdateSourceTrigger=PropertyChanged}" 
                                   ItemsSource="{Binding Data, Source={StaticResource BreedsProxy}}" 
                             />
-                            <TextBox Text="{Binding Male.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Female.Gender" >
-                        <TextBlock Text="{Binding Female.Gender, Converter={local:GenderConverter}}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Female.Gender">
-                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                                <TextBox Text="{Binding Male.Breed.NameNat, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Female.Gender" >
+                            <TextBlock Text="{Binding Female.Gender, Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Female.Gender">
+                            <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
                             SelectedItem="{Binding Path=Female.Gender, UpdateSourceTrigger=PropertyChanged}"
                             >
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </DataTemplate>
-                    <DataTemplate x:Key="Male.Gender" >
-                        <TextBlock Text="{Binding Male.Gender, Converter={local:GenderConverter}}" />
-                    </DataTemplate>
-                    <DataTemplate x:Key="Editing.Male.Gender">
-                        <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DataTemplate>
+                        <DataTemplate x:Key="Male.Gender" >
+                            <TextBlock Text="{Binding Male.Gender, Converter={local:GenderConverter}}" />
+                        </DataTemplate>
+                        <DataTemplate x:Key="Editing.Male.Gender">
+                            <ComboBox  ItemsSource="{Binding Data, Source={StaticResource GendersProxy}}"
                             SelectedItem="{Binding Path=Male.Gender, UpdateSourceTrigger=PropertyChanged}"
                             >
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </DataTemplate>
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Номер" Binding="{Binding Order}" IsReadOnly="True"/>
-                    <DataGridTemplateColumn Header="Дата" CellTemplate="{StaticResource Date}" CellEditingTemplate="{StaticResource Editing.Date}" >
-                        <DataGridTemplateColumn.IsReadOnly>
-                            <MultiBinding Converter="{local:MultipleAndConverter}">
-                                <Binding Path="Data" Source="{StaticResource TrueIfReadOnly}"/>
-                            </MultiBinding>
-                        </DataGridTemplateColumn.IsReadOnly>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Самка:Порода" CellTemplate="{StaticResource Female.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Breed.NameNat}" />
-                    <DataGridTemplateColumn Header="Самка:Питомник" CellTemplate="{StaticResource Female.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Cattery.NameNat}" />
-                    <DataGridTemplateColumn Header="Самка:Дата рождения" CellTemplate="{StaticResource Female.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Female.Litter.Date}" />
-                    <DataGridTextColumn Header="Самка:Имя" Binding="{Binding Female.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самка:Name" Binding="{Binding Female.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTemplateColumn Header="Самка:Пол" CellTemplate="{StaticResource Female.Gender}" CellEditingTemplate="{StaticResource Editing.Female.Gender}" />
-                    <DataGridTextColumn Header="Самка:Экстерьер" Binding="{Binding Female.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самка:Титул" Binding="{Binding Female.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTemplateColumn Header="Самец:Порода" CellTemplate="{StaticResource Male.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Breed.NameNat}" />
-                    <DataGridTemplateColumn Header="Самец:Питомник" CellTemplate="{StaticResource Male.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Cattery.NameNat}" />
-                    <DataGridTemplateColumn Header="Самец:Дата рождения" CellTemplate="{StaticResource Male.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Male.Litter.Date}" />
-                    <DataGridTextColumn Header="Самец:Имя" Binding="{Binding Male.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самец:Name" Binding="{Binding Male.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTemplateColumn Header="Самец:Пол" CellTemplate="{StaticResource Male.Gender}" CellEditingTemplate="{StaticResource Editing.Male.Gender}" />
-                    <DataGridTextColumn Header="Самец:Экстерьер" Binding="{Binding Male.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                    <DataGridTextColumn Header="Самец:Титул" Binding="{Binding Male.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
-                </DataGrid.Columns>
-                <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem x:Name="SetParent" Command="{Binding Data, Source={StaticResource PasteParentCommandProxy}}">
-                            <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
-                                    <Binding Path="Data" Source="{StaticResource TrueIfEditInline}"  Mode="OneWay"/>
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={local:GenderConverter}}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </DataTemplate>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Номер" Binding="{Binding Order}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="Дата" CellTemplate="{StaticResource Date}" CellEditingTemplate="{StaticResource Editing.Date}" >
+                            <DataGridTemplateColumn.IsReadOnly>
+                                <MultiBinding Converter="{local:MultipleAndConverter}">
+                                    <Binding Path="Data" Source="{StaticResource TrueIfReadOnly}"/>
                                 </MultiBinding>
-                            </MenuItem.CommandParameter>
-                            <MenuItem.Header>
-                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="SetParentHeader">
-                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
-                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
-                                </MultiBinding>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem x:Name="ShowParent" Click="MenuItem_Click">
-                            <MenuItem.Header>
-                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentHeader">
-                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
-                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
-                                </MultiBinding>
-                            </MenuItem.Header>
-                            <MenuItem.IsEnabled>
-                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentIsEnabled">
-                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
-                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
-                                </MultiBinding>
-                            </MenuItem.IsEnabled>
-                        </MenuItem>
-                        <MenuItem x:Name="AsLitter" Click="MenuItem_Click" Header="Использовать в фильтре">
-                            <MenuItem.IsEnabled>
-                                <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="AsLitterIsEnabled">
-                                    <Binding Path="Heart.Cat" Mode="OneWay"/>
-                                    <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
-                                </MultiBinding>
-                            </MenuItem.IsEnabled>
-                        </MenuItem>
-                    </ContextMenu>
-                </DataGrid.ContextMenu>
-            </DataGrid>
-        </StackPanel>
-
+                            </DataGridTemplateColumn.IsReadOnly>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Самка:Порода" CellTemplate="{StaticResource Female.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Breed.NameNat}" />
+                        <DataGridTemplateColumn Header="Самка:Питомник" CellTemplate="{StaticResource Female.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Female.Cattery.NameNat}" />
+                        <DataGridTemplateColumn Header="Самка:Дата рождения" CellTemplate="{StaticResource Female.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Female.Litter.Date}" />
+                        <DataGridTextColumn Header="Самка:Имя" Binding="{Binding Female.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Самка:Name" Binding="{Binding Female.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTemplateColumn Header="Самка:Пол" CellTemplate="{StaticResource Female.Gender}" CellEditingTemplate="{StaticResource Editing.Female.Gender}" />
+                        <DataGridTextColumn Header="Самка:Экстерьер" Binding="{Binding Female.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Самка:Титул" Binding="{Binding Female.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTemplateColumn Header="Самец:Порода" CellTemplate="{StaticResource Male.Breed.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Breed.NameNat}" />
+                        <DataGridTemplateColumn Header="Самец:Питомник" CellTemplate="{StaticResource Male.Cattery.NameNat}" CellEditingTemplate="{StaticResource Editing.Male.Cattery.NameNat}" />
+                        <DataGridTemplateColumn Header="Самец:Дата рождения" CellTemplate="{StaticResource Male.Litter.Date}" CellEditingTemplate="{StaticResource Editing.Male.Litter.Date}" />
+                        <DataGridTextColumn Header="Самец:Имя" Binding="{Binding Male.NameNat, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Самец:Name" Binding="{Binding Male.NameEng, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTemplateColumn Header="Самец:Пол" CellTemplate="{StaticResource Male.Gender}" CellEditingTemplate="{StaticResource Editing.Male.Gender}" />
+                        <DataGridTextColumn Header="Самец:Экстерьер" Binding="{Binding Male.Exterior, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                        <DataGridTextColumn Header="Самец:Титул" Binding="{Binding Male.Title, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Data, Source={StaticResource TrueIfNotEditInline}}"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem x:Name="SetParent" Command="{Binding Data, Source={StaticResource PasteParentCommandProxy}}">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                        <Binding Path="Heart.SelectedLitters" Mode="OneWay"/>
+                                        <Binding Path="Data" Source="{StaticResource TrueIfEditInline}"  Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                                <MenuItem.Header>
+                                    <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="SetParentHeader">
+                                        <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                        <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem x:Name="ShowParent" Click="MenuItem_Click">
+                                <MenuItem.Header>
+                                    <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentHeader">
+                                        <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                        <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.Header>
+                                <MenuItem.IsEnabled>
+                                    <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="ShowParentIsEnabled">
+                                        <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                        <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.IsEnabled>
+                            </MenuItem>
+                            <MenuItem x:Name="AsLitter" Click="MenuItem_Click" Header="Использовать в фильтре">
+                                <MenuItem.IsEnabled>
+                                    <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="AsLitterIsEnabled">
+                                        <Binding Path="Heart.Cat" Mode="OneWay"/>
+                                        <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.IsEnabled>
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </StackPanel>
+            <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+            <StackPanel Orientation="Vertical" Grid.Row="4">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Дети"/>
+                    <CheckBox Content="Фильтровать по помёту" Margin="10,0,0,0" IsChecked="{Binding Heart.FilterChildren}"/>
+                </StackPanel>
+                <DataGrid x:Name="ChildrenDataGrid" ItemsSource="{Binding Heart.ChildrenView}" 
+                      IsReadOnly="{Binding Data, Source={StaticResource TrueIfReadOnly}}"
+                  AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Порода" Binding="{Binding Breed.NameNat}"/>
+                        <DataGridTextColumn Header="Питомник" Binding="{Binding Cattery.NameNat}"/>
+                        <DataGridTextColumn Header="Дата рождения" Binding="{Binding Litter.Date}"/>
+                        <DataGridTextColumn Header="Имя" Binding="{Binding NameNat}"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding NameEng}"/>
+                        <DataGridTextColumn Header="Пол" Binding="{Binding Gender, Converter={local:GenderConverter}}"/>
+                        <DataGridTextColumn Header="Экстерьер" Binding="{Binding Exterior}"/>
+                        <DataGridTextColumn Header="Титул" Binding="{Binding Title}"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Копировать" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
+                              CommandParameter="{Binding Path=Heart.SelectedCat}"/>
+                            <Separator/>
+                            <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Потомка">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsDescendant"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Предка">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsAncestor"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Однопомётника">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsLitter"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Ребёнка">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsChild"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Родителя">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsParent"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                                <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Себя">
+                                    <MenuItem.CommandParameter>
+                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Source="AsSelf"/>
+                                            <Binding Path="Heart.CatFilter"/>
+                                        </MultiBinding>
+                                    </MenuItem.CommandParameter>
+                                </MenuItem>
+                            </MenuItem>
+                            <MenuItem Command="{Binding ViewCatCommand}" CommandParameter="{Binding Path=Heart.SelectedCat}" Header="Открыть">
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </StackPanel>
+        </Grid>
     </DockPanel>
 </Window>

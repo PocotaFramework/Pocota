@@ -19,28 +19,20 @@ public class Cat : CatPoco
             {
                 if(((IEntity)item).PocoState is not PocoState.Uncertain && ((IEntity)item).PocoState is not PocoState.Deleted)
                 {
-                    if (item.Female == this)
-                    {
-                        item.Female = null!;
-                    }
-                    else if (item.Male == this)
-                    {
-                        item.Male = null!;
-                    }
                     if (item.Cats is { } && item.Cats.Count > 0)
                     {
-                        if (Gender is Gender.Female || Gender is Gender.FemaleCastrate)
-                        {
-                            item.Female = this;
-                        }
-                        else
-                        {
-                            item.Male = this;
-                        }
                         Litters.Add(item);
                         throw new InvalidOperationException();
                     }
-                    if (item.Female is null && item.Male is null)
+                    if(item.Female == this)
+                    {
+                        item.Female = null!;
+                    }
+                    else if(item.Male == this)
+                    {
+                        item.Male = null;
+                    }
+                    if(item.Female is null && item.Male is null)
                     {
                         ((IEntity)item).Delete();
                     }

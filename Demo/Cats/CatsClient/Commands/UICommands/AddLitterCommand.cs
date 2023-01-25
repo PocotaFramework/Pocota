@@ -54,7 +54,6 @@ public class AddLitterCommand : ICommand
                         newLitter.Male = cat;
                     }
                     newLitter.Date = DateOnly.FromDateTime(DateTime.Now);
-                    cat.Litters.Add(newLitter);
                     newLitter.Order = cat.Litters.Count;
                 }
             );
