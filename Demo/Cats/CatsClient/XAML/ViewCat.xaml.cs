@@ -1,4 +1,5 @@
 ﻿using CatsCommon;
+using CatsCommon.Filters;
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
@@ -21,6 +22,8 @@ public partial class ViewCat : Window
 
     public IViewCatHeart Heart { get; private set; }
 
+    public ICatFilter CatFilter { get; init; }
+
     public EditKind[] EditKinds { get; init; } = Enum.GetValues<EditKind>();
 
     public Gender[] Genders { get; init; } = Enum.GetValues<Gender>();
@@ -31,7 +34,9 @@ public partial class ViewCat : Window
     public AddLitterCommand AddLitterCommand { get; init; }
     public ViewCatCommand ViewMotherCommand { get; init; }
     public ViewCatCommand ViewFatherCommand { get; init; }
+    public ViewCatCommand ViewCatCommand { get; init; }
 
+    public CopyEntitiesReferencesCommand CopyEntityReferenceCommand { get; init; }
     public PasteParentCommand PasteParentCommand { get; init; }
 
     public SetCatFilterCommand SetCatFilterCommand { get; init; }
@@ -47,8 +52,10 @@ public partial class ViewCat : Window
         AddLitterCommand = _services.GetRequiredService<AddLitterCommand>();
         ViewMotherCommand = _services.GetRequiredService<ViewCatCommand>();
         ViewFatherCommand = _services.GetRequiredService<ViewCatCommand>();
+        ViewCatCommand = _services.GetRequiredService<ViewCatCommand>();
         PasteParentCommand = _services.GetRequiredService<PasteParentCommand>();
         SetCatFilterCommand = mainWindow.SetCatFilterCommand;
+        CopyEntityReferenceCommand = services.GetRequiredService<CopyEntitiesReferencesCommand>();
 
         Heart = _services.GetRequiredService<IViewCatHeart>();
 
@@ -56,6 +63,8 @@ public partial class ViewCat : Window
 
         LittersDataGrid.SelectionChanged += Heart.LittersSelectionChanged;
         ChildrenDataGrid.SelectionChanged += Heart.ChildrenSelectionChanged;
+
+        CatFilter = mainWindow.Heart.CatFilter;
     }
 
     ~ViewCat()

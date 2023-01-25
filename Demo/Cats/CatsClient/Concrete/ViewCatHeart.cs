@@ -2,7 +2,6 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client.Crud;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Linq;
@@ -75,6 +74,19 @@ public class ViewCatHeart : ViewCatHeartPoco
 
     public ViewCatHeart(IServiceProvider services) : base(services)
     {
+        //_childrenViewSource.Filter += _childrenViewSource_Filter;
+    }
+
+    private void _childrenViewSource_Filter(object sender, FilterEventArgs e)
+    {
+        if(((IProjection<ICat>)e.Item).As<ICat>() is ICat cat)
+        {
+            e.Accepted = FilterChildren ? SelectedLitters.Contains(((IProjection<LitterPoco>)cat.Litter!).As<LitterPoco>()!) : true;
+        }
+        else
+        {
+            e.Accepted = false;
+        }
     }
 
     public override void LittersSelectionChanged(object sender, EventArgs e)
@@ -92,10 +104,12 @@ public class ViewCatHeart : ViewCatHeartPoco
         if (((DataGrid)sender).SelectedItems.Count == 1)
         {
             SelectedChild = ((IProjection<CatPoco>)((DataGrid)sender).SelectedItems[0]!).As<CatPoco>();
+            IsChildSelected = true;
         }
         else
         {
             SelectedChild = null;
+            IsChildSelected = false;
         }
     }
 }

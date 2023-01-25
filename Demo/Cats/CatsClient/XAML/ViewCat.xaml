@@ -20,6 +20,7 @@
         <local:BindingProxy x:Key="FatherProxy" Data="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
         <local:BindingProxy x:Key="GendersProxy" Data="{Binding Path=Genders, Mode=OneWay}"/>
         <local:BindingProxy x:Key="PasteParentCommandProxy" Data="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
+        <local:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Window.Title>
         <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="Title">
@@ -578,65 +579,65 @@
                     <DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Копировать" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
-                              CommandParameter="{Binding Path=Heart.SelectedCat}"/>
+                              CommandParameter="{Binding Path=Heart.SelectedChild}"/>
                             <Separator/>
-                            <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">
+                            <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsChildSelected, Mode=OneWay}">
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Потомка">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsDescendant"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Предка">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsAncestor"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Однопомётника">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsLitter"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Ребёнка">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsChild"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Родителя">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsParent"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Себя">
                                     <MenuItem.CommandParameter>
                                         <MultiBinding Converter="{local:MultiValueToArrayConverter}">
-                                            <Binding Path="Heart.SelectedCat"/>
+                                            <Binding Path="Heart.SelectedChild"/>
                                             <Binding Source="AsSelf"/>
-                                            <Binding Path="Heart.CatFilter"/>
+                                            <Binding Path="CatFilter"/>
                                         </MultiBinding>
                                     </MenuItem.CommandParameter>
                                 </MenuItem>
                             </MenuItem>
-                            <MenuItem Command="{Binding ViewCatCommand}" CommandParameter="{Binding Path=Heart.SelectedCat}" Header="Открыть">
+                            <MenuItem Command="{Binding ViewCatCommand}" CommandParameter="{Binding Path=Heart.SelectedChild}" Header="Открыть">
                             </MenuItem>
                         </ContextMenu>
                     </DataGrid.ContextMenu>

@@ -12,6 +12,7 @@ public interface IViewCatHeart
     IList<ICatForListing> Children { get; }
     bool FilterChildren { get; set; }
     ICat? SelectedChild { get; set; }
+    bool IsChildSelected { get; set; }
     void LittersSelectionChanged(object sender, EventArgs e);
     void ChildrenSelectionChanged(object sender, EventArgs e);
 
