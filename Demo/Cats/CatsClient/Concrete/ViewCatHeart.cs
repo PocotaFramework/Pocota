@@ -2,6 +2,7 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Linq;
@@ -12,9 +13,6 @@ namespace CatsClient;
 
 public class ViewCatHeart : ViewCatHeartPoco
 {
-    private readonly CollectionViewSource _littersViewSource = new();
-    private readonly CollectionViewSource _childrenViewSource = new();
-
     public override CatPoco Cat
     {
         get => base.Cat;
@@ -25,11 +23,6 @@ public class ViewCatHeart : ViewCatHeartPoco
                 base.Cat = value;
                 if (base.Cat is { })
                 {
-                    _littersViewSource.Source = base.Cat.Litters;
-                    LittersView = _littersViewSource.View;
-                    _childrenViewSource.Source = Children;
-                    ChildrenView = _childrenViewSource.View;
-
                     FindCatsCommand findCats = _services.GetRequiredService<FindCatsCommand>();
                     ICatFilter filter = _services.GetRequiredService<ICatFilter>();
                     if(base.Cat.Gender is Gender.Female || base.Cat.Gender is Gender.FemaleCastrate)
@@ -54,49 +47,21 @@ public class ViewCatHeart : ViewCatHeartPoco
             if(base.FilterChildren != value)
             {
                 base.FilterChildren = value;
-                ApplyChildrenFilter();
             }
         }
     }
 
-    private void ApplyChildrenFilter()
+    public ViewCatHeart(IServiceProvider services) : base(services) 
     {
-        if (FilterChildren)
-        {
-            _childrenViewSource.Source = Children.Where(v => SelectedLitters.Contains(v.Litter!));
-        }
-        else
-        {
-            _childrenViewSource.Source = Children;
-        }
-        ChildrenView = _childrenViewSource.View;
-    }
-
-    public ViewCatHeart(IServiceProvider services) : base(services)
-    {
-        //_childrenViewSource.Filter += _childrenViewSource_Filter;
-    }
-
-    private void _childrenViewSource_Filter(object sender, FilterEventArgs e)
-    {
-        if(((IProjection<ICat>)e.Item).As<ICat>() is ICat cat)
-        {
-            e.Accepted = FilterChildren ? SelectedLitters.Contains(((IProjection<LitterPoco>)cat.Litter!).As<LitterPoco>()!) : true;
-        }
-        else
-        {
-            e.Accepted = false;
-        }
     }
 
     public override void LittersSelectionChanged(object sender, EventArgs e)
     {
         base.SelectedLitters.Clear();
-        foreach (LitterPoco item in ((DataGrid)sender).SelectedItems)
+        foreach (ILitter item in ((DataGrid)sender).SelectedItems)
         {
-            base.SelectedLitters.Add(item);
+            base.SelectedLitters.Add(((IProjection)item).As<LitterPoco>()!);
         }
-        ApplyChildrenFilter();
     }
 
     public override void ChildrenSelectionChanged(object sender, EventArgs e)
@@ -110,6 +75,35 @@ public class ViewCatHeart : ViewCatHeartPoco
         {
             SelectedChild = null;
             IsChildSelected = false;
+        }
+    }
+
+    public override void ChildrenFilter(object sender, EventArgs e)
+    {
+        if(e is FilterEventArgs args)
+        {
+            if (((IProjection<ICat>)args.Item).As<ICat>() is ICat cat)
+            {
+                args.Accepted = FilterChildren ? SelectedLitters.Contains(((IProjection<LitterPoco>)cat.Litter!).As<LitterPoco>()!) : true;
+            }
+            else
+            {
+                args.Accepted = false;
+            }
+        }
+    }
+
+    public override void SameLitterCatsSelectionChanged(object sender, EventArgs e)
+    {
+        if (((DataGrid)sender).SelectedItems.Count == 1)
+        {
+            SelectedSameLitterCat = ((IProjection<CatPoco>)((DataGrid)sender).SelectedItems[0]!).As<CatPoco>();
+            IsSameLitterCatSelected = true;
+        }
+        else
+        {
+            SelectedSameLitterCat = null;
+            IsSameLitterCatSelected = false;
         }
     }
 }

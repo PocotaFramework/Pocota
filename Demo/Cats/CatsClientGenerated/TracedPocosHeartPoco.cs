@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-25T18:34:21                                          //
+// at 2023-01-26T16:12:24                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -237,7 +237,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
                 if(_asTracedPocosHeartITracedPocosHeartProjection is null)
                 {
                     _asTracedPocosHeartITracedPocosHeartProjection = new TracedPocosHeartITracedPocosHeartProjection(this);
-                    ProjectionCreated(typeof(ITracedPocosHeart), _asTracedPocosHeartITracedPocosHeartProjection);
                 }
                 return _asTracedPocosHeartITracedPocosHeartProjection;
             }
@@ -318,11 +317,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     }
 
     public abstract void CollectGarbage();
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
 
 #endregion Methods;
 

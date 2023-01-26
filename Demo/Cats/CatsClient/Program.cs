@@ -29,8 +29,8 @@ public class Program
                 services.AddPocota(
                     configurePocos: serv =>
                     {
-                        serv.AddTransient<Cat>();
-                        serv.AddTransient<Litter>();
+                        serv.AddTransient<CatPoco>();
+                        serv.AddTransient<LitterPoco>();
                         serv.AddTransient<BreedPoco>();
                         serv.AddTransient<CatteryPoco>();
                         serv.AddTransient<CatFilter>();
@@ -59,11 +59,14 @@ public class Program
                 services.AddTransient<StopGetCatsCommand>();
                 services.AddTransient<FindSiblingsCatsCommand>();
                 services.AddTransient<AddLitterCommand>();
+                services.AddTransient<AddCatCommand>();
 
                 services.AddScoped<CopyEntitiesReferencesCommand>();
                 services.AddScoped<PasteParentCommand>();
 
                 services.AddTransient<SiblingCatsConverter>();
+
+                services.AddScoped<Synchronizer>();
             });
         IHost host = hostBuilder.Build();
 

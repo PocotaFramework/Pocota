@@ -21,8 +21,6 @@ public interface IMainWindowHeart
     bool IsCatSelected { get; set; }
     IList<ICatForListing> SelectedCats { get; set; }
     ICatForListing? SelectedCat { get; set; }
-    [IndependentProperty]
-    object CatsViewSource { get; set; }
     void AcceptCatFilterChanges();
     void CatsSelectionChanged(object sender, EventArgs e);
 }

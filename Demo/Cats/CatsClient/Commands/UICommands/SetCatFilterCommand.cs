@@ -3,6 +3,7 @@ using CatsCommon.Filters;
 using CatsCommon.Model;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
@@ -43,9 +44,10 @@ public class SetCatFilterCommand : ICommand
         switch (i)
         {
             case 0:
-                return values[i] is IProjection<ICat>;
+                return values[i] is IProjection<ICat> || (values[i] is IList<ILitter> litters && litters.Count == 1);
             case 1:
-                return s_selectors.Contains(values[i]);
+                return (values[0] is IProjection<ICat> && s_selectors.Contains(values[i])) 
+                    || (values[0] is IList<ILitter> && "AsLitter".Equals(values[i]));
             case 2:
                 return values[i] is IProjection<ICatFilter>;
             default:
@@ -58,38 +60,42 @@ public class SetCatFilterCommand : ICommand
         if (CanExecute(parameter))
         {
             object?[] values = parameter as object?[] ?? new object?[] { parameter };
-            if(
-                values[0] is IProjection<ICat> proj && proj.As<ICat>() is ICat cat
-                && values[2] is IProjection<ICatFilter> proj1 && proj1.As<ICatFilter>() is ICatFilter filter
-            )
+            if(values[2] is IProjection<ICatFilter> proj1 && proj1.As<ICatFilter>() is ICatFilter filter)
             {
-                switch (values[1])
+                if (values[0] is IProjection<ICat> proj && proj.As<ICat>() is ICat cat)
                 {
-                    case "AsDescendant":
-                        filter.Descendant = cat;
-                        break;
-                    case "AsAncestor":
-                        filter.Ancestor = cat;
-                        break;
-                    case "AsLitter":
-                        filter.Litter = cat.Litter;
-                        break;
-                    case "AsChild":
-                        filter.Child = cat;
-                        break;
-                    case "AsParent":
-                        if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
-                        {
-                            filter.Mother = cat;
-                        }
-                        else
-                        {
-                            filter.Father = cat;
-                        }
-                        break;
-                    case "AsSelf":
-                        filter.Self = cat;
-                        break;
+                    switch (values[1])
+                    {
+                        case "AsDescendant":
+                            filter.Descendant = cat;
+                            break;
+                        case "AsAncestor":
+                            filter.Ancestor = cat;
+                            break;
+                        case "AsLitter":
+                            filter.Litter = cat.Litter;
+                            break;
+                        case "AsChild":
+                            filter.Child = cat;
+                            break;
+                        case "AsParent":
+                            if (cat.Gender is Gender.Female || cat.Gender is Gender.FemaleCastrate)
+                            {
+                                filter.Mother = cat;
+                            }
+                            else
+                            {
+                                filter.Father = cat;
+                            }
+                            break;
+                        case "AsSelf":
+                            filter.Self = cat;
+                            break;
+                    }
+                }
+                else if(values[0] is IList<ILitter> litters && "AsLitter".Equals(values[1]))
+                {
+                    filter.Litter = litters[0];
                 }
             }
         }

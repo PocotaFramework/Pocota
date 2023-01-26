@@ -69,7 +69,6 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
                 HashSet<ICat> set = new(ReferenceEqualityComparer.Instance);
                 if (cat1.Gender is CatsCommon.Gender.Female || cat1.Gender is CatsCommon.Gender.FemaleCastrate)
                 {
-                    parent = "отца";
                     foreach (ILitter litter in selection)
                     {
                         if (litter.Male is { })
@@ -77,6 +76,7 @@ public class ViewCatConverter : MarkupExtension, IValueConverter, IMultiValueCon
                             set.Add(litter.Male!);
                         }
                     }
+                    parent = set.Count == 1 ? "отца" : "отцов";
                 }
                 else
                 {

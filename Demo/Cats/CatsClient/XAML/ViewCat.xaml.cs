@@ -6,6 +6,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,10 +39,14 @@ public partial class ViewCat : Window
 
     public CopyEntitiesReferencesCommand CopyEntityReferenceCommand { get; init; }
     public PasteParentCommand PasteParentCommand { get; init; }
+    public AddCatCommand AddCatCommand { get; init; }
 
     public SetCatFilterCommand SetCatFilterCommand { get; init; }
 
     public bool IsLitterSelected => LittersDataGrid.SelectedItems.Count == 1;
+
+    public CollectionViewSource LittersSource { get; init; } = new();
+    public CollectionViewSource ChildrenSource { get; init; } = new();
 
     public ViewCat(IServiceProvider services)
     {
@@ -56,15 +61,39 @@ public partial class ViewCat : Window
         PasteParentCommand = _services.GetRequiredService<PasteParentCommand>();
         SetCatFilterCommand = mainWindow.SetCatFilterCommand;
         CopyEntityReferenceCommand = services.GetRequiredService<CopyEntitiesReferencesCommand>();
+        AddCatCommand = _services.GetRequiredService<AddCatCommand>();
 
         Heart = _services.GetRequiredService<IViewCatHeart>();
+        ((INotifyPropertyChanged)Heart).PropertyChanged += ViewCat_PropertyChanged;
+        ChildrenSource.Source = Heart.Children;
+        ChildrenSource.Filter += Heart.ChildrenFilter;
 
         InitializeComponent();
 
         LittersDataGrid.SelectionChanged += Heart.LittersSelectionChanged;
+        LittersDataGrid.SelectionChanged += LittersDataGrid_SelectionChanged;
         ChildrenDataGrid.SelectionChanged += Heart.ChildrenSelectionChanged;
+        SameLitterCatsDataGrid.SelectionChanged += Heart.SameLitterCatsSelectionChanged;
 
         CatFilter = mainWindow.Heart.CatFilter;
+    }
+
+    private void LittersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ChildrenSource.View.Refresh();
+    }
+
+    private void ViewCat_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (nameof(Heart.Cat).Equals(e.PropertyName))
+        {
+            LittersSource.Source = Heart.Cat.Litters;
+            ChildrenSource.View.Refresh();
+        }
+        else if (nameof(Heart.FilterChildren).Equals(e.PropertyName))
+        {
+            ChildrenSource.View.Refresh();
+        }
     }
 
     ~ViewCat()
@@ -72,45 +101,35 @@ public partial class ViewCat : Window
         Console.WriteLine($"Finalize: {GetType()}:{GetHashCode()}");
     }
 
-    private void MenuItem_Click(object sender, RoutedEventArgs e)
+    private void ShowParent_Click(object sender, RoutedEventArgs e)
     {
         if (sender is MenuItem item)
         {
-            switch (item.Name)
+            HashSet<ICat> set = new(ReferenceEqualityComparer.Instance);
+            foreach (ILitter litter in Heart.SelectedLitters)
             {
-                case "AsLitter":
-                    _services.GetRequiredService<MainWindow>().Heart.CatFilter.Litter = (((CollectionView)Heart.LittersView).CurrentItem as ILitter);
-                    break;
-                case "SetParent":
-                    break;
-                case "ShowParent":
-                    HashSet<ICat> set = new(ReferenceEqualityComparer.Instance);
-                    foreach (ILitter litter in Heart.SelectedLitters)
-                    {
-                        ICat? cat = null;
-                        if (Heart.Cat.Equals(litter.Female))
-                        {
-                            cat = ((IProjection<ICat>?)litter.Male)?.As<ICat>();
-                        }
-                        else if (Heart.Cat.Equals(litter.Male))
-                        {
-                            cat = litter.Female;
-                        }
+                ICat? cat = null;
+                if (Heart.Cat.Equals(litter.Female))
+                {
+                    cat = ((IProjection<ICat>?)litter.Male)?.As<ICat>();
+                }
+                else if (Heart.Cat.Equals(litter.Male))
+                {
+                    cat = litter.Female;
+                }
 
-                        if(cat is { })
-                        {
-                            set.Add(cat);
-                        }
-                    }
-                    foreach(ICat cat in set)
-                    {
-                        ViewCatCommand command = _services.GetRequiredService<ViewCatCommand>();
-                        if (command.CanExecute(cat))
-                        {
-                            command.Execute(cat);
-                        }
-                    }
-                    break;
+                if(cat is { })
+                {
+                    set.Add(cat);
+                }
+            }
+            foreach(ICat cat in set)
+            {
+                ViewCatCommand command = _services.GetRequiredService<ViewCatCommand>();
+                if (command.CanExecute(cat))
+                {
+                    command.Execute(cat);
+                }
             }
             CommandManager.InvalidateRequerySuggested();
         }

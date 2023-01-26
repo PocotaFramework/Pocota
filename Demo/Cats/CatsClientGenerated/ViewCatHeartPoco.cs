@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-25T18:34:21                                          //
+// at 2023-01-26T16:12:24                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -28,29 +28,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
 
 #region Init Properties
-
-        public class ChildrenViewProperty: Property
-        {
-            public override string Name => "ChildrenView";
-            public override bool IsReadOnly => false;
-            public override bool IsNullable => false;
-            public override bool IsCollection =>  false;
-            public override bool IsPoco =>  false;
-            public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
-            public override Type Type => typeof(Object);
-            public override Type? ItemType => null;
-            public override bool IsSet(object target) => true;
-            public override object? Get(object target) => ((ViewCatHeartIViewCatHeartProjection)target).ChildrenView;
-            public override void Touch(object target) 
-            { }
-            public override void Set(object target, object? value) => ((ViewCatHeartIViewCatHeartProjection)target).ChildrenView = (Object)value!;
-            public override bool IsModified(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsChildrenViewModified();
-            public override bool IsInitial(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsChildrenViewInitial();
-            public override void CancelChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.ChildrenViewCancelChange();
-            public override void AcceptChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.ChildrenViewAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
-        }
 
         public class EditKindProperty: Property
         {
@@ -121,26 +98,26 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
-        public class LittersViewProperty: Property
+        public class IsSameLitterCatSelectedProperty: Property
         {
-            public override string Name => "LittersView";
+            public override string Name => "IsSameLitterCatSelected";
             public override bool IsReadOnly => false;
             public override bool IsNullable => false;
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
             public override bool IsKeyPart => false;
-            public override Type Type => typeof(Object);
+            public override Type Type => typeof(Boolean);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
-            public override object? Get(object target) => ((ViewCatHeartIViewCatHeartProjection)target).LittersView;
+            public override object? Get(object target) => ((ViewCatHeartIViewCatHeartProjection)target).IsSameLitterCatSelected;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((ViewCatHeartIViewCatHeartProjection)target).LittersView = (Object)value!;
-            public override bool IsModified(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsLittersViewModified();
-            public override bool IsInitial(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsLittersViewInitial();
-            public override void CancelChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.LittersViewCancelChange();
-            public override void AcceptChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.LittersViewAcceptChange();
+            public override void Set(object target, object? value) => ((ViewCatHeartIViewCatHeartProjection)target).IsSameLitterCatSelected = (Boolean)value!;
+            public override bool IsModified(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsIsSameLitterCatSelectedModified();
+            public override bool IsInitial(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsIsSameLitterCatSelectedInitial();
+            public override void CancelChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsSameLitterCatSelectedCancelChange();
+            public override void AcceptChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsSameLitterCatSelectedAcceptChange();
             public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
@@ -187,6 +164,29 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsInitial(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsSelectedChildInitial();
             public override void CancelChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.SelectedChildCancelChange();
             public override void AcceptChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.SelectedChildAcceptChange();
+            public override object? GetInitial(object target) => throw new InvalidOperationException();
+        }
+
+        public class SelectedSameLitterCatProperty: Property
+        {
+            public override string Name => "SelectedSameLitterCat";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((ViewCatHeartIViewCatHeartProjection)target).SelectedSameLitterCat;
+            public override void Touch(object target) 
+            { }
+            public override void Set(object target, object? value) => ((ViewCatHeartIViewCatHeartProjection)target).SelectedSameLitterCat = ((IProjection?)value)?.As<ICat>()!;
+            public override bool IsModified(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsSelectedSameLitterCatModified();
+            public override bool IsInitial(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.IsSelectedSameLitterCatInitial();
+            public override void CancelChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.SelectedSameLitterCatCancelChange();
+            public override void AcceptChange(object target) => ((ViewCatHeartIViewCatHeartProjection)target)._projector.SelectedSameLitterCatAcceptChange();
             public override object? GetInitial(object target) => throw new InvalidOperationException();
         }
 
@@ -238,13 +238,13 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
         public static void InitProperties(List<IProperty> properties)
         {
-            properties.Add(new ChildrenViewProperty());
             properties.Add(new EditKindProperty());
             properties.Add(new FilterChildrenProperty());
             properties.Add(new IsChildSelectedProperty());
-            properties.Add(new LittersViewProperty());
+            properties.Add(new IsSameLitterCatSelectedProperty());
             properties.Add(new CatProperty());
             properties.Add(new SelectedChildProperty());
+            properties.Add(new SelectedSameLitterCatProperty());
             properties.Add(new ChildrenProperty());
             properties.Add(new SelectedLittersProperty());
         }
@@ -273,16 +273,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
         private readonly ProjectionList<CatPoco,ICatForListing> _children;
         private readonly ProjectionListBase<CatPoco,ICatForListing> _initial_children;
-
         private readonly ProjectionList<LitterPoco,ILitter> _selectedLitters;
         private readonly ProjectionListBase<LitterPoco,ILitter> _initial_selectedLitters;
-
-
-        public Object ChildrenView 
-        {
-            get => _projector.ChildrenView!;
-            set => _projector.ChildrenView = (Object)value!;
-        }
 
         public EditKind EditKind 
         {
@@ -302,10 +294,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             set => _projector.IsChildSelected = (Boolean)value!;
         }
 
-        public Object LittersView 
+        public Boolean IsSameLitterCatSelected 
         {
-            get => _projector.LittersView!;
-            set => _projector.LittersView = (Object)value!;
+            get => _projector.IsSameLitterCatSelected!;
+            set => _projector.IsSameLitterCatSelected = (Boolean)value!;
         }
 
         public ICat Cat 
@@ -318,6 +310,12 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         {
             get => ((IProjection?)_projector.SelectedChild)?.As<ICat>();
             set => _projector.SelectedChild = ((IProjection?)value)?.As<CatPoco>();
+        }
+
+        public ICat? SelectedSameLitterCat 
+        {
+            get => ((IProjection?)_projector.SelectedSameLitterCat)?.As<ICat>();
+            set => _projector.SelectedSameLitterCat = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<ICatForListing> Children 
@@ -364,6 +362,14 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         {
             ((ViewCatHeartPoco)_projector).ChildrenSelectionChanged(sender, e);
         }
+        public void SameLitterCatsSelectionChanged(Object sender, EventArgs e)
+        {
+            ((ViewCatHeartPoco)_projector).SameLitterCatsSelectionChanged(sender, e);
+        }
+        public void ChildrenFilter(Object sender, EventArgs e)
+        {
+            ((ViewCatHeartPoco)_projector).ChildrenFilter(sender, e);
+        }
 
         public override bool Equals(object? obj)
         {
@@ -380,29 +386,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     
     
 #region Init Properties
-
-    public class ChildrenViewProperty: Property
-    {
-        public override string Name => "ChildrenView";
-        public override bool IsReadOnly => false;
-        public override bool IsNullable => false;
-        public override bool IsCollection =>  false;
-        public override bool IsPoco =>  false;
-        public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
-        public override Type Type => typeof(Object);
-        public override Type? ItemType => null;
-        public override bool IsSet(object target) => true;
-        public override object? Get(object target) => ((ViewCatHeartPoco)target).ChildrenView;
-        public override void Touch(object target) 
-        { }
-        public override void Set(object target, object? value) => ((ViewCatHeartPoco)target).ChildrenView = (Object)value!;
-        public override bool IsModified(object target) => ((ViewCatHeartPoco)target).IsChildrenViewModified();
-        public override bool IsInitial(object target) => ((ViewCatHeartPoco)target).IsChildrenViewInitial();
-        public override void CancelChange(object target) => ((ViewCatHeartPoco)target).ChildrenViewCancelChange();
-        public override void AcceptChange(object target) => ((ViewCatHeartPoco)target).ChildrenViewAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
-    }
 
     public class EditKindProperty: Property
     {
@@ -473,26 +456,26 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
-    public class LittersViewProperty: Property
+    public class IsSameLitterCatSelectedProperty: Property
     {
-        public override string Name => "LittersView";
+        public override string Name => "IsSameLitterCatSelected";
         public override bool IsReadOnly => false;
         public override bool IsNullable => false;
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
         public override bool IsKeyPart => false;
-        public override Type Type => typeof(Object);
+        public override Type Type => typeof(Boolean);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
-        public override object? Get(object target) => ((ViewCatHeartPoco)target).LittersView;
+        public override object? Get(object target) => ((ViewCatHeartPoco)target).IsSameLitterCatSelected;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((ViewCatHeartPoco)target).LittersView = (Object)value!;
-        public override bool IsModified(object target) => ((ViewCatHeartPoco)target).IsLittersViewModified();
-        public override bool IsInitial(object target) => ((ViewCatHeartPoco)target).IsLittersViewInitial();
-        public override void CancelChange(object target) => ((ViewCatHeartPoco)target).LittersViewCancelChange();
-        public override void AcceptChange(object target) => ((ViewCatHeartPoco)target).LittersViewAcceptChange();
+        public override void Set(object target, object? value) => ((ViewCatHeartPoco)target).IsSameLitterCatSelected = (Boolean)value!;
+        public override bool IsModified(object target) => ((ViewCatHeartPoco)target).IsIsSameLitterCatSelectedModified();
+        public override bool IsInitial(object target) => ((ViewCatHeartPoco)target).IsIsSameLitterCatSelectedInitial();
+        public override void CancelChange(object target) => ((ViewCatHeartPoco)target).IsSameLitterCatSelectedCancelChange();
+        public override void AcceptChange(object target) => ((ViewCatHeartPoco)target).IsSameLitterCatSelectedAcceptChange();
         public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
@@ -539,6 +522,29 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsInitial(object target) => ((ViewCatHeartPoco)target).IsSelectedChildInitial();
         public override void CancelChange(object target) => ((ViewCatHeartPoco)target).SelectedChildCancelChange();
         public override void AcceptChange(object target) => ((ViewCatHeartPoco)target).SelectedChildAcceptChange();
+        public override object? GetInitial(object target) => throw new InvalidOperationException();
+    }
+
+    public class SelectedSameLitterCatProperty: Property
+    {
+        public override string Name => "SelectedSameLitterCat";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((ViewCatHeartPoco)target).SelectedSameLitterCat;
+        public override void Touch(object target) 
+        { }
+        public override void Set(object target, object? value) => ((ViewCatHeartPoco)target).SelectedSameLitterCat = ((IProjection?)value)?.As<CatPoco>()!;
+        public override bool IsModified(object target) => ((ViewCatHeartPoco)target).IsSelectedSameLitterCatModified();
+        public override bool IsInitial(object target) => ((ViewCatHeartPoco)target).IsSelectedSameLitterCatInitial();
+        public override void CancelChange(object target) => ((ViewCatHeartPoco)target).SelectedSameLitterCatCancelChange();
+        public override void AcceptChange(object target) => ((ViewCatHeartPoco)target).SelectedSameLitterCatAcceptChange();
         public override object? GetInitial(object target) => throw new InvalidOperationException();
     }
 
@@ -590,24 +596,24 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     public static void InitProperties(List<IProperty> properties)
     {
-        properties.Add(new ChildrenViewProperty());
         properties.Add(new EditKindProperty());
         properties.Add(new FilterChildrenProperty());
         properties.Add(new IsChildSelectedProperty());
-        properties.Add(new LittersViewProperty());
+        properties.Add(new IsSameLitterCatSelectedProperty());
         properties.Add(new CatProperty());
         properties.Add(new SelectedChildProperty());
+        properties.Add(new SelectedSameLitterCatProperty());
         properties.Add(new ChildrenProperty());
         properties.Add(new SelectedLittersProperty());
     }
 
-   public static ChildrenViewProperty ChildrenViewProp = new();
    public static EditKindProperty EditKindProp = new();
    public static FilterChildrenProperty FilterChildrenProp = new();
    public static IsChildSelectedProperty IsChildSelectedProp = new();
-   public static LittersViewProperty LittersViewProp = new();
+   public static IsSameLitterCatSelectedProperty IsSameLitterCatSelectedProp = new();
    public static CatProperty CatProp = new();
    public static SelectedChildProperty SelectedChildProp = new();
+   public static SelectedSameLitterCatProperty SelectedSameLitterCatProp = new();
    public static ChildrenProperty ChildrenProp = new();
    public static SelectedLittersProperty SelectedLittersProp = new();
 #endregion Init Properties;
@@ -616,9 +622,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     
 #region Fields
 
-    private Object _childrenView = default!;
-    private Object _initial_childrenView = default!;
-    
     private EditKind _editKind = default!;
     private EditKind _initial_editKind = default!;
     
@@ -628,14 +631,17 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private Boolean _isChildSelected = default!;
     private Boolean _initial_isChildSelected = default!;
     
-    private Object _littersView = default!;
-    private Object _initial_littersView = default!;
+    private Boolean _isSameLitterCatSelected = default!;
+    private Boolean _initial_isSameLitterCatSelected = default!;
     
     private CatPoco _cat = default!;
     private CatPoco _initial_cat = default!;
     
     private CatPoco? _selectedChild = default;
     private CatPoco? _initial_selectedChild = default!;
+    
+    private CatPoco? _selectedSameLitterCat = default;
+    private CatPoco? _initial_selectedSameLitterCat = default!;
     
     private readonly ObservableCollection<CatPoco> _children = new();
     private readonly List<CatPoco> _initial_children = new();
@@ -659,7 +665,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 if(_asViewCatHeartIViewCatHeartProjection is null)
                 {
                     _asViewCatHeartIViewCatHeartProjection = new ViewCatHeartIViewCatHeartProjection(this);
-                    ProjectionCreated(typeof(IViewCatHeart), _asViewCatHeartIViewCatHeartProjection);
                 }
                 return _asViewCatHeartIViewCatHeartProjection;
             }
@@ -670,30 +675,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     
 #region Properties
-
-    public virtual Object ChildrenView
-    {
-        get => _childrenView;
-        set
-        {
-            if(_childrenView != value)
-            {
-                lock(_lock)
-                {
-                    if(_childrenView != value )
-                    {
-                        _childrenView = value;
-                        if (IsBeingPopulated )
-                        {
-                            _initial_childrenView = value;
-                        }
-                        OnPocoChanged(ChildrenViewProp);
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
-    }
 
     public virtual EditKind EditKind
     {
@@ -767,23 +748,23 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         }
     }
 
-    public virtual Object LittersView
+    public virtual Boolean IsSameLitterCatSelected
     {
-        get => _littersView;
+        get => _isSameLitterCatSelected;
         set
         {
-            if(_littersView != value)
+            if(_isSameLitterCatSelected != value)
             {
                 lock(_lock)
                 {
-                    if(_littersView != value )
+                    if(_isSameLitterCatSelected != value )
                     {
-                        _littersView = value;
+                        _isSameLitterCatSelected = value;
                         if (IsBeingPopulated )
                         {
-                            _initial_littersView = value;
+                            _initial_isSameLitterCatSelected = value;
                         }
-                        OnPocoChanged(LittersViewProp);
+                        OnPocoChanged(IsSameLitterCatSelectedProp);
                         OnPropertyChanged();
                     }
                 }
@@ -848,6 +829,38 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                             _selectedChild.PocoChanged += SelectedChildPocoChanged;
                         }
                         OnPocoChanged(SelectedChildProp);
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+    }
+
+    public virtual CatPoco? SelectedSameLitterCat
+    {
+        get => _selectedSameLitterCat;
+        set
+        {
+            if(_selectedSameLitterCat != value)
+            {
+                lock(_lock)
+                {
+                    if(_selectedSameLitterCat != value )
+                    {
+                        if(_selectedSameLitterCat is {})
+                        {
+                            _selectedSameLitterCat.PocoChanged -= SelectedSameLitterCatPocoChanged;
+                        }
+                        _selectedSameLitterCat = value;
+                        if (IsBeingPopulated )
+                        {
+                            _initial_selectedSameLitterCat = value;
+                        }
+                        if(_selectedSameLitterCat is {})
+                        {
+                            _selectedSameLitterCat.PocoChanged += SelectedSameLitterCatPocoChanged;
+                        }
+                        OnPocoChanged(SelectedSameLitterCatProp);
                         OnPropertyChanged();
                     }
                 }
@@ -925,11 +938,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     public abstract void LittersSelectionChanged(Object sender, EventArgs e);
     public abstract void ChildrenSelectionChanged(Object sender, EventArgs e);
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
+    public abstract void SameLitterCatsSelectionChanged(Object sender, EventArgs e);
+    public abstract void ChildrenFilter(Object sender, EventArgs e);
 
 #endregion Methods;
 
@@ -941,30 +951,11 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     protected virtual void SelectedChildPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedChild));
 
+    protected virtual void SelectedSameLitterCatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedSameLitterCat));
+
     protected virtual void ChildrenPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Children));
 
     protected virtual void SelectedLittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedLitters));
-
-
-    private bool IsChildrenViewInitial() => _initial_childrenView == _childrenView;
-
-    private bool IsChildrenViewModified() => ((IPoco)this).PocoState is PocoState.Modified
-                && !IsChildrenViewInitial();
-
-
-    private void ChildrenViewCancelChange()
-    {
-        _childrenView = _initial_childrenView;
-
-        OnPocoChanged(ChildrenViewProp);
-        OnPropertyChanged("ChildrenView");
-
-    }
-
-    private void ChildrenViewAcceptChange()
-    {
-        _initial_childrenView = _childrenView;
-    }
 
 
     private bool IsEditKindInitial() => _initial_editKind == _editKind;
@@ -1030,24 +1021,24 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     }
 
 
-    private bool IsLittersViewInitial() => _initial_littersView == _littersView;
+    private bool IsIsSameLitterCatSelectedInitial() => _initial_isSameLitterCatSelected == _isSameLitterCatSelected;
 
-    private bool IsLittersViewModified() => ((IPoco)this).PocoState is PocoState.Modified
-                && !IsLittersViewInitial();
+    private bool IsIsSameLitterCatSelectedModified() => ((IPoco)this).PocoState is PocoState.Modified
+                && !IsIsSameLitterCatSelectedInitial();
 
 
-    private void LittersViewCancelChange()
+    private void IsSameLitterCatSelectedCancelChange()
     {
-        _littersView = _initial_littersView;
+        _isSameLitterCatSelected = _initial_isSameLitterCatSelected;
 
-        OnPocoChanged(LittersViewProp);
-        OnPropertyChanged("LittersView");
+        OnPocoChanged(IsSameLitterCatSelectedProp);
+        OnPropertyChanged("IsSameLitterCatSelected");
 
     }
 
-    private void LittersViewAcceptChange()
+    private void IsSameLitterCatSelectedAcceptChange()
     {
-        _initial_littersView = _littersView;
+        _initial_isSameLitterCatSelected = _isSameLitterCatSelected;
     }
 
 
@@ -1090,6 +1081,27 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private void SelectedChildAcceptChange()
     {
         _initial_selectedChild = _selectedChild;
+    }
+
+
+    private bool IsSelectedSameLitterCatInitial() => _initial_selectedSameLitterCat == _selectedSameLitterCat;
+
+    private bool IsSelectedSameLitterCatModified() => ((IPoco)this).PocoState is PocoState.Modified
+                && !IsSelectedSameLitterCatInitial();
+
+
+    private void SelectedSameLitterCatCancelChange()
+    {
+        _selectedSameLitterCat = _initial_selectedSameLitterCat;
+
+        OnPocoChanged(SelectedSameLitterCatProp);
+        OnPropertyChanged("SelectedSameLitterCat");
+
+    }
+
+    private void SelectedSameLitterCatAcceptChange()
+    {
+        _initial_selectedSameLitterCat = _selectedSameLitterCat;
     }
 
 

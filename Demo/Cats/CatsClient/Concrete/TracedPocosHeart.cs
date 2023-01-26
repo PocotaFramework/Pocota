@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Client.Event;
 using System;
 
 namespace CatsClient;
@@ -32,7 +33,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
         });
     }
 
-    private void _pocoContext_ModifiedPocosChanged(object? sender, EventArgs e)
+    private void _pocoContext_ModifiedPocosChanged(object? sender, NotifyModifiedPocosChangedEventArgs e)
     {
         _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
         {

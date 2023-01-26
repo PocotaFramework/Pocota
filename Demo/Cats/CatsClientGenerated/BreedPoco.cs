@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-25T18:34:21                                  //
+// at 2023-01-26T16:12:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -344,7 +344,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                 if(_asBreedIBreedProjection is null)
                 {
                     _asBreedIBreedProjection = new BreedIBreedProjection(this);
-                    ProjectionCreated(typeof(IBreed), _asBreedIBreedProjection);
                 }
                 return _asBreedIBreedProjection;
             }
@@ -526,11 +525,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         return base.GetHashCode();
     }
 
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
 
 #endregion Methods;
 

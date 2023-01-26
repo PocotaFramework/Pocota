@@ -29,25 +29,16 @@
 
         private readonly @Html.Raw(Model.Parent!.ClassName) _projector;
 
-        @foreach(PropertyModel pm in Model.Properties.Where(p => (p.IsList && p.Class is {}) || p.IsIndependent))
+        @foreach(PropertyModel pm in Model.Properties.Where(p => (p.IsList && p.Class is {})))
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-            if(pm.IsIndependent)
-            {
-            <text>        private @Html.Raw($"{pm.Type}{(pm.IsNullable ? "?" : string.Empty)} {fieldName} = null{(!pm.IsNullable ? "!" : string.Empty)};")
-</text>
-            }
-            else 
-            {
-                <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
-                @if (Model.IsClient)
+            <text>        private readonly @Html.Raw($"ProjectionList<{pm.Class},{pm.ItemType}> {fieldName};")
+            @if (Model.IsClient)
             {
                 <text>        private readonly @Html.Raw($"ProjectionListBase<{pm.Class},{pm.ItemType}> _initial{fieldName};")
 </text>
             }
-
 </text>
-            }
         }
 
         @foreach(PropertyModel pm in Model.Properties)
@@ -55,7 +46,7 @@
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
             <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
-            get => @if((!pm.IsList || !pm.IsPoco) && !pm.IsIndependent){
+            get => @if((!pm.IsList || !pm.IsPoco)){
                 <text>@if (pm.IsPoco && !pm.IsList) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"_projector.{pm.Name}")@if (pm.IsPoco && !pm.IsList) { <text>)?@Html.Raw($".As<{pm.Type}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
             }
@@ -80,11 +71,6 @@
                 if(pm.IsList)
                 {
                     <text>            set => throw new NotImplementedException();
-</text>
-                }
-                else if(pm.IsIndependent)
-                {
-                <text>            set => @fieldName = value;
 </text>
                 }
                 else

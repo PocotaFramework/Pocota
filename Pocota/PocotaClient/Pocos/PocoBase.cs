@@ -293,8 +293,6 @@ public abstract class PocoBase : IPoco
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
-    protected virtual void OnProjectionCreated(Type @interface, IProjection projection) { }
-
     protected void OnPocoStateChanged(NotifyPocoStateChangedEventArgs args)
     {
         lock (_lock)

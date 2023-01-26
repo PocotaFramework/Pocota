@@ -10,15 +10,14 @@ namespace Net.Leksi.Pocota.Client.Context;
 
 internal class PocoContext : IPocoContext
 {
-    public event EventHandler<EventArgs> TracedPocosChanged;
-    public event EventHandler<EventArgs> ModifiedPocosChanged;
+    public event EventHandler<EventArgs>? TracedPocosChanged;
+    public event NotifyModifiedPocosChangedEventHandler? ModifiedPocosChanged;
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
     private readonly Dictionary<Type, int> _tracedPocos = new();
     private readonly Dictionary<Type, Dictionary<object?[], WeakReference>> _cachedObjects = new();
     private readonly object _getSourceLock = new();
-    private readonly object _externalUpdatesLock = new();
     private readonly ConcurrentDictionary<IEntity, string> _changedPocos = new(ReferenceEqualityComparer.Instance);
 
     private bool _tracePocos = false;
@@ -152,13 +151,18 @@ internal class PocoContext : IPocoContext
     {
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
         {
-            _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
+            if(_changedPocos.TryAdd((sender as IEntity)!, string.Empty))
+            {
+                ModifiedPocosChanged?.Invoke(this, new Event.NotifyModifiedPocosChangedEventArgs(sender as IEntity, null));
+            }
         }
         else
         {
-            _changedPocos.TryRemove((sender as IEntity)!, out string _);
+            if(_changedPocos.TryRemove((sender as IEntity)!, out string _))
+            {
+                ModifiedPocosChanged?.Invoke(this, new Event.NotifyModifiedPocosChangedEventArgs(null, sender as IEntity));
+            }
         }
-        ModifiedPocosChanged?.Invoke(this, new EventArgs());
     }
 
     internal void PocoInstantiated(PocoBase poco)

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-25T18:34:21                                  //
+// at 2023-01-26T16:12:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -146,7 +146,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
                 if(_asCatteryFilterICatteryFilterProjection is null)
                 {
                     _asCatteryFilterICatteryFilterProjection = new CatteryFilterICatteryFilterProjection(this);
-                    ProjectionCreated(typeof(ICatteryFilter), _asCatteryFilterICatteryFilterProjection);
                 }
                 return _asCatteryFilterICatteryFilterProjection;
             }
@@ -222,11 +221,6 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
         return base.GetHashCode();
     }
 
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
 
 #endregion Methods;
 

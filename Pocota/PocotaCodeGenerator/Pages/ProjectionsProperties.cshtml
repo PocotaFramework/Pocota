@@ -18,7 +18,6 @@
                 if(@Html.Raw($"_as{model1.ClassName}") is null)
                 {
                     @Html.Raw($"_as{model1.ClassName}") = new @Html.Raw($"{model1.ClassName}(this)");
-                    ProjectionCreated(typeof(@Html.Raw(model1.Interfaces[0])), @Html.Raw($"_as{model1.ClassName}"));
                 }
                 return @Html.Raw($"_as{model1.ClassName}");
             }

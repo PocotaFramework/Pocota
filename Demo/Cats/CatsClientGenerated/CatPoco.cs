@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-25T18:34:21                                  //
+// at 2023-01-26T16:12:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -288,7 +288,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
         private readonly ProjectionList<LitterPoco,ILitter> _litters;
         private readonly ProjectionListBase<LitterPoco,ILitter> _initial_litters;
-
 
         public String? Description 
         {
@@ -1233,7 +1232,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
         private readonly ProjectionListBase<LitterPoco,ILitterForCat> _initial_litters;
 
-
         public String? Description 
         {
             get => _projector.Description;
@@ -1854,7 +1852,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatProjection is null)
                 {
                     _asCatICatProjection = new CatICatProjection(this);
-                    ProjectionCreated(typeof(ICat), _asCatICatProjection);
                 }
                 return _asCatICatProjection;
             }
@@ -1866,7 +1863,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatForListingProjection is null)
                 {
                     _asCatICatForListingProjection = new CatICatForListingProjection(this);
-                    ProjectionCreated(typeof(ICatForListing), _asCatICatForListingProjection);
                 }
                 return _asCatICatForListingProjection;
             }
@@ -1878,7 +1874,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatAsParentProjection is null)
                 {
                     _asCatICatAsParentProjection = new CatICatAsParentProjection(this);
-                    ProjectionCreated(typeof(ICatAsParent), _asCatICatAsParentProjection);
                 }
                 return _asCatICatAsParentProjection;
             }
@@ -1890,7 +1885,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatForViewProjection is null)
                 {
                     _asCatICatForViewProjection = new CatICatForViewProjection(this);
-                    ProjectionCreated(typeof(ICatForView), _asCatICatForViewProjection);
                 }
                 return _asCatICatForViewProjection;
             }
@@ -1902,7 +1896,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatWithSiblingsProjection is null)
                 {
                     _asCatICatWithSiblingsProjection = new CatICatWithSiblingsProjection(this);
-                    ProjectionCreated(typeof(ICatWithSiblings), _asCatICatWithSiblingsProjection);
                 }
                 return _asCatICatWithSiblingsProjection;
             }
@@ -1914,7 +1907,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 if(_asCatICatAsSiblingProjection is null)
                 {
                     _asCatICatAsSiblingProjection = new CatICatAsSiblingProjection(this);
-                    ProjectionCreated(typeof(ICatAsSibling), _asCatICatAsSiblingProjection);
                 }
                 return _asCatICatAsSiblingProjection;
             }
@@ -2287,11 +2279,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         return base.GetHashCode();
     }
 
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
 
 #endregion Methods;
 

@@ -64,12 +64,4 @@ public class MainWindowHeart : MainWindowHeartPoco
             SelectedCat = null;
         }
     }
-
-    protected override void OnProjectionCreated(Type @interface, IProjection projection)
-    {
-        ((IMainWindowHeart)projection).CatsViewSource = new CollectionViewSource();
-        ((CollectionViewSource)((IMainWindowHeart)projection).CatsViewSource).Source = ((IMainWindowHeart)projection).Cats;
-        base.OnProjectionCreated(@interface, projection);
-    }
-
 }

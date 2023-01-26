@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-25T18:34:21                                  //
+// at 2023-01-26T16:12:24                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -191,7 +191,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                 if(_asCatteryICatteryProjection is null)
                 {
                     _asCatteryICatteryProjection = new CatteryICatteryProjection(this);
-                    ProjectionCreated(typeof(ICattery), _asCatteryICatteryProjection);
                 }
                 return _asCatteryICatteryProjection;
             }
@@ -285,11 +284,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         return base.GetHashCode();
     }
 
-
-    private void ProjectionCreated(Type @interface, IProjection projection)
-    {
-        OnProjectionCreated(@interface, projection);
-    }
 
 #endregion Methods;
 

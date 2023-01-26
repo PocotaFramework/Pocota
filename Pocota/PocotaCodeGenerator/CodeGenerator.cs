@@ -904,7 +904,6 @@ public class CodeGenerator : IModelBuilder
                     Name = pi.Name,
                     IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                     IsReadOnly = false,
-                    IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { },
                     IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property == pi && v.KeyReference is null)
                 };
                 if (_projectorsByProjections.TryGetValue(pi.PropertyType, out ProjectorHolder? ph))
@@ -1065,7 +1064,6 @@ public class CodeGenerator : IModelBuilder
             IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
             IsReadOnly = !pi.CanWrite,
             IsList = pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()),
-            IsIndependent = pi.GetCustomAttribute<IndependentPropertyAttribute>() is { },
         };
         if (_projectorsByProjections.TryGetValue(pi.PropertyType, out ProjectorHolder? ph))
         {

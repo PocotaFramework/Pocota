@@ -37,8 +37,6 @@ public class PasteParentCommand : ICommand
     {
         object?[] values = parameter as object?[] ?? new object?[] { parameter };
         return values.Length >= 2 && Enumerable.Range(0, values.Length).All(i => IsTrue(values, i));
-
-        
     }
 
     private bool IsTrue(object?[] values, int i)

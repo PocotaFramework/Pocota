@@ -65,9 +65,13 @@ public partial class MainWindow : Window
 
     public CancellationTokenSource CancellationTokenSource { get; set; } = new();
 
+    public CollectionViewSource CatsViewSource { get; init; } = new();
+
     public MainWindow(IServiceProvider services)
     {
         services.GetRequiredService<IPocoContext>().TracePocos = true;
+
+        services.GetRequiredService<IPocoContext>().ModifiedPocosChanged += services.GetRequiredService<Synchronizer>().ModifiedPocosChanged;
 
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");
@@ -113,6 +117,8 @@ public partial class MainWindow : Window
         SetCatFilterCommand = new SetCatFilterCommand();
 
         Heart = services.GetRequiredService<IMainWindowHeart>();
+
+        CatsViewSource.Source = Heart.Cats;
 
         BreedFilter = services.GetRequiredService<IBreedFilter>();
 
