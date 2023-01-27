@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -41,7 +41,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SearchRegex = (String)value!;
+            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex((String)value!);
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -57,10 +57,14 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         private readonly BreedFilterPoco _projector;
 
 
+        private void SetSearchRegex(String? value)
+        {
+            _projector.SetSearchRegex((String?)value);
+        }
         public String? SearchRegex 
         {
             get => _projector.SearchRegex;
-            set => _projector.SearchRegex = (String?)value;
+            set => SetSearchRegex(value);
         }
 
 
@@ -112,7 +116,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         public object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((BreedFilterPoco)target).SearchRegex = (String)value!;
+        public void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex((String)value!);
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -157,14 +161,14 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     
 #region Properties
 
+    private void SetSearchRegex(String? value)
+    { 
+        _searchRegex = value;
+    }
     public String? SearchRegex 
     { 
         get =>  _searchRegex; 
-        set
-        {
-            _searchRegex = value;
-
-        }
+        set => SetSearchRegex(value);
     }
 
 #endregion Properties;

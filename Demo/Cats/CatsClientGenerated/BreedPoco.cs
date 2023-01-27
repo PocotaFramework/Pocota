@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -39,7 +39,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsCodeSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Code;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).Code = (String)value!;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetCode((String)value!);
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsCodeModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsCodeInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.CodeCancelChange();
@@ -61,7 +61,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsGroupSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Group;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).Group = (String)value!;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetGroup((String)value!);
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsGroupModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsGroupInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.GroupCancelChange();
@@ -83,7 +83,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng((String)value!);
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameEngCancelChange();
@@ -105,7 +105,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat((String)value!);
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameNatCancelChange();
@@ -144,28 +144,44 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         private readonly BreedPoco _projector;
 
 
+        private void SetCode(String value)
+        {
+            _projector.SetCode((String)value!);
+        }
         public String Code 
         {
             get => _projector.Code!;
-            set => _projector.Code = (String)value!;
+            set => SetCode(value);
         }
 
+        private void SetGroup(String value)
+        {
+            _projector.SetGroup((String)value!);
+        }
         public String Group 
         {
             get => _projector.Group!;
-            set => _projector.Group = (String)value!;
+            set => SetGroup(value);
         }
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => _projector.NameEng = (String?)value;
+            set => SetNameEng(value);
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => _projector.NameNat = (String?)value;
+            set => SetNameNat(value);
         }
 
 
@@ -220,7 +236,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsCodeSet();
         public override object? Get(object target) => ((BreedPoco)target).Code;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).Code = (String)value!;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetCode((String)value!);
         public override bool IsModified(object target) => ((BreedPoco)target).IsCodeModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsCodeInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).CodeCancelChange();
@@ -242,7 +258,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsGroupSet();
         public override object? Get(object target) => ((BreedPoco)target).Group;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).Group = (String)value!;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetGroup((String)value!);
         public override bool IsModified(object target) => ((BreedPoco)target).IsGroupModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsGroupInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).GroupCancelChange();
@@ -264,7 +280,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((BreedPoco)target).NameEng;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).NameEng = (String)value!;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng((String)value!);
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameEngCancelChange();
@@ -286,7 +302,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((BreedPoco)target).NameNat;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).NameNat = (String)value!;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat((String)value!);
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameNatCancelChange();
@@ -355,116 +371,128 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Properties
 
-    public virtual String Code
+    private void SetCode(String value)
     {
-        get => !IsCodeSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _code;
-        set
+        if(_code != value)
         {
-            if(_code != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_code != value  && (IsBeingPopulated || _is_set_code || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_code != value  && (IsBeingPopulated || _is_set_code || ((IEntity)this).PocoState is PocoState.Created))
-                    {
                         if (!IsBeingPopulated || IsCodeInitial())
-                        {
-                            _code = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_code = value;
-                            _is_set_code = true;
-                        }
-                        OnPocoChanged(CodeProp);
-                        OnPropertyChanged();
+                    {
+                        _code = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_code = value;
+                            _is_set_code = true;
+                    }
+                    OnPocoChanged(CodeProp);
+                    OnPropertyChanged("Code");
                 }
             }
         }
     }
+    
+
+    public virtual String Code
+    {
+        get => !IsCodeSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _code;
+        set => SetCode(value);
+    }
+
+    private void SetGroup(String value)
+    {
+        if(_group != value)
+        {
+            lock(_lock)
+            {
+                if(_group != value  && (IsBeingPopulated || _is_set_group || ((IEntity)this).PocoState is PocoState.Created))
+                {
+                        if (!IsBeingPopulated || IsGroupInitial())
+                    {
+                        _group = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_group = value;
+                            _is_set_group = true;
+                    }
+                    OnPocoChanged(GroupProp);
+                    OnPropertyChanged("Group");
+                }
+            }
+        }
+    }
+    
 
     public virtual String Group
     {
         get => !IsGroupSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _group;
-        set
+        set => SetGroup(value);
+    }
+
+    private void SetNameEng(String? value)
+    {
+        if(_nameEng != value)
         {
-            if(_group != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_group != value  && (IsBeingPopulated || _is_set_group || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsNameEngInitial())
                     {
-                        if (!IsBeingPopulated || IsGroupInitial())
-                        {
-                            _group = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_group = value;
-                            _is_set_group = true;
-                        }
-                        OnPocoChanged(GroupProp);
-                        OnPropertyChanged();
+                        _nameEng = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameEng = value;
+                            _is_set_nameEng = true;
+                    }
+                    OnPocoChanged(NameEngProp);
+                    OnPropertyChanged("NameEng");
                 }
             }
         }
     }
+    
 
     public virtual String? NameEng
     {
         get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
-        set
+        set => SetNameEng(value);
+    }
+
+    private void SetNameNat(String? value)
+    {
+        if(_nameNat != value)
         {
-            if(_nameEng != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsNameNatInitial())
                     {
-                        if (!IsBeingPopulated || IsNameEngInitial())
-                        {
-                            _nameEng = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameEng = value;
-                            _is_set_nameEng = true;
-                        }
-                        OnPocoChanged(NameEngProp);
-                        OnPropertyChanged();
+                        _nameNat = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameNat = value;
+                            _is_set_nameNat = true;
+                    }
+                    OnPocoChanged(NameNatProp);
+                    OnPropertyChanged("NameNat");
                 }
             }
         }
     }
+    
 
     public virtual String? NameNat
     {
         get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
-        set
-        {
-            if(_nameNat != value)
-            {
-                lock(_lock)
-                {
-                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
-                    {
-                        if (!IsBeingPopulated || IsNameNatInitial())
-                        {
-                            _nameNat = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameNat = value;
-                            _is_set_nameNat = true;
-                        }
-                        OnPocoChanged(NameNatProp);
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
+        set => SetNameNat(value);
     }
 
 #endregion Properties;

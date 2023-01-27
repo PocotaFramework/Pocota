@@ -5,7 +5,7 @@ namespace Net.Leksi.Pocota.Client;
 public interface IPocoContext
 {
     event EventHandler<EventArgs> TracedPocosChanged;
-    event NotifyModifiedPocosChangedEventHandler ModifiedPocosChanged;
+    event EventHandler<EventArgs> ModifiedPocosChanged;
 
     bool TracePocos { get; set; }
     IDictionary<Type, int> TracedPocos { get; }

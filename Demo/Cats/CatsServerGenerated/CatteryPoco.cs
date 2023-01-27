@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -41,7 +41,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameEng = (String)value!;
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng((String)value!);
         }
 
         public class NameNatProperty: IProperty
@@ -58,7 +58,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameNat = (String)value!;
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat((String)value!);
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -75,16 +75,24 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         private readonly CatteryPoco _projector;
 
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => _projector.NameEng = (String?)value;
+            set => SetNameEng(value);
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => _projector.NameNat = (String?)value;
+            set => SetNameNat(value);
         }
 
 
@@ -135,7 +143,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
         public object? Get(object target) => ((CatteryPoco)target).NameEng;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
+        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng((String)value!);
     }
 
     public class NameNatProperty: IProperty
@@ -152,7 +160,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
         public object? Get(object target) => ((CatteryPoco)target).NameNat;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
+        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat((String)value!);
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -202,26 +210,26 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Properties
 
+    private void SetNameEng(String? value)
+    { 
+        _nameEng = value;
+        _is_set_nameEng = true;
+    }
     public String? NameEng 
     { 
         get => !_is_set_nameEng ? throw new PropertyNotSetException(nameof(NameEng)) : _nameEng; 
-        set
-        {
-            _nameEng = value;
-           _is_set_nameEng = true;
-
-        }
+        set => SetNameEng(value);
     }
 
+    private void SetNameNat(String? value)
+    { 
+        _nameNat = value;
+        _is_set_nameNat = true;
+    }
     public String? NameNat 
     { 
         get => !_is_set_nameNat ? throw new PropertyNotSetException(nameof(NameNat)) : _nameNat; 
-        set
-        {
-            _nameNat = value;
-           _is_set_nameNat = true;
-
-        }
+        set => SetNameNat(value);
     }
 
 #endregion Properties;

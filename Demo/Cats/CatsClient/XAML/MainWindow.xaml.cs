@@ -6,7 +6,6 @@ using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Client.Crud;
-using Net.Leksi.Pocota.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -70,8 +69,6 @@ public partial class MainWindow : Window
     public MainWindow(IServiceProvider services)
     {
         services.GetRequiredService<IPocoContext>().TracePocos = true;
-
-        services.GetRequiredService<IPocoContext>().ModifiedPocosChanged += services.GetRequiredService<Synchronizer>().ModifiedPocosChanged;
 
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");

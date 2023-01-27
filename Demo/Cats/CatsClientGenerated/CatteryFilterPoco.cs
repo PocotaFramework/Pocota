@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:52                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -40,7 +40,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             public override object? Get(object target) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatteryFilterICatteryFilterProjection)target).SearchRegex = (String)value!;
+            public override void Set(object target, object? value) => ((CatteryFilterICatteryFilterProjection)target).SetSearchRegex((String)value!);
             public override bool IsModified(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexModified();
             public override bool IsInitial(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexInitial();
             public override void CancelChange(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegexCancelChange();
@@ -76,10 +76,14 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
         private readonly CatteryFilterPoco _projector;
 
 
+        private void SetSearchRegex(String? value)
+        {
+            _projector.SetSearchRegex((String?)value);
+        }
         public String? SearchRegex 
         {
             get => _projector.SearchRegex;
-            set => _projector.SearchRegex = (String?)value;
+            set => SetSearchRegex(value);
         }
 
 
@@ -135,7 +139,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
         public override object? Get(object target) => ((CatteryFilterPoco)target).SearchRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatteryFilterPoco)target).SearchRegex = (String)value!;
+        public override void Set(object target, object? value) => ((CatteryFilterPoco)target).SetSearchRegex((String)value!);
         public override bool IsModified(object target) => ((CatteryFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((CatteryFilterPoco)target).IsSearchRegexInitial();
         public override void CancelChange(object target) => ((CatteryFilterPoco)target).SearchRegexCancelChange();
@@ -185,28 +189,31 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
     
 #region Properties
 
-    public virtual String? SearchRegex
+    private void SetSearchRegex(String? value)
     {
-        get => _searchRegex;
-        set
+        if(_searchRegex != value)
         {
-            if(_searchRegex != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_searchRegex != value )
                 {
-                    if(_searchRegex != value )
-                    {
                         _searchRegex = value;
-                        if (IsBeingPopulated )
-                        {
-                            _initial_searchRegex = value;
-                        }
-                        OnPocoChanged(SearchRegexProp);
-                        OnPropertyChanged();
+                    if (IsBeingPopulated )
+                    {
+                        _initial_searchRegex = value;
                     }
+                    OnPocoChanged(SearchRegexProp);
+                    OnPropertyChanged("SearchRegex");
                 }
             }
         }
+    }
+    
+
+    public virtual String? SearchRegex
+    {
+        get => _searchRegex;
+        set => SetSearchRegex(value);
     }
 
 #endregion Properties;

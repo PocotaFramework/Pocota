@@ -6,7 +6,77 @@
 @foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
+    if(!pm.IsList)
+    {
+        <text>    private void @Html.Raw($"Set{pm.Name}({pm.Type}{(pm.IsNullable ? "?" : string.Empty)} value)")
+    {
+    @if(!pm.IsReadOnly)
+    {
+        if(pm.IsList)
+        {
+            <text>        throw new NotImplementedException();
+</text>
+        }
+        else
+        {
+        <text>        if(@fieldName != value)
+        {
+            lock(_lock)
+            {
+                if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)</text>})
+                {
+                    @if(pm.IsPoco)
+                    {
+                        <text>                        if(@fieldName is {})
+                    {
+                        @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
+                    }
+</text>   
+                    }
+                    @if (Model.IsEntity)
+                    {
+                    <text>                        if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
+                    {
+                        @fieldName = value;
+                    }
+</text>
+                    }
+                    else 
+                    {
+                        <text>                        @fieldName = value;
+</text>
+                    }
+                    if (IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
+                    {
+                        @Html.Raw($"_initial{fieldName}") = value;
+                        @if (Model.IsEntity)
+                        {
+                            <text>                            @Html.Raw($"_is_set{fieldName}") = true;
+</text>
+                        }
+                    }
+                    @if(pm.IsPoco)
+                    {
+                        <text>                        if(@fieldName is {})
+                    {
+                        @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged");
+                    }
+</text>   
+                    }
+                    OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
+                    OnPropertyChanged(@Html.Raw($"\"{pm.Name}\""));
+                }
+            }
+        }
+</text>
+            }
+        }
+    }
+</text>
+    }
+    <text>    
+
+    public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
         get => @if(Model.IsEntity){<text>@Html.Raw($"!Is{pm.Name}Set() && ((IEntity)this).PocoState is not PocoState.Created") ? default! : </text>}@fieldName;
     @if(!pm.IsReadOnly)
@@ -18,61 +88,10 @@
         }
         else
         {
-            <text>        set
-        {
-            if(@fieldName != value)
-            {
-                lock(_lock)
-                {
-                    if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)</text>})
-                    {
-                        @if(pm.IsPoco)
-                        {
-                            <text>                        if(@fieldName is {})
-                        {
-                            @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
-                        }
-</text>   
-                        }
-                        @if (Model.IsEntity)
-                        {
-                        <text>                        if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
-                        {
-                            @fieldName = value;
-                        }
+            <text>        set => @Html.Raw($"Set{pm.Name}(value)");
 </text>
-                        }
-                        else 
-                        {
-                            <text>                        @fieldName = value;
-</text>
-                        }
-                        if (IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
-                        {
-                            @Html.Raw($"_initial{fieldName}") = value;
-                            @if (Model.IsEntity)
-                            {
-                                <text>                            @Html.Raw($"_is_set{fieldName}") = true;
-</text>
-                            }
-                        }
-                        @if(pm.IsPoco)
-                        {
-                            <text>                        if(@fieldName is {})
-                        {
-                            @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged");
-                        }
-</text>   
-                        }
-                        OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
-                        OnPropertyChanged();
-                    }
-                }
-            }
         }
-</text>
-            }
-        }
+    }
     }
 
 </text>

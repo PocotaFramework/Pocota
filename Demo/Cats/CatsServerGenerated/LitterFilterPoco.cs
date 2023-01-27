@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -43,7 +43,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Female;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
+            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).SetFemale(((IProjection?)value)?.As<ICat>()!);
         }
 
         public class MaleProperty: IProperty
@@ -61,7 +61,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
             public object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Male;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
+            public void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).SetMale(((IProjection?)value)?.As<ICat>()!);
         }
 
         public class StringsProperty: IProperty
@@ -97,16 +97,24 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         private readonly LitterFilterPoco _projector;
 
 
+        private void SetFemale(ICat value)
+        {
+            _projector.SetFemale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+            set => SetFemale(value);
         }
 
+        private void SetMale(ICat value)
+        {
+            _projector.SetMale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICat Male 
         {
             get => ((IProjection)_projector.Male)?.As<ICat>()!;
-            set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
+            set => SetMale(value);
         }
 
         public IList<String> Strings 
@@ -164,7 +172,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public object? Get(object target) => ((LitterFilterPoco)target).Female;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
+        public void Set(object target, object? value) => ((LitterFilterPoco)target).SetFemale(((IProjection?)value)?.As<CatPoco>()!);
     }
 
     public class MaleProperty: IProperty
@@ -182,7 +190,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public object? Get(object target) => ((LitterFilterPoco)target).Male;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
+        public void Set(object target, object? value) => ((LitterFilterPoco)target).SetMale(((IProjection?)value)?.As<CatPoco>()!);
     }
 
     public class StringsProperty: IProperty
@@ -255,24 +263,24 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     
 #region Properties
 
+    private void SetFemale(CatPoco value)
+    { 
+        _female = value;
+    }
     public CatPoco Female 
     { 
         get =>  _female; 
-        set
-        {
-            _female = value;
-
-        }
+        set => SetFemale(value);
     }
 
+    private void SetMale(CatPoco value)
+    { 
+        _male = value;
+    }
     public CatPoco Male 
     { 
         get =>  _male; 
-        set
-        {
-            _male = value;
-
-        }
+        set => SetMale(value);
     }
 
     public List<String> Strings 

@@ -11,7 +11,7 @@ namespace Net.Leksi.Pocota.Client.Context;
 internal class PocoContext : IPocoContext
 {
     public event EventHandler<EventArgs>? TracedPocosChanged;
-    public event NotifyModifiedPocosChangedEventHandler? ModifiedPocosChanged;
+    public event EventHandler<EventArgs>? ModifiedPocosChanged;
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
@@ -153,14 +153,14 @@ internal class PocoContext : IPocoContext
         {
             if(_changedPocos.TryAdd((sender as IEntity)!, string.Empty))
             {
-                ModifiedPocosChanged?.Invoke(this, new Event.NotifyModifiedPocosChangedEventArgs(sender as IEntity, null));
+                ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
         }
         else
         {
             if(_changedPocos.TryRemove((sender as IEntity)!, out string _))
             {
-                ModifiedPocosChanged?.Invoke(this, new Event.NotifyModifiedPocosChangedEventArgs(null, sender as IEntity));
+                ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
         }
     }

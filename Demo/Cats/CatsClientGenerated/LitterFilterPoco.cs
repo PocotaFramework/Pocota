@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:52                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Female;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
+            public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).SetFemale(((IProjection?)value)?.As<ICat>()!);
             public override bool IsModified(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleModified();
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.FemaleCancelChange();
@@ -67,7 +67,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? Get(object target) => ((LitterFilterILitterFilterProjection)target).Male;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
+            public override void Set(object target, object? value) => ((LitterFilterILitterFilterProjection)target).SetMale(((IProjection?)value)?.As<ICat>()!);
             public override bool IsModified(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleModified();
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.MaleCancelChange();
@@ -128,16 +128,24 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         private readonly LitterFilterPoco _projector;
 
 
+        private void SetFemale(ICat value)
+        {
+            _projector.SetFemale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+            set => SetFemale(value);
         }
 
+        private void SetMale(ICat value)
+        {
+            _projector.SetMale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICat Male 
         {
             get => ((IProjection)_projector.Male)?.As<ICat>()!;
-            set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
+            set => SetMale(value);
         }
 
         public IList<String> Strings 
@@ -199,7 +207,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? Get(object target) => ((LitterFilterPoco)target).Female;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((LitterFilterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
+        public override void Set(object target, object? value) => ((LitterFilterPoco)target).SetFemale(((IProjection?)value)?.As<CatPoco>()!);
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsFemaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsFemaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).FemaleCancelChange();
@@ -222,7 +230,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? Get(object target) => ((LitterFilterPoco)target).Male;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((LitterFilterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
+        public override void Set(object target, object? value) => ((LitterFilterPoco)target).SetMale(((IProjection?)value)?.As<CatPoco>()!);
         public override bool IsModified(object target) => ((LitterFilterPoco)target).IsMaleModified();
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsMaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).MaleCancelChange();
@@ -305,69 +313,77 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     
 #region Properties
 
-    public virtual CatPoco Female
+    private void SetFemale(CatPoco value)
     {
-        get => _female;
-        set
+        if(_female != value)
         {
-            if(_female != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_female != value )
                 {
-                    if(_female != value )
+                        if(_female is {})
                     {
-                        if(_female is {})
-                        {
-                            _female.PocoChanged -= FemalePocoChanged;
-                        }
-                        _female = value;
-                        if (IsBeingPopulated )
-                        {
-                            _initial_female = value;
-                        }
-                        if(_female is {})
-                        {
-                            _female.PocoChanged += FemalePocoChanged;
-                        }
-                        OnPocoChanged(FemaleProp);
-                        OnPropertyChanged();
+                        _female.PocoChanged -= FemalePocoChanged;
                     }
+                        _female = value;
+                    if (IsBeingPopulated )
+                    {
+                        _initial_female = value;
+                    }
+                        if(_female is {})
+                    {
+                        _female.PocoChanged += FemalePocoChanged;
+                    }
+                    OnPocoChanged(FemaleProp);
+                    OnPropertyChanged("Female");
                 }
             }
         }
     }
+    
+
+    public virtual CatPoco Female
+    {
+        get => _female;
+        set => SetFemale(value);
+    }
+
+    private void SetMale(CatPoco value)
+    {
+        if(_male != value)
+        {
+            lock(_lock)
+            {
+                if(_male != value )
+                {
+                        if(_male is {})
+                    {
+                        _male.PocoChanged -= MalePocoChanged;
+                    }
+                        _male = value;
+                    if (IsBeingPopulated )
+                    {
+                        _initial_male = value;
+                    }
+                        if(_male is {})
+                    {
+                        _male.PocoChanged += MalePocoChanged;
+                    }
+                    OnPocoChanged(MaleProp);
+                    OnPropertyChanged("Male");
+                }
+            }
+        }
+    }
+    
 
     public virtual CatPoco Male
     {
         get => _male;
-        set
-        {
-            if(_male != value)
-            {
-                lock(_lock)
-                {
-                    if(_male != value )
-                    {
-                        if(_male is {})
-                        {
-                            _male.PocoChanged -= MalePocoChanged;
-                        }
-                        _male = value;
-                        if (IsBeingPopulated )
-                        {
-                            _initial_male = value;
-                        }
-                        if(_male is {})
-                        {
-                            _male.PocoChanged += MalePocoChanged;
-                        }
-                        OnPocoChanged(MaleProp);
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
+        set => SetMale(value);
     }
+
+    
 
     public virtual ObservableCollection<String> Strings
     {

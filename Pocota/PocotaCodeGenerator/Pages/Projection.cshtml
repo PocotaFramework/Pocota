@@ -44,6 +44,14 @@
         @foreach(PropertyModel pm in Model.Properties)
         {
             string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+            if(!pm.IsList)
+            {
+                <text>        private void @Html.Raw($"Set{pm.Name}({pm.Type}{(pm.IsNullable ? "?" : string.Empty)} value)")
+        {
+            @Html.Raw($"_projector.Set{pm.Name}(")@if (pm.IsPoco) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsPoco ? "!" : string.Empty)}")@if (pm.IsPoco) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> });
+        }
+</text>
+            }
             <text>        public @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name 
         {
             get => @if((!pm.IsList || !pm.IsPoco)){
@@ -75,7 +83,7 @@
                 }
                 else
                 {
-                <text>            set => @Html.Raw($"_projector.{pm.Name} = ")@if (pm.IsPoco) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsPoco ? "!" : string.Empty)}")@if (pm.IsPoco) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
+                    <text>            set => @Html.Raw($"Set{pm.Name}(value)");
 </text>
                 }
             }

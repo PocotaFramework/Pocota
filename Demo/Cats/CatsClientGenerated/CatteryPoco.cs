@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -39,7 +39,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameEngCancelChange();
@@ -61,7 +61,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameNatCancelChange();
@@ -98,16 +98,24 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         private readonly CatteryPoco _projector;
 
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => _projector.NameEng = (String?)value;
+            set => SetNameEng(value);
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => _projector.NameNat = (String?)value;
+            set => SetNameNat(value);
         }
 
 
@@ -162,7 +170,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameEng;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((CatteryPoco)target).NameEng = (String)value!;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng((String)value!);
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameEngCancelChange();
@@ -184,7 +192,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameNat;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((CatteryPoco)target).NameNat = (String)value!;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat((String)value!);
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameNatCancelChange();
@@ -241,60 +249,66 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Properties
 
-    public virtual String? NameEng
+    private void SetNameEng(String? value)
     {
-        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
-        set
+        if(_nameEng != value)
         {
-            if(_nameEng != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
-                    {
                         if (!IsBeingPopulated || IsNameEngInitial())
-                        {
-                            _nameEng = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameEng = value;
-                            _is_set_nameEng = true;
-                        }
-                        OnPocoChanged(NameEngProp);
-                        OnPropertyChanged();
+                    {
+                        _nameEng = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameEng = value;
+                            _is_set_nameEng = true;
+                    }
+                    OnPocoChanged(NameEngProp);
+                    OnPropertyChanged("NameEng");
                 }
             }
         }
     }
+    
+
+    public virtual String? NameEng
+    {
+        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
+        set => SetNameEng(value);
+    }
+
+    private void SetNameNat(String? value)
+    {
+        if(_nameNat != value)
+        {
+            lock(_lock)
+            {
+                if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
+                {
+                        if (!IsBeingPopulated || IsNameNatInitial())
+                    {
+                        _nameNat = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameNat = value;
+                            _is_set_nameNat = true;
+                    }
+                    OnPocoChanged(NameNatProp);
+                    OnPropertyChanged("NameNat");
+                }
+            }
+        }
+    }
+    
 
     public virtual String? NameNat
     {
         get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
-        set
-        {
-            if(_nameNat != value)
-            {
-                lock(_lock)
-                {
-                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
-                    {
-                        if (!IsBeingPopulated || IsNameNatInitial())
-                        {
-                            _nameNat = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameNat = value;
-                            _is_set_nameNat = true;
-                        }
-                        OnPocoChanged(NameNatProp);
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
+        set => SetNameNat(value);
     }
 
 #endregion Properties;

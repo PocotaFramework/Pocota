@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsDescriptionSet();
             public override object? Get(object target) => ((CatICatProjection)target).Description;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Description = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetDescription((String)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsDescriptionModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.DescriptionCancelChange();
@@ -66,7 +66,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsExteriorSet();
             public override object? Get(object target) => ((CatICatProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Exterior = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetExterior((String)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsExteriorModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.ExteriorCancelChange();
@@ -88,7 +88,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsGenderSet();
             public override object? Get(object target) => ((CatICatProjection)target).Gender;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_gender = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Gender = (Gender)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetGender((Gender)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsGenderModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.GenderCancelChange();
@@ -110,7 +110,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatICatProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.NameEngCancelChange();
@@ -132,7 +132,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatICatProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.NameNatCancelChange();
@@ -154,7 +154,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsTitleSet();
             public override object? Get(object target) => ((CatICatProjection)target).Title;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Title = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetTitle((String)value!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsTitleModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.TitleCancelChange();
@@ -176,7 +176,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsBreedSet();
             public override object? Get(object target) => ((CatICatProjection)target).Breed;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_breed = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Breed = ((IProjection?)value)?.As<IBreed>()!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetBreed(((IProjection?)value)?.As<IBreed>()!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsBreedModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.BreedCancelChange();
@@ -198,7 +198,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsCatterySet();
             public override object? Get(object target) => ((CatICatProjection)target).Cattery;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_cattery = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Cattery = ((IProjection?)value)?.As<ICattery>()!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetCattery(((IProjection?)value)?.As<ICattery>()!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsCatteryModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.CatteryCancelChange();
@@ -220,7 +220,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector.IsLitterSet();
             public override object? Get(object target) => ((CatICatProjection)target).Litter;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).Litter = ((IProjection?)value)?.As<ILitter>()!;
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetLitter(((IProjection?)value)?.As<ILitter>()!);
             public override bool IsModified(object target) => ((CatICatProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.LitterCancelChange();
@@ -289,58 +289,94 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly ProjectionList<LitterPoco,ILitter> _litters;
         private readonly ProjectionListBase<LitterPoco,ILitter> _initial_litters;
 
+        private void SetDescription(String? value)
+        {
+            _projector.SetDescription((String?)value);
+        }
         public String? Description 
         {
             get => _projector.Description;
-            set => _projector.Description = (String?)value;
+            set => SetDescription(value);
         }
 
+        private void SetExterior(String? value)
+        {
+            _projector.SetExterior((String?)value);
+        }
         public String? Exterior 
         {
             get => _projector.Exterior;
-            set => _projector.Exterior = (String?)value;
+            set => SetExterior(value);
         }
 
+        private void SetGender(Gender value)
+        {
+            _projector.SetGender((Gender)value!);
+        }
         public Gender Gender 
         {
             get => _projector.Gender!;
-            set => _projector.Gender = (Gender)value!;
+            set => SetGender(value);
         }
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => _projector.NameEng = (String?)value;
+            set => SetNameEng(value);
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => _projector.NameNat = (String?)value;
+            set => SetNameNat(value);
         }
 
+        private void SetTitle(String? value)
+        {
+            _projector.SetTitle((String?)value);
+        }
         public String? Title 
         {
             get => _projector.Title;
-            set => _projector.Title = (String?)value;
+            set => SetTitle(value);
         }
 
+        private void SetBreed(IBreed value)
+        {
+            _projector.SetBreed(((IProjection)value!)?.As<BreedPoco>()!);
+        }
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
-            set => _projector.Breed = ((IProjection)value!)?.As<BreedPoco>()!;
+            set => SetBreed(value);
         }
 
+        private void SetCattery(ICattery value)
+        {
+            _projector.SetCattery(((IProjection)value!)?.As<CatteryPoco>()!);
+        }
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
-            set => _projector.Cattery = ((IProjection)value!)?.As<CatteryPoco>()!;
+            set => SetCattery(value);
         }
 
+        private void SetLitter(ILitter? value)
+        {
+            _projector.SetLitter(((IProjection?)value)?.As<LitterPoco>());
+        }
         public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
-            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
+            set => SetLitter(value);
         }
 
         public IList<ILitter> Litters 
@@ -405,7 +441,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsDescriptionSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Description;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Description = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetDescription((String)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsDescriptionModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.DescriptionCancelChange();
@@ -427,7 +463,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsExteriorSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Exterior = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetExterior((String)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsExteriorModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.ExteriorCancelChange();
@@ -449,7 +485,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsGenderSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Gender;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_gender = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Gender = (Gender)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetGender((Gender)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsGenderModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.GenderCancelChange();
@@ -471,7 +507,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.NameEngCancelChange();
@@ -493,7 +529,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.NameNatCancelChange();
@@ -515,7 +551,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsTitleSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Title;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Title = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetTitle((String)value!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsTitleModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.TitleCancelChange();
@@ -537,7 +573,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsBreedSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Breed;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_breed = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsBreedModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.BreedCancelChange();
@@ -559,7 +595,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsCatterySet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Cattery;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_cattery = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsCatteryModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.CatteryCancelChange();
@@ -581,7 +617,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector.IsLitterSet();
             public override object? Get(object target) => ((CatICatForListingProjection)target).Litter;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
             public override bool IsModified(object target) => ((CatICatForListingProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.LitterCancelChange();
@@ -625,46 +661,82 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly CatPoco _projector;
 
 
+        private void SetDescription(String? value)
+        {
+            _projector.SetDescription((String?)value);
+        }
         public String? Description 
         {
             get => _projector.Description;
         }
 
+        private void SetExterior(String? value)
+        {
+            _projector.SetExterior((String?)value);
+        }
         public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
+        private void SetGender(Gender value)
+        {
+            _projector.SetGender((Gender)value!);
+        }
         public Gender Gender 
         {
             get => _projector.Gender!;
         }
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
+        private void SetTitle(String? value)
+        {
+            _projector.SetTitle((String?)value);
+        }
         public String? Title 
         {
             get => _projector.Title;
         }
 
+        private void SetBreed(IBreed value)
+        {
+            _projector.SetBreed(((IProjection)value!)?.As<BreedPoco>()!);
+        }
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
+        private void SetCattery(ICattery value)
+        {
+            _projector.SetCattery(((IProjection)value!)?.As<CatteryPoco>()!);
+        }
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
+        private void SetLitter(ILitterForCat? value)
+        {
+            _projector.SetLitter(((IProjection?)value)?.As<LitterPoco>());
+        }
         public ILitterForCat? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForCat>();
@@ -724,7 +796,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsExteriorSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.Exterior = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetExterior((String)value!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsExteriorModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.ExteriorCancelChange();
@@ -746,7 +818,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.NameEngCancelChange();
@@ -768,7 +840,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.NameNatCancelChange();
@@ -790,7 +862,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsTitleSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Title;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.Title = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetTitle((String)value!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsTitleModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.TitleCancelChange();
@@ -812,7 +884,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsBreedSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Breed;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_breed = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsBreedModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.BreedCancelChange();
@@ -834,7 +906,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsCatterySet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Cattery;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_cattery = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsCatteryModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.CatteryCancelChange();
@@ -856,7 +928,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector.IsLitterSet();
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Litter;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
             public override bool IsModified(object target) => ((CatICatAsParentProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.LitterCancelChange();
@@ -898,36 +970,64 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly CatPoco _projector;
 
 
+        private void SetExterior(String? value)
+        {
+            _projector.SetExterior((String?)value);
+        }
         public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
+        private void SetTitle(String? value)
+        {
+            _projector.SetTitle((String?)value);
+        }
         public String? Title 
         {
             get => _projector.Title;
         }
 
+        private void SetBreed(IBreed value)
+        {
+            _projector.SetBreed(((IProjection)value!)?.As<BreedPoco>()!);
+        }
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
+        private void SetCattery(ICattery value)
+        {
+            _projector.SetCattery(((IProjection)value!)?.As<CatteryPoco>()!);
+        }
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
+        private void SetLitter(ILitterForDate? value)
+        {
+            _projector.SetLitter(((IProjection?)value)?.As<LitterPoco>());
+        }
         public ILitterForDate? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForDate>();
@@ -987,7 +1087,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsDescriptionSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Description;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Description = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetDescription((String)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsDescriptionModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.DescriptionCancelChange();
@@ -1009,7 +1109,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsExteriorSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Exterior = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetExterior((String)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsExteriorModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.ExteriorCancelChange();
@@ -1031,7 +1131,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsGenderSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Gender;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_gender = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Gender = (Gender)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetGender((Gender)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsGenderModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.GenderCancelChange();
@@ -1053,7 +1153,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.NameEngCancelChange();
@@ -1075,7 +1175,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.NameNatCancelChange();
@@ -1097,7 +1197,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsTitleSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Title;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Title = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetTitle((String)value!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsTitleModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.TitleCancelChange();
@@ -1119,7 +1219,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsBreedSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Breed;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_breed = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsBreedModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.BreedCancelChange();
@@ -1141,7 +1241,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsCatterySet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Cattery;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_cattery = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsCatteryModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.CatteryCancelChange();
@@ -1163,7 +1263,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector.IsLitterSet();
             public override object? Get(object target) => ((CatICatForViewProjection)target).Litter;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
             public override bool IsModified(object target) => ((CatICatForViewProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.LitterCancelChange();
@@ -1232,46 +1332,82 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly ProjectionList<LitterPoco,ILitterForCat> _litters;
         private readonly ProjectionListBase<LitterPoco,ILitterForCat> _initial_litters;
 
+        private void SetDescription(String? value)
+        {
+            _projector.SetDescription((String?)value);
+        }
         public String? Description 
         {
             get => _projector.Description;
         }
 
+        private void SetExterior(String? value)
+        {
+            _projector.SetExterior((String?)value);
+        }
         public String? Exterior 
         {
             get => _projector.Exterior;
         }
 
+        private void SetGender(Gender value)
+        {
+            _projector.SetGender((Gender)value!);
+        }
         public Gender Gender 
         {
             get => _projector.Gender!;
         }
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
         }
 
+        private void SetTitle(String? value)
+        {
+            _projector.SetTitle((String?)value);
+        }
         public String? Title 
         {
             get => _projector.Title;
         }
 
+        private void SetBreed(IBreed value)
+        {
+            _projector.SetBreed(((IProjection)value!)?.As<BreedPoco>()!);
+        }
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
         }
 
+        private void SetCattery(ICattery value)
+        {
+            _projector.SetCattery(((IProjection)value!)?.As<CatteryPoco>()!);
+        }
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
         }
 
+        private void SetLitter(ILitterForCat? value)
+        {
+            _projector.SetLitter(((IProjection?)value)?.As<LitterPoco>());
+        }
         public ILitterForCat? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterForCat>();
@@ -1338,7 +1474,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatWithSiblingsProjection)target)._projector.IsLitterSet();
             public override object? Get(object target) => ((CatICatWithSiblingsProjection)target).Litter;
             public override void Touch(object target) => ((CatICatWithSiblingsProjection)target)._projector._is_set_litter = true;
-            public override void Set(object target, object? value) => ((CatICatWithSiblingsProjection)target).Litter = ((IProjection?)value)?.As<ILitterWithCats>()!;
+            public override void Set(object target, object? value) => ((CatICatWithSiblingsProjection)target).SetLitter(((IProjection?)value)?.As<ILitterWithCats>()!);
             public override bool IsModified(object target) => ((CatICatWithSiblingsProjection)target)._projector.IsLitterModified();
             public override bool IsInitial(object target) => ((CatICatWithSiblingsProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatWithSiblingsProjection)target)._projector.LitterCancelChange();
@@ -1374,10 +1510,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly CatPoco _projector;
 
 
+        private void SetLitter(ILitterWithCats? value)
+        {
+            _projector.SetLitter(((IProjection?)value)?.As<LitterPoco>());
+        }
         public ILitterWithCats? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterWithCats>();
-            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
+            set => SetLitter(value);
         }
 
 
@@ -1434,7 +1574,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatICatAsSiblingProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.NameEng = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameEng((String)value!);
             public override bool IsModified(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatAsSiblingProjection)target)._projector.NameEngCancelChange();
@@ -1456,7 +1596,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatICatAsSiblingProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.NameNat = (String)value!;
+            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameNat((String)value!);
             public override bool IsModified(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatAsSiblingProjection)target)._projector.NameNatCancelChange();
@@ -1493,11 +1633,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         private readonly CatPoco _projector;
 
 
+        private void SetNameEng(String? value)
+        {
+            _projector.SetNameEng((String?)value);
+        }
         public String? NameEng 
         {
             get => _projector.NameEng;
         }
 
+        private void SetNameNat(String? value)
+        {
+            _projector.SetNameNat((String?)value);
+        }
         public String? NameNat 
         {
             get => _projector.NameNat;
@@ -1555,7 +1703,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsDescriptionSet();
         public override object? Get(object target) => ((CatPoco)target).Description;
         public override void Touch(object target) => ((CatPoco)target)._is_set_description = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Description = (String)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetDescription((String)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsDescriptionModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsDescriptionInitial();
         public override void CancelChange(object target) => ((CatPoco)target).DescriptionCancelChange();
@@ -1577,7 +1725,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsExteriorSet();
         public override object? Get(object target) => ((CatPoco)target).Exterior;
         public override void Touch(object target) => ((CatPoco)target)._is_set_exterior = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Exterior = (String)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetExterior((String)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsExteriorModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsExteriorInitial();
         public override void CancelChange(object target) => ((CatPoco)target).ExteriorCancelChange();
@@ -1599,7 +1747,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsGenderSet();
         public override object? Get(object target) => ((CatPoco)target).Gender;
         public override void Touch(object target) => ((CatPoco)target)._is_set_gender = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Gender = (Gender)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetGender((Gender)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsGenderModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsGenderInitial();
         public override void CancelChange(object target) => ((CatPoco)target).GenderCancelChange();
@@ -1621,7 +1769,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((CatPoco)target).NameEng;
         public override void Touch(object target) => ((CatPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).NameEng = (String)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetNameEng((String)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatPoco)target).NameEngCancelChange();
@@ -1643,7 +1791,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((CatPoco)target).NameNat;
         public override void Touch(object target) => ((CatPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).NameNat = (String)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetNameNat((String)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatPoco)target).NameNatCancelChange();
@@ -1665,7 +1813,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsTitleSet();
         public override object? Get(object target) => ((CatPoco)target).Title;
         public override void Touch(object target) => ((CatPoco)target)._is_set_title = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Title = (String)value!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetTitle((String)value!);
         public override bool IsModified(object target) => ((CatPoco)target).IsTitleModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsTitleInitial();
         public override void CancelChange(object target) => ((CatPoco)target).TitleCancelChange();
@@ -1687,7 +1835,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsBreedSet();
         public override object? Get(object target) => ((CatPoco)target).Breed;
         public override void Touch(object target) => ((CatPoco)target)._is_set_breed = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Breed = ((IProjection?)value)?.As<BreedPoco>()!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
         public override bool IsModified(object target) => ((CatPoco)target).IsBreedModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsBreedInitial();
         public override void CancelChange(object target) => ((CatPoco)target).BreedCancelChange();
@@ -1709,7 +1857,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsCatterySet();
         public override object? Get(object target) => ((CatPoco)target).Cattery;
         public override void Touch(object target) => ((CatPoco)target)._is_set_cattery = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Cattery = ((IProjection?)value)?.As<CatteryPoco>()!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
         public override bool IsModified(object target) => ((CatPoco)target).IsCatteryModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsCatteryInitial();
         public override void CancelChange(object target) => ((CatPoco)target).CatteryCancelChange();
@@ -1731,7 +1879,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target).IsLitterSet();
         public override object? Get(object target) => ((CatPoco)target).Litter;
         public override void Touch(object target) => ((CatPoco)target)._is_set_litter = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).Litter = ((IProjection?)value)?.As<LitterPoco>()!;
+        public override void Set(object target, object? value) => ((CatPoco)target).SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
         public override bool IsModified(object target) => ((CatPoco)target).IsLitterModified();
         public override bool IsInitial(object target) => ((CatPoco)target).IsLitterInitial();
         public override void CancelChange(object target) => ((CatPoco)target).LitterCancelChange();
@@ -1918,281 +2066,310 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     
 #region Properties
 
-    public virtual String? Description
+    private void SetDescription(String? value)
     {
-        get => !IsDescriptionSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _description;
-        set
+        if(_description != value)
         {
-            if(_description != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_description != value  && (IsBeingPopulated || _is_set_description || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_description != value  && (IsBeingPopulated || _is_set_description || ((IEntity)this).PocoState is PocoState.Created))
-                    {
                         if (!IsBeingPopulated || IsDescriptionInitial())
-                        {
-                            _description = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_description = value;
-                            _is_set_description = true;
-                        }
-                        OnPocoChanged(DescriptionProp);
-                        OnPropertyChanged();
+                    {
+                        _description = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_description = value;
+                            _is_set_description = true;
+                    }
+                    OnPocoChanged(DescriptionProp);
+                    OnPropertyChanged("Description");
                 }
             }
         }
     }
+    
+
+    public virtual String? Description
+    {
+        get => !IsDescriptionSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _description;
+        set => SetDescription(value);
+    }
+
+    private void SetExterior(String? value)
+    {
+        if(_exterior != value)
+        {
+            lock(_lock)
+            {
+                if(_exterior != value  && (IsBeingPopulated || _is_set_exterior || ((IEntity)this).PocoState is PocoState.Created))
+                {
+                        if (!IsBeingPopulated || IsExteriorInitial())
+                    {
+                        _exterior = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_exterior = value;
+                            _is_set_exterior = true;
+                    }
+                    OnPocoChanged(ExteriorProp);
+                    OnPropertyChanged("Exterior");
+                }
+            }
+        }
+    }
+    
 
     public virtual String? Exterior
     {
         get => !IsExteriorSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _exterior;
-        set
+        set => SetExterior(value);
+    }
+
+    private void SetGender(Gender value)
+    {
+        if(_gender != value)
         {
-            if(_exterior != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_gender != value  && (IsBeingPopulated || _is_set_gender || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_exterior != value  && (IsBeingPopulated || _is_set_exterior || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsGenderInitial())
                     {
-                        if (!IsBeingPopulated || IsExteriorInitial())
-                        {
-                            _exterior = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_exterior = value;
-                            _is_set_exterior = true;
-                        }
-                        OnPocoChanged(ExteriorProp);
-                        OnPropertyChanged();
+                        _gender = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_gender = value;
+                            _is_set_gender = true;
+                    }
+                    OnPocoChanged(GenderProp);
+                    OnPropertyChanged("Gender");
                 }
             }
         }
     }
+    
 
     public virtual Gender Gender
     {
         get => !IsGenderSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _gender;
-        set
+        set => SetGender(value);
+    }
+
+    private void SetNameEng(String? value)
+    {
+        if(_nameEng != value)
         {
-            if(_gender != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_gender != value  && (IsBeingPopulated || _is_set_gender || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsNameEngInitial())
                     {
-                        if (!IsBeingPopulated || IsGenderInitial())
-                        {
-                            _gender = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_gender = value;
-                            _is_set_gender = true;
-                        }
-                        OnPocoChanged(GenderProp);
-                        OnPropertyChanged();
+                        _nameEng = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameEng = value;
+                            _is_set_nameEng = true;
+                    }
+                    OnPocoChanged(NameEngProp);
+                    OnPropertyChanged("NameEng");
                 }
             }
         }
     }
+    
 
     public virtual String? NameEng
     {
         get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
-        set
+        set => SetNameEng(value);
+    }
+
+    private void SetNameNat(String? value)
+    {
+        if(_nameNat != value)
         {
-            if(_nameEng != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsNameNatInitial())
                     {
-                        if (!IsBeingPopulated || IsNameEngInitial())
-                        {
-                            _nameEng = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameEng = value;
-                            _is_set_nameEng = true;
-                        }
-                        OnPocoChanged(NameEngProp);
-                        OnPropertyChanged();
+                        _nameNat = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_nameNat = value;
+                            _is_set_nameNat = true;
+                    }
+                    OnPocoChanged(NameNatProp);
+                    OnPropertyChanged("NameNat");
                 }
             }
         }
     }
+    
 
     public virtual String? NameNat
     {
         get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
-        set
+        set => SetNameNat(value);
+    }
+
+    private void SetTitle(String? value)
+    {
+        if(_title != value)
         {
-            if(_nameNat != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_title != value  && (IsBeingPopulated || _is_set_title || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
+                        if (!IsBeingPopulated || IsTitleInitial())
                     {
-                        if (!IsBeingPopulated || IsNameNatInitial())
-                        {
-                            _nameNat = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_nameNat = value;
-                            _is_set_nameNat = true;
-                        }
-                        OnPocoChanged(NameNatProp);
-                        OnPropertyChanged();
+                        _title = value;
                     }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_title = value;
+                            _is_set_title = true;
+                    }
+                    OnPocoChanged(TitleProp);
+                    OnPropertyChanged("Title");
                 }
             }
         }
     }
+    
 
     public virtual String? Title
     {
         get => !IsTitleSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _title;
-        set
+        set => SetTitle(value);
+    }
+
+    private void SetBreed(BreedPoco value)
+    {
+        if(_breed != value)
         {
-            if(_title != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_breed != value  && (IsBeingPopulated || _is_set_breed || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_title != value  && (IsBeingPopulated || _is_set_title || ((IEntity)this).PocoState is PocoState.Created))
+                        if(_breed is {})
                     {
-                        if (!IsBeingPopulated || IsTitleInitial())
-                        {
-                            _title = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_title = value;
-                            _is_set_title = true;
-                        }
-                        OnPocoChanged(TitleProp);
-                        OnPropertyChanged();
+                        _breed.PocoChanged -= BreedPocoChanged;
                     }
+                        if (!IsBeingPopulated || IsBreedInitial())
+                    {
+                        _breed = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_breed = value;
+                            _is_set_breed = true;
+                    }
+                        if(_breed is {})
+                    {
+                        _breed.PocoChanged += BreedPocoChanged;
+                    }
+                    OnPocoChanged(BreedProp);
+                    OnPropertyChanged("Breed");
                 }
             }
         }
     }
+    
 
     public virtual BreedPoco Breed
     {
         get => !IsBreedSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _breed;
-        set
+        set => SetBreed(value);
+    }
+
+    private void SetCattery(CatteryPoco value)
+    {
+        if(_cattery != value)
         {
-            if(_breed != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_cattery != value  && (IsBeingPopulated || _is_set_cattery || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_breed != value  && (IsBeingPopulated || _is_set_breed || ((IEntity)this).PocoState is PocoState.Created))
+                        if(_cattery is {})
                     {
-                        if(_breed is {})
-                        {
-                            _breed.PocoChanged -= BreedPocoChanged;
-                        }
-                        if (!IsBeingPopulated || IsBreedInitial())
-                        {
-                            _breed = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_breed = value;
-                            _is_set_breed = true;
-                        }
-                        if(_breed is {})
-                        {
-                            _breed.PocoChanged += BreedPocoChanged;
-                        }
-                        OnPocoChanged(BreedProp);
-                        OnPropertyChanged();
+                        _cattery.PocoChanged -= CatteryPocoChanged;
                     }
+                        if (!IsBeingPopulated || IsCatteryInitial())
+                    {
+                        _cattery = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_cattery = value;
+                            _is_set_cattery = true;
+                    }
+                        if(_cattery is {})
+                    {
+                        _cattery.PocoChanged += CatteryPocoChanged;
+                    }
+                    OnPocoChanged(CatteryProp);
+                    OnPropertyChanged("Cattery");
                 }
             }
         }
     }
+    
 
     public virtual CatteryPoco Cattery
     {
         get => !IsCatterySet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _cattery;
-        set
+        set => SetCattery(value);
+    }
+
+    private void SetLitter(LitterPoco? value)
+    {
+        if(_litter != value)
         {
-            if(_cattery != value)
+            lock(_lock)
             {
-                lock(_lock)
+                if(_litter != value  && (IsBeingPopulated || _is_set_litter || ((IEntity)this).PocoState is PocoState.Created))
                 {
-                    if(_cattery != value  && (IsBeingPopulated || _is_set_cattery || ((IEntity)this).PocoState is PocoState.Created))
+                        if(_litter is {})
                     {
-                        if(_cattery is {})
-                        {
-                            _cattery.PocoChanged -= CatteryPocoChanged;
-                        }
-                        if (!IsBeingPopulated || IsCatteryInitial())
-                        {
-                            _cattery = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_cattery = value;
-                            _is_set_cattery = true;
-                        }
-                        if(_cattery is {})
-                        {
-                            _cattery.PocoChanged += CatteryPocoChanged;
-                        }
-                        OnPocoChanged(CatteryProp);
-                        OnPropertyChanged();
+                        _litter.PocoChanged -= LitterPocoChanged;
                     }
+                        if (!IsBeingPopulated || IsLitterInitial())
+                    {
+                        _litter = value;
+                    }
+                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    {
+                        _initial_litter = value;
+                            _is_set_litter = true;
+                    }
+                        if(_litter is {})
+                    {
+                        _litter.PocoChanged += LitterPocoChanged;
+                    }
+                    OnPocoChanged(LitterProp);
+                    OnPropertyChanged("Litter");
                 }
             }
         }
     }
+    
 
     public virtual LitterPoco? Litter
     {
         get => !IsLitterSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _litter;
-        set
-        {
-            if(_litter != value)
-            {
-                lock(_lock)
-                {
-                    if(_litter != value  && (IsBeingPopulated || _is_set_litter || ((IEntity)this).PocoState is PocoState.Created))
-                    {
-                        if(_litter is {})
-                        {
-                            _litter.PocoChanged -= LitterPocoChanged;
-                        }
-                        if (!IsBeingPopulated || IsLitterInitial())
-                        {
-                            _litter = value;
-                        }
-                        if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
-                        {
-                            _initial_litter = value;
-                            _is_set_litter = true;
-                        }
-                        if(_litter is {})
-                        {
-                            _litter.PocoChanged += LitterPocoChanged;
-                        }
-                        OnPocoChanged(LitterProp);
-                        OnPropertyChanged();
-                    }
-                }
-            }
-        }
+        set => SetLitter(value);
     }
+
+    
 
     public virtual ObservableCollection<LitterPoco> Litters
     {

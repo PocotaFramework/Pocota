@@ -6,6 +6,23 @@
 @foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
+    if(!pm.IsList)
+    {
+        <text>    private void @Html.Raw($"Set{pm.Name}({pm.Type}{(pm.IsNullable ? "?" : string.Empty)} value)")
+    { 
+        @if(!pm.IsReadOnly && !pm.IsList) 
+        {
+            <text>        @fieldName = value;
+        @if(Model.IsEntity)
+        {
+            <text>        @Html.Raw($"_is_set{fieldName}") = true;
+</text>
+        }
+</text> 
+        }
+    }
+</text>
+    }
     <text>    public @Html.Raw(pm.Type)@if(pm.IsNullable) {<text>?</text>} @pm.Name 
     { 
         get => @if (Model.IsEntity)
@@ -14,16 +31,7 @@
         } @fieldName; 
         @if(!pm.IsReadOnly && !pm.IsList) 
         {
-            <text>        set
-        {
-            @fieldName = value;
-            @if(Model.IsEntity)
-            {
-                <text>           @Html.Raw($"_is_set{fieldName}") = true;
-</text>
-            }
-
-        }
+            <text>        set => @Html.Raw($"Set{pm.Name}(value)");
 </text> 
         }
     }

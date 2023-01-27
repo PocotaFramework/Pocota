@@ -48,22 +48,22 @@
                 {
                     if(pm.IsPoco)
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name} = ((IProjection?)value)?.As<{(hasProjector ? pm.Class : pm.Type)}>()!")</text>
+                    <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Set{pm.Name}(((IProjection?)value)?.As<{(hasProjector ? pm.Class : pm.Type)}>()!)")</text>
                     }
                     else
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{pm.Name} = ({pm.Type})value!")</text>
+                        <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Set{pm.Name}(({pm.Type})value!)")</text>
                     }
                 }
                 else
                 {
                     if(pm.IsPoco)
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target).{pm.Name} = ((IProjection?)value)?.As<{pm.Type}>()!")</text>
+                        <text>@Html.Raw($"(({Model.ClassName})target).Set{pm.Name}(((IProjection?)value)?.As<{pm.Type}>()!)")</text>
                     }
                     else
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target).{pm.Name} = ({pm.Type})value!")</text>
+                        <text>@Html.Raw($"(({Model.ClassName})target).Set{pm.Name}(({pm.Type})value!)")</text>
                     }
                 }
             }

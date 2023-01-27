@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-26T16:12:24                                          //
+// at 2023-01-27T14:59:52                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -248,11 +248,15 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Properties
 
+    
+
     public virtual ObservableCollection<Tuple<Type,Int32,PocoState,IEntity>> ModifiedPocos
     {
         get => _modifiedPocos;
         set => throw new NotImplementedException();
     }
+
+    
 
     public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
     {

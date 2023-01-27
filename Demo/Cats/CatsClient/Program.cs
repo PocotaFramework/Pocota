@@ -66,7 +66,6 @@ public class Program
 
                 services.AddTransient<SiblingCatsConverter>();
 
-                services.AddScoped<Synchronizer>();
             });
         IHost host = hostBuilder.Build();
 

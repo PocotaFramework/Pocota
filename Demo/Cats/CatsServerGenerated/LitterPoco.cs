@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-26T16:12:24                                  //
+// at 2023-01-27T14:59:51                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -42,7 +42,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterProjection)target).Date;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).Date = (DateOnly)value!;
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetDate((DateOnly)value!);
         }
 
         public class OrderProperty: IProperty
@@ -59,7 +59,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterProjection)target).Order;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_order = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).Order = (Int32)value!;
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetOrder((Int32)value!);
         }
 
         public class FemaleProperty: IProperty
@@ -76,7 +76,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterProjection)target).Female;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_female = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).Female = ((IProjection?)value)?.As<ICat>()!;
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetFemale(((IProjection?)value)?.As<ICat>()!);
         }
 
         public class MaleProperty: IProperty
@@ -93,7 +93,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterProjection)target).Male;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_male = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).Male = ((IProjection?)value)?.As<ICat>()!;
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetMale(((IProjection?)value)?.As<ICat>()!);
         }
 
         public class StringsProperty: IProperty
@@ -149,28 +149,44 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly ProjectionList<CatPoco,ICat> _cats;
 
+        private void SetDate(DateOnly value)
+        {
+            _projector.SetDate((DateOnly)value!);
+        }
         public DateOnly Date 
         {
             get => _projector.Date!;
-            set => _projector.Date = (DateOnly)value!;
+            set => SetDate(value);
         }
 
+        private void SetOrder(Int32 value)
+        {
+            _projector.SetOrder((Int32)value!);
+        }
         public Int32 Order 
         {
             get => _projector.Order!;
-            set => _projector.Order = (Int32)value!;
+            set => SetOrder(value);
         }
 
+        private void SetFemale(ICat value)
+        {
+            _projector.SetFemale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
+            set => SetFemale(value);
         }
 
+        private void SetMale(ICat? value)
+        {
+            _projector.SetMale(((IProjection?)value)?.As<CatPoco>());
+        }
         public ICat? Male 
         {
             get => ((IProjection?)_projector.Male)?.As<ICat>();
-            set => _projector.Male = ((IProjection?)value)?.As<CatPoco>();
+            set => SetMale(value);
         }
 
         public IList<String> Strings 
@@ -234,7 +250,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Date = (DateOnly)value!;
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetDate((DateOnly)value!);
         }
 
         public class OrderProperty: IProperty
@@ -251,7 +267,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Order;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Order = (Int32)value!;
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetOrder((Int32)value!);
         }
 
         public class FemaleProperty: IProperty
@@ -268,7 +284,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Female;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetFemale(((IProjection?)value)?.As<CatPoco>()!);
         }
 
         public class MaleProperty: IProperty
@@ -285,7 +301,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Male;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetMale(((IProjection?)value)?.As<CatPoco>()!);
         }
 
         public class CatsProperty: IProperty
@@ -323,21 +339,37 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
 
+        private void SetDate(DateOnly value)
+        {
+            _projector.SetDate((DateOnly)value!);
+        }
         public DateOnly Date 
         {
             get => _projector.Date!;
         }
 
+        private void SetOrder(Int32 value)
+        {
+            _projector.SetOrder((Int32)value!);
+        }
         public Int32 Order 
         {
             get => _projector.Order!;
         }
 
+        private void SetFemale(ICatAsParent value)
+        {
+            _projector.SetFemale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICatAsParent Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICatAsParent>()!;
         }
 
+        private void SetMale(ICatAsParent? value)
+        {
+            _projector.SetMale(((IProjection?)value)?.As<CatPoco>());
+        }
         public ICatAsParent? Male 
         {
             get => ((IProjection?)_projector.Male)?.As<ICatAsParent>();
@@ -399,7 +431,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForDateProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.Date = (DateOnly)value!;
+            public void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.SetDate((DateOnly)value!);
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -415,6 +447,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         private readonly LitterPoco _projector;
 
 
+        private void SetDate(DateOnly value)
+        {
+            _projector.SetDate((DateOnly)value!);
+        }
         public DateOnly Date 
         {
             get => _projector.Date!;
@@ -470,7 +506,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female;
             public object? Get(object target) => ((LitterILitterWithCatsProjection)target).Female;
             public void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female = true;
-            public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.Female = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.SetFemale(((IProjection?)value)?.As<CatPoco>()!);
         }
 
         public class MaleProperty: IProperty
@@ -487,7 +523,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male;
             public object? Get(object target) => ((LitterILitterWithCatsProjection)target).Male;
             public void Touch(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male = true;
-            public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.Male = ((IProjection?)value)?.As<CatPoco>()!;
+            public void Set(object target, object? value) => ((LitterILitterWithCatsProjection)target)._projector.SetMale(((IProjection?)value)?.As<CatPoco>()!);
         }
 
         public class CatsProperty: IProperty
@@ -523,11 +559,19 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
         private readonly ProjectionList<CatPoco,ICatAsSibling> _cats;
 
+        private void SetFemale(ICatAsParent value)
+        {
+            _projector.SetFemale(((IProjection)value!)?.As<CatPoco>()!);
+        }
         public ICatAsParent Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICatAsParent>()!;
         }
 
+        private void SetMale(ICatAsParent? value)
+        {
+            _projector.SetMale(((IProjection?)value)?.As<CatPoco>());
+        }
         public ICatAsParent? Male 
         {
             get => ((IProjection?)_projector.Male)?.As<ICatAsParent>();
@@ -587,7 +631,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_date;
         public object? Get(object target) => ((LitterPoco)target).Date;
         public void Touch(object target) => ((LitterPoco)target)._is_set_date = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).Date = (DateOnly)value!;
+        public void Set(object target, object? value) => ((LitterPoco)target).SetDate((DateOnly)value!);
     }
 
     public class OrderProperty: IProperty
@@ -604,7 +648,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_order;
         public object? Get(object target) => ((LitterPoco)target).Order;
         public void Touch(object target) => ((LitterPoco)target)._is_set_order = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).Order = (Int32)value!;
+        public void Set(object target, object? value) => ((LitterPoco)target).SetOrder((Int32)value!);
     }
 
     public class FemaleProperty: IProperty
@@ -621,7 +665,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_female;
         public object? Get(object target) => ((LitterPoco)target).Female;
         public void Touch(object target) => ((LitterPoco)target)._is_set_female = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).Female = ((IProjection?)value)?.As<CatPoco>()!;
+        public void Set(object target, object? value) => ((LitterPoco)target).SetFemale(((IProjection?)value)?.As<CatPoco>()!);
     }
 
     public class MaleProperty: IProperty
@@ -638,7 +682,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_male;
         public object? Get(object target) => ((LitterPoco)target).Male;
         public void Touch(object target) => ((LitterPoco)target)._is_set_male = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).Male = ((IProjection?)value)?.As<CatPoco>()!;
+        public void Set(object target, object? value) => ((LitterPoco)target).SetMale(((IProjection?)value)?.As<CatPoco>()!);
     }
 
     public class StringsProperty: IProperty
@@ -778,48 +822,48 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     
 #region Properties
 
+    private void SetDate(DateOnly value)
+    { 
+        _date = value;
+        _is_set_date = true;
+    }
     public DateOnly Date 
     { 
         get => !_is_set_date ? throw new PropertyNotSetException(nameof(Date)) : _date; 
-        set
-        {
-            _date = value;
-           _is_set_date = true;
-
-        }
+        set => SetDate(value);
     }
 
+    private void SetOrder(Int32 value)
+    { 
+        _order = value;
+        _is_set_order = true;
+    }
     public Int32 Order 
     { 
         get => !_is_set_order ? throw new PropertyNotSetException(nameof(Order)) : _order; 
-        set
-        {
-            _order = value;
-           _is_set_order = true;
-
-        }
+        set => SetOrder(value);
     }
 
+    private void SetFemale(CatPoco value)
+    { 
+        _female = value;
+        _is_set_female = true;
+    }
     public CatPoco Female 
     { 
         get => !_is_set_female ? throw new PropertyNotSetException(nameof(Female)) : _female; 
-        set
-        {
-            _female = value;
-           _is_set_female = true;
-
-        }
+        set => SetFemale(value);
     }
 
+    private void SetMale(CatPoco? value)
+    { 
+        _male = value;
+        _is_set_male = true;
+    }
     public CatPoco? Male 
     { 
         get => !_is_set_male ? throw new PropertyNotSetException(nameof(Male)) : _male; 
-        set
-        {
-            _male = value;
-           _is_set_male = true;
-
-        }
+        set => SetMale(value);
     }
 
     public List<String> Strings 
