@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -156,7 +156,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public DateOnly Date 
         {
             get => _projector.Date!;
-            set => SetDate(value);
+            set => _projector.Date = (DateOnly)value!;
         }
 
         private void SetOrder(Int32 value)
@@ -166,7 +166,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public Int32 Order 
         {
             get => _projector.Order!;
-            set => SetOrder(value);
+            set => _projector.Order = (Int32)value!;
         }
 
         private void SetFemale(ICat value)
@@ -176,7 +176,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => SetFemale(value);
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         private void SetMale(ICat? value)
@@ -186,7 +186,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public ICat? Male 
         {
             get => ((IProjection?)_projector.Male)?.As<ICat>();
-            set => SetMale(value);
+            set => _projector.Male = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<String> Strings 

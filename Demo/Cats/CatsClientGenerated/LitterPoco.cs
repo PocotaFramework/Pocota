@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -203,7 +203,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public DateOnly Date 
         {
             get => _projector.Date!;
-            set => SetDate(value);
+            set => _projector.Date = (DateOnly)value!;
         }
 
         private void SetOrder(Int32 value)
@@ -213,7 +213,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public Int32 Order 
         {
             get => _projector.Order!;
-            set => SetOrder(value);
+            set => _projector.Order = (Int32)value!;
         }
 
         private void SetFemale(ICat value)
@@ -223,7 +223,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => SetFemale(value);
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         private void SetMale(ICat? value)
@@ -233,7 +233,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public ICat? Male 
         {
             get => ((IProjection?)_projector.Male)?.As<ICat>();
-            set => SetMale(value);
+            set => _projector.Male = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<String> Strings 
@@ -1022,16 +1022,19 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             lock(_lock)
             {
-                if(_date != value  && (IsBeingPopulated || _is_set_date || ((IEntity)this).PocoState is PocoState.Created))
+                if(_date != value  && (IsBeingPopulated || IsDateSet()))
                 {
-                        if (!IsBeingPopulated || IsDateInitial())
+                    if (!IsBeingPopulated || IsDateInitial())
                     {
                         _date = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_date = value;
-                            _is_set_date = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_date = value;
+                        }
+                        _is_set_date = true;
                     }
                     OnPocoChanged(DateProp);
                     OnPropertyChanged("Date");
@@ -1043,7 +1046,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual DateOnly Date
     {
-        get => !IsDateSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _date;
+        get => !IsDateSet() ? default! : _date;
         set => SetDate(value);
     }
 
@@ -1053,16 +1056,19 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             lock(_lock)
             {
-                if(_order != value  && (IsBeingPopulated || _is_set_order || ((IEntity)this).PocoState is PocoState.Created))
+                if(_order != value  && (IsBeingPopulated || IsOrderSet()))
                 {
-                        if (!IsBeingPopulated || IsOrderInitial())
+                    if (!IsBeingPopulated || IsOrderInitial())
                     {
                         _order = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_order = value;
-                            _is_set_order = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_order = value;
+                        }
+                        _is_set_order = true;
                     }
                     OnPocoChanged(OrderProp);
                     OnPropertyChanged("Order");
@@ -1074,7 +1080,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual Int32 Order
     {
-        get => !IsOrderSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _order;
+        get => !IsOrderSet() ? default! : _order;
         set => SetOrder(value);
     }
 
@@ -1084,24 +1090,29 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             lock(_lock)
             {
-                if(_female != value  && (IsBeingPopulated || _is_set_female || ((IEntity)this).PocoState is PocoState.Created))
+                if(_female != value  && (IsBeingPopulated || IsFemaleSet()))
                 {
-                        if(_female is {})
+                    if(_female is {})
                     {
                         _female.PocoChanged -= FemalePocoChanged;
+                        ((IReferencersCountable)_female).RemoveReferencer(this, FemaleProp);
                     }
-                        if (!IsBeingPopulated || IsFemaleInitial())
+                    if (!IsBeingPopulated || IsFemaleInitial())
                     {
                         _female = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_female = value;
-                            _is_set_female = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_female = value;
+                        }
+                        _is_set_female = true;
                     }
-                        if(_female is {})
+                    if(_female is {})
                     {
                         _female.PocoChanged += FemalePocoChanged;
+                        ((IReferencersCountable)_female).AddReferencer(this, FemaleProp);
                     }
                     OnPocoChanged(FemaleProp);
                     OnPropertyChanged("Female");
@@ -1113,7 +1124,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual CatPoco Female
     {
-        get => !IsFemaleSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _female;
+        get => !IsFemaleSet() ? default! : _female;
         set => SetFemale(value);
     }
 
@@ -1123,24 +1134,29 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         {
             lock(_lock)
             {
-                if(_male != value  && (IsBeingPopulated || _is_set_male || ((IEntity)this).PocoState is PocoState.Created))
+                if(_male != value  && (IsBeingPopulated || IsMaleSet()))
                 {
-                        if(_male is {})
+                    if(_male is {})
                     {
                         _male.PocoChanged -= MalePocoChanged;
+                        ((IReferencersCountable)_male).RemoveReferencer(this, MaleProp);
                     }
-                        if (!IsBeingPopulated || IsMaleInitial())
+                    if (!IsBeingPopulated || IsMaleInitial())
                     {
                         _male = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_male = value;
-                            _is_set_male = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_male = value;
+                        }
+                        _is_set_male = true;
                     }
-                        if(_male is {})
+                    if(_male is {})
                     {
                         _male.PocoChanged += MalePocoChanged;
+                        ((IReferencersCountable)_male).AddReferencer(this, MaleProp);
                     }
                     OnPocoChanged(MaleProp);
                     OnPropertyChanged("Male");
@@ -1152,7 +1168,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual CatPoco? Male
     {
-        get => !IsMaleSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _male;
+        get => !IsMaleSet() ? default! : _male;
         set => SetMale(value);
     }
 
@@ -1160,7 +1176,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual ObservableCollection<String> Strings
     {
-        get => !IsStringsSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _strings;
+        get => !IsStringsSet() ? default! : _strings;
         set => throw new NotImplementedException();
     }
 
@@ -1168,7 +1184,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     public virtual ObservableCollection<CatPoco> Cats
     {
-        get => !IsCatsSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _cats;
+        get => !IsCatsSet() ? default! : _cats;
         set => throw new NotImplementedException();
     }
 
@@ -1268,7 +1284,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     private void DateCancelChange()
     {
-        _date = _initial_date;
+        Date = _initial_date;
 
         OnPocoChanged(DateProp);
         OnPropertyChanged("Date");
@@ -1287,7 +1303,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     private void OrderCancelChange()
     {
-        _order = _initial_order;
+        Order = _initial_order;
 
         OnPocoChanged(OrderProp);
         OnPropertyChanged("Order");
@@ -1306,7 +1322,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     private void FemaleCancelChange()
     {
-        _female = _initial_female;
+        Female = _initial_female;
 
         OnPocoChanged(FemaleProp);
         OnPropertyChanged("Female");
@@ -1325,7 +1341,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
     private void MaleCancelChange()
     {
-        _male = _initial_male;
+        Male = _initial_male;
 
         OnPocoChanged(MaleProp);
         OnPropertyChanged("Male");
@@ -1342,7 +1358,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 foreach (String item in e.OldItems)
                 {
-                    if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if(IsBeingPopulated)
                     {
                         _initial_strings.Remove(item);
                     }
@@ -1354,17 +1370,14 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 {
                     if(IsBeingPopulated || _is_set_strings || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                        if(IsBeingPopulated)
                         {
                             _initial_strings.Add(item);
                         }
                     }
-                    else {
-                        _strings.Remove(item);
-                    }
                 }
             }
-            if(IsBeingPopulated || _is_set_strings || ((IEntity)this).PocoState is PocoState.Created)
+            if(IsBeingPopulated || _is_set_strings)
             {
                 OnPocoChanged(StringsProp);
                 OnPropertyChanged(nameof(Strings));
@@ -1418,7 +1431,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= CatsPocoChanged;
-                    if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    ((IReferencersCountable)item).RemoveReferencer(this, CatsProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_cats.Remove(item);
                     }
@@ -1428,20 +1442,18 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 foreach (CatPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, CatsProp);
                     if(IsBeingPopulated || _is_set_cats || ((IEntity)this).PocoState is PocoState.Created)
                     {
                         item.PocoChanged += CatsPocoChanged;
-                        if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                        if(IsBeingPopulated)
                         {
                             _initial_cats.Add(item);
                         }
                     }
-                    else {
-                        _cats.Remove(item);
-                    }
                 }
             }
-            if(IsBeingPopulated || _is_set_cats || ((IEntity)this).PocoState is PocoState.Created)
+            if(IsBeingPopulated || _is_set_cats)
             {
                 OnPocoChanged(CatsProp);
                 OnPropertyChanged(nameof(Cats));

@@ -151,10 +151,8 @@ internal class PocoContext : IPocoContext
     {
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
         {
-            if(_changedPocos.TryAdd((sender as IEntity)!, string.Empty))
-            {
-                ModifiedPocosChanged?.Invoke(this, new EventArgs());
-            }
+            _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
+            ModifiedPocosChanged?.Invoke(this, new EventArgs());
         }
         else
         {

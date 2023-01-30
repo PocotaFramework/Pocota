@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -151,7 +151,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String Code 
         {
             get => _projector.Code!;
-            set => SetCode(value);
+            set => _projector.Code = (String)value!;
         }
 
         private void SetGroup(String value)
@@ -161,7 +161,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String Group 
         {
             get => _projector.Group!;
-            set => SetGroup(value);
+            set => _projector.Group = (String)value!;
         }
 
         private void SetNameEng(String? value)
@@ -171,7 +171,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => SetNameEng(value);
+            set => _projector.NameEng = (String?)value;
         }
 
         private void SetNameNat(String? value)
@@ -181,7 +181,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => SetNameNat(value);
+            set => _projector.NameNat = (String?)value;
         }
 
 
@@ -377,16 +377,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         {
             lock(_lock)
             {
-                if(_code != value  && (IsBeingPopulated || _is_set_code || ((IEntity)this).PocoState is PocoState.Created))
+                if(_code != value  && (IsBeingPopulated || IsCodeSet()))
                 {
-                        if (!IsBeingPopulated || IsCodeInitial())
+                    if (!IsBeingPopulated || IsCodeInitial())
                     {
                         _code = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_code = value;
-                            _is_set_code = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_code = value;
+                        }
+                        _is_set_code = true;
                     }
                     OnPocoChanged(CodeProp);
                     OnPropertyChanged("Code");
@@ -398,7 +401,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String Code
     {
-        get => !IsCodeSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _code;
+        get => !IsCodeSet() ? default! : _code;
         set => SetCode(value);
     }
 
@@ -408,16 +411,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         {
             lock(_lock)
             {
-                if(_group != value  && (IsBeingPopulated || _is_set_group || ((IEntity)this).PocoState is PocoState.Created))
+                if(_group != value  && (IsBeingPopulated || IsGroupSet()))
                 {
-                        if (!IsBeingPopulated || IsGroupInitial())
+                    if (!IsBeingPopulated || IsGroupInitial())
                     {
                         _group = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_group = value;
-                            _is_set_group = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_group = value;
+                        }
+                        _is_set_group = true;
                     }
                     OnPocoChanged(GroupProp);
                     OnPropertyChanged("Group");
@@ -429,7 +435,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String Group
     {
-        get => !IsGroupSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _group;
+        get => !IsGroupSet() ? default! : _group;
         set => SetGroup(value);
     }
 
@@ -439,16 +445,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         {
             lock(_lock)
             {
-                if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
+                if(_nameEng != value  && (IsBeingPopulated || IsNameEngSet()))
                 {
-                        if (!IsBeingPopulated || IsNameEngInitial())
+                    if (!IsBeingPopulated || IsNameEngInitial())
                     {
                         _nameEng = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_nameEng = value;
-                            _is_set_nameEng = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_nameEng = value;
+                        }
+                        _is_set_nameEng = true;
                     }
                     OnPocoChanged(NameEngProp);
                     OnPropertyChanged("NameEng");
@@ -460,7 +469,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String? NameEng
     {
-        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
+        get => !IsNameEngSet() ? default! : _nameEng;
         set => SetNameEng(value);
     }
 
@@ -470,16 +479,19 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         {
             lock(_lock)
             {
-                if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
+                if(_nameNat != value  && (IsBeingPopulated || IsNameNatSet()))
                 {
-                        if (!IsBeingPopulated || IsNameNatInitial())
+                    if (!IsBeingPopulated || IsNameNatInitial())
                     {
                         _nameNat = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_nameNat = value;
-                            _is_set_nameNat = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_nameNat = value;
+                        }
+                        _is_set_nameNat = true;
                     }
                     OnPocoChanged(NameNatProp);
                     OnPropertyChanged("NameNat");
@@ -491,7 +503,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     public virtual String? NameNat
     {
-        get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
+        get => !IsNameNatSet() ? default! : _nameNat;
         set => SetNameNat(value);
     }
 
@@ -571,7 +583,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     private void CodeCancelChange()
     {
-        _code = _initial_code;
+        Code = _initial_code;
 
         OnPocoChanged(CodeProp);
         OnPropertyChanged("Code");
@@ -590,7 +602,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     private void GroupCancelChange()
     {
-        _group = _initial_group;
+        Group = _initial_group;
 
         OnPocoChanged(GroupProp);
         OnPropertyChanged("Group");
@@ -609,7 +621,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     private void NameEngCancelChange()
     {
-        _nameEng = _initial_nameEng;
+        NameEng = _initial_nameEng;
 
         OnPocoChanged(NameEngProp);
         OnPropertyChanged("NameEng");
@@ -628,7 +640,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     private void NameNatCancelChange()
     {
-        _nameNat = _initial_nameNat;
+        NameNat = _initial_nameNat;
 
         OnPocoChanged(NameNatProp);
         OnPropertyChanged("NameNat");

@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -104,7 +104,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => SetFemale(value);
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         private void SetMale(ICat value)
@@ -114,7 +114,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public ICat Male 
         {
             get => ((IProjection)_projector.Male)?.As<ICat>()!;
-            set => SetMale(value);
+            set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         public IList<String> Strings 

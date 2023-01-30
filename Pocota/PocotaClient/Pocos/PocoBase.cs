@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -50,7 +51,6 @@ public abstract class PocoBase : IPoco
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
     private HashSet<IProperty>? _modified = null;
-
     protected bool _isCreated = false;
 
     protected bool _cancellingChanges = false;
@@ -93,6 +93,7 @@ public abstract class PocoBase : IPoco
         _services = services;
         _pocoContext = (_services.GetRequiredService<IPocoContext>() as PocoContext)!;
         _pocoContext.PocoInstantiated(this);
+        _pocoState = PocoState.Unchanged;
     }
 
     ~PocoBase()
@@ -131,30 +132,26 @@ public abstract class PocoBase : IPoco
         lock (_lock)
         {
             PocoState oldPocoState = ((IPoco)this).PocoState;
-            if (_pocoState is PocoState.Created)
-            {
-                _pocoState = PocoState.Uncertain;
-            }
-            else if (_pocoState is PocoState.Deleted)
-            {
-                if (_isCreated)
-                {
-                    _pocoState = PocoState.Created;
-                }
-                else
-                {
-                    _pocoState = PocoState.Unchanged;
-                }
-            }
             if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
             {
                 try
                 {
                     _cancellingChanges = true;
 
-                    foreach(Property property in _modified)
+                    foreach (Property property in _modified)
                     {
                         property.CancelChange(this);
+                        if(property.Get(this) is EntityBase entity1 && entity1._pocoState is PocoState.Deleted)
+                        {
+                            if (IsEnvelope)
+                            {
+                                property.Set(this, default);
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException($"Unchanged property {property.Name} refers to a deleted entity!");
+                            }
+                        }
                     }
 
                     _modified.Clear();
@@ -164,6 +161,19 @@ public abstract class PocoBase : IPoco
                 finally
                 {
                     _cancellingChanges = false;
+                }
+            }
+            if(this is IEntity entity)
+            {
+                if(entity.PocoState is PocoState.Created)
+                {
+                    entity.Delete();
+                    return;
+                }
+                if (_pocoState is PocoState.Deleted)
+                {
+                    entity.Undelete();
+                    return;
                 }
             }
             PocoState newPocoState = ((IPoco)this).PocoState;

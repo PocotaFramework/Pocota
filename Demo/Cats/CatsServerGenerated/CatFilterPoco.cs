@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -332,7 +332,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public DateOnly? BornAfter 
         {
             get => _projector.BornAfter;
-            set => SetBornAfter(value);
+            set => _projector.BornAfter = (DateOnly?)value;
         }
 
         private void SetBornBefore(DateOnly? value)
@@ -342,7 +342,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public DateOnly? BornBefore 
         {
             get => _projector.BornBefore;
-            set => SetBornBefore(value);
+            set => _projector.BornBefore = (DateOnly?)value;
         }
 
         private void SetExteriorRegex(String? value)
@@ -352,7 +352,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public String? ExteriorRegex 
         {
             get => _projector.ExteriorRegex;
-            set => SetExteriorRegex(value);
+            set => _projector.ExteriorRegex = (String?)value;
         }
 
         private void SetGender(Gender? value)
@@ -362,7 +362,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public Gender? Gender 
         {
             get => _projector.Gender;
-            set => SetGender(value);
+            set => _projector.Gender = (Gender?)value;
         }
 
         private void SetNameRegex(String? value)
@@ -372,7 +372,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public String? NameRegex 
         {
             get => _projector.NameRegex;
-            set => SetNameRegex(value);
+            set => _projector.NameRegex = (String?)value;
         }
 
         private void SetTitleRegex(String? value)
@@ -382,7 +382,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public String? TitleRegex 
         {
             get => _projector.TitleRegex;
-            set => SetTitleRegex(value);
+            set => _projector.TitleRegex = (String?)value;
         }
 
         private void SetAncestor(ICat? value)
@@ -392,7 +392,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Ancestor 
         {
             get => ((IProjection?)_projector.Ancestor)?.As<ICat>();
-            set => SetAncestor(value);
+            set => _projector.Ancestor = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetBreed(IBreed? value)
@@ -402,7 +402,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public IBreed? Breed 
         {
             get => ((IProjection?)_projector.Breed)?.As<IBreed>();
-            set => SetBreed(value);
+            set => _projector.Breed = ((IProjection?)value)?.As<BreedPoco>();
         }
 
         private void SetCattery(ICattery? value)
@@ -412,7 +412,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICattery? Cattery 
         {
             get => ((IProjection?)_projector.Cattery)?.As<ICattery>();
-            set => SetCattery(value);
+            set => _projector.Cattery = ((IProjection?)value)?.As<CatteryPoco>();
         }
 
         private void SetChild(ICat? value)
@@ -422,7 +422,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Child 
         {
             get => ((IProjection?)_projector.Child)?.As<ICat>();
-            set => SetChild(value);
+            set => _projector.Child = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetDescendant(ICat? value)
@@ -432,7 +432,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Descendant 
         {
             get => ((IProjection?)_projector.Descendant)?.As<ICat>();
-            set => SetDescendant(value);
+            set => _projector.Descendant = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetFather(ICat? value)
@@ -442,7 +442,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Father 
         {
             get => ((IProjection?)_projector.Father)?.As<ICat>();
-            set => SetFather(value);
+            set => _projector.Father = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetLitter(ILitter? value)
@@ -452,7 +452,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
-            set => SetLitter(value);
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
         private void SetMother(ICat? value)
@@ -462,7 +462,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Mother 
         {
             get => ((IProjection?)_projector.Mother)?.As<ICat>();
-            set => SetMother(value);
+            set => _projector.Mother = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetSelf(ICat? value)
@@ -472,7 +472,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public ICat? Self 
         {
             get => ((IProjection?)_projector.Self)?.As<ICat>();
-            set => SetSelf(value);
+            set => _projector.Self = ((IProjection?)value)?.As<CatPoco>();
         }
 
 

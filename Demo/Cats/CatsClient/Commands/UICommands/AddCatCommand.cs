@@ -43,9 +43,12 @@ public class AddCatCommand : ICommand
             object?[] values = parameter as object?[] ?? new object?[] { parameter };
             if(values[0] is IList<ILitter> litters)
             {
-                ICat cat = _services.GetRequiredService<ICat>();
-                ((IProjection)cat).As<IEntity>()!.Create();
-                cat.Litter = litters[0];
+                _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() => 
+                {
+                    ICat cat = _services.GetRequiredService<ICat>();
+                    ((IProjection)cat).As<IEntity>()!.Create();
+                    cat.Litter = litters[0];
+                });
             }
         }
     }

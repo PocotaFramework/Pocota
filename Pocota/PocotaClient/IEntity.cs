@@ -7,4 +7,5 @@ public interface IEntity: IPoco
     ImmutableArray<object>? PrimaryKey { get; }
     void Create();
     void Delete();
+    void Undelete();
 }

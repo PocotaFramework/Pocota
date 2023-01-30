@@ -29,7 +29,12 @@
                     <text>                    item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
 </text>
                 }
-                    if(IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
+                    @if(pm.IsEntity)
+                    {
+                        <text>                    ((IReferencersCountable)item).RemoveReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
+</text>
+                    }
+                    if(IsBeingPopulated)
                     {
                         @Html.Raw($"_initial{fieldName}.Remove(item)");
                     }
@@ -39,9 +44,14 @@
             {
                 foreach (@Html.Raw(pm.ItemType) item in e.NewItems)
                 {
+                    @if (pm.IsEntity)
+                    {
+                        <text>                    ((IReferencersCountable)item).AddReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
+</text>
+                    }
                 @if(Model.IsEntity)
                 {
-                    <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
+                <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
                     {
 </text>
                 }
@@ -50,23 +60,20 @@
                     <text>                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
 </text>
                 }
-                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated)
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty){
                         @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"_initial{fieldName}.Add(item)");
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty)}
                 @if(Model.IsEntity)
                 {
                     <text>                    }
-                    else {
-                        @Html.Raw($"{fieldName}.Remove(item)");
-                    }
 </text>
                 }
                 }
             }
                 @if(Model.IsEntity)
                 {
-                    <text>            if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
+                    <text>            if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}"))
             {
 </text>
                 }
@@ -124,6 +131,12 @@
                 @Html.Raw($"{fieldName}.Add(item)");
             }
         }
+
+</text>
+        }
+        else if(!pm.IsReadOnly)
+        {
+            <text>        @Html.Raw($"{pm.Name} = _initial{fieldName}");
 
 </text>
         }

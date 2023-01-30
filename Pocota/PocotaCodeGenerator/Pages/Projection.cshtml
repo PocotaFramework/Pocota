@@ -83,7 +83,7 @@
                 }
                 else
                 {
-                    <text>            set => @Html.Raw($"Set{pm.Name}(value)");
+                <text>            set => @Html.Raw($"_projector.{pm.Name} = ")@if (pm.IsPoco) {<text>@Html.Raw($"((IProjection{(pm.IsNullable ? "?" : string.Empty)})")</text>} else {<text>@Html.Raw($"({(pm.Class is {} ? pm.Class : pm.Type)}{(pm.IsNullable ? "?" : string.Empty)})")</text>}@Html.Raw($"value{(!pm.IsNullable && pm.IsPoco ? "!" : string.Empty)}")@if (pm.IsPoco) { <text>)@Html.Raw($"?.As<{pm.Class}>()")</text>}@if (!pm.IsNullable) {<text>!</text> };
 </text>
                 }
             }

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:52                                  //
+// at 2023-01-30T18:35:34                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -135,7 +135,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public ICat Female 
         {
             get => ((IProjection)_projector.Female)?.As<ICat>()!;
-            set => SetFemale(value);
+            set => _projector.Female = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         private void SetMale(ICat value)
@@ -145,7 +145,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public ICat Male 
         {
             get => ((IProjection)_projector.Male)?.As<ICat>()!;
-            set => SetMale(value);
+            set => _projector.Male = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         public IList<String> Strings 
@@ -321,18 +321,23 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_female != value )
                 {
-                        if(_female is {})
+                    if(_female is {})
                     {
                         _female.PocoChanged -= FemalePocoChanged;
+                        ((IReferencersCountable)_female).RemoveReferencer(this, FemaleProp);
                     }
                         _female = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_female = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_female = value;
+                        }
                     }
-                        if(_female is {})
+                    if(_female is {})
                     {
                         _female.PocoChanged += FemalePocoChanged;
+                        ((IReferencersCountable)_female).AddReferencer(this, FemaleProp);
                     }
                     OnPocoChanged(FemaleProp);
                     OnPropertyChanged("Female");
@@ -356,18 +361,23 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_male != value )
                 {
-                        if(_male is {})
+                    if(_male is {})
                     {
                         _male.PocoChanged -= MalePocoChanged;
+                        ((IReferencersCountable)_male).RemoveReferencer(this, MaleProp);
                     }
                         _male = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_male = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_male = value;
+                        }
                     }
-                        if(_male is {})
+                    if(_male is {})
                     {
                         _male.PocoChanged += MalePocoChanged;
+                        ((IReferencersCountable)_male).AddReferencer(this, MaleProp);
                     }
                     OnPocoChanged(MaleProp);
                     OnPropertyChanged("Male");
@@ -466,7 +476,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
     private void FemaleCancelChange()
     {
-        _female = _initial_female;
+        Female = _initial_female;
 
         OnPocoChanged(FemaleProp);
         OnPropertyChanged("Female");
@@ -487,7 +497,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
     private void MaleCancelChange()
     {
-        _male = _initial_male;
+        Male = _initial_male;
 
         OnPocoChanged(MaleProp);
         OnPropertyChanged("Male");
@@ -508,7 +518,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 foreach (String item in e.OldItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_strings.Remove(item);
                     }
@@ -518,7 +528,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 foreach (String item in e.NewItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_strings.Add(item);
                     }

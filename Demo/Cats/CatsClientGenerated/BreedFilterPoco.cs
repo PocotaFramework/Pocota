@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:34                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -83,7 +83,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public String? SearchRegex 
         {
             get => _projector.SearchRegex;
-            set => SetSearchRegex(value);
+            set => _projector.SearchRegex = (String?)value;
         }
 
 
@@ -200,7 +200,10 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
                         _searchRegex = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_searchRegex = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_searchRegex = value;
+                        }
                     }
                     OnPocoChanged(SearchRegexProp);
                     OnPropertyChanged("SearchRegex");
@@ -286,7 +289,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 
     private void SearchRegexCancelChange()
     {
-        _searchRegex = _initial_searchRegex;
+        SearchRegex = _initial_searchRegex;
 
         OnPocoChanged(SearchRegexProp);
         OnPropertyChanged("SearchRegex");

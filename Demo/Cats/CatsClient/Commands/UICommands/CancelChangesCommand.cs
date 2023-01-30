@@ -1,12 +1,14 @@
-﻿using Net.Leksi.Pocota.Client;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace CatsClient;
 
-public class CancelChangesCommand : MarkupExtension, ICommand
+public class CancelChangesCommand : ICommand
 {
     public event EventHandler? CanExecuteChanged
     {
@@ -18,6 +20,13 @@ public class CancelChangesCommand : MarkupExtension, ICommand
         {
             CommandManager.RequerySuggested -= value;
         }
+    }
+
+    private readonly IServiceProvider _services;
+
+    public CancelChangesCommand(IServiceProvider services)
+    {
+        _services= services;
     }
 
     public bool CanExecute(object? parameter)
@@ -50,12 +59,18 @@ public class CancelChangesCommand : MarkupExtension, ICommand
             && proj.As<IEntity>() is IEntity entity
         )
         {
-            entity.CancelChanges();
+            try
+            {
+                _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
+                {
+                    entity.CancelChanges();
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
         }
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return new CancelChangesCommand();
-    }
 }

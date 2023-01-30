@@ -1,13 +1,12 @@
+using CatsCommon.Filters;
 using CatsCommon.Model;
-using CatsServerEngine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Client;
+using Net.Leksi.Pocota.Common.Generic;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Text;
-using System.Collections;
-using Net.Leksi.Pocota.Server;
 
 namespace TestProject1
 {
@@ -64,6 +63,14 @@ namespace TestProject1
             Console.WriteLine(pl is ICollection<IProjection<LitterPoco>>);
         }
 
+        [Test]
+        public void Test3()
+        {
+            IHost host = GetHost();
+            CatFilterPoco cf = new(host.Services);
+            Console.WriteLine(((Net.Leksi.Pocota.Client.IPoco)cf).PocoState);
+        }
+
         private void Cats_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             StringBuilder sb1 = new();
@@ -103,9 +110,9 @@ namespace TestProject1
         {
             return Host.CreateDefaultBuilder().ConfigureServices(services => 
             {
-                Net.Leksi.Pocota.Server.PocotaExtensions.AddPocota(services, pocota =>
+                PocotaExtensions.AddPocota(services, pocota =>
                 {
-                    pocota.AddTransient<Cat>();
+                    pocota.AddTransient<CatFilterPoco>();
                 },
                     null);
 

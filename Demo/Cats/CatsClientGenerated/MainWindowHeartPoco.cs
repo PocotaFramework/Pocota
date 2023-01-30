@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-27T14:59:52                                          //
+// at 2023-01-30T18:35:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -487,7 +487,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public TimeSpan GetCatsTimeSpent 
         {
             get => _projector.GetCatsTimeSpent!;
-            set => SetGetCatsTimeSpent(value);
+            set => _projector.GetCatsTimeSpent = (TimeSpan)value!;
         }
 
         private void SetIsCatSelected(Boolean value)
@@ -497,7 +497,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public Boolean IsCatSelected 
         {
             get => _projector.IsCatSelected!;
-            set => SetIsCatSelected(value);
+            set => _projector.IsCatSelected = (Boolean)value!;
         }
 
         private void SetRenderingCatsTimeSpent(TimeSpan value)
@@ -507,7 +507,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public TimeSpan RenderingCatsTimeSpent 
         {
             get => _projector.RenderingCatsTimeSpent!;
-            set => SetRenderingCatsTimeSpent(value);
+            set => _projector.RenderingCatsTimeSpent = (TimeSpan)value!;
         }
 
         private void SetCatFilter(ICatFilter value)
@@ -526,7 +526,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public ICatForListing? SelectedCat 
         {
             get => ((IProjection?)_projector.SelectedCat)?.As<ICatForListing>();
-            set => SetSelectedCat(value);
+            set => _projector.SelectedCat = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<IBreed> Breeds 
@@ -1072,7 +1072,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _allBreeds = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_allBreeds = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_allBreeds = value;
+                        }
                     }
                     OnPocoChanged(AllBreedsProp);
                     OnPropertyChanged("AllBreeds");
@@ -1099,7 +1102,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _allBreedsCount = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_allBreedsCount = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_allBreedsCount = value;
+                        }
                     }
                     OnPocoChanged(AllBreedsCountProp);
                     OnPropertyChanged("AllBreedsCount");
@@ -1126,7 +1132,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _allCatteries = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_allCatteries = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_allCatteries = value;
+                        }
                     }
                     OnPocoChanged(AllCatteriesProp);
                     OnPropertyChanged("AllCatteries");
@@ -1153,7 +1162,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _allCatteriesCount = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_allCatteriesCount = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_allCatteriesCount = value;
+                        }
                     }
                     OnPocoChanged(AllCatteriesCountProp);
                     OnPropertyChanged("AllCatteriesCount");
@@ -1180,7 +1192,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _breedsCount = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_breedsCount = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_breedsCount = value;
+                        }
                     }
                     OnPocoChanged(BreedsCountProp);
                     OnPropertyChanged("BreedsCount");
@@ -1207,7 +1222,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _catteriesCount = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_catteriesCount = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_catteriesCount = value;
+                        }
                     }
                     OnPocoChanged(CatteriesCountProp);
                     OnPropertyChanged("CatteriesCount");
@@ -1234,7 +1252,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _getCatsTimeSpent = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_getCatsTimeSpent = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_getCatsTimeSpent = value;
+                        }
                     }
                     OnPocoChanged(GetCatsTimeSpentProp);
                     OnPropertyChanged("GetCatsTimeSpent");
@@ -1261,7 +1282,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _isCatSelected = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_isCatSelected = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_isCatSelected = value;
+                        }
                     }
                     OnPocoChanged(IsCatSelectedProp);
                     OnPropertyChanged("IsCatSelected");
@@ -1288,7 +1312,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _renderingCatsTimeSpent = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_renderingCatsTimeSpent = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_renderingCatsTimeSpent = value;
+                        }
                     }
                     OnPocoChanged(RenderingCatsTimeSpentProp);
                     OnPropertyChanged("RenderingCatsTimeSpent");
@@ -1312,16 +1339,19 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_catFilter != value )
                 {
-                        if(_catFilter is {})
+                    if(_catFilter is {})
                     {
                         _catFilter.PocoChanged -= CatFilterPocoChanged;
                     }
                         _catFilter = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_catFilter = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_catFilter = value;
+                        }
                     }
-                        if(_catFilter is {})
+                    if(_catFilter is {})
                     {
                         _catFilter.PocoChanged += CatFilterPocoChanged;
                     }
@@ -1347,18 +1377,23 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_selectedCat != value )
                 {
-                        if(_selectedCat is {})
+                    if(_selectedCat is {})
                     {
                         _selectedCat.PocoChanged -= SelectedCatPocoChanged;
+                        ((IReferencersCountable)_selectedCat).RemoveReferencer(this, SelectedCatProp);
                     }
                         _selectedCat = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_selectedCat = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_selectedCat = value;
+                        }
                     }
-                        if(_selectedCat is {})
+                    if(_selectedCat is {})
                     {
                         _selectedCat.PocoChanged += SelectedCatPocoChanged;
+                        ((IReferencersCountable)_selectedCat).AddReferencer(this, SelectedCatProp);
                     }
                     OnPocoChanged(SelectedCatProp);
                     OnPropertyChanged("SelectedCat");
@@ -1494,7 +1529,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void AllBreedsCancelChange()
     {
-        _allBreeds = _initial_allBreeds;
+        AllBreeds = _initial_allBreeds;
 
         OnPocoChanged(AllBreedsProp);
         OnPropertyChanged("AllBreeds");
@@ -1515,7 +1550,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void AllBreedsCountCancelChange()
     {
-        _allBreedsCount = _initial_allBreedsCount;
+        AllBreedsCount = _initial_allBreedsCount;
 
         OnPocoChanged(AllBreedsCountProp);
         OnPropertyChanged("AllBreedsCount");
@@ -1536,7 +1571,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void AllCatteriesCancelChange()
     {
-        _allCatteries = _initial_allCatteries;
+        AllCatteries = _initial_allCatteries;
 
         OnPocoChanged(AllCatteriesProp);
         OnPropertyChanged("AllCatteries");
@@ -1557,7 +1592,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void AllCatteriesCountCancelChange()
     {
-        _allCatteriesCount = _initial_allCatteriesCount;
+        AllCatteriesCount = _initial_allCatteriesCount;
 
         OnPocoChanged(AllCatteriesCountProp);
         OnPropertyChanged("AllCatteriesCount");
@@ -1578,7 +1613,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void BreedsCountCancelChange()
     {
-        _breedsCount = _initial_breedsCount;
+        BreedsCount = _initial_breedsCount;
 
         OnPocoChanged(BreedsCountProp);
         OnPropertyChanged("BreedsCount");
@@ -1599,7 +1634,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void CatteriesCountCancelChange()
     {
-        _catteriesCount = _initial_catteriesCount;
+        CatteriesCount = _initial_catteriesCount;
 
         OnPocoChanged(CatteriesCountProp);
         OnPropertyChanged("CatteriesCount");
@@ -1620,7 +1655,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void GetCatsTimeSpentCancelChange()
     {
-        _getCatsTimeSpent = _initial_getCatsTimeSpent;
+        GetCatsTimeSpent = _initial_getCatsTimeSpent;
 
         OnPocoChanged(GetCatsTimeSpentProp);
         OnPropertyChanged("GetCatsTimeSpent");
@@ -1641,7 +1676,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void IsCatSelectedCancelChange()
     {
-        _isCatSelected = _initial_isCatSelected;
+        IsCatSelected = _initial_isCatSelected;
 
         OnPocoChanged(IsCatSelectedProp);
         OnPropertyChanged("IsCatSelected");
@@ -1662,7 +1697,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void RenderingCatsTimeSpentCancelChange()
     {
-        _renderingCatsTimeSpent = _initial_renderingCatsTimeSpent;
+        RenderingCatsTimeSpent = _initial_renderingCatsTimeSpent;
 
         OnPocoChanged(RenderingCatsTimeSpentProp);
         OnPropertyChanged("RenderingCatsTimeSpent");
@@ -1683,7 +1718,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void CatFilterCancelChange()
     {
-        _catFilter = _initial_catFilter;
+        CatFilter = _initial_catFilter;
 
         OnPocoChanged(CatFilterProp);
         OnPropertyChanged("CatFilter");
@@ -1704,7 +1739,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void SelectedCatCancelChange()
     {
-        _selectedCat = _initial_selectedCat;
+        SelectedCat = _initial_selectedCat;
 
         OnPocoChanged(SelectedCatProp);
         OnPropertyChanged("SelectedCat");
@@ -1726,7 +1761,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                 foreach (BreedPoco item in e.OldItems)
                 {
                     item.PocoChanged -= BreedsPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, BreedsProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_breeds.Remove(item);
                     }
@@ -1736,8 +1772,9 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 foreach (BreedPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, BreedsProp);
                     item.PocoChanged += BreedsPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_breeds.Add(item);
                     }
@@ -1795,7 +1832,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= CatsPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, CatsProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_cats.Remove(item);
                     }
@@ -1805,8 +1843,9 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 foreach (CatPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, CatsProp);
                     item.PocoChanged += CatsPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_cats.Add(item);
                     }
@@ -1864,7 +1903,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                 foreach (CatteryPoco item in e.OldItems)
                 {
                     item.PocoChanged -= CatteriesPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, CatteriesProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_catteries.Remove(item);
                     }
@@ -1874,8 +1914,9 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 foreach (CatteryPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, CatteriesProp);
                     item.PocoChanged += CatteriesPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_catteries.Add(item);
                     }
@@ -1933,7 +1974,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= SelectedCatsPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, SelectedCatsProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_selectedCats.Remove(item);
                     }
@@ -1943,8 +1985,9 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 foreach (CatPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, SelectedCatsProp);
                     item.PocoChanged += SelectedCatsPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_selectedCats.Add(item);
                     }

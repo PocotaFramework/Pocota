@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -229,7 +229,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Description 
         {
             get => _projector.Description;
-            set => SetDescription(value);
+            set => _projector.Description = (String?)value;
         }
 
         private void SetExterior(String? value)
@@ -239,7 +239,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Exterior 
         {
             get => _projector.Exterior;
-            set => SetExterior(value);
+            set => _projector.Exterior = (String?)value;
         }
 
         private void SetGender(Gender value)
@@ -249,7 +249,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public Gender Gender 
         {
             get => _projector.Gender!;
-            set => SetGender(value);
+            set => _projector.Gender = (Gender)value!;
         }
 
         private void SetNameEng(String? value)
@@ -259,7 +259,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => SetNameEng(value);
+            set => _projector.NameEng = (String?)value;
         }
 
         private void SetNameNat(String? value)
@@ -269,7 +269,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => SetNameNat(value);
+            set => _projector.NameNat = (String?)value;
         }
 
         private void SetTitle(String? value)
@@ -279,7 +279,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Title 
         {
             get => _projector.Title;
-            set => SetTitle(value);
+            set => _projector.Title = (String?)value;
         }
 
         private void SetBreed(IBreed value)
@@ -289,7 +289,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
-            set => SetBreed(value);
+            set => _projector.Breed = ((IProjection)value!)?.As<BreedPoco>()!;
         }
 
         private void SetCattery(ICattery value)
@@ -299,7 +299,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
-            set => SetCattery(value);
+            set => _projector.Cattery = ((IProjection)value!)?.As<CatteryPoco>()!;
         }
 
         private void SetLitter(ILitter? value)
@@ -309,7 +309,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
-            set => SetLitter(value);
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
         public IList<ILitter> Litters 
@@ -1236,7 +1236,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ILitterWithCats? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterWithCats>();
-            set => SetLitter(value);
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
 

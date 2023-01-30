@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-27T14:59:52                                          //
+// at 2023-01-30T18:35:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -283,7 +283,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public EditKind EditKind 
         {
             get => _projector.EditKind!;
-            set => SetEditKind(value);
+            set => _projector.EditKind = (EditKind)value!;
         }
 
         private void SetFilterChildren(Boolean value)
@@ -293,7 +293,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public Boolean FilterChildren 
         {
             get => _projector.FilterChildren!;
-            set => SetFilterChildren(value);
+            set => _projector.FilterChildren = (Boolean)value!;
         }
 
         private void SetIsChildSelected(Boolean value)
@@ -303,7 +303,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public Boolean IsChildSelected 
         {
             get => _projector.IsChildSelected!;
-            set => SetIsChildSelected(value);
+            set => _projector.IsChildSelected = (Boolean)value!;
         }
 
         private void SetIsSameLitterCatSelected(Boolean value)
@@ -313,7 +313,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public Boolean IsSameLitterCatSelected 
         {
             get => _projector.IsSameLitterCatSelected!;
-            set => SetIsSameLitterCatSelected(value);
+            set => _projector.IsSameLitterCatSelected = (Boolean)value!;
         }
 
         private void SetCat(ICat value)
@@ -323,7 +323,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public ICat Cat 
         {
             get => ((IProjection)_projector.Cat)?.As<ICat>()!;
-            set => SetCat(value);
+            set => _projector.Cat = ((IProjection)value!)?.As<CatPoco>()!;
         }
 
         private void SetSelectedChild(ICat? value)
@@ -333,7 +333,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public ICat? SelectedChild 
         {
             get => ((IProjection?)_projector.SelectedChild)?.As<ICat>();
-            set => SetSelectedChild(value);
+            set => _projector.SelectedChild = ((IProjection?)value)?.As<CatPoco>();
         }
 
         private void SetSelectedSameLitterCat(ICat? value)
@@ -343,7 +343,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public ICat? SelectedSameLitterCat 
         {
             get => ((IProjection?)_projector.SelectedSameLitterCat)?.As<ICat>();
-            set => SetSelectedSameLitterCat(value);
+            set => _projector.SelectedSameLitterCat = ((IProjection?)value)?.As<CatPoco>();
         }
 
         public IList<ICatForListing> Children 
@@ -715,7 +715,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _editKind = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_editKind = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_editKind = value;
+                        }
                     }
                     OnPocoChanged(EditKindProp);
                     OnPropertyChanged("EditKind");
@@ -742,7 +745,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _filterChildren = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_filterChildren = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_filterChildren = value;
+                        }
                     }
                     OnPocoChanged(FilterChildrenProp);
                     OnPropertyChanged("FilterChildren");
@@ -769,7 +775,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _isChildSelected = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_isChildSelected = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_isChildSelected = value;
+                        }
                     }
                     OnPocoChanged(IsChildSelectedProp);
                     OnPropertyChanged("IsChildSelected");
@@ -796,7 +805,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _isSameLitterCatSelected = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_isSameLitterCatSelected = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_isSameLitterCatSelected = value;
+                        }
                     }
                     OnPocoChanged(IsSameLitterCatSelectedProp);
                     OnPropertyChanged("IsSameLitterCatSelected");
@@ -820,18 +832,23 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_cat != value )
                 {
-                        if(_cat is {})
+                    if(_cat is {})
                     {
                         _cat.PocoChanged -= CatPocoChanged;
+                        ((IReferencersCountable)_cat).RemoveReferencer(this, CatProp);
                     }
                         _cat = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_cat = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_cat = value;
+                        }
                     }
-                        if(_cat is {})
+                    if(_cat is {})
                     {
                         _cat.PocoChanged += CatPocoChanged;
+                        ((IReferencersCountable)_cat).AddReferencer(this, CatProp);
                     }
                     OnPocoChanged(CatProp);
                     OnPropertyChanged("Cat");
@@ -855,18 +872,23 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_selectedChild != value )
                 {
-                        if(_selectedChild is {})
+                    if(_selectedChild is {})
                     {
                         _selectedChild.PocoChanged -= SelectedChildPocoChanged;
+                        ((IReferencersCountable)_selectedChild).RemoveReferencer(this, SelectedChildProp);
                     }
                         _selectedChild = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_selectedChild = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_selectedChild = value;
+                        }
                     }
-                        if(_selectedChild is {})
+                    if(_selectedChild is {})
                     {
                         _selectedChild.PocoChanged += SelectedChildPocoChanged;
+                        ((IReferencersCountable)_selectedChild).AddReferencer(this, SelectedChildProp);
                     }
                     OnPocoChanged(SelectedChildProp);
                     OnPropertyChanged("SelectedChild");
@@ -890,18 +912,23 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_selectedSameLitterCat != value )
                 {
-                        if(_selectedSameLitterCat is {})
+                    if(_selectedSameLitterCat is {})
                     {
                         _selectedSameLitterCat.PocoChanged -= SelectedSameLitterCatPocoChanged;
+                        ((IReferencersCountable)_selectedSameLitterCat).RemoveReferencer(this, SelectedSameLitterCatProp);
                     }
                         _selectedSameLitterCat = value;
                     if (IsBeingPopulated )
                     {
-                        _initial_selectedSameLitterCat = value;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_selectedSameLitterCat = value;
+                        }
                     }
-                        if(_selectedSameLitterCat is {})
+                    if(_selectedSameLitterCat is {})
                     {
                         _selectedSameLitterCat.PocoChanged += SelectedSameLitterCatPocoChanged;
+                        ((IReferencersCountable)_selectedSameLitterCat).AddReferencer(this, SelectedSameLitterCatProp);
                     }
                     OnPocoChanged(SelectedSameLitterCatProp);
                     OnPropertyChanged("SelectedSameLitterCat");
@@ -1019,7 +1046,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void EditKindCancelChange()
     {
-        _editKind = _initial_editKind;
+        EditKind = _initial_editKind;
 
         OnPocoChanged(EditKindProp);
         OnPropertyChanged("EditKind");
@@ -1040,7 +1067,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void FilterChildrenCancelChange()
     {
-        _filterChildren = _initial_filterChildren;
+        FilterChildren = _initial_filterChildren;
 
         OnPocoChanged(FilterChildrenProp);
         OnPropertyChanged("FilterChildren");
@@ -1061,7 +1088,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void IsChildSelectedCancelChange()
     {
-        _isChildSelected = _initial_isChildSelected;
+        IsChildSelected = _initial_isChildSelected;
 
         OnPocoChanged(IsChildSelectedProp);
         OnPropertyChanged("IsChildSelected");
@@ -1082,7 +1109,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void IsSameLitterCatSelectedCancelChange()
     {
-        _isSameLitterCatSelected = _initial_isSameLitterCatSelected;
+        IsSameLitterCatSelected = _initial_isSameLitterCatSelected;
 
         OnPocoChanged(IsSameLitterCatSelectedProp);
         OnPropertyChanged("IsSameLitterCatSelected");
@@ -1103,7 +1130,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void CatCancelChange()
     {
-        _cat = _initial_cat;
+        Cat = _initial_cat;
 
         OnPocoChanged(CatProp);
         OnPropertyChanged("Cat");
@@ -1124,7 +1151,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void SelectedChildCancelChange()
     {
-        _selectedChild = _initial_selectedChild;
+        SelectedChild = _initial_selectedChild;
 
         OnPocoChanged(SelectedChildProp);
         OnPropertyChanged("SelectedChild");
@@ -1145,7 +1172,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     private void SelectedSameLitterCatCancelChange()
     {
-        _selectedSameLitterCat = _initial_selectedSameLitterCat;
+        SelectedSameLitterCat = _initial_selectedSameLitterCat;
 
         OnPocoChanged(SelectedSameLitterCatProp);
         OnPropertyChanged("SelectedSameLitterCat");
@@ -1167,7 +1194,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= ChildrenPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, ChildrenProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_children.Remove(item);
                     }
@@ -1177,8 +1205,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 foreach (CatPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, ChildrenProp);
                     item.PocoChanged += ChildrenPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_children.Add(item);
                     }
@@ -1236,7 +1265,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 foreach (LitterPoco item in e.OldItems)
                 {
                     item.PocoChanged -= SelectedLittersPocoChanged;
-                    if(IsBeingPopulated )
+                    ((IReferencersCountable)item).RemoveReferencer(this, SelectedLittersProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_selectedLitters.Remove(item);
                     }
@@ -1246,8 +1276,9 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 foreach (LitterPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, SelectedLittersProp);
                     item.PocoChanged += SelectedLittersPocoChanged;
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_selectedLitters.Add(item);
                     }

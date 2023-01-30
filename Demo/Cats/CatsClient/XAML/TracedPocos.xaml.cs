@@ -14,7 +14,7 @@ namespace CatsClient
         public TracedPocos(IServiceProvider services)
         {
             Heart = services.GetRequiredService<ITracedPocosHeart>();
-            CancelChangesCommand = new();
+            CancelChangesCommand = services.GetRequiredService<CancelChangesCommand>();
             InitializeComponent();
         }
 

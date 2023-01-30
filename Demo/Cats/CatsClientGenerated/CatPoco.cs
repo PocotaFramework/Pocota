@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -296,7 +296,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Description 
         {
             get => _projector.Description;
-            set => SetDescription(value);
+            set => _projector.Description = (String?)value;
         }
 
         private void SetExterior(String? value)
@@ -306,7 +306,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Exterior 
         {
             get => _projector.Exterior;
-            set => SetExterior(value);
+            set => _projector.Exterior = (String?)value;
         }
 
         private void SetGender(Gender value)
@@ -316,7 +316,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public Gender Gender 
         {
             get => _projector.Gender!;
-            set => SetGender(value);
+            set => _projector.Gender = (Gender)value!;
         }
 
         private void SetNameEng(String? value)
@@ -326,7 +326,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => SetNameEng(value);
+            set => _projector.NameEng = (String?)value;
         }
 
         private void SetNameNat(String? value)
@@ -336,7 +336,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => SetNameNat(value);
+            set => _projector.NameNat = (String?)value;
         }
 
         private void SetTitle(String? value)
@@ -346,7 +346,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public String? Title 
         {
             get => _projector.Title;
-            set => SetTitle(value);
+            set => _projector.Title = (String?)value;
         }
 
         private void SetBreed(IBreed value)
@@ -356,7 +356,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public IBreed Breed 
         {
             get => ((IProjection)_projector.Breed)?.As<IBreed>()!;
-            set => SetBreed(value);
+            set => _projector.Breed = ((IProjection)value!)?.As<BreedPoco>()!;
         }
 
         private void SetCattery(ICattery value)
@@ -366,7 +366,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ICattery Cattery 
         {
             get => ((IProjection)_projector.Cattery)?.As<ICattery>()!;
-            set => SetCattery(value);
+            set => _projector.Cattery = ((IProjection)value!)?.As<CatteryPoco>()!;
         }
 
         private void SetLitter(ILitter? value)
@@ -376,7 +376,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ILitter? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitter>();
-            set => SetLitter(value);
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
         public IList<ILitter> Litters 
@@ -1517,7 +1517,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public ILitterWithCats? Litter 
         {
             get => ((IProjection?)_projector.Litter)?.As<ILitterWithCats>();
-            set => SetLitter(value);
+            set => _projector.Litter = ((IProjection?)value)?.As<LitterPoco>();
         }
 
 
@@ -2072,16 +2072,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_description != value  && (IsBeingPopulated || _is_set_description || ((IEntity)this).PocoState is PocoState.Created))
+                if(_description != value  && (IsBeingPopulated || IsDescriptionSet()))
                 {
-                        if (!IsBeingPopulated || IsDescriptionInitial())
+                    if (!IsBeingPopulated || IsDescriptionInitial())
                     {
                         _description = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_description = value;
-                            _is_set_description = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_description = value;
+                        }
+                        _is_set_description = true;
                     }
                     OnPocoChanged(DescriptionProp);
                     OnPropertyChanged("Description");
@@ -2093,7 +2096,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual String? Description
     {
-        get => !IsDescriptionSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _description;
+        get => !IsDescriptionSet() ? default! : _description;
         set => SetDescription(value);
     }
 
@@ -2103,16 +2106,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_exterior != value  && (IsBeingPopulated || _is_set_exterior || ((IEntity)this).PocoState is PocoState.Created))
+                if(_exterior != value  && (IsBeingPopulated || IsExteriorSet()))
                 {
-                        if (!IsBeingPopulated || IsExteriorInitial())
+                    if (!IsBeingPopulated || IsExteriorInitial())
                     {
                         _exterior = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_exterior = value;
-                            _is_set_exterior = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_exterior = value;
+                        }
+                        _is_set_exterior = true;
                     }
                     OnPocoChanged(ExteriorProp);
                     OnPropertyChanged("Exterior");
@@ -2124,7 +2130,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual String? Exterior
     {
-        get => !IsExteriorSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _exterior;
+        get => !IsExteriorSet() ? default! : _exterior;
         set => SetExterior(value);
     }
 
@@ -2134,16 +2140,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_gender != value  && (IsBeingPopulated || _is_set_gender || ((IEntity)this).PocoState is PocoState.Created))
+                if(_gender != value  && (IsBeingPopulated || IsGenderSet()))
                 {
-                        if (!IsBeingPopulated || IsGenderInitial())
+                    if (!IsBeingPopulated || IsGenderInitial())
                     {
                         _gender = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_gender = value;
-                            _is_set_gender = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_gender = value;
+                        }
+                        _is_set_gender = true;
                     }
                     OnPocoChanged(GenderProp);
                     OnPropertyChanged("Gender");
@@ -2155,7 +2164,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual Gender Gender
     {
-        get => !IsGenderSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _gender;
+        get => !IsGenderSet() ? default! : _gender;
         set => SetGender(value);
     }
 
@@ -2165,16 +2174,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_nameEng != value  && (IsBeingPopulated || _is_set_nameEng || ((IEntity)this).PocoState is PocoState.Created))
+                if(_nameEng != value  && (IsBeingPopulated || IsNameEngSet()))
                 {
-                        if (!IsBeingPopulated || IsNameEngInitial())
+                    if (!IsBeingPopulated || IsNameEngInitial())
                     {
                         _nameEng = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_nameEng = value;
-                            _is_set_nameEng = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_nameEng = value;
+                        }
+                        _is_set_nameEng = true;
                     }
                     OnPocoChanged(NameEngProp);
                     OnPropertyChanged("NameEng");
@@ -2186,7 +2198,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual String? NameEng
     {
-        get => !IsNameEngSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameEng;
+        get => !IsNameEngSet() ? default! : _nameEng;
         set => SetNameEng(value);
     }
 
@@ -2196,16 +2208,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_nameNat != value  && (IsBeingPopulated || _is_set_nameNat || ((IEntity)this).PocoState is PocoState.Created))
+                if(_nameNat != value  && (IsBeingPopulated || IsNameNatSet()))
                 {
-                        if (!IsBeingPopulated || IsNameNatInitial())
+                    if (!IsBeingPopulated || IsNameNatInitial())
                     {
                         _nameNat = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_nameNat = value;
-                            _is_set_nameNat = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_nameNat = value;
+                        }
+                        _is_set_nameNat = true;
                     }
                     OnPocoChanged(NameNatProp);
                     OnPropertyChanged("NameNat");
@@ -2217,7 +2232,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual String? NameNat
     {
-        get => !IsNameNatSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _nameNat;
+        get => !IsNameNatSet() ? default! : _nameNat;
         set => SetNameNat(value);
     }
 
@@ -2227,16 +2242,19 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_title != value  && (IsBeingPopulated || _is_set_title || ((IEntity)this).PocoState is PocoState.Created))
+                if(_title != value  && (IsBeingPopulated || IsTitleSet()))
                 {
-                        if (!IsBeingPopulated || IsTitleInitial())
+                    if (!IsBeingPopulated || IsTitleInitial())
                     {
                         _title = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_title = value;
-                            _is_set_title = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_title = value;
+                        }
+                        _is_set_title = true;
                     }
                     OnPocoChanged(TitleProp);
                     OnPropertyChanged("Title");
@@ -2248,7 +2266,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual String? Title
     {
-        get => !IsTitleSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _title;
+        get => !IsTitleSet() ? default! : _title;
         set => SetTitle(value);
     }
 
@@ -2258,24 +2276,29 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_breed != value  && (IsBeingPopulated || _is_set_breed || ((IEntity)this).PocoState is PocoState.Created))
+                if(_breed != value  && (IsBeingPopulated || IsBreedSet()))
                 {
-                        if(_breed is {})
+                    if(_breed is {})
                     {
                         _breed.PocoChanged -= BreedPocoChanged;
+                        ((IReferencersCountable)_breed).RemoveReferencer(this, BreedProp);
                     }
-                        if (!IsBeingPopulated || IsBreedInitial())
+                    if (!IsBeingPopulated || IsBreedInitial())
                     {
                         _breed = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_breed = value;
-                            _is_set_breed = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_breed = value;
+                        }
+                        _is_set_breed = true;
                     }
-                        if(_breed is {})
+                    if(_breed is {})
                     {
                         _breed.PocoChanged += BreedPocoChanged;
+                        ((IReferencersCountable)_breed).AddReferencer(this, BreedProp);
                     }
                     OnPocoChanged(BreedProp);
                     OnPropertyChanged("Breed");
@@ -2287,7 +2310,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual BreedPoco Breed
     {
-        get => !IsBreedSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _breed;
+        get => !IsBreedSet() ? default! : _breed;
         set => SetBreed(value);
     }
 
@@ -2297,24 +2320,29 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_cattery != value  && (IsBeingPopulated || _is_set_cattery || ((IEntity)this).PocoState is PocoState.Created))
+                if(_cattery != value  && (IsBeingPopulated || IsCatterySet()))
                 {
-                        if(_cattery is {})
+                    if(_cattery is {})
                     {
                         _cattery.PocoChanged -= CatteryPocoChanged;
+                        ((IReferencersCountable)_cattery).RemoveReferencer(this, CatteryProp);
                     }
-                        if (!IsBeingPopulated || IsCatteryInitial())
+                    if (!IsBeingPopulated || IsCatteryInitial())
                     {
                         _cattery = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_cattery = value;
-                            _is_set_cattery = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_cattery = value;
+                        }
+                        _is_set_cattery = true;
                     }
-                        if(_cattery is {})
+                    if(_cattery is {})
                     {
                         _cattery.PocoChanged += CatteryPocoChanged;
+                        ((IReferencersCountable)_cattery).AddReferencer(this, CatteryProp);
                     }
                     OnPocoChanged(CatteryProp);
                     OnPropertyChanged("Cattery");
@@ -2326,7 +2354,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual CatteryPoco Cattery
     {
-        get => !IsCatterySet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _cattery;
+        get => !IsCatterySet() ? default! : _cattery;
         set => SetCattery(value);
     }
 
@@ -2336,24 +2364,29 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         {
             lock(_lock)
             {
-                if(_litter != value  && (IsBeingPopulated || _is_set_litter || ((IEntity)this).PocoState is PocoState.Created))
+                if(_litter != value  && (IsBeingPopulated || IsLitterSet()))
                 {
-                        if(_litter is {})
+                    if(_litter is {})
                     {
                         _litter.PocoChanged -= LitterPocoChanged;
+                        ((IReferencersCountable)_litter).RemoveReferencer(this, LitterProp);
                     }
-                        if (!IsBeingPopulated || IsLitterInitial())
+                    if (!IsBeingPopulated || IsLitterInitial())
                     {
                         _litter = value;
                     }
                     if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
                     {
-                        _initial_litter = value;
-                            _is_set_litter = true;
+                        if(IsBeingPopulated)
+                        {
+                            _initial_litter = value;
+                        }
+                        _is_set_litter = true;
                     }
-                        if(_litter is {})
+                    if(_litter is {})
                     {
                         _litter.PocoChanged += LitterPocoChanged;
+                        ((IReferencersCountable)_litter).AddReferencer(this, LitterProp);
                     }
                     OnPocoChanged(LitterProp);
                     OnPropertyChanged("Litter");
@@ -2365,7 +2398,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual LitterPoco? Litter
     {
-        get => !IsLitterSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _litter;
+        get => !IsLitterSet() ? default! : _litter;
         set => SetLitter(value);
     }
 
@@ -2373,7 +2406,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public virtual ObservableCollection<LitterPoco> Litters
     {
-        get => !IsLittersSet() && ((IEntity)this).PocoState is not PocoState.Created ? default! : _litters;
+        get => !IsLittersSet() ? default! : _litters;
         set => throw new NotImplementedException();
     }
 
@@ -2482,7 +2515,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void DescriptionCancelChange()
     {
-        _description = _initial_description;
+        Description = _initial_description;
 
         OnPocoChanged(DescriptionProp);
         OnPropertyChanged("Description");
@@ -2501,7 +2534,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void ExteriorCancelChange()
     {
-        _exterior = _initial_exterior;
+        Exterior = _initial_exterior;
 
         OnPocoChanged(ExteriorProp);
         OnPropertyChanged("Exterior");
@@ -2520,7 +2553,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void GenderCancelChange()
     {
-        _gender = _initial_gender;
+        Gender = _initial_gender;
 
         OnPocoChanged(GenderProp);
         OnPropertyChanged("Gender");
@@ -2539,7 +2572,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void NameEngCancelChange()
     {
-        _nameEng = _initial_nameEng;
+        NameEng = _initial_nameEng;
 
         OnPocoChanged(NameEngProp);
         OnPropertyChanged("NameEng");
@@ -2558,7 +2591,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void NameNatCancelChange()
     {
-        _nameNat = _initial_nameNat;
+        NameNat = _initial_nameNat;
 
         OnPocoChanged(NameNatProp);
         OnPropertyChanged("NameNat");
@@ -2577,7 +2610,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void TitleCancelChange()
     {
-        _title = _initial_title;
+        Title = _initial_title;
 
         OnPocoChanged(TitleProp);
         OnPropertyChanged("Title");
@@ -2596,7 +2629,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void BreedCancelChange()
     {
-        _breed = _initial_breed;
+        Breed = _initial_breed;
 
         OnPocoChanged(BreedProp);
         OnPropertyChanged("Breed");
@@ -2615,7 +2648,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void CatteryCancelChange()
     {
-        _cattery = _initial_cattery;
+        Cattery = _initial_cattery;
 
         OnPocoChanged(CatteryProp);
         OnPropertyChanged("Cattery");
@@ -2634,7 +2667,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     private void LitterCancelChange()
     {
-        _litter = _initial_litter;
+        Litter = _initial_litter;
 
         OnPocoChanged(LitterProp);
         OnPropertyChanged("Litter");
@@ -2652,7 +2685,8 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 foreach (LitterPoco item in e.OldItems)
                 {
                     item.PocoChanged -= LittersPocoChanged;
-                    if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    ((IReferencersCountable)item).RemoveReferencer(this, LittersProp);
+                    if(IsBeingPopulated)
                     {
                         _initial_litters.Remove(item);
                     }
@@ -2662,20 +2696,18 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 foreach (LitterPoco item in e.NewItems)
                 {
+                    ((IReferencersCountable)item).AddReferencer(this, LittersProp);
                     if(IsBeingPopulated || _is_set_litters || ((IEntity)this).PocoState is PocoState.Created)
                     {
                         item.PocoChanged += LittersPocoChanged;
-                        if(IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                        if(IsBeingPopulated)
                         {
                             _initial_litters.Add(item);
                         }
                     }
-                    else {
-                        _litters.Remove(item);
-                    }
                 }
             }
-            if(IsBeingPopulated || _is_set_litters || ((IEntity)this).PocoState is PocoState.Created)
+            if(IsBeingPopulated || _is_set_litters)
             {
                 OnPocoChanged(LittersProp);
                 OnPropertyChanged(nameof(Litters));

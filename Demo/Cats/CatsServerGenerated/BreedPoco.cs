@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -118,7 +118,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String Code 
         {
             get => _projector.Code!;
-            set => SetCode(value);
+            set => _projector.Code = (String)value!;
         }
 
         private void SetGroup(String value)
@@ -128,7 +128,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String Group 
         {
             get => _projector.Group!;
-            set => SetGroup(value);
+            set => _projector.Group = (String)value!;
         }
 
         private void SetNameEng(String? value)
@@ -138,7 +138,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => SetNameEng(value);
+            set => _projector.NameEng = (String?)value;
         }
 
         private void SetNameNat(String? value)
@@ -148,7 +148,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => SetNameNat(value);
+            set => _projector.NameNat = (String?)value;
         }
 
 

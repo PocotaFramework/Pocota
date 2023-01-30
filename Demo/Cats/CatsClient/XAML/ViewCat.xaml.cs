@@ -42,6 +42,7 @@ public partial class ViewCat : Window
     public AddCatCommand AddCatCommand { get; init; }
 
     public SetCatFilterCommand SetCatFilterCommand { get; init; }
+    public CancelChangesCommand CancelChangesCommand { get; init; }
 
     public bool IsLitterSelected => LittersDataGrid.SelectedItems.Count == 1;
 
@@ -62,10 +63,10 @@ public partial class ViewCat : Window
         SetCatFilterCommand = mainWindow.SetCatFilterCommand;
         CopyEntityReferenceCommand = services.GetRequiredService<CopyEntitiesReferencesCommand>();
         AddCatCommand = _services.GetRequiredService<AddCatCommand>();
+        CancelChangesCommand = services.GetRequiredService<CancelChangesCommand>();
 
         Heart = _services.GetRequiredService<IViewCatHeart>();
         ((INotifyPropertyChanged)Heart).PropertyChanged += ViewCat_PropertyChanged;
-        ChildrenSource.Source = Heart.Children;
         ChildrenSource.Filter += Heart.ChildrenFilter;
 
         InitializeComponent();
@@ -87,6 +88,7 @@ public partial class ViewCat : Window
     {
         if (nameof(Heart.Cat).Equals(e.PropertyName))
         {
+            ChildrenSource.Source = Heart.Children;
             LittersSource.Source = Heart.Cat.Litters;
             ChildrenSource.View.Refresh();
         }

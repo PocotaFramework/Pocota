@@ -23,19 +23,24 @@
         {
             lock(_lock)
             {
-                if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)</text>})
+                if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"Is{pm.Name}Set()"))</text>})
                 {
                     @if(pm.IsPoco)
                     {
-                        <text>                        if(@fieldName is {})
+                        <text>                    if(@fieldName is {})
                     {
                         @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
+                        @if (pm.IsEntity)
+                        {
+                            <text>                        ((IReferencersCountable)@fieldName).RemoveReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
+</text>
+                        }
                     }
 </text>   
                     }
                     @if (Model.IsEntity)
                     {
-                    <text>                        if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
+                    <text>                    if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
                     {
                         @fieldName = value;
                     }
@@ -48,18 +53,26 @@
                     }
                     if (IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
                     {
-                        @Html.Raw($"_initial{fieldName}") = value;
+                        if(IsBeingPopulated)
+                        {
+                            @Html.Raw($"_initial{fieldName}") = value;
+                        }
                         @if (Model.IsEntity)
                         {
-                            <text>                            @Html.Raw($"_is_set{fieldName}") = true;
+                            <text>                        @Html.Raw($"_is_set{fieldName}") = true;
 </text>
                         }
                     }
                     @if(pm.IsPoco)
                     {
-                        <text>                        if(@fieldName is {})
+                        <text>                    if(@fieldName is {})
                     {
                         @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged");
+                        @if (pm.IsEntity)
+                        {
+                            <text>                        ((IReferencersCountable)@fieldName).AddReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
+</text>
+                        }
                     }
 </text>   
                     }
@@ -78,7 +91,7 @@
 
     public virtual @Html.Raw(pm.Type)@if (pm.IsNullable) {<text>?</text> } @pm.Name
     {
-        get => @if(Model.IsEntity){<text>@Html.Raw($"!Is{pm.Name}Set() && ((IEntity)this).PocoState is not PocoState.Created") ? default! : </text>}@fieldName;
+        get => @if(Model.IsEntity){<text>@Html.Raw($"!Is{pm.Name}Set()") ? default! : </text>}@fieldName;
     @if(!pm.IsReadOnly)
     {
         if(pm.IsList)

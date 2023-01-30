@@ -33,10 +33,16 @@ public class ViewCatHeart : ViewCatHeartPoco
                     {
                         filter.Father = base.Cat.As<ICat>();
                     }
+                    findCats.Executed += FindCats_Executed;
                     findCats.Execute(new FindCatsCommand.Parameter { Filter = filter, Target = As<IViewCatHeart>()!.Children });
                 }
             }
         }
+    }
+
+    private void FindCats_Executed(object sender, Net.Leksi.Pocota.Client.Crud.CrudCommandExecutedEventArgs args)
+    {
+        ;
     }
 
     public override bool FilterChildren 

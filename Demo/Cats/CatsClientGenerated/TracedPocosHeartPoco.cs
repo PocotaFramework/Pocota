@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-27T14:59:52                                          //
+// at 2023-01-30T18:35:34                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -337,7 +337,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             {
                 foreach (Tuple<Type,Int32,PocoState,IEntity> item in e.OldItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_modifiedPocos.Remove(item);
                     }
@@ -347,7 +347,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             {
                 foreach (Tuple<Type,Int32,PocoState,IEntity> item in e.NewItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_modifiedPocos.Add(item);
                     }
@@ -404,7 +404,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             {
                 foreach (Tuple<Type,Int32> item in e.OldItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_tracedPocos.Remove(item);
                     }
@@ -414,7 +414,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             {
                 foreach (Tuple<Type,Int32> item in e.NewItems)
                 {
-                    if(IsBeingPopulated )
+                    if(IsBeingPopulated)
                     {
                         _initial_tracedPocos.Add(item);
                     }

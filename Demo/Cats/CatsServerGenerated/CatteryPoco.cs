@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-27T14:59:51                                  //
+// at 2023-01-30T18:35:33                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -82,7 +82,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public String? NameEng 
         {
             get => _projector.NameEng;
-            set => SetNameEng(value);
+            set => _projector.NameEng = (String?)value;
         }
 
         private void SetNameNat(String? value)
@@ -92,7 +92,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public String? NameNat 
         {
             get => _projector.NameNat;
-            set => SetNameNat(value);
+            set => _projector.NameNat = (String?)value;
         }
 
 

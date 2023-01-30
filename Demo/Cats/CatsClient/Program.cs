@@ -29,8 +29,8 @@ public class Program
                 services.AddPocota(
                     configurePocos: serv =>
                     {
-                        serv.AddTransient<CatPoco>();
-                        serv.AddTransient<LitterPoco>();
+                        serv.AddTransient<Cat>();
+                        serv.AddTransient<Litter>();
                         serv.AddTransient<BreedPoco>();
                         serv.AddTransient<CatteryPoco>();
                         serv.AddTransient<CatFilter>();
@@ -60,6 +60,7 @@ public class Program
                 services.AddTransient<FindSiblingsCatsCommand>();
                 services.AddTransient<AddLitterCommand>();
                 services.AddTransient<AddCatCommand>();
+                services.AddTransient<CancelChangesCommand>();
 
                 services.AddScoped<CopyEntitiesReferencesCommand>();
                 services.AddScoped<PasteParentCommand>();
@@ -70,6 +71,8 @@ public class Program
         IHost host = hostBuilder.Build();
 
         App app = host.Services.GetRequiredService<App>()!;
+        app.DispatcherUnhandledException += app.Application_DispatcherUnhandledException;
         app.Run(host.Services.GetRequiredService<MainWindow>());
     }
+
 }
