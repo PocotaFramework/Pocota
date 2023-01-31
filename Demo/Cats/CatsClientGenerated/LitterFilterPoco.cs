@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:34                                  //
+// at 2023-01-31T16:17:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -324,7 +324,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                     if(_female is {})
                     {
                         _female.PocoChanged -= FemalePocoChanged;
-                        ((IReferencersCountable)_female).RemoveReferencer(this, FemaleProp);
+                        _female.DeletionRequested -= FemaleDeletionRequested;
                     }
                         _female = value;
                     if (IsBeingPopulated )
@@ -337,10 +337,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                     if(_female is {})
                     {
                         _female.PocoChanged += FemalePocoChanged;
-                        ((IReferencersCountable)_female).AddReferencer(this, FemaleProp);
+                        _female.DeletionRequested += FemaleDeletionRequested;
                     }
                     OnPocoChanged(FemaleProp);
-                    OnPropertyChanged("Female");
+                    OnPropertyChanged(nameof(Female));
                 }
             }
         }
@@ -364,7 +364,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                     if(_male is {})
                     {
                         _male.PocoChanged -= MalePocoChanged;
-                        ((IReferencersCountable)_male).RemoveReferencer(this, MaleProp);
+                        _male.DeletionRequested -= MaleDeletionRequested;
                     }
                         _male = value;
                     if (IsBeingPopulated )
@@ -377,10 +377,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                     if(_male is {})
                     {
                         _male.PocoChanged += MalePocoChanged;
-                        ((IReferencersCountable)_male).AddReferencer(this, MaleProp);
+                        _male.DeletionRequested += MaleDeletionRequested;
                     }
                     OnPocoChanged(MaleProp);
-                    OnPropertyChanged("Male");
+                    OnPropertyChanged(nameof(Male));
                 }
             }
         }
@@ -464,9 +464,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 #region Poco Changed
 
     protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-
+    protected virtual void FemaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-
+    protected virtual void MaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
 
     private bool IsFemaleInitial() => _initial_female == _female;
 
@@ -477,9 +477,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     private void FemaleCancelChange()
     {
         Female = _initial_female;
-
-        OnPocoChanged(FemaleProp);
-        OnPropertyChanged("Female");
 
     }
 
@@ -498,9 +495,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     private void MaleCancelChange()
     {
         Male = _initial_male;
-
-        OnPocoChanged(MaleProp);
-        OnPropertyChanged("Male");
 
     }
 
@@ -566,9 +560,6 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                 _strings.Add(item);
             }
         }
-
-        OnPocoChanged(StringsProp);
-        OnPropertyChanged("Strings");
 
     }
 

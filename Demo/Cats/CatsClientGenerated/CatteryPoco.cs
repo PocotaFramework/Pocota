@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:33                                  //
+// at 2023-01-31T16:17:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -270,7 +270,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                         _is_set_nameEng = true;
                     }
                     OnPocoChanged(NameEngProp);
-                    OnPropertyChanged("NameEng");
+                    OnPropertyChanged(nameof(NameEng));
                 }
             }
         }
@@ -304,7 +304,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
                         _is_set_nameNat = true;
                     }
                     OnPocoChanged(NameNatProp);
-                    OnPropertyChanged("NameNat");
+                    OnPropertyChanged(nameof(NameNat));
                 }
             }
         }
@@ -395,9 +395,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     {
         NameEng = _initial_nameEng;
 
-        OnPocoChanged(NameEngProp);
-        OnPropertyChanged("NameEng");
-
     }
 
 
@@ -413,9 +410,6 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     private void NameNatCancelChange()
     {
         NameNat = _initial_nameNat;
-
-        OnPocoChanged(NameNatProp);
-        OnPropertyChanged("NameNat");
 
     }
 

@@ -1,9 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client.Context;
-using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -11,6 +9,8 @@ namespace Net.Leksi.Pocota.Client;
 
 public abstract class PocoBase : IPoco
 {
+    public event EventHandler<EventArgs>? DeletionRequested;
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     public event PocoChangedEventHandler? PocoChanged
@@ -99,6 +99,7 @@ public abstract class PocoBase : IPoco
     ~PocoBase()
     {
         _pocoContext.PocoFinalized(this);
+        Console.WriteLine($"finalize {GetType()}:{GetHashCode()}");
     }
 
     void IPoco.AcceptChanges()

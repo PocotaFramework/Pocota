@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-30T18:35:34                                          //
+// at 2023-01-31T16:17:42                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -386,9 +386,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             }
         }
 
-        OnPocoChanged(ModifiedPocosProp);
-        OnPropertyChanged("ModifiedPocos");
-
     }
 
     private void ModifiedPocosAcceptChange()
@@ -452,9 +449,6 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
                 _tracedPocos.Add(item);
             }
         }
-
-        OnPocoChanged(TracedPocosProp);
-        OnPropertyChanged("TracedPocos");
 
     }
 

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:33                                  //
+// at 2023-01-31T16:17:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1037,7 +1037,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                         _is_set_date = true;
                     }
                     OnPocoChanged(DateProp);
-                    OnPropertyChanged("Date");
+                    OnPropertyChanged(nameof(Date));
                 }
             }
         }
@@ -1071,7 +1071,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                         _is_set_order = true;
                     }
                     OnPocoChanged(OrderProp);
-                    OnPropertyChanged("Order");
+                    OnPropertyChanged(nameof(Order));
                 }
             }
         }
@@ -1095,7 +1095,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     if(_female is {})
                     {
                         _female.PocoChanged -= FemalePocoChanged;
-                        ((IReferencersCountable)_female).RemoveReferencer(this, FemaleProp);
+                        _female.DeletionRequested -= FemaleDeletionRequested;
                     }
                     if (!IsBeingPopulated || IsFemaleInitial())
                     {
@@ -1112,10 +1112,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     if(_female is {})
                     {
                         _female.PocoChanged += FemalePocoChanged;
-                        ((IReferencersCountable)_female).AddReferencer(this, FemaleProp);
+                        _female.DeletionRequested += FemaleDeletionRequested;
                     }
                     OnPocoChanged(FemaleProp);
-                    OnPropertyChanged("Female");
+                    OnPropertyChanged(nameof(Female));
                 }
             }
         }
@@ -1139,7 +1139,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     if(_male is {})
                     {
                         _male.PocoChanged -= MalePocoChanged;
-                        ((IReferencersCountable)_male).RemoveReferencer(this, MaleProp);
+                        _male.DeletionRequested -= MaleDeletionRequested;
                     }
                     if (!IsBeingPopulated || IsMaleInitial())
                     {
@@ -1156,10 +1156,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                     if(_male is {})
                     {
                         _male.PocoChanged += MalePocoChanged;
-                        ((IReferencersCountable)_male).AddReferencer(this, MaleProp);
+                        _male.DeletionRequested += MaleDeletionRequested;
                     }
                     OnPocoChanged(MaleProp);
-                    OnPropertyChanged("Male");
+                    OnPropertyChanged(nameof(Male));
                 }
             }
         }
@@ -1268,11 +1268,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 #region Poco Changed
 
     protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-
+    protected virtual void FemaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-
+    protected virtual void MaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void CatsPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
-
+    protected virtual void CatsDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
 
     private bool IsDateInitial() => _initial_date == _date;
 
@@ -1285,9 +1285,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     private void DateCancelChange()
     {
         Date = _initial_date;
-
-        OnPocoChanged(DateProp);
-        OnPropertyChanged("Date");
 
     }
 
@@ -1305,9 +1302,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     {
         Order = _initial_order;
 
-        OnPocoChanged(OrderProp);
-        OnPropertyChanged("Order");
-
     }
 
 
@@ -1324,9 +1318,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     {
         Female = _initial_female;
 
-        OnPocoChanged(FemaleProp);
-        OnPropertyChanged("Female");
-
     }
 
 
@@ -1342,9 +1333,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     private void MaleCancelChange()
     {
         Male = _initial_male;
-
-        OnPocoChanged(MaleProp);
-        OnPropertyChanged("Male");
 
     }
 
@@ -1415,9 +1403,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             }
         }
 
-        OnPocoChanged(StringsProp);
-        OnPropertyChanged("Strings");
-
     }
 
 
@@ -1431,7 +1416,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= CatsPocoChanged;
-                    ((IReferencersCountable)item).RemoveReferencer(this, CatsProp);
+                    item.DeletionRequested -= CatsDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_cats.Remove(item);
@@ -1442,10 +1427,10 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 foreach (CatPoco item in e.NewItems)
                 {
-                    ((IReferencersCountable)item).AddReferencer(this, CatsProp);
                     if(IsBeingPopulated || _is_set_cats || ((IEntity)this).PocoState is PocoState.Created)
                     {
                         item.PocoChanged += CatsPocoChanged;
+                        item.DeletionRequested += CatsDeletionRequested;
                         if(IsBeingPopulated)
                         {
                             _initial_cats.Add(item);
@@ -1490,9 +1475,6 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                 _cats.Add(item);
             }
         }
-
-        OnPocoChanged(CatsProp);
-        OnPropertyChanged("Cats");
 
     }
 

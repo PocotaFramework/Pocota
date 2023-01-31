@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:33                                  //
+// at 2023-01-31T16:17:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -392,7 +392,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         _is_set_code = true;
                     }
                     OnPocoChanged(CodeProp);
-                    OnPropertyChanged("Code");
+                    OnPropertyChanged(nameof(Code));
                 }
             }
         }
@@ -426,7 +426,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         _is_set_group = true;
                     }
                     OnPocoChanged(GroupProp);
-                    OnPropertyChanged("Group");
+                    OnPropertyChanged(nameof(Group));
                 }
             }
         }
@@ -460,7 +460,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         _is_set_nameEng = true;
                     }
                     OnPocoChanged(NameEngProp);
-                    OnPropertyChanged("NameEng");
+                    OnPropertyChanged(nameof(NameEng));
                 }
             }
         }
@@ -494,7 +494,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         _is_set_nameNat = true;
                     }
                     OnPocoChanged(NameNatProp);
-                    OnPropertyChanged("NameNat");
+                    OnPropertyChanged(nameof(NameNat));
                 }
             }
         }
@@ -585,9 +585,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     {
         Code = _initial_code;
 
-        OnPocoChanged(CodeProp);
-        OnPropertyChanged("Code");
-
     }
 
 
@@ -603,9 +600,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     private void GroupCancelChange()
     {
         Group = _initial_group;
-
-        OnPocoChanged(GroupProp);
-        OnPropertyChanged("Group");
 
     }
 
@@ -623,9 +617,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     {
         NameEng = _initial_nameEng;
 
-        OnPocoChanged(NameEngProp);
-        OnPropertyChanged("NameEng");
-
     }
 
 
@@ -641,9 +632,6 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     private void NameNatCancelChange()
     {
         NameNat = _initial_nameNat;
-
-        OnPocoChanged(NameNatProp);
-        OnPropertyChanged("NameNat");
 
     }
 

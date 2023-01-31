@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-30T18:35:34                                          //
+// at 2023-01-31T16:17:42                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -721,7 +721,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         }
                     }
                     OnPocoChanged(EditKindProp);
-                    OnPropertyChanged("EditKind");
+                    OnPropertyChanged(nameof(EditKind));
                 }
             }
         }
@@ -751,7 +751,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         }
                     }
                     OnPocoChanged(FilterChildrenProp);
-                    OnPropertyChanged("FilterChildren");
+                    OnPropertyChanged(nameof(FilterChildren));
                 }
             }
         }
@@ -781,7 +781,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         }
                     }
                     OnPocoChanged(IsChildSelectedProp);
-                    OnPropertyChanged("IsChildSelected");
+                    OnPropertyChanged(nameof(IsChildSelected));
                 }
             }
         }
@@ -811,7 +811,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         }
                     }
                     OnPocoChanged(IsSameLitterCatSelectedProp);
-                    OnPropertyChanged("IsSameLitterCatSelected");
+                    OnPropertyChanged(nameof(IsSameLitterCatSelected));
                 }
             }
         }
@@ -835,7 +835,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_cat is {})
                     {
                         _cat.PocoChanged -= CatPocoChanged;
-                        ((IReferencersCountable)_cat).RemoveReferencer(this, CatProp);
+                        _cat.DeletionRequested -= CatDeletionRequested;
                     }
                         _cat = value;
                     if (IsBeingPopulated )
@@ -848,10 +848,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_cat is {})
                     {
                         _cat.PocoChanged += CatPocoChanged;
-                        ((IReferencersCountable)_cat).AddReferencer(this, CatProp);
+                        _cat.DeletionRequested += CatDeletionRequested;
                     }
                     OnPocoChanged(CatProp);
-                    OnPropertyChanged("Cat");
+                    OnPropertyChanged(nameof(Cat));
                 }
             }
         }
@@ -875,7 +875,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_selectedChild is {})
                     {
                         _selectedChild.PocoChanged -= SelectedChildPocoChanged;
-                        ((IReferencersCountable)_selectedChild).RemoveReferencer(this, SelectedChildProp);
+                        _selectedChild.DeletionRequested -= SelectedChildDeletionRequested;
                     }
                         _selectedChild = value;
                     if (IsBeingPopulated )
@@ -888,10 +888,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_selectedChild is {})
                     {
                         _selectedChild.PocoChanged += SelectedChildPocoChanged;
-                        ((IReferencersCountable)_selectedChild).AddReferencer(this, SelectedChildProp);
+                        _selectedChild.DeletionRequested += SelectedChildDeletionRequested;
                     }
                     OnPocoChanged(SelectedChildProp);
-                    OnPropertyChanged("SelectedChild");
+                    OnPropertyChanged(nameof(SelectedChild));
                 }
             }
         }
@@ -915,7 +915,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_selectedSameLitterCat is {})
                     {
                         _selectedSameLitterCat.PocoChanged -= SelectedSameLitterCatPocoChanged;
-                        ((IReferencersCountable)_selectedSameLitterCat).RemoveReferencer(this, SelectedSameLitterCatProp);
+                        _selectedSameLitterCat.DeletionRequested -= SelectedSameLitterCatDeletionRequested;
                     }
                         _selectedSameLitterCat = value;
                     if (IsBeingPopulated )
@@ -928,10 +928,10 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                     if(_selectedSameLitterCat is {})
                     {
                         _selectedSameLitterCat.PocoChanged += SelectedSameLitterCatPocoChanged;
-                        ((IReferencersCountable)_selectedSameLitterCat).AddReferencer(this, SelectedSameLitterCatProp);
+                        _selectedSameLitterCat.DeletionRequested += SelectedSameLitterCatDeletionRequested;
                     }
                     OnPocoChanged(SelectedSameLitterCatProp);
-                    OnPropertyChanged("SelectedSameLitterCat");
+                    OnPropertyChanged(nameof(SelectedSameLitterCat));
                 }
             }
         }
@@ -1028,15 +1028,15 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 #region Poco Changed
 
     protected virtual void CatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cat));
-
+    protected virtual void CatDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void SelectedChildPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedChild));
-
+    protected virtual void SelectedChildDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void SelectedSameLitterCatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedSameLitterCat));
-
+    protected virtual void SelectedSameLitterCatDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void ChildrenPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Children));
-
+    protected virtual void ChildrenDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void SelectedLittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedLitters));
-
+    protected virtual void SelectedLittersDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
 
     private bool IsEditKindInitial() => _initial_editKind == _editKind;
 
@@ -1047,9 +1047,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private void EditKindCancelChange()
     {
         EditKind = _initial_editKind;
-
-        OnPocoChanged(EditKindProp);
-        OnPropertyChanged("EditKind");
 
     }
 
@@ -1069,9 +1066,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         FilterChildren = _initial_filterChildren;
 
-        OnPocoChanged(FilterChildrenProp);
-        OnPropertyChanged("FilterChildren");
-
     }
 
     private void FilterChildrenAcceptChange()
@@ -1089,9 +1083,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private void IsChildSelectedCancelChange()
     {
         IsChildSelected = _initial_isChildSelected;
-
-        OnPocoChanged(IsChildSelectedProp);
-        OnPropertyChanged("IsChildSelected");
 
     }
 
@@ -1111,9 +1102,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         IsSameLitterCatSelected = _initial_isSameLitterCatSelected;
 
-        OnPocoChanged(IsSameLitterCatSelectedProp);
-        OnPropertyChanged("IsSameLitterCatSelected");
-
     }
 
     private void IsSameLitterCatSelectedAcceptChange()
@@ -1131,9 +1119,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     private void CatCancelChange()
     {
         Cat = _initial_cat;
-
-        OnPocoChanged(CatProp);
-        OnPropertyChanged("Cat");
 
     }
 
@@ -1153,9 +1138,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         SelectedChild = _initial_selectedChild;
 
-        OnPocoChanged(SelectedChildProp);
-        OnPropertyChanged("SelectedChild");
-
     }
 
     private void SelectedChildAcceptChange()
@@ -1174,9 +1156,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     {
         SelectedSameLitterCat = _initial_selectedSameLitterCat;
 
-        OnPocoChanged(SelectedSameLitterCatProp);
-        OnPropertyChanged("SelectedSameLitterCat");
-
     }
 
     private void SelectedSameLitterCatAcceptChange()
@@ -1194,7 +1173,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 foreach (CatPoco item in e.OldItems)
                 {
                     item.PocoChanged -= ChildrenPocoChanged;
-                    ((IReferencersCountable)item).RemoveReferencer(this, ChildrenProp);
+                    item.DeletionRequested -= ChildrenDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_children.Remove(item);
@@ -1205,8 +1184,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 foreach (CatPoco item in e.NewItems)
                 {
-                    ((IReferencersCountable)item).AddReferencer(this, ChildrenProp);
                     item.PocoChanged += ChildrenPocoChanged;
+                    item.DeletionRequested += ChildrenDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_children.Add(item);
@@ -1246,9 +1225,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             }
         }
 
-        OnPocoChanged(ChildrenProp);
-        OnPropertyChanged("Children");
-
     }
 
     private void ChildrenAcceptChange()
@@ -1265,7 +1241,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 foreach (LitterPoco item in e.OldItems)
                 {
                     item.PocoChanged -= SelectedLittersPocoChanged;
-                    ((IReferencersCountable)item).RemoveReferencer(this, SelectedLittersProp);
+                    item.DeletionRequested -= SelectedLittersDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_selectedLitters.Remove(item);
@@ -1276,8 +1252,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 foreach (LitterPoco item in e.NewItems)
                 {
-                    ((IReferencersCountable)item).AddReferencer(this, SelectedLittersProp);
                     item.PocoChanged += SelectedLittersPocoChanged;
+                    item.DeletionRequested += SelectedLittersDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_selectedLitters.Add(item);
@@ -1316,9 +1292,6 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                 _selectedLitters.Add(item);
             }
         }
-
-        OnPocoChanged(SelectedLittersProp);
-        OnPropertyChanged("SelectedLitters");
 
     }
 

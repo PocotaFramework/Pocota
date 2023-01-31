@@ -17,7 +17,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
 
     public override void CollectGarbage()
     {
-        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
+        GC.Collect();
     }
 
     private void _pocoContext_TracedPocosChanged(object? sender, EventArgs e)

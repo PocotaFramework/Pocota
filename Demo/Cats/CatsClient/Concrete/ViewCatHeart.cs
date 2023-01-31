@@ -90,7 +90,7 @@ public class ViewCatHeart : ViewCatHeartPoco
         {
             if (((IProjection<ICat>)args.Item).As<ICat>() is ICat cat)
             {
-                args.Accepted = FilterChildren ? SelectedLitters.Contains(((IProjection<LitterPoco>)cat.Litter!).As<LitterPoco>()!) : true;
+                args.Accepted = !FilterChildren || SelectedLitters.Contains(((IProjection<LitterPoco>)cat.Litter!).As<LitterPoco>()!);
             }
             else
             {

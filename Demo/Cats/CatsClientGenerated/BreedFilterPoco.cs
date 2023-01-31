@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:34                                  //
+// at 2023-01-31T16:17:42                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -206,7 +206,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
                         }
                     }
                     OnPocoChanged(SearchRegexProp);
-                    OnPropertyChanged("SearchRegex");
+                    OnPropertyChanged(nameof(SearchRegex));
                 }
             }
         }
@@ -290,9 +290,6 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
     private void SearchRegexCancelChange()
     {
         SearchRegex = _initial_searchRegex;
-
-        OnPocoChanged(SearchRegexProp);
-        OnPropertyChanged("SearchRegex");
 
     }
 

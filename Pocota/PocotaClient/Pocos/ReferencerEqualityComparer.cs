@@ -11,7 +11,7 @@ public class ReferencerEqualityComparer : IEqualityComparer<Tuple<PocoBase, IPro
 
     public bool Equals(Tuple<PocoBase, IProperty>? x, Tuple<PocoBase, IProperty>? y)
     {
-        return x is { } && y is { } && ReferenceEquals(x.Item1, y.Item1) && ReferenceEquals(x.Item2, y.Item2);
+        return x is { } && y is { } && PocoBase.ReferenceEquals(x.Item1, y.Item1) && ReferenceEquals(x.Item2, y.Item2);
     }
 
     public int GetHashCode([DisallowNull] Tuple<PocoBase, IProperty> obj)

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:33                                  //
+// at 2023-01-31T16:17:41                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -2087,7 +2087,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_description = true;
                     }
                     OnPocoChanged(DescriptionProp);
-                    OnPropertyChanged("Description");
+                    OnPropertyChanged(nameof(Description));
                 }
             }
         }
@@ -2121,7 +2121,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_exterior = true;
                     }
                     OnPocoChanged(ExteriorProp);
-                    OnPropertyChanged("Exterior");
+                    OnPropertyChanged(nameof(Exterior));
                 }
             }
         }
@@ -2155,7 +2155,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_gender = true;
                     }
                     OnPocoChanged(GenderProp);
-                    OnPropertyChanged("Gender");
+                    OnPropertyChanged(nameof(Gender));
                 }
             }
         }
@@ -2189,7 +2189,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_nameEng = true;
                     }
                     OnPocoChanged(NameEngProp);
-                    OnPropertyChanged("NameEng");
+                    OnPropertyChanged(nameof(NameEng));
                 }
             }
         }
@@ -2223,7 +2223,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_nameNat = true;
                     }
                     OnPocoChanged(NameNatProp);
-                    OnPropertyChanged("NameNat");
+                    OnPropertyChanged(nameof(NameNat));
                 }
             }
         }
@@ -2257,7 +2257,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         _is_set_title = true;
                     }
                     OnPocoChanged(TitleProp);
-                    OnPropertyChanged("Title");
+                    OnPropertyChanged(nameof(Title));
                 }
             }
         }
@@ -2281,7 +2281,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_breed is {})
                     {
                         _breed.PocoChanged -= BreedPocoChanged;
-                        ((IReferencersCountable)_breed).RemoveReferencer(this, BreedProp);
+                        _breed.DeletionRequested -= BreedDeletionRequested;
                     }
                     if (!IsBeingPopulated || IsBreedInitial())
                     {
@@ -2298,10 +2298,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_breed is {})
                     {
                         _breed.PocoChanged += BreedPocoChanged;
-                        ((IReferencersCountable)_breed).AddReferencer(this, BreedProp);
+                        _breed.DeletionRequested += BreedDeletionRequested;
                     }
                     OnPocoChanged(BreedProp);
-                    OnPropertyChanged("Breed");
+                    OnPropertyChanged(nameof(Breed));
                 }
             }
         }
@@ -2325,7 +2325,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_cattery is {})
                     {
                         _cattery.PocoChanged -= CatteryPocoChanged;
-                        ((IReferencersCountable)_cattery).RemoveReferencer(this, CatteryProp);
+                        _cattery.DeletionRequested -= CatteryDeletionRequested;
                     }
                     if (!IsBeingPopulated || IsCatteryInitial())
                     {
@@ -2342,10 +2342,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_cattery is {})
                     {
                         _cattery.PocoChanged += CatteryPocoChanged;
-                        ((IReferencersCountable)_cattery).AddReferencer(this, CatteryProp);
+                        _cattery.DeletionRequested += CatteryDeletionRequested;
                     }
                     OnPocoChanged(CatteryProp);
-                    OnPropertyChanged("Cattery");
+                    OnPropertyChanged(nameof(Cattery));
                 }
             }
         }
@@ -2369,7 +2369,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_litter is {})
                     {
                         _litter.PocoChanged -= LitterPocoChanged;
-                        ((IReferencersCountable)_litter).RemoveReferencer(this, LitterProp);
+                        _litter.DeletionRequested -= LitterDeletionRequested;
                     }
                     if (!IsBeingPopulated || IsLitterInitial())
                     {
@@ -2386,10 +2386,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     if(_litter is {})
                     {
                         _litter.PocoChanged += LitterPocoChanged;
-                        ((IReferencersCountable)_litter).AddReferencer(this, LitterProp);
+                        _litter.DeletionRequested += LitterDeletionRequested;
                     }
                     OnPocoChanged(LitterProp);
-                    OnPropertyChanged("Litter");
+                    OnPropertyChanged(nameof(Litter));
                 }
             }
         }
@@ -2497,13 +2497,13 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 #region Poco Changed
 
     protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-
+    protected virtual void BreedDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-
+    protected virtual void CatteryDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void LitterPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-
+    protected virtual void LitterDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
     protected virtual void LittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litters));
-
+    protected virtual void LittersDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
 
     private bool IsDescriptionInitial() => _initial_description == _description;
 
@@ -2516,9 +2516,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void DescriptionCancelChange()
     {
         Description = _initial_description;
-
-        OnPocoChanged(DescriptionProp);
-        OnPropertyChanged("Description");
 
     }
 
@@ -2536,9 +2533,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         Exterior = _initial_exterior;
 
-        OnPocoChanged(ExteriorProp);
-        OnPropertyChanged("Exterior");
-
     }
 
 
@@ -2554,9 +2548,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void GenderCancelChange()
     {
         Gender = _initial_gender;
-
-        OnPocoChanged(GenderProp);
-        OnPropertyChanged("Gender");
 
     }
 
@@ -2574,9 +2565,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         NameEng = _initial_nameEng;
 
-        OnPocoChanged(NameEngProp);
-        OnPropertyChanged("NameEng");
-
     }
 
 
@@ -2592,9 +2580,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void NameNatCancelChange()
     {
         NameNat = _initial_nameNat;
-
-        OnPocoChanged(NameNatProp);
-        OnPropertyChanged("NameNat");
 
     }
 
@@ -2612,9 +2597,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         Title = _initial_title;
 
-        OnPocoChanged(TitleProp);
-        OnPropertyChanged("Title");
-
     }
 
 
@@ -2630,9 +2612,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     private void BreedCancelChange()
     {
         Breed = _initial_breed;
-
-        OnPocoChanged(BreedProp);
-        OnPropertyChanged("Breed");
 
     }
 
@@ -2650,9 +2629,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         Cattery = _initial_cattery;
 
-        OnPocoChanged(CatteryProp);
-        OnPropertyChanged("Cattery");
-
     }
 
 
@@ -2669,9 +2645,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     {
         Litter = _initial_litter;
 
-        OnPocoChanged(LitterProp);
-        OnPropertyChanged("Litter");
-
     }
 
 
@@ -2685,7 +2658,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 foreach (LitterPoco item in e.OldItems)
                 {
                     item.PocoChanged -= LittersPocoChanged;
-                    ((IReferencersCountable)item).RemoveReferencer(this, LittersProp);
+                    item.DeletionRequested -= LittersDeletionRequested;
                     if(IsBeingPopulated)
                     {
                         _initial_litters.Remove(item);
@@ -2696,10 +2669,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 foreach (LitterPoco item in e.NewItems)
                 {
-                    ((IReferencersCountable)item).AddReferencer(this, LittersProp);
                     if(IsBeingPopulated || _is_set_litters || ((IEntity)this).PocoState is PocoState.Created)
                     {
                         item.PocoChanged += LittersPocoChanged;
+                        item.DeletionRequested += LittersDeletionRequested;
                         if(IsBeingPopulated)
                         {
                             _initial_litters.Add(item);
@@ -2744,9 +2717,6 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                 _litters.Add(item);
             }
         }
-
-        OnPocoChanged(LittersProp);
-        OnPropertyChanged("Litters");
 
     }
 

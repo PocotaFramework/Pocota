@@ -1,19 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client.Context;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Net.Leksi.Pocota.Client;
 
-public abstract class EntityBase : PocoBase, IEntity, IReferencersCountable
+public abstract class EntityBase : PocoBase, IEntity
 {
     private bool _isDeleting = false;
-
-    internal ConcurrentDictionary<Tuple<PocoBase, IProperty>, byte> Referencers { get; init; } = new(ReferencerEqualityComparer.Instance);
 
     internal object[]? PrimaryKey { get; set; } = null;
 
@@ -77,38 +71,6 @@ public abstract class EntityBase : PocoBase, IEntity, IReferencersCountable
 
                         Deleting();
 
-                        List<Tuple<PocoBase, IProperty>>? envelopesReferencers = null;
-                        foreach(Tuple<PocoBase, IProperty>? referencer in Referencers.Select(v => v.Key))
-                        {
-                            if (referencer.Item1.IsEnvelope)
-                            {
-                                if(envelopesReferencers is null)
-                                {
-                                    envelopesReferencers = new List<Tuple<PocoBase, IProperty>>();
-                                }
-                                envelopesReferencers.Add(referencer);
-                            }
-                            else if(referencer.Item1 is EntityBase entity && entity._pocoState is not PocoState.Deleted)
-                            {
-                                throw new InvalidOperationException($"Referenced Poco cannot be deleted!");
-                            }
-                        }
-                        if(envelopesReferencers is { })
-                        {
-                            foreach (Tuple<PocoBase, IProperty>? referencer in envelopesReferencers)
-                            {
-                                if (referencer.Item2.IsCollection)
-                                {
-                                    ((IList)referencer.Item2.Get(referencer.Item1)!).Remove(this);
-                                }
-                                else
-                                {
-                                    referencer.Item2.Set(referencer.Item1, default);
-                                }
-                            }
-                        }
-                        Referencers.Clear();
-
                         PocoState oldPocoState = ((IPoco)this).PocoState;
                         _pocoState = _pocoState is PocoState.Created ? PocoState.Uncertain : PocoState.Deleted;
                         OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, _pocoState));
@@ -158,21 +120,6 @@ public abstract class EntityBase : PocoBase, IEntity, IReferencersCountable
                 }
             }
         }
-    }
-
-    void IReferencersCountable.AddReferencer(PocoBase obj, IProperty prop)
-    {
-        Referencers.TryAdd(new Tuple<PocoBase, IProperty>(obj, prop), 0);
-    }
-
-    void IReferencersCountable.RemoveReferencer(PocoBase obj, IProperty prop)
-    {
-        Referencers.TryRemove(new Tuple<PocoBase, IProperty>(obj, prop), out byte _);
-    }
-
-    void IReferencersCountable.RemoveReferencer(Tuple<PocoBase, IProperty> referencer)
-    {
-        Referencers.TryRemove(referencer, out byte _);
     }
 
     protected virtual void Deleting() { }

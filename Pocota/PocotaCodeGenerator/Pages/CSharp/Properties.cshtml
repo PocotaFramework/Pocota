@@ -30,11 +30,7 @@
                         <text>                    if(@fieldName is {})
                     {
                         @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
-                        @if (pm.IsEntity)
-                        {
-                            <text>                        ((IReferencersCountable)@fieldName).RemoveReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
-</text>
-                        }
+                        @Html.Raw($"{fieldName}.DeletionRequested -= {pm.Name}DeletionRequested");
                     }
 </text>   
                     }
@@ -68,16 +64,12 @@
                         <text>                    if(@fieldName is {})
                     {
                         @Html.Raw($"{fieldName}.PocoChanged += {pm.Name}PocoChanged");
-                        @if (pm.IsEntity)
-                        {
-                            <text>                        ((IReferencersCountable)@fieldName).AddReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
-</text>
-                        }
+                        @Html.Raw($"{fieldName}.DeletionRequested += {pm.Name}DeletionRequested");
                     }
 </text>   
                     }
                     OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
-                    OnPropertyChanged(@Html.Raw($"\"{pm.Name}\""));
+                    OnPropertyChanged(@Html.Raw($"nameof({pm.Name})"));
                 }
             }
         }

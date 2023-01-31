@@ -11,11 +11,6 @@ public class Cat : CatPoco
     {
     }
 
-    ~Cat()
-    {
-        Console.WriteLine($"finalize {GetType()}:{GetHashCode()}");
-    }
-
     protected override void LittersCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         base.LittersCollectionChanged(sender, e);

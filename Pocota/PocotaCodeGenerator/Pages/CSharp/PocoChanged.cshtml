@@ -7,7 +7,7 @@
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
-
+    protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
 </text>
 }
 
@@ -27,13 +27,9 @@
                 @if (pm.IsPoco)
                 {
                     <text>                    item.PocoChanged -= @Html.Raw($"{pm.Name}PocoChanged");
+                    item.DeletionRequested -= @Html.Raw($"{pm.Name}DeletionRequested");
 </text>
                 }
-                    @if(pm.IsEntity)
-                    {
-                        <text>                    ((IReferencersCountable)item).RemoveReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
-</text>
-                    }
                     if(IsBeingPopulated)
                     {
                         @Html.Raw($"_initial{fieldName}.Remove(item)");
@@ -44,11 +40,6 @@
             {
                 foreach (@Html.Raw(pm.ItemType) item in e.NewItems)
                 {
-                    @if (pm.IsEntity)
-                    {
-                        <text>                    ((IReferencersCountable)item).AddReferencer(this, @Html.Raw($"{@pm.Name}Prop"));
-</text>
-                    }
                 @if(Model.IsEntity)
                 {
                 <text>                    if(IsBeingPopulated || @Html.Raw($"_is_set{fieldName}") || ((IEntity)this).PocoState is PocoState.Created)
@@ -58,6 +49,7 @@
                 @if (pm.IsPoco)
                 {
                     <text>                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.PocoChanged += @Html.Raw($"{pm.Name}PocoChanged");
+                    @Html.Raw(Model.IsEntity ? "    " : string.Empty)item.DeletionRequested += @Html.Raw($"{pm.Name}DeletionRequested");
 </text>
                 }
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated)
@@ -146,9 +138,6 @@
 
 </text>
         }
-        OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
-        OnPropertyChanged(@Html.Raw($"\"{pm.Name}\""));
-
     }
 
     @if(!Model.IsEntity)

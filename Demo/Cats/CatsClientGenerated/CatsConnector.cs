@@ -2,7 +2,7 @@
 // Connector                                               //
 // CatsContract.CatsConnector                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-30T18:35:33                                  //
+// at 2023-01-31T16:17:41                                  //
 /////////////////////////////////////////////////////////////
 
 
