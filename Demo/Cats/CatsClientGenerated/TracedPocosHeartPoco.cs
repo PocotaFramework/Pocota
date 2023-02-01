@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.TracedPocosHeartPoco                                 //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-01-31T16:17:42                                          //
+// at 2023-02-01T17:48:58                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -37,8 +37,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
             public override bool IsKeyPart => false;
-            public override Type Type => typeof(IList<Tuple<Type,Int32,PocoState,IEntity>>);
-            public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,IEntity>);
+            public override Type Type => typeof(IList<Tuple<Type,Int32,PocoState,PocoBase>>);
+            public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,PocoBase>);
             public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target).ModifiedPocos;
             public override void Touch(object target) 
@@ -48,7 +48,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsInitial(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.IsModifiedPocosInitial();
             public override void CancelChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocosCancelChange();
             public override void AcceptChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.ModifiedPocosAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._initial_modifiedPocos : default!;
         }
 
         public class TracedPocosProperty: Property
@@ -71,7 +71,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsInitial(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.IsTracedPocosInitial();
             public override void CancelChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocosCancelChange();
             public override void AcceptChange(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target)._projector.TracedPocosAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._initial_tracedPocos : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -103,7 +103,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         private readonly TracedPocosHeartPoco _projector;
 
 
-        public IList<Tuple<Type,Int32,PocoState,IEntity>> ModifiedPocos 
+        public IList<Tuple<Type,Int32,PocoState,PocoBase>> ModifiedPocos 
         {
             get => _projector.ModifiedPocos!;
         }
@@ -164,8 +164,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
         public override bool IsKeyPart => false;
-        public override Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState,IEntity>>);
-        public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,IEntity>);
+        public override Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>>);
+        public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,PocoBase>);
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((TracedPocosHeartPoco)target).ModifiedPocos;
         public override void Touch(object target) 
@@ -175,7 +175,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsInitial(object target) => ((TracedPocosHeartPoco)target).IsModifiedPocosInitial();
         public override void CancelChange(object target) => ((TracedPocosHeartPoco)target).ModifiedPocosCancelChange();
         public override void AcceptChange(object target) => ((TracedPocosHeartPoco)target).ModifiedPocosAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartPoco)target)._initial_modifiedPocos : default!;
     }
 
     public class TracedPocosProperty: Property
@@ -198,7 +198,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsInitial(object target) => ((TracedPocosHeartPoco)target).IsTracedPocosInitial();
         public override void CancelChange(object target) => ((TracedPocosHeartPoco)target).TracedPocosCancelChange();
         public override void AcceptChange(object target) => ((TracedPocosHeartPoco)target).TracedPocosAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartPoco)target)._initial_tracedPocos : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -215,8 +215,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Fields
 
-    private readonly ObservableCollection<Tuple<Type,Int32,PocoState,IEntity>> _modifiedPocos = new();
-    private readonly List<Tuple<Type,Int32,PocoState,IEntity>> _initial_modifiedPocos = new();
+    private readonly ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>> _modifiedPocos = new();
+    private readonly List<Tuple<Type,Int32,PocoState,PocoBase>> _initial_modifiedPocos = new();
     
     private readonly ObservableCollection<Tuple<Type,Int32>> _tracedPocos = new();
     private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
@@ -250,7 +250,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     
 
-    public virtual ObservableCollection<Tuple<Type,Int32,PocoState,IEntity>> ModifiedPocos
+    public virtual ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>> ModifiedPocos
     {
         get => _modifiedPocos;
         set => throw new NotImplementedException();
@@ -335,7 +335,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         {
             if (e.OldItems is { })
             {
-                foreach (Tuple<Type,Int32,PocoState,IEntity> item in e.OldItems)
+                foreach (Tuple<Type,Int32,PocoState,PocoBase> item in e.OldItems)
                 {
                     if(IsBeingPopulated)
                     {
@@ -345,7 +345,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             }
             if (e.NewItems is { })
             {
-                foreach (Tuple<Type,Int32,PocoState,IEntity> item in e.NewItems)
+                foreach (Tuple<Type,Int32,PocoState,PocoBase> item in e.NewItems)
                 {
                     if(IsBeingPopulated)
                     {

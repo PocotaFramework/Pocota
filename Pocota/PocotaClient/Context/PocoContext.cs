@@ -18,13 +18,14 @@ internal class PocoContext : IPocoContext
     private readonly Dictionary<Type, int> _tracedPocos = new();
     private readonly Dictionary<Type, Dictionary<object?[], WeakReference>> _cachedObjects = new();
     private readonly object _getSourceLock = new();
-    private readonly ConcurrentDictionary<IEntity, string> _changedPocos = new(ReferenceEqualityComparer.Instance);
+    private readonly ConcurrentDictionary<IPoco, string> _changedPocos = new(ReferenceEqualityComparer.Instance);
 
     private bool _tracePocos = false;
     private int _freezeTracingPocosReenters = 0;
 
     internal WeakEventManager PocoChangedEventManager { get; init; } = new();
     internal WeakEventManager PocoStateChangedEventManager { get; init; } = new();
+    internal WeakEventManager DeletionRequestedEventManager { get; init; } = new();
 
     public bool TracePocos {
         get => _tracePocos;
@@ -43,7 +44,7 @@ internal class PocoContext : IPocoContext
 
     public IDictionary<Type, int> TracedPocos => _tracedPocos;
 
-    public ICollection<IEntity> ModifiedPocos => _changedPocos.Keys;
+    public ICollection<IPoco> ModifiedPocos => _changedPocos.Keys;
 
     public PocoContext(IServiceProvider services)
     {
@@ -151,12 +152,12 @@ internal class PocoContext : IPocoContext
     {
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
         {
-            _changedPocos.TryAdd((sender as IEntity)!, string.Empty);
+            _changedPocos.TryAdd((sender as PocoBase)!, string.Empty);
             ModifiedPocosChanged?.Invoke(this, new EventArgs());
         }
         else
         {
-            if(_changedPocos.TryRemove((sender as IEntity)!, out string _))
+            if(_changedPocos.TryRemove((sender as PocoBase)!, out string _))
             {
                 ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
@@ -165,10 +166,7 @@ internal class PocoContext : IPocoContext
 
     internal void PocoInstantiated(PocoBase poco)
     {
-        if(poco is IEntity entity)
-        {
-            entity.PocoStateChanged += OnPocoStateChanged;
-        }
+        poco.PocoStateChanged += OnPocoStateChanged;
         if (_tracePocos)
         {
             lock (_tracedPocos)
@@ -191,10 +189,7 @@ internal class PocoContext : IPocoContext
 
     internal void PocoFinalized(PocoBase poco)
     {
-        if (poco is IEntity entity)
-        {
-            entity.PocoStateChanged -= OnPocoStateChanged;
-        }
+        poco.PocoStateChanged -= OnPocoStateChanged;
         if (_tracePocos)
         {
             --_tracedPocos[poco.GetType()];

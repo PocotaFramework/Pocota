@@ -25,8 +25,17 @@
             {
                 if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"Is{pm.Name}Set()"))</text>})
                 {
+                    int selector = 0;
                     @if(pm.IsPoco)
                     {
+                        if(pm.IsEntity)
+                        {
+                                <text>                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
+</text>
+                        }
                         <text>                    if(@fieldName is {})
                     {
                         @Html.Raw($"{fieldName}.PocoChanged -= {pm.Name}PocoChanged");
@@ -38,20 +47,20 @@
                     {
                     <text>                    if (!IsBeingPopulated || @Html.Raw($"Is{pm.Name}Initial()"))
                     {
-                        @fieldName = value;
+                        @Html.Raw($"{fieldName} = value{(!pm.IsNullable ? "!" : string.Empty)}");
                     }
 </text>
                     }
                     else 
                     {
-                        <text>                        @fieldName = value;
+                            <text>                        @Html.Raw($"{fieldName} = value{(!pm.IsNullable ? "!" : string.Empty)}");
 </text>
                     }
-                    if (IsBeingPopulated @if(Model.IsEntity){<text> || ((IEntity)this).PocoState is PocoState.Created</text>})
+                    if ((IsBeingPopulated && (selector = 1) == selector) @if(Model.IsEntity){<text> || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector)</text>})
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            @Html.Raw($"_initial{fieldName}") = value;
+                            @Html.Raw($"_initial{fieldName} = value{(!pm.IsNullable ? "!" : string.Empty)}");
                         }
                         @if (Model.IsEntity)
                         {

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-31T16:17:42                                  //
+// at 2023-02-01T17:48:58                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -47,7 +47,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornAfterInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfterCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornAfterAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_bornAfter : default!;
         }
 
         public class BornBeforeProperty: Property
@@ -70,7 +70,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBornBeforeInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBeforeCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BornBeforeAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_bornBefore : default!;
         }
 
         public class ExteriorRegexProperty: Property
@@ -93,7 +93,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsExteriorRegexInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegexCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ExteriorRegexAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_exteriorRegex : default!;
         }
 
         public class GenderProperty: Property
@@ -116,7 +116,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.GenderCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.GenderAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_gender : default!;
         }
 
         public class NameRegexProperty: Property
@@ -139,7 +139,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsNameRegexInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegexCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.NameRegexAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_nameRegex : default!;
         }
 
         public class TitleRegexProperty: Property
@@ -162,7 +162,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsTitleRegexInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegexCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.TitleRegexAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_titleRegex : default!;
         }
 
         public class AncestorProperty: Property
@@ -185,7 +185,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsAncestorInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.AncestorCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.AncestorAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_ancestor : default!;
         }
 
         public class BreedProperty: Property
@@ -208,7 +208,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BreedCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.BreedAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_breed : default!;
         }
 
         public class CatteryProperty: Property
@@ -231,7 +231,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.CatteryCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.CatteryAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_cattery : default!;
         }
 
         public class ChildProperty: Property
@@ -254,7 +254,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsChildInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ChildCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.ChildAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_child : default!;
         }
 
         public class DescendantProperty: Property
@@ -277,7 +277,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsDescendantInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.DescendantCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.DescendantAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_descendant : default!;
         }
 
         public class FatherProperty: Property
@@ -300,7 +300,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsFatherInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.FatherCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.FatherAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_father : default!;
         }
 
         public class LitterProperty: Property
@@ -323,7 +323,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.LitterAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_litter : default!;
         }
 
         public class MotherProperty: Property
@@ -346,7 +346,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsMotherInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.MotherCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.MotherAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_mother : default!;
         }
 
         public class SelfProperty: Property
@@ -369,7 +369,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsInitial(object target) => ((CatFilterICatFilterProjection)target)._projector.IsSelfInitial();
             public override void CancelChange(object target) => ((CatFilterICatFilterProjection)target)._projector.SelfCancelChange();
             public override void AcceptChange(object target) => ((CatFilterICatFilterProjection)target)._projector.SelfAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_self : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -622,7 +622,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornAfterInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).BornAfterCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).BornAfterAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_bornAfter : default!;
     }
 
     public class BornBeforeProperty: Property
@@ -645,7 +645,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBornBeforeInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).BornBeforeCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).BornBeforeAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_bornBefore : default!;
     }
 
     public class ExteriorRegexProperty: Property
@@ -668,7 +668,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsExteriorRegexInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).ExteriorRegexCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).ExteriorRegexAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_exteriorRegex : default!;
     }
 
     public class GenderProperty: Property
@@ -691,7 +691,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsGenderInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).GenderCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).GenderAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_gender : default!;
     }
 
     public class NameRegexProperty: Property
@@ -714,7 +714,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsNameRegexInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).NameRegexCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).NameRegexAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_nameRegex : default!;
     }
 
     public class TitleRegexProperty: Property
@@ -737,7 +737,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsTitleRegexInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).TitleRegexCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).TitleRegexAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_titleRegex : default!;
     }
 
     public class AncestorProperty: Property
@@ -760,7 +760,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsAncestorInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).AncestorCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).AncestorAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_ancestor : default!;
     }
 
     public class BreedProperty: Property
@@ -783,7 +783,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsBreedInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).BreedCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).BreedAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_breed : default!;
     }
 
     public class CatteryProperty: Property
@@ -806,7 +806,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsCatteryInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).CatteryCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).CatteryAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_cattery : default!;
     }
 
     public class ChildProperty: Property
@@ -829,7 +829,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsChildInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).ChildCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).ChildAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_child : default!;
     }
 
     public class DescendantProperty: Property
@@ -852,7 +852,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsDescendantInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).DescendantCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).DescendantAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_descendant : default!;
     }
 
     public class FatherProperty: Property
@@ -875,7 +875,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsFatherInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).FatherCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).FatherAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_father : default!;
     }
 
     public class LitterProperty: Property
@@ -898,7 +898,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsLitterInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).LitterCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).LitterAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_litter : default!;
     }
 
     public class MotherProperty: Property
@@ -921,7 +921,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsMotherInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).MotherCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).MotherAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_mother : default!;
     }
 
     public class SelfProperty: Property
@@ -944,7 +944,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsInitial(object target) => ((CatFilterPoco)target).IsSelfInitial();
         public override void CancelChange(object target) => ((CatFilterPoco)target).SelfCancelChange();
         public override void AcceptChange(object target) => ((CatFilterPoco)target).SelfAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_self : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -1067,10 +1067,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_bornAfter != value )
                 {
+                    int selector = 0;
                         _bornAfter = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_bornAfter = value;
                         }
@@ -1097,10 +1098,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_bornBefore != value )
                 {
+                    int selector = 0;
                         _bornBefore = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_bornBefore = value;
                         }
@@ -1127,10 +1129,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_exteriorRegex != value )
                 {
+                    int selector = 0;
                         _exteriorRegex = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_exteriorRegex = value;
                         }
@@ -1157,10 +1160,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_gender != value )
                 {
+                    int selector = 0;
                         _gender = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_gender = value;
                         }
@@ -1187,10 +1191,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_nameRegex != value )
                 {
+                    int selector = 0;
                         _nameRegex = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_nameRegex = value;
                         }
@@ -1217,10 +1222,11 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_titleRegex != value )
                 {
+                    int selector = 0;
                         _titleRegex = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_titleRegex = value;
                         }
@@ -1247,15 +1253,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_ancestor != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_ancestor is {})
                     {
                         _ancestor.PocoChanged -= AncestorPocoChanged;
                         _ancestor.DeletionRequested -= AncestorDeletionRequested;
                     }
                         _ancestor = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_ancestor = value;
                         }
@@ -1287,15 +1298,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_breed != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_breed is {})
                     {
                         _breed.PocoChanged -= BreedPocoChanged;
                         _breed.DeletionRequested -= BreedDeletionRequested;
                     }
                         _breed = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_breed = value;
                         }
@@ -1327,15 +1343,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_cattery != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_cattery is {})
                     {
                         _cattery.PocoChanged -= CatteryPocoChanged;
                         _cattery.DeletionRequested -= CatteryDeletionRequested;
                     }
                         _cattery = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_cattery = value;
                         }
@@ -1367,15 +1388,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_child != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_child is {})
                     {
                         _child.PocoChanged -= ChildPocoChanged;
                         _child.DeletionRequested -= ChildDeletionRequested;
                     }
                         _child = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_child = value;
                         }
@@ -1407,15 +1433,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_descendant != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_descendant is {})
                     {
                         _descendant.PocoChanged -= DescendantPocoChanged;
                         _descendant.DeletionRequested -= DescendantDeletionRequested;
                     }
                         _descendant = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_descendant = value;
                         }
@@ -1447,15 +1478,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_father != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_father is {})
                     {
                         _father.PocoChanged -= FatherPocoChanged;
                         _father.DeletionRequested -= FatherDeletionRequested;
                     }
                         _father = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_father = value;
                         }
@@ -1487,15 +1523,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_litter != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_litter is {})
                     {
                         _litter.PocoChanged -= LitterPocoChanged;
                         _litter.DeletionRequested -= LitterDeletionRequested;
                     }
                         _litter = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_litter = value;
                         }
@@ -1527,15 +1568,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_mother != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_mother is {})
                     {
                         _mother.PocoChanged -= MotherPocoChanged;
                         _mother.DeletionRequested -= MotherDeletionRequested;
                     }
                         _mother = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_mother = value;
                         }
@@ -1567,15 +1613,20 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             {
                 if(_self != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_self is {})
                     {
                         _self.PocoChanged -= SelfPocoChanged;
                         _self.DeletionRequested -= SelfDeletionRequested;
                     }
                         _self = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_self = value;
                         }
@@ -1661,23 +1712,23 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 #region Poco Changed
 
     protected virtual void AncestorPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Ancestor));
-    protected virtual void AncestorDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void AncestorDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-    protected virtual void BreedDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void BreedDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-    protected virtual void CatteryDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void CatteryDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void ChildPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Child));
-    protected virtual void ChildDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void ChildDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void DescendantPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Descendant));
-    protected virtual void DescendantDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void DescendantDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void FatherPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Father));
-    protected virtual void FatherDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void FatherDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void LitterPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-    protected virtual void LitterDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void LitterDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void MotherPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Mother));
-    protected virtual void MotherDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void MotherDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void SelfPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Self));
-    protected virtual void SelfDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void SelfDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsBornAfterInitial() => _initial_bornAfter == _bornAfter;
 

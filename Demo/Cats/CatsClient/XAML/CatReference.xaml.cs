@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;

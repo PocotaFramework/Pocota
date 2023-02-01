@@ -100,7 +100,7 @@ public partial class ViewCat : Window
 
     ~ViewCat()
     {
-        Console.WriteLine($"Finalize: {GetType()}:{GetHashCode()}");
+        //Console.WriteLine($"Finalize: {GetType()}:{GetHashCode()}");
     }
 
     private void ShowParent_Click(object sender, RoutedEventArgs e)

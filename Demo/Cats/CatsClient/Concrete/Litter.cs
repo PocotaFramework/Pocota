@@ -6,6 +6,20 @@ namespace CatsClient;
 
 public class Litter : LitterPoco
 {
+    private CatPoco? _savedFemale = null;
+    protected override void DebugAccess(string selector)
+    {
+        if ("1".Equals(selector))
+        {
+            _savedFemale = Female;
+        }
+        else if ("2".Equals(selector))
+        {
+            ;
+        }
+        base.DebugAccess(selector);
+    }
+
 
     public override CatPoco Female 
     { 

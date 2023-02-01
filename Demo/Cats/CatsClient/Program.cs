@@ -21,8 +21,9 @@ public class Program
             {
                 services.AddSingleton<App>();
                 services.AddSingleton<MainWindow>();
+                services.AddSingleton<TracedPocos>();
                 services.AddTransient<ViewCat>();
-                services.AddTransient<TracedPocos>();
+                services.AddTransient<ViewTracedPoco>();
 
                 services.AddScoped<CatsConnector>();
 
@@ -61,6 +62,7 @@ public class Program
                 services.AddTransient<AddLitterCommand>();
                 services.AddTransient<AddCatCommand>();
                 services.AddTransient<CancelChangesCommand>();
+                services.AddTransient<ViewTracedPocoCommand>();
 
                 services.AddScoped<CopyEntitiesReferencesCommand>();
                 services.AddScoped<PasteParentCommand>();

@@ -4,10 +4,11 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace CatsClient;
 
-public class CancelChangesCommand : ICommand
+public class ViewTracedPocoCommand : ICommand
 {
     public event EventHandler? CanExecuteChanged
     {
@@ -23,7 +24,7 @@ public class CancelChangesCommand : ICommand
 
     private readonly IServiceProvider _services;
 
-    public CancelChangesCommand(IServiceProvider services)
+    public ViewTracedPocoCommand(IServiceProvider services)
     {
         _services= services;
     }
@@ -37,8 +38,6 @@ public class CancelChangesCommand : ICommand
             )
             && values[0] is IProjection<IPoco> proj
             && proj.As<IPoco>() is IPoco poco
-            && poco.PocoState is PocoState pocoState
-            && pocoState is not PocoState.Unchanged
             && (
                 values.Length == 1 
                 || (
@@ -55,14 +54,17 @@ public class CancelChangesCommand : ICommand
             && CanExecute(parameter) 
             && (parameter is object[] values || (values = new object[] { parameter }) == values)
             && values[0] is IProjection<IPoco> proj
-            && proj.As<IPoco>() is IPoco poco
+            && proj.As<IPoco>() is PocoBase poco
         )
         {
             try
             {
                 _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
                 {
-                    poco.CancelChanges();
+                    ViewTracedPoco view = _services.GetRequiredService<ViewTracedPoco>();
+                    _services.GetRequiredService<TracedPocos>().AddView(view);
+                    view.Source = poco;
+                    view.Show();
                 });
             }
             catch (Exception ex)

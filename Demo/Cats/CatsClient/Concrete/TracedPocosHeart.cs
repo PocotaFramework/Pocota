@@ -39,7 +39,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
             ModifiedPocos.Clear();
             foreach (var item in _pocoContext.ModifiedPocos)
             {
-                ModifiedPocos.Add(new Tuple<Type, int, PocoState, IEntity>(item.GetType(), item.GetHashCode(), item.PocoState, item));
+                ModifiedPocos.Add(new Tuple<Type, int, PocoState, PocoBase>(item.GetType(), item.GetHashCode(), item.PocoState, (PocoBase)item));
             }
         });
     }

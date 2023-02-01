@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="XAML\" />
   </ItemGroup>
 
 </Project>

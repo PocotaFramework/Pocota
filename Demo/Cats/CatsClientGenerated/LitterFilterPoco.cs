@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-31T16:17:42                                  //
+// at 2023-02-01T17:48:58                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -49,7 +49,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsFemaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.FemaleCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.FemaleAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterILitterFilterProjection)target)._projector._initial_female : default!;
         }
 
         public class MaleProperty: Property
@@ -72,7 +72,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsMaleInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.MaleCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.MaleAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterILitterFilterProjection)target)._projector._initial_male : default!;
         }
 
         public class StringsProperty: Property
@@ -95,7 +95,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override bool IsInitial(object target) => ((LitterFilterILitterFilterProjection)target)._projector.IsStringsInitial();
             public override void CancelChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.StringsCancelChange();
             public override void AcceptChange(object target) => ((LitterFilterILitterFilterProjection)target)._projector.StringsAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterILitterFilterProjection)target)._projector._initial_strings : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -212,7 +212,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsFemaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).FemaleCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).FemaleAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterPoco)target)._initial_female : default!;
     }
 
     public class MaleProperty: Property
@@ -235,7 +235,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsMaleInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).MaleCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).MaleAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterPoco)target)._initial_male : default!;
     }
 
     public class StringsProperty: Property
@@ -258,7 +258,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override bool IsInitial(object target) => ((LitterFilterPoco)target).IsStringsInitial();
         public override void CancelChange(object target) => ((LitterFilterPoco)target).StringsCancelChange();
         public override void AcceptChange(object target) => ((LitterFilterPoco)target).StringsAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterPoco)target)._initial_strings : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -321,17 +321,22 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_female != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_female is {})
                     {
                         _female.PocoChanged -= FemalePocoChanged;
                         _female.DeletionRequested -= FemaleDeletionRequested;
                     }
-                        _female = value;
-                    if (IsBeingPopulated )
+                        _female = value!;
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            _initial_female = value;
+                            _initial_female = value!;
                         }
                     }
                     if(_female is {})
@@ -361,17 +366,22 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_male != value )
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_male is {})
                     {
                         _male.PocoChanged -= MalePocoChanged;
                         _male.DeletionRequested -= MaleDeletionRequested;
                     }
-                        _male = value;
-                    if (IsBeingPopulated )
+                        _male = value!;
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            _initial_male = value;
+                            _initial_male = value!;
                         }
                     }
                     if(_male is {})
@@ -464,9 +474,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 #region Poco Changed
 
     protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-    protected virtual void FemaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void FemaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-    protected virtual void MaleDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void MaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsFemaleInitial() => _initial_female == _female;
 

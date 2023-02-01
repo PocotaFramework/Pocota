@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-31T16:17:42                                  //
+// at 2023-02-01T17:48:58                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -45,7 +45,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             public override bool IsInitial(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.IsSearchRegexInitial();
             public override void CancelChange(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegexCancelChange();
             public override void AcceptChange(object target) => ((CatteryFilterICatteryFilterProjection)target)._projector.SearchRegexAcceptChange();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatteryFilterICatteryFilterProjection)target)._projector._initial_searchRegex : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -144,7 +144,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
         public override bool IsInitial(object target) => ((CatteryFilterPoco)target).IsSearchRegexInitial();
         public override void CancelChange(object target) => ((CatteryFilterPoco)target).SearchRegexCancelChange();
         public override void AcceptChange(object target) => ((CatteryFilterPoco)target).SearchRegexAcceptChange();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatteryFilterPoco)target)._initial_searchRegex : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -197,10 +197,11 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjec
             {
                 if(_searchRegex != value )
                 {
+                    int selector = 0;
                         _searchRegex = value;
-                    if (IsBeingPopulated )
+                    if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_searchRegex = value;
                         }

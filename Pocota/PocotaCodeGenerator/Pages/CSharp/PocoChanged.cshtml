@@ -7,7 +7,7 @@
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
-    protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
 </text>
 }
 

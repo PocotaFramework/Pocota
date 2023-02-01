@@ -60,16 +60,28 @@ public abstract class EntityBase : PocoBase, IEntity
                         if(_pocoState is PocoState.Created)
                         {
                             ImmutableList<IProperty>? properties = _services.GetRequiredService<PocotaCore>().GetPropertiesList(GetType());
-                            if(properties is { })
+
+                            DebugAccess("1");
+
+                            if (properties is { })
                             {
                                 foreach(Property prop in properties)
                                 {
                                     prop.CancelChange(this);
                                 }
                             }
+                            DebugAccess("2");
                         }
 
+                        NotifyDeletionEventArgs preRequest = new(true);
+                        OnDeletionRequested(preRequest);
+
                         Deleting();
+
+                        if (preRequest.IsReferencedByEnvelope)
+                        {
+                            OnDeletionRequested(new NotifyDeletionEventArgs(false));
+                        }
 
                         PocoState oldPocoState = ((IPoco)this).PocoState;
                         _pocoState = _pocoState is PocoState.Created ? PocoState.Uncertain : PocoState.Deleted;
@@ -125,4 +137,6 @@ public abstract class EntityBase : PocoBase, IEntity
     protected virtual void Deleting() { }
 
     protected virtual void Undeleting() { }
+
+    protected virtual void DebugAccess(string selector) { }
 }

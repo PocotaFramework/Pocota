@@ -10,7 +10,7 @@ public abstract class CrudCommand : ICommand
     public event CrudCommandExecutingHandler? Executing;
     public event CrudCommandExecutingHandler? Received;
     public event CrudCommandExecutedEventHandler? Executed;
-    public event ExceptionEventHandler? CoughtException;
+    public event EventHandler<ExceptionEventArgs>? CoughtException;
 
     protected readonly IServiceProvider _services;
     protected Func<JsonSerializerOptions>? _requestJsonSerializerOptionsSupplier = null;

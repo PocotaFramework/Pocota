@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-01-31T16:17:41                                  //
+// at 2023-02-01T17:48:58                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -49,7 +49,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.DescriptionCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_description : default!;
         }
 
         public class ExteriorProperty: Property
@@ -71,7 +71,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.ExteriorCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_exterior : default!;
         }
 
         public class GenderProperty: Property
@@ -93,7 +93,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.GenderCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_gender : default!;
         }
 
         public class NameEngProperty: Property
@@ -115,7 +115,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -137,7 +137,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_nameNat : default!;
         }
 
         public class TitleProperty: Property
@@ -159,7 +159,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.TitleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_title : default!;
         }
 
         public class BreedProperty: Property
@@ -181,7 +181,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.BreedCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_breed : default!;
         }
 
         public class CatteryProperty: Property
@@ -203,7 +203,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.CatteryCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_cattery : default!;
         }
 
         public class LitterProperty: Property
@@ -225,7 +225,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._projector._initial_litter : default!;
         }
 
         public class LittersProperty: Property
@@ -247,7 +247,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatProjection)target)._projector.IsLittersInitial();
             public override void CancelChange(object target) => ((CatICatProjection)target)._projector.LittersCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((CatICatProjection)target)._projector._is_set_litters ? ((CatICatProjection)target)._initial_litters : default!;
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatProjection)target)._initial_litters : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -446,7 +446,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.DescriptionCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_description : default!;
         }
 
         public class ExteriorProperty: Property
@@ -468,7 +468,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.ExteriorCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_exterior : default!;
         }
 
         public class GenderProperty: Property
@@ -490,7 +490,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.GenderCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_gender : default!;
         }
 
         public class NameEngProperty: Property
@@ -512,7 +512,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -534,7 +534,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_nameNat : default!;
         }
 
         public class TitleProperty: Property
@@ -556,7 +556,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.TitleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_title : default!;
         }
 
         public class BreedProperty: Property
@@ -578,7 +578,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.BreedCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_breed : default!;
         }
 
         public class CatteryProperty: Property
@@ -600,7 +600,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.CatteryCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_cattery : default!;
         }
 
         public class LitterProperty: Property
@@ -622,7 +622,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForListingProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatForListingProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForListingProjection)target)._projector._initial_litter : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -801,7 +801,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.ExteriorCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_exterior : default!;
         }
 
         public class NameEngProperty: Property
@@ -823,7 +823,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -845,7 +845,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_nameNat : default!;
         }
 
         public class TitleProperty: Property
@@ -867,7 +867,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.TitleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_title : default!;
         }
 
         public class BreedProperty: Property
@@ -889,7 +889,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.BreedCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_breed : default!;
         }
 
         public class CatteryProperty: Property
@@ -911,7 +911,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.CatteryCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_cattery : default!;
         }
 
         public class LitterProperty: Property
@@ -933,7 +933,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsParentProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatAsParentProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsParentProjection)target)._projector._initial_litter : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -1092,7 +1092,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsDescriptionInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.DescriptionCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_description : default!;
         }
 
         public class ExteriorProperty: Property
@@ -1114,7 +1114,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsExteriorInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.ExteriorCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_exterior : default!;
         }
 
         public class GenderProperty: Property
@@ -1136,7 +1136,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsGenderInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.GenderCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_gender : default!;
         }
 
         public class NameEngProperty: Property
@@ -1158,7 +1158,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -1180,7 +1180,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_nameNat : default!;
         }
 
         public class TitleProperty: Property
@@ -1202,7 +1202,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsTitleInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.TitleCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_title : default!;
         }
 
         public class BreedProperty: Property
@@ -1224,7 +1224,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsBreedInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.BreedCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_breed : default!;
         }
 
         public class CatteryProperty: Property
@@ -1246,7 +1246,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsCatteryInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.CatteryCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_cattery : default!;
         }
 
         public class LitterProperty: Property
@@ -1268,7 +1268,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._projector._initial_litter : default!;
         }
 
         public class LittersProperty: Property
@@ -1290,7 +1290,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatForViewProjection)target)._projector.IsLittersInitial();
             public override void CancelChange(object target) => ((CatICatForViewProjection)target)._projector.LittersCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => ((CatICatForViewProjection)target)._projector._is_set_litters ? ((CatICatForViewProjection)target)._initial_litters : default!;
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatForViewProjection)target)._initial_litters : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -1479,7 +1479,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatWithSiblingsProjection)target)._projector.IsLitterInitial();
             public override void CancelChange(object target) => ((CatICatWithSiblingsProjection)target)._projector.LitterCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatWithSiblingsProjection)target)._projector._initial_litter : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -1579,7 +1579,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatICatAsSiblingProjection)target)._projector.NameEngCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsSiblingProjection)target)._projector._initial_nameEng : default!;
         }
 
         public class NameNatProperty: Property
@@ -1601,7 +1601,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsInitial(object target) => ((CatICatAsSiblingProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatICatAsSiblingProjection)target)._projector.NameNatCancelChange();
             public override void AcceptChange(object target) => throw new InvalidOperationException();
-            public override object? GetInitial(object target) => throw new InvalidOperationException();
+            public override object? GetInitial(object target) => IsSet(target) ? ((CatICatAsSiblingProjection)target)._projector._initial_nameNat : default!;
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -1708,7 +1708,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsDescriptionInitial();
         public override void CancelChange(object target) => ((CatPoco)target).DescriptionCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_description : default!;
     }
 
     public class ExteriorProperty: Property
@@ -1730,7 +1730,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsExteriorInitial();
         public override void CancelChange(object target) => ((CatPoco)target).ExteriorCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_exterior : default!;
     }
 
     public class GenderProperty: Property
@@ -1752,7 +1752,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsGenderInitial();
         public override void CancelChange(object target) => ((CatPoco)target).GenderCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_gender : default!;
     }
 
     public class NameEngProperty: Property
@@ -1774,7 +1774,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatPoco)target).NameEngCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_nameEng : default!;
     }
 
     public class NameNatProperty: Property
@@ -1796,7 +1796,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatPoco)target).NameNatCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_nameNat : default!;
     }
 
     public class TitleProperty: Property
@@ -1818,7 +1818,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsTitleInitial();
         public override void CancelChange(object target) => ((CatPoco)target).TitleCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_title : default!;
     }
 
     public class BreedProperty: Property
@@ -1840,7 +1840,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsBreedInitial();
         public override void CancelChange(object target) => ((CatPoco)target).BreedCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_breed : default!;
     }
 
     public class CatteryProperty: Property
@@ -1862,7 +1862,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsCatteryInitial();
         public override void CancelChange(object target) => ((CatPoco)target).CatteryCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_cattery : default!;
     }
 
     public class LitterProperty: Property
@@ -1884,7 +1884,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsLitterInitial();
         public override void CancelChange(object target) => ((CatPoco)target).LitterCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => throw new InvalidOperationException();
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_litter : default!;
     }
 
     public class LittersProperty: Property
@@ -1906,7 +1906,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsInitial(object target) => ((CatPoco)target).IsLittersInitial();
         public override void CancelChange(object target) => ((CatPoco)target).LittersCancelChange();
         public override void AcceptChange(object target) => throw new InvalidOperationException();
-        public override object? GetInitial(object target) => ((CatPoco)target)._is_set_litters ? ((CatPoco)target)._initial_litters : default!;
+        public override object? GetInitial(object target) => IsSet(target) ? ((CatPoco)target)._initial_litters : default!;
     }
 
     public static void InitProperties(List<IProperty> properties)
@@ -2074,13 +2074,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_description != value  && (IsBeingPopulated || IsDescriptionSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsDescriptionInitial())
                     {
                         _description = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_description = value;
                         }
@@ -2108,13 +2109,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_exterior != value  && (IsBeingPopulated || IsExteriorSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsExteriorInitial())
                     {
                         _exterior = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_exterior = value;
                         }
@@ -2142,15 +2144,16 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_gender != value  && (IsBeingPopulated || IsGenderSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsGenderInitial())
                     {
-                        _gender = value;
+                        _gender = value!;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            _initial_gender = value;
+                            _initial_gender = value!;
                         }
                         _is_set_gender = true;
                     }
@@ -2176,13 +2179,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_nameEng != value  && (IsBeingPopulated || IsNameEngSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsNameEngInitial())
                     {
                         _nameEng = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_nameEng = value;
                         }
@@ -2210,13 +2214,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_nameNat != value  && (IsBeingPopulated || IsNameNatSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsNameNatInitial())
                     {
                         _nameNat = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_nameNat = value;
                         }
@@ -2244,13 +2249,14 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_title != value  && (IsBeingPopulated || IsTitleSet()))
                 {
+                    int selector = 0;
                     if (!IsBeingPopulated || IsTitleInitial())
                     {
                         _title = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_title = value;
                         }
@@ -2278,6 +2284,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_breed != value  && (IsBeingPopulated || IsBreedSet()))
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_breed is {})
                     {
                         _breed.PocoChanged -= BreedPocoChanged;
@@ -2285,13 +2296,13 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     }
                     if (!IsBeingPopulated || IsBreedInitial())
                     {
-                        _breed = value;
+                        _breed = value!;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            _initial_breed = value;
+                            _initial_breed = value!;
                         }
                         _is_set_breed = true;
                     }
@@ -2322,6 +2333,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_cattery != value  && (IsBeingPopulated || IsCatterySet()))
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_cattery is {})
                     {
                         _cattery.PocoChanged -= CatteryPocoChanged;
@@ -2329,13 +2345,13 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     }
                     if (!IsBeingPopulated || IsCatteryInitial())
                     {
-                        _cattery = value;
+                        _cattery = value!;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
-                            _initial_cattery = value;
+                            _initial_cattery = value!;
                         }
                         _is_set_cattery = true;
                     }
@@ -2366,6 +2382,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             {
                 if(_litter != value  && (IsBeingPopulated || IsLitterSet()))
                 {
+                    int selector = 0;
+                    if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
+                    {
+                        throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
+                    }
                     if(_litter is {})
                     {
                         _litter.PocoChanged -= LitterPocoChanged;
@@ -2375,9 +2396,9 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                     {
                         _litter = value;
                     }
-                    if (IsBeingPopulated  || ((IEntity)this).PocoState is PocoState.Created)
+                    if ((IsBeingPopulated && (selector = 1) == selector)  || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector))
                     {
-                        if(IsBeingPopulated)
+                        if(selector == 1)
                         {
                             _initial_litter = value;
                         }
@@ -2497,13 +2518,13 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 #region Poco Changed
 
     protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-    protected virtual void BreedDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void BreedDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-    protected virtual void CatteryDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void CatteryDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void LitterPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-    protected virtual void LitterDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void LitterDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void LittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litters));
-    protected virtual void LittersDeletionRequested(object? sender, EventArgs e) => PropagateDeletionRequestedEvent(e);
+        protected virtual void LittersDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsDescriptionInitial() => _initial_description == _description;
 

@@ -52,7 +52,7 @@ public class WeakEventManager
             List<object[]> list;
             lock (set)
             {
-                set.RemoveWhere(v => !((WeakReference)v[1]).IsAlive);
+                int numRemoved = set.RemoveWhere(v => !((WeakReference)v[1]).IsAlive);
                 list = set.Where(v => ((WeakReference)v[1]).IsAlive).Select(v => new object[] { v[0], ((WeakReference)v[1]).Target! }).ToList();
             }
             foreach (object[] item in list)

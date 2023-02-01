@@ -9,11 +9,21 @@ namespace Net.Leksi.Pocota.Client;
 
 public abstract class PocoBase : IPoco
 {
-    public event EventHandler<EventArgs>? DeletionRequested;
+    public event EventHandler<NotifyDeletionEventArgs>? DeletionRequested
+    {
+        add
+        {
+            _pocoContext.DeletionRequestedEventManager.AddHandler(this, value);
+        }
+        remove
+        {
+            _pocoContext.DeletionRequestedEventManager.RemoveHandler(this, value);
+        }
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public event PocoChangedEventHandler? PocoChanged
+    public event EventHandler<NotifyPocoChangedEventArgs>? PocoChanged
     {
         add
         {
@@ -25,7 +35,7 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    public event PocoStateChangedEventHandler? PocoStateChanged
+    public event EventHandler<NotifyPocoStateChangedEventArgs>? PocoStateChanged
     {
         add
         {
@@ -50,6 +60,8 @@ public abstract class PocoBase : IPoco
     private readonly PocoContext _pocoContext;
 
     private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
+    private readonly ConditionalWeakTable<EventArgs, string> _notifiersDeletionRequested = new();
+
     private HashSet<IProperty>? _modified = null;
     protected bool _isCreated = false;
 
@@ -99,7 +111,7 @@ public abstract class PocoBase : IPoco
     ~PocoBase()
     {
         _pocoContext.PocoFinalized(this);
-        Console.WriteLine($"finalize {GetType()}:{GetHashCode()}");
+        //Console.WriteLine($"finalize {GetType()}:{GetHashCode()}");
     }
 
     void IPoco.AcceptChanges()
@@ -247,6 +259,37 @@ public abstract class PocoBase : IPoco
         }
     }
 
+    protected void PropagateDeletionEvent(NotifyDeletionEventArgs args)
+    {
+        lock (_lock)
+        {
+            if (!_notifiersDeletionRequested.TryGetValue(args, out string _))
+            {
+                if(!IsEnvelope) 
+                {
+                    if(_pocoState is not PocoState.Uncertain && _pocoState is not PocoState.Deleted)
+                    {
+                        throw new InvalidOperationException("Cannot delete referenced entity!");
+                    }
+                }
+                else
+                {
+                    args.IsReferencedByEnvelope = true;
+                }
+                _notifiersDeletionRequested.Add(args, string.Empty);
+                if (args.IsPreRequest)
+                {
+                    OnDeletionRequested(args);
+                }
+            }
+        }
+    }
+
+    protected virtual void OnDeletionRequested(NotifyDeletionEventArgs args)
+    {
+        _pocoContext.DeletionRequestedEventManager.InvokeHandlers(this, new object[] { this, args });
+    }
+
     protected virtual void OnPocoChanged(Property property)
     {
         lock (_lock)
@@ -264,7 +307,7 @@ public abstract class PocoBase : IPoco
                         PocoState oldPocoState = ((IPoco)this).PocoState;
                         if (!property.IsInitial(this))
                         {
-                            (_modified ?? (_modified = new HashSet<IProperty>())).Add(property);
+                            (_modified ??= new HashSet<IProperty>()).Add(property);
                         }
                         else
                         {
