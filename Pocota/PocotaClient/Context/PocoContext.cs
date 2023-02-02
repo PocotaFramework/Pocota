@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Client.Json;
 using Net.Leksi.Pocota.Common;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,7 +19,7 @@ internal class PocoContext : IPocoContext
     private readonly Dictionary<Type, int> _tracedPocos = new();
     private readonly Dictionary<Type, Dictionary<object?[], WeakReference>> _cachedObjects = new();
     private readonly object _getSourceLock = new();
-    private readonly ConcurrentDictionary<IPoco, string> _changedPocos = new(ReferenceEqualityComparer.Instance);
+    private readonly ConditionalWeakTable<IPoco, string> _changedPocos = new();
 
     private bool _tracePocos = false;
     private int _freezeTracingPocosReenters = 0;
@@ -44,7 +45,7 @@ internal class PocoContext : IPocoContext
 
     public IDictionary<Type, int> TracedPocos => _tracedPocos;
 
-    public ICollection<IPoco> ModifiedPocos => _changedPocos.Keys;
+    public List<WeakReference<IPoco>> ModifiedPocos => _changedPocos.Select(e => new WeakReference<IPoco>(e.Key)).ToList();
 
     public PocoContext(IServiceProvider services)
     {
@@ -148,16 +149,16 @@ internal class PocoContext : IPocoContext
         }
     }
 
-    internal void OnPocoStateChanged(object? sender, NotifyPocoStateChangedEventArgs args)
+    internal void OnPocoStateChanged(object? sender, PocoStateChangedEventArgs args)
     {
         if (args.NewState is PocoState.Created || args.NewState is PocoState.Modified || args.NewState is PocoState.Deleted)
         {
-            _changedPocos.TryAdd((sender as PocoBase)!, string.Empty);
+            _changedPocos.AddOrUpdate((sender as PocoBase)!, string.Empty);
             ModifiedPocosChanged?.Invoke(this, new EventArgs());
         }
         else
         {
-            if(_changedPocos.TryRemove((sender as PocoBase)!, out string _))
+            if(_changedPocos.Remove((sender as PocoBase)!))
             {
                 ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
@@ -183,6 +184,7 @@ internal class PocoContext : IPocoContext
             if (_freezeTracingPocosReenters == 0)
             {
                 TracedPocosChanged?.Invoke(this, new EventArgs());
+                ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
         }
     }
@@ -196,6 +198,7 @@ internal class PocoContext : IPocoContext
             if(_freezeTracingPocosReenters == 0)
             {
                 TracedPocosChanged?.Invoke(this, new EventArgs());
+                ModifiedPocosChanged?.Invoke(this, new EventArgs());
             }
         }
     }
@@ -210,6 +213,7 @@ internal class PocoContext : IPocoContext
         if(Interlocked.Decrement(ref _freezeTracingPocosReenters) == 0)
         {
             TracedPocosChanged?.Invoke(this, new EventArgs());
+            ModifiedPocosChanged?.Invoke(this, new EventArgs());
         }
     }
 }

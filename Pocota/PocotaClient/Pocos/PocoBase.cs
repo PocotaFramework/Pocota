@@ -9,7 +9,7 @@ namespace Net.Leksi.Pocota.Client;
 
 public abstract class PocoBase : IPoco
 {
-    public event EventHandler<NotifyDeletionEventArgs>? DeletionRequested
+    public event EventHandler<DeletionEventArgs>? DeletionRequested
     {
         add
         {
@@ -23,7 +23,7 @@ public abstract class PocoBase : IPoco
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public event EventHandler<NotifyPocoChangedEventArgs>? PocoChanged
+    public event EventHandler<PocoChangedEventArgs>? PocoChanged
     {
         add
         {
@@ -35,7 +35,7 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    public event EventHandler<NotifyPocoStateChangedEventArgs>? PocoStateChanged
+    public event EventHandler<PocoStateChangedEventArgs>? PocoStateChanged
     {
         add
         {
@@ -59,7 +59,7 @@ public abstract class PocoBase : IPoco
     private readonly Dictionary<PocoTraversalContext, int> _populaters = new(ReferenceEqualityComparer.Instance);
     private readonly PocoContext _pocoContext;
 
-    private readonly ConditionalWeakTable<NotifyPocoChangedEventArgs, HashSet<string>> _notifiers = new();
+    private readonly ConditionalWeakTable<PocoChangedEventArgs, HashSet<string>> _notifiers = new();
     private readonly ConditionalWeakTable<EventArgs, string> _notifiersDeletionRequested = new();
 
     private HashSet<IProperty>? _modified = null;
@@ -110,8 +110,8 @@ public abstract class PocoBase : IPoco
 
     ~PocoBase()
     {
+        _pocoState = PocoState.Finalized;
         _pocoContext.PocoFinalized(this);
-        //Console.WriteLine($"finalize {GetType()}:{GetHashCode()}");
     }
 
     void IPoco.AcceptChanges()
@@ -135,7 +135,7 @@ public abstract class PocoBase : IPoco
             PocoState newPocoState = ((IPoco)this).PocoState;
             if (oldPocoState != newPocoState)
             {
-                OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
+                OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
             }
         }
     }
@@ -192,7 +192,7 @@ public abstract class PocoBase : IPoco
             PocoState newPocoState = ((IPoco)this).PocoState;
             if (oldPocoState != newPocoState)
             {
-                OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
+                OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
             }
         }
     }
@@ -242,7 +242,7 @@ public abstract class PocoBase : IPoco
         return result;
     }
 
-    protected void PropagateChangeEvent(NotifyPocoChangedEventArgs args, string property)
+    protected void PropagateChangeEvent(PocoChangedEventArgs args, string property)
     {
         lock (_lock)
         {
@@ -259,7 +259,7 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    protected void PropagateDeletionEvent(NotifyDeletionEventArgs args)
+    protected void PropagateDeletionEvent(DeletionEventArgs args)
     {
         lock (_lock)
         {
@@ -285,7 +285,7 @@ public abstract class PocoBase : IPoco
         }
     }
 
-    protected virtual void OnDeletionRequested(NotifyDeletionEventArgs args)
+    protected virtual void OnDeletionRequested(DeletionEventArgs args)
     {
         _pocoContext.DeletionRequestedEventManager.InvokeHandlers(this, new object[] { this, args });
     }
@@ -318,23 +318,23 @@ public abstract class PocoBase : IPoco
 
                         if (oldPocoState != newPocoState)
                         {
-                            OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
+                            OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
                         }
                         else
                         {
-                            OnPocoChanged(new NotifyPocoChangedEventArgs());
+                            OnPocoChanged(new PocoChangedEventArgs());
                         }
                     }
                     else
                     {
-                        OnPocoChanged(new NotifyPocoChangedEventArgs());
+                        OnPocoChanged(new PocoChangedEventArgs());
                     }
                 }
             }
         }
     }
 
-    protected virtual void OnPocoChanged(NotifyPocoChangedEventArgs args)
+    protected virtual void OnPocoChanged(PocoChangedEventArgs args)
     {
         lock (_lock)
         {
@@ -344,15 +344,15 @@ public abstract class PocoBase : IPoco
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? prop = null)
     {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
-    protected void OnPocoStateChanged(NotifyPocoStateChangedEventArgs args)
+    protected void OnPocoStateChanged(PocoStateChangedEventArgs args)
     {
         lock (_lock)
         {
             _pocoContext.PocoStateChangedEventManager.InvokeHandlers(this, new object[] { this, args });
-            OnPocoChanged(new NotifyPocoChangedEventArgs());
+            OnPocoChanged(new PocoChangedEventArgs());
         }
     }
 

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Net.Leksi.Pocota.Client</RootNamespace>
+    <AssemblyName>Net.Leksi.Pocota.CSharpClientProfiler</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
+    <ProjectReference Include="..\PocotaClientProfilerContract\PocotaClientProfilerCodeGenDebug.csproj" />
+    <ProjectReference Include="..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ViewTracedPoco.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

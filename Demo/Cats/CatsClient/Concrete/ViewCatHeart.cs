@@ -2,6 +2,7 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
@@ -40,7 +41,7 @@ public class ViewCatHeart : ViewCatHeartPoco
         }
     }
 
-    private void FindCats_Executed(object sender, Net.Leksi.Pocota.Client.Crud.CrudCommandExecutedEventArgs args)
+    private void FindCats_Executed(object sender, CrudCommandExecutedEventArgs args)
     {
         ;
     }

@@ -1,6 +1,6 @@
 ﻿using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client.Crud;
+using Net.Leksi.Pocota.Client;
 using System;
 using System.Windows.Input;
 

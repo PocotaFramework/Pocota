@@ -1,15 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common.Generic;
+﻿using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Markup;
 
-namespace CatsClient;
+namespace Net.Leksi.Pocota.Client;
 
-public class ViewTracedPocoCommand : ICommand
+public class CancelChangesCommand : ICommand
 {
+    public Action<Action>? DispatcherWrapper { get; set; }
+
     public event EventHandler? CanExecuteChanged
     {
         add
@@ -22,13 +21,6 @@ public class ViewTracedPocoCommand : ICommand
         }
     }
 
-    private readonly IServiceProvider _services;
-
-    public ViewTracedPocoCommand(IServiceProvider services)
-    {
-        _services= services;
-    }
-
     public bool CanExecute(object? parameter)
     {
         return parameter is { } 
@@ -38,6 +30,8 @@ public class ViewTracedPocoCommand : ICommand
             )
             && values[0] is IProjection<IPoco> proj
             && proj.As<IPoco>() is IPoco poco
+            && poco.PocoState is PocoState pocoState
+            && pocoState is not PocoState.Unchanged
             && (
                 values.Length == 1 
                 || (
@@ -54,18 +48,22 @@ public class ViewTracedPocoCommand : ICommand
             && CanExecute(parameter) 
             && (parameter is object[] values || (values = new object[] { parameter }) == values)
             && values[0] is IProjection<IPoco> proj
-            && proj.As<IPoco>() is PocoBase poco
+            && proj.As<IPoco>() is IPoco poco
         )
         {
             try
             {
-                _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
+                if(DispatcherWrapper is { })
                 {
-                    ViewTracedPoco view = _services.GetRequiredService<ViewTracedPoco>();
-                    _services.GetRequiredService<TracedPocos>().AddView(view);
-                    view.Source = poco;
-                    view.Show();
-                });
+                    DispatcherWrapper.Invoke(() =>
+                    {
+                        poco.CancelChanges();
+                    });
+                }
+                else
+                {
+                    poco.CancelChanges();
+                }
             }
             catch (Exception ex)
             {

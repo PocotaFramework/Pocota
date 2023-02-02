@@ -5,7 +5,6 @@ using CatsCommon.Model;
 using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Client.Crud;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -68,7 +67,7 @@ public partial class MainWindow : Window
 
     public MainWindow(IServiceProvider services)
     {
-        services.GetRequiredService<IPocoContext>().TracePocos = true;
+        _tracedPocos = services.GetService<TracedPocos>();
 
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");
@@ -124,13 +123,6 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         CatsDataGrid.SelectionChanged += Heart.CatsSelectionChanged;
-
-        if (services.GetRequiredService<IPocoContext>().TracePocos)
-        {
-            _tracedPocos = services.GetRequiredService<TracedPocos>();
-            AddView(_tracedPocos);
-            _tracedPocos.Show();
-        }
 
     }
 
@@ -221,16 +213,6 @@ public partial class MainWindow : Window
         FindSiblingsCatsCommand.Execute(
             new FindSiblingsCatsCommand.Parameter { Filter = Heart.CatFilter }
         );
-    }
-
-    protected override void OnClosing(CancelEventArgs e)
-    {
-        if (_tracedPocos is { })
-        {
-            _tracedPocos.CanClose = true;
-            _tracedPocos.Close();
-        }
-        base.OnClosing(e);
     }
 
     protected override void OnActivated(EventArgs e)

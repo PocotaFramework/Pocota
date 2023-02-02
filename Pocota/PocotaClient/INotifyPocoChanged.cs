@@ -2,6 +2,6 @@
 
 public interface INotifyPocoChanged
 {
-    event EventHandler<NotifyPocoChangedEventArgs>? PocoChanged;
-    event EventHandler<NotifyPocoStateChangedEventArgs>? PocoStateChanged;
+    event EventHandler<PocoChangedEventArgs>? PocoChanged;
+    event EventHandler<PocoStateChangedEventArgs>? PocoStateChanged;
 }

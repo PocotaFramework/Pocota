@@ -2,6 +2,7 @@
 using CatsCommon.Filters;
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
@@ -77,6 +78,11 @@ public partial class ViewCat : Window
         SameLitterCatsDataGrid.SelectionChanged += Heart.SameLitterCatsSelectionChanged;
 
         CatFilter = mainWindow.Heart.CatFilter;
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
     }
 
     private void LittersDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

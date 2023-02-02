@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
 
-namespace CatsClient
+namespace Net.Leksi.Pocota.Client
 {
     public partial class TracedPocos : Window
     {
@@ -14,15 +13,15 @@ namespace CatsClient
 
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
-        public CancelChangesCommand CancelChangesCommand { get; init; }
+        public CancelChangesCommand CancelChangesCommand { get; init; } = new();
         public ViewTracedPocoCommand ViewTracedPocoCommand { get; init; }
         public CollectionViewSource ModifiedPocosViewSource { get; init; } = new();
 
         public TracedPocos(IServiceProvider services)
         {
             Heart = services.GetRequiredService<ITracedPocosHeart>();
-            CancelChangesCommand = services.GetRequiredService<CancelChangesCommand>();
             ViewTracedPocoCommand = services.GetRequiredService<ViewTracedPocoCommand>();
+            CancelChangesCommand.DispatcherWrapper = callback => Dispatcher.Invoke(callback);
             ModifiedPocosViewSource.Source = Heart.ModifiedPocos;
             ModifiedPocosViewSource.Filter += ModifiedPocosViewSource_Filter;
             InitializeComponent();
@@ -30,15 +29,15 @@ namespace CatsClient
 
         private void ModifiedPocosViewSource_Filter(object sender, FilterEventArgs e)
         {
-            if(e.Item is PocoBase poco)
+            if(e.Item is PocoInfo pocoInfo && pocoInfo.Item.TryGetTarget(out IPoco? poco))
             {
                 if (FilterEntities.IsChecked is bool filterEntities && filterEntities)
                 {
-                    e.Accepted = e.Item is IEntity;
+                    e.Accepted = poco is IEntity;
                 }
                 else if (FilterEnvelopes.IsChecked is bool filterEnvelopes && filterEnvelopes)
                 {
-                    e.Accepted = e.Item is not IEntity;
+                    e.Accepted = poco is not IEntity;
                 }
                 else
                 {

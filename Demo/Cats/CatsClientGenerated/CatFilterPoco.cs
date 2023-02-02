@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-01T17:48:58                                  //
+// at 2023-02-02T17:00:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,6 +13,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace CatsCommon.Filters;
 
@@ -1711,24 +1712,24 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     
 #region Poco Changed
 
-    protected virtual void AncestorPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Ancestor));
-        protected virtual void AncestorDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void BreedPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-        protected virtual void BreedDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void CatteryPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-        protected virtual void CatteryDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void ChildPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Child));
-        protected virtual void ChildDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void DescendantPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Descendant));
-        protected virtual void DescendantDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void FatherPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Father));
-        protected virtual void FatherDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void LitterPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-        protected virtual void LitterDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void MotherPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Mother));
-        protected virtual void MotherDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void SelfPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Self));
-        protected virtual void SelfDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void AncestorPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Ancestor));
+        protected virtual void AncestorDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void BreedPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
+        protected virtual void BreedDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatteryPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
+        protected virtual void CatteryDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void ChildPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Child));
+        protected virtual void ChildDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void DescendantPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Descendant));
+        protected virtual void DescendantDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void FatherPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Father));
+        protected virtual void FatherDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void LitterPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
+        protected virtual void LitterDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void MotherPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Mother));
+        protected virtual void MotherDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelfPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Self));
+        protected virtual void SelfDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsBornAfterInitial() => _initial_bornAfter == _bornAfter;
 

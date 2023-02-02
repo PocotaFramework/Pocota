@@ -37,7 +37,7 @@ public abstract class EntityBase : PocoBase, IEntity
             PocoState oldPocoState = ((IPoco)this).PocoState;
             _pocoState = PocoState.Created;
             PocoState newPocoState = ((IPoco)this).PocoState;
-            OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, newPocoState));
+            OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
         }
     }
 
@@ -73,19 +73,19 @@ public abstract class EntityBase : PocoBase, IEntity
                             DebugAccess("2");
                         }
 
-                        NotifyDeletionEventArgs preRequest = new(true);
+                        DeletionEventArgs preRequest = new(true);
                         OnDeletionRequested(preRequest);
 
                         Deleting();
 
                         if (preRequest.IsReferencedByEnvelope)
                         {
-                            OnDeletionRequested(new NotifyDeletionEventArgs(false));
+                            OnDeletionRequested(new DeletionEventArgs(false));
                         }
 
                         PocoState oldPocoState = ((IPoco)this).PocoState;
                         _pocoState = _pocoState is PocoState.Created ? PocoState.Uncertain : PocoState.Deleted;
-                        OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(oldPocoState, _pocoState));
+                        OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, _pocoState));
                     }
                     finally
                     {
@@ -123,7 +123,7 @@ public abstract class EntityBase : PocoBase, IEntity
                         Undeleting();
 
                         PocoState newPocoState = ((IPoco)this).PocoState;
-                        OnPocoStateChanged(new NotifyPocoStateChangedEventArgs(PocoState.Deleted, newPocoState));
+                        OnPocoStateChanged(new PocoStateChangedEventArgs(PocoState.Deleted, newPocoState));
                     }
                     finally
                     {

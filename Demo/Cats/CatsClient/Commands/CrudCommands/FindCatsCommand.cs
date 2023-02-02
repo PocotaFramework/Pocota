@@ -1,7 +1,6 @@
 ﻿using CatsCommon.Filters;
 using CatsCommon.Model;
 using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Client.Crud;
 using System;
 
 namespace CatsClient;

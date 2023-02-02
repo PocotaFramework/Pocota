@@ -1,7 +1,6 @@
 ﻿using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Client.Crud;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
@@ -92,7 +91,7 @@ public class PasteParentCommand : ICommand
                 && proj1.As<ICat>() is ICat cat1
             )
             {
-                CrudCommandExecutedEventHandler GetCat_Executed = (sender,  args) =>
+                EventHandler<CrudCommandExecutedEventArgs> GetCat_Executed = (sender,  args) =>
                 {
                     if (args.Result is IProjection<ICat>)
                     {

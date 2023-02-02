@@ -881,6 +881,8 @@ public class CodeGenerator : IModelBuilder
 
             AddUsings(model, request.Interface);
             AddUsings(model, typeof(IProjection));
+            AddUsings(model, typeof(Enumerable));
+            AddUsings(model, typeof(Type));
 
             model.Interfaces.Add(MakeTypeName(typeof(IProjection)));
             model.Interfaces.Add(MakeIProjectionName(MakePocoClassName(request.Interface)));
@@ -928,10 +930,7 @@ public class CodeGenerator : IModelBuilder
                     {
                         AddUsings(model, typeof(ObservableCollection<>));
                     }
-                    else
-                    {
-                        AddUsings(model, typeof(List<>));
-                    }
+                    AddUsings(model, typeof(List<>));
                     if (_projectorsByProjections.TryGetValue(itemType, out ProjectorHolder? ph1))
                     {
                         AddUsings(model, _projectorsByProjections[itemType].Interface);

@@ -1,21 +1,22 @@
-/////////////////////////////////////////////////////////////////////
-// Client Poco Implementation                                      //
-// CatsClient.TracedPocosHeartPoco                                 //
-// Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-01T17:48:58                                          //
-/////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// Client Poco Implementation                                                         //
+// Net.Leksi.Pocota.Client.TracedPocosHeartPoco                                       //
+// Generated automatically from Net.Leksi.Pocota.Client.IPocotaClientProfilerContract //
+// at 2023-02-02T13:56:51                                                             //
+////////////////////////////////////////////////////////////////////////////////////////
 
 
-using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
-namespace CatsClient;
+namespace Net.Leksi.Pocota.Client;
 
 public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<TracedPocosHeartPoco>, IProjection<ITracedPocosHeart>
 {
@@ -37,8 +38,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
             public override bool IsKeyPart => false;
-            public override Type Type => typeof(IList<Tuple<Type,Int32,PocoState,PocoBase>>);
-            public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,PocoBase>);
+            public override Type Type => typeof(IList<PocoInfo>);
+            public override Type? ItemType => typeof(PocoInfo);
             public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target).ModifiedPocos;
             public override void Touch(object target) 
@@ -60,8 +61,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
             public override bool IsKeyPart => false;
-            public override Type Type => typeof(IList<Tuple<Type,Int32>>);
-            public override Type? ItemType => typeof(Tuple<Type,Int32>);
+            public override Type Type => typeof(IList<PocosCounts>);
+            public override Type? ItemType => typeof(PocosCounts);
             public override bool IsSet(object target) => true;
             public override object? Get(object target) => ((TracedPocosHeartITracedPocosHeartProjection)target).TracedPocos;
             public override void Touch(object target) 
@@ -103,12 +104,12 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         private readonly TracedPocosHeartPoco _projector;
 
 
-        public IList<Tuple<Type,Int32,PocoState,PocoBase>> ModifiedPocos 
+        public IList<PocoInfo> ModifiedPocos 
         {
             get => _projector.ModifiedPocos!;
         }
 
-        public IList<Tuple<Type,Int32>> TracedPocos 
+        public IList<PocosCounts> TracedPocos 
         {
             get => _projector.TracedPocos!;
         }
@@ -164,8 +165,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
         public override bool IsKeyPart => false;
-        public override Type Type => typeof(ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>>);
-        public override Type? ItemType => typeof(Tuple<Type,Int32,PocoState,PocoBase>);
+        public override Type Type => typeof(ObservableCollection<PocoInfo>);
+        public override Type? ItemType => typeof(PocoInfo);
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((TracedPocosHeartPoco)target).ModifiedPocos;
         public override void Touch(object target) 
@@ -187,8 +188,8 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
         public override bool IsKeyPart => false;
-        public override Type Type => typeof(ObservableCollection<Tuple<Type,Int32>>);
-        public override Type? ItemType => typeof(Tuple<Type,Int32>);
+        public override Type Type => typeof(ObservableCollection<PocosCounts>);
+        public override Type? ItemType => typeof(PocosCounts);
         public override bool IsSet(object target) => true;
         public override object? Get(object target) => ((TracedPocosHeartPoco)target).TracedPocos;
         public override void Touch(object target) 
@@ -215,11 +216,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Fields
 
-    private readonly ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>> _modifiedPocos = new();
-    private readonly List<Tuple<Type,Int32,PocoState,PocoBase>> _initial_modifiedPocos = new();
+    private readonly ObservableCollection<PocoInfo> _modifiedPocos = new();
+    private readonly List<PocoInfo> _initial_modifiedPocos = new();
     
-    private readonly ObservableCollection<Tuple<Type,Int32>> _tracedPocos = new();
-    private readonly List<Tuple<Type,Int32>> _initial_tracedPocos = new();
+    private readonly ObservableCollection<PocosCounts> _tracedPocos = new();
+    private readonly List<PocosCounts> _initial_tracedPocos = new();
     
 
 #endregion Fields;
@@ -250,7 +251,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     
 
-    public virtual ObservableCollection<Tuple<Type,Int32,PocoState,PocoBase>> ModifiedPocos
+    public virtual ObservableCollection<PocoInfo> ModifiedPocos
     {
         get => _modifiedPocos;
         set => throw new NotImplementedException();
@@ -258,7 +259,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     
 
-    public virtual ObservableCollection<Tuple<Type,Int32>> TracedPocos
+    public virtual ObservableCollection<PocosCounts> TracedPocos
     {
         get => _tracedPocos;
         set => throw new NotImplementedException();
@@ -335,7 +336,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         {
             if (e.OldItems is { })
             {
-                foreach (Tuple<Type,Int32,PocoState,PocoBase> item in e.OldItems)
+                foreach (PocoInfo item in e.OldItems)
                 {
                     if(IsBeingPopulated)
                     {
@@ -345,7 +346,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             }
             if (e.NewItems is { })
             {
-                foreach (Tuple<Type,Int32,PocoState,PocoBase> item in e.NewItems)
+                foreach (PocoInfo item in e.NewItems)
                 {
                     if(IsBeingPopulated)
                     {
@@ -399,7 +400,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         {
             if (e.OldItems is { })
             {
-                foreach (Tuple<Type,Int32> item in e.OldItems)
+                foreach (PocosCounts item in e.OldItems)
                 {
                     if(IsBeingPopulated)
                     {
@@ -409,7 +410,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             }
             if (e.NewItems is { })
             {
-                foreach (Tuple<Type,Int32> item in e.NewItems)
+                foreach (PocosCounts item in e.NewItems)
                 {
                     if(IsBeingPopulated)
                     {

@@ -1,11 +1,11 @@
 ﻿namespace Net.Leksi.Pocota.Client;
 
-public class NotifyDeletionEventArgs: EventArgs
+public class DeletionEventArgs: EventArgs
 {
     internal bool IsPreRequest { get; init; }
     internal bool IsReferencedByEnvelope { get; set; } = false;
 
-    public NotifyDeletionEventArgs(bool isPreRequest)
+    public DeletionEventArgs(bool isPreRequest)
     {
         IsPreRequest = isPreRequest;
     }

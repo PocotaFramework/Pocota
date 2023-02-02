@@ -21,15 +21,15 @@ public class Program
             {
                 services.AddSingleton<App>();
                 services.AddSingleton<MainWindow>();
-                services.AddSingleton<TracedPocos>();
                 services.AddTransient<ViewCat>();
-                services.AddTransient<ViewTracedPoco>();
 
                 services.AddScoped<CatsConnector>();
 
                 services.AddPocota(
                     configurePocos: serv =>
                     {
+                        serv.AddPocotaClientProfiler<App>();
+
                         serv.AddTransient<Cat>();
                         serv.AddTransient<Litter>();
                         serv.AddTransient<BreedPoco>();
@@ -39,7 +39,6 @@ public class Program
                         serv.AddTransient<CatteryFilterPoco>();
                         serv.AddTransient<MainWindowHeart>();
                         serv.AddTransient<ViewCatHeart>();
-                        serv.AddTransient<TracedPocosHeart>();
                     },
                     configureJson: conf =>
                     {

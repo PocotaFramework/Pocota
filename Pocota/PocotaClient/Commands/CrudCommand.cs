@@ -1,15 +1,15 @@
 ﻿using System.Text.Json;
 using System.Windows.Input;
 
-namespace Net.Leksi.Pocota.Client.Crud;
+namespace Net.Leksi.Pocota.Client;
 
 public abstract class CrudCommand : ICommand
 {
     public abstract event EventHandler? CanExecuteChanged;
 
-    public event CrudCommandExecutingHandler? Executing;
-    public event CrudCommandExecutingHandler? Received;
-    public event CrudCommandExecutedEventHandler? Executed;
+    public event EventHandler<CrudCommandExecutingEventArgs>? Executing;
+    public event EventHandler<CrudCommandExecutingEventArgs>? Received;
+    public event EventHandler<CrudCommandExecutedEventArgs>? Executed;
     public event EventHandler<ExceptionEventArgs>? CoughtException;
 
     protected readonly IServiceProvider _services;

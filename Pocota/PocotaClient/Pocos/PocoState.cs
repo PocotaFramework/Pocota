@@ -6,5 +6,6 @@ public enum PocoState
     Created,
     Modified,
     Deleted,
-    Unchanged
+    Unchanged,
+    Finalized
 }

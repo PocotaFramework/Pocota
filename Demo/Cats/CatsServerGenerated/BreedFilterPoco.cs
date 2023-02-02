@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-01T17:48:58                                  //
+// at 2023-02-02T17:00:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,6 +10,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
+using System.Linq;
 
 namespace CatsCommon.Filters;
 

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-01T17:48:58                                          //
+// at 2023-02-02T17:00:55                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -12,9 +12,11 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace CatsClient;
 
@@ -1046,16 +1048,16 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     
 #region Poco Changed
 
-    protected virtual void CatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cat));
-        protected virtual void CatDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void SelectedChildPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedChild));
-        protected virtual void SelectedChildDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void SelectedSameLitterCatPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedSameLitterCat));
-        protected virtual void SelectedSameLitterCatDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void ChildrenPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Children));
-        protected virtual void ChildrenDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void SelectedLittersPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedLitters));
-        protected virtual void SelectedLittersDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cat));
+        protected virtual void CatDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelectedChildPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedChild));
+        protected virtual void SelectedChildDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelectedSameLitterCatPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedSameLitterCat));
+        protected virtual void SelectedSameLitterCatDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void ChildrenPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Children));
+        protected virtual void ChildrenDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelectedLittersPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedLitters));
+        protected virtual void SelectedLittersDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsEditKindInitial() => _initial_editKind == _editKind;
 

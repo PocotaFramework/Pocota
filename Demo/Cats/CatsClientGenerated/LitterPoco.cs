@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-01T17:48:58                                  //
+// at 2023-02-02T17:00:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace CatsCommon.Model;
 
@@ -1279,12 +1280,12 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     
 #region Poco Changed
 
-    protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-        protected virtual void FemaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-        protected virtual void MaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void CatsPocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
-        protected virtual void CatsDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void FemalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
+        protected virtual void FemaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void MalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
+        protected virtual void MaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatsPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
+        protected virtual void CatsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsDateInitial() => _initial_date == _date;
 

@@ -1,6 +1,4 @@
-﻿using Net.Leksi.Pocota.Client.Crud;
-
-namespace Net.Leksi.Pocota.Client;
+﻿namespace Net.Leksi.Pocota.Client;
 
 public class ExceptionEventArgs : CrudCommandExecutingEventArgs
 {

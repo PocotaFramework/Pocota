@@ -1,11 +1,10 @@
-﻿using Net.Leksi.Pocota.Client;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace CatsClient;
+namespace Net.Leksi.Pocota.Client;
 
 public class TracedPocoActionConverter : MarkupExtension, IValueConverter
 {

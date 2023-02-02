@@ -6,7 +6,7 @@
 @foreach (PropertyModel pm in Model.Properties.Where(p => p.IsPoco))
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
+    <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
         protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
 </text>
 }

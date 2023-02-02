@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Client;
 using System;
+using System.Linq;
 
-namespace CatsClient;
+namespace Net.Leksi.Pocota.Client;
 
 internal class TracedPocosHeart : TracedPocosHeartPoco
 {
@@ -17,29 +17,33 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
 
     public override void CollectGarbage()
     {
-        GC.Collect();
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
+        GC.WaitForFullGCComplete();
     }
 
     private void _pocoContext_TracedPocosChanged(object? sender, EventArgs e)
     {
-        _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
+        _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
         {
             TracedPocos.Clear();
             foreach (var item in _pocoContext.TracedPocos)
             {
-                TracedPocos.Add(new Tuple<Type, int>(item.Key, item.Value));
+                TracedPocos.Add(new PocosCounts(item.Key, item.Value));
             }
         });
     }
 
     private void _pocoContext_ModifiedPocosChanged(object? sender, EventArgs e)
     {
-        _services.GetRequiredService<MainWindow>().Dispatcher.Invoke(() =>
+        _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
         {
             ModifiedPocos.Clear();
-            foreach (var item in _pocoContext.ModifiedPocos)
+            foreach (WeakReference<IPoco> wr in _pocoContext.ModifiedPocos)
             {
-                ModifiedPocos.Add(new Tuple<Type, int, PocoState, PocoBase>(item.GetType(), item.GetHashCode(), item.PocoState, (PocoBase)item));
+                if(wr.TryGetTarget(out var item) && item.PocoState is not PocoState.Finalized)
+                {
+                    ModifiedPocos.Add(new PocoInfo(item.GetType(), item.GetHashCode().ToString(), item.PocoState, wr));
+                }
             }
         });
     }

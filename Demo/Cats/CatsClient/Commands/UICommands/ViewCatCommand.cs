@@ -1,7 +1,6 @@
 ﻿using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Client.Crud;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;

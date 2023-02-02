@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-01T17:48:58                                  //
+// at 2023-02-02T17:00:55                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,9 +12,11 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace CatsCommon.Filters;
 
@@ -473,10 +475,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     
 #region Poco Changed
 
-    protected virtual void FemalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-        protected virtual void FemaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
-    protected virtual void MalePocoChanged(object? sender, NotifyPocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-        protected virtual void MaleDeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void FemalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
+        protected virtual void FemaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void MalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
+        protected virtual void MaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsFemaleInitial() => _initial_female == _female;
 
