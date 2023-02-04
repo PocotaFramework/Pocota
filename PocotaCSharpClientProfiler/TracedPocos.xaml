@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
+        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
         mc:Ignorable="d"
         Title="Системная информация" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local:BindingProxy x:Key="CancelChangesCommandProxy" Data="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>
-        <local:BindingProxy x:Key="ViewTracedPocoCommandProxy" Data="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="CancelChangesCommandProxy" Data="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Data="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -42,8 +43,13 @@
                                     Visibility="{Binding Item, Converter={local:TracedPocoActionConverter}, ConverterParameter=VisibleIfIsEntity}">
                                 <Button.Content>Отменить изменения</Button.Content>
                             </Button>
-                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
+                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}">
                                 <Button.Content>Просмотр</Button.Content>
+                                <Button.CommandParameter>
+                                    <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
+                                        
+                                    </MultiBinding>
+                                </Button.CommandParameter>
                             </Button>
                         </StackPanel>
                     </DataTemplate>

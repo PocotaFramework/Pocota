@@ -7,6 +7,7 @@ public static class PocotaClientProfilerExtensions
 {
     public static IServiceCollection AddPocotaClientProfiler<T>(this IServiceCollection services) where T:Application
     {
+        services.AddSingleton<Util>();
         services.AddSingleton<TracedPocos>(serv => 
         {
             TracedPocos tracedPocos = new(serv);
@@ -21,6 +22,7 @@ public static class PocotaClientProfilerExtensions
         });
         services.AddTransient<ViewTracedPoco>();
         services.AddTransient<TracedPocosHeart>();
+        services.AddTransient<PropertyValueConverter>();
 
         return services;
     }

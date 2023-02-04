@@ -8,6 +8,7 @@ public class PocoInfo
     public string Label { get; init; }
     public PocoState State { get; init; }
     public WeakReference<IPoco> Item { get; init; }
+    public object? ViewWindow { get; set; } = null;
 
     public PocoInfo(Type type, string label, PocoState state, WeakReference<IPoco> item)
     {

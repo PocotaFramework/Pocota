@@ -4,7 +4,7 @@ using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace CatsClient;
+namespace Net.Leksi.Pocota.Client;
 
 public class MultiValueToArrayConverter : MarkupExtension, IMultiValueConverter
 {

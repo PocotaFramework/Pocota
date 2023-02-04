@@ -21,7 +21,6 @@
     <ProjectReference Include="..\..\..\PocotaCSharpClientProfiler\PocotaCSharpClientProfilerDebug.csproj" />
     <ProjectReference Include="..\..\..\Pocota\PocotaAspNet\PocotaAspNetDebug.csproj" />
     <ProjectReference Include="..\..\..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
-    <ProjectReference Include="..\..\..\Pocota\PocotaServer\PocotaServerDebug.csproj" />
     <ProjectReference Include="..\CatsClientGenerated\CatsClientGeneratedDebug.csproj" />
     <ProjectReference Include="..\CatsClientMisc\CatsClientMiscDebug.csproj" />
     <ProjectReference Include="..\CatsCommon\CatsCommonDebug.csproj" />

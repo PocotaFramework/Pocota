@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CatsClient"
         xmlns:sw="clr-namespace:System.Windows;assembly=PresentationCore"
+        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
         mc:Ignorable="d"
         Title="Кошки" Height="468" Width="800" MinWidth="800" MinHeight="277" DataContext="{Binding RelativeSource={RelativeSource Self}}" 
         x:Name="TheMainWindow" WindowStartupLocation="CenterScreen" Closing="TheMainWindow_Closing">
     <Window.Resources>
-        <local:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top" >
@@ -315,7 +316,7 @@
                     <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Потомка">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsDescendant"/>
                                     <Binding Path="Heart.CatFilter"/>
@@ -324,7 +325,7 @@
                         </MenuItem>
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Предка">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsAncestor"/>
                                     <Binding Path="Heart.CatFilter"/>
@@ -333,7 +334,7 @@
                         </MenuItem>
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Однопомётника">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsLitter"/>
                                     <Binding Path="Heart.CatFilter"/>
@@ -342,7 +343,7 @@
                         </MenuItem>
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Ребёнка">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsChild"/>
                                     <Binding Path="Heart.CatFilter"/>
@@ -351,7 +352,7 @@
                         </MenuItem>
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Родителя">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsParent"/>
                                     <Binding Path="Heart.CatFilter"/>
@@ -360,7 +361,7 @@
                         </MenuItem>
                         <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Себя">
                             <MenuItem.CommandParameter>
-                                <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                     <Binding Path="Heart.SelectedCat"/>
                                     <Binding Source="AsSelf"/>
                                     <Binding Path="Heart.CatFilter"/>

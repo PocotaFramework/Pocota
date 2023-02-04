@@ -344,7 +344,7 @@ public abstract class PocoBase : IPoco
 
     protected virtual void OnPropertyChanged([CallerMemberName] string? prop = null)
     {
-        //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
     protected void OnPocoStateChanged(PocoStateChangedEventArgs args)

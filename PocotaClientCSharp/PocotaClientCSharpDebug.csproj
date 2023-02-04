@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <AssemblyName>Net.Leksi.Pocota.Client.CSharp</AssemblyName>
+    <RootNamespace>Net.Leksi.Pocota.Client</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

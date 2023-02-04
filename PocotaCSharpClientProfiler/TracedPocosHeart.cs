@@ -1,18 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 
 namespace Net.Leksi.Pocota.Client;
 
 internal class TracedPocosHeart : TracedPocosHeartPoco
 {
     private readonly IPocoContext _pocoContext;
+    private readonly Util _util;
 
     public TracedPocosHeart(IServiceProvider services) : base(services)
     {
         _pocoContext = _services.GetRequiredService<IPocoContext>();
         _pocoContext.TracedPocosChanged += _pocoContext_TracedPocosChanged;
         _pocoContext.ModifiedPocosChanged += _pocoContext_ModifiedPocosChanged;
+        _util = _services.GetRequiredService<Util>();
     }
 
     public override void CollectGarbage()
@@ -42,7 +43,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
             {
                 if(wr.TryGetTarget(out var item) && item.PocoState is not PocoState.Finalized)
                 {
-                    ModifiedPocos.Add(new PocoInfo(item.GetType(), item.GetHashCode().ToString(), item.PocoState, wr));
+                    ModifiedPocos.Add(new PocoInfo(item.GetType(), _util.GetPocoLabel(item), item.PocoState, wr));
                 }
             }
         });

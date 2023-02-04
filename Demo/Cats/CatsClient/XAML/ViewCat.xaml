@@ -4,22 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CatsClient"
+        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
         mc:Ignorable="d"
         Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local:BindingProxy x:Key="TrueIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}" />
-        <local:BindingProxy x:Key="TrueIfNotEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
-        <local:BindingProxy x:Key="TrueIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
-        <local:BindingProxy x:Key="VisibleIfNotReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
-        <local:BindingProxy x:Key="VisibleIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfReadOnly}"/>
-        <local:BindingProxy x:Key="VisibleIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfEditInline}"/>
-        <local:BindingProxy x:Key="CatteriesProxy" Data="{Binding Catteries}"/>
-        <local:BindingProxy x:Key="BreedsProxy" Data="{Binding Breeds}"/>
-        <local:BindingProxy x:Key="MotherProxy" Data="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
-        <local:BindingProxy x:Key="FatherProxy" Data="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
-        <local:BindingProxy x:Key="GendersProxy" Data="{Binding Path=Genders, Mode=OneWay}"/>
-        <local:BindingProxy x:Key="PasteParentCommandProxy" Data="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
-        <local:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="TrueIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}" />
+        <local1:BindingProxy x:Key="TrueIfNotEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
+        <local1:BindingProxy x:Key="TrueIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
+        <local1:BindingProxy x:Key="VisibleIfNotReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
+        <local1:BindingProxy x:Key="VisibleIfReadOnly" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfReadOnly}"/>
+        <local1:BindingProxy x:Key="VisibleIfEditInline" Data="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfEditInline}"/>
+        <local1:BindingProxy x:Key="CatteriesProxy" Data="{Binding Catteries}"/>
+        <local1:BindingProxy x:Key="BreedsProxy" Data="{Binding Breeds}"/>
+        <local1:BindingProxy x:Key="MotherProxy" Data="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="FatherProxy" Data="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="GendersProxy" Data="{Binding Path=Genders, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="PasteParentCommandProxy" Data="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Window.Title>
         <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="Title">
@@ -65,7 +66,7 @@
                 <Button Margin="10,0,0,0" Command="{Binding CancelChangesCommand}"
                         Content="⎌">
                     <Button.CommandParameter>
-                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                             <Binding Path="Heart.Cat" Mode="OneWay"/>
                             <Binding Path="Data" Source="{StaticResource TrueIfEditInline}" Mode="OneWay"/>
                         </MultiBinding>
@@ -388,7 +389,7 @@
                             <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsSameLitterCatSelected, Mode=OneWay}">
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Потомка">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsDescendant"/>
                                             <Binding Path="CatFilter"/>
@@ -397,7 +398,7 @@
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Предка">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsAncestor"/>
                                             <Binding Path="CatFilter"/>
@@ -406,7 +407,7 @@
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Однопомётника">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsLitter"/>
                                             <Binding Path="CatFilter"/>
@@ -415,7 +416,7 @@
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Ребёнка">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsChild"/>
                                             <Binding Path="CatFilter"/>
@@ -424,7 +425,7 @@
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Родителя">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsParent"/>
                                             <Binding Path="CatFilter"/>
@@ -433,7 +434,7 @@
                                 </MenuItem>
                                 <MenuItem Command="{Binding SetCatFilterCommand}" Header="... Себя">
                                     <MenuItem.CommandParameter>
-                                        <MultiBinding Converter="{local:MultiValueToArrayConverter}">
+                                        <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
                                             <Binding Path="Heart.SelectedSameLitterCat"/>
                                             <Binding Source="AsSelf"/>
                                             <Binding Path="CatFilter"/>
