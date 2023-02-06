@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-02T17:00:55                                          //
+// at 2023-02-06T18:22:36                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -1527,17 +1527,17 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 #region Poco Changed
 
     protected virtual void CatFilterPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(CatFilter));
-        protected virtual void CatFilterDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatFilterDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void SelectedCatPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedCat));
-        protected virtual void SelectedCatDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelectedCatDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void BreedsPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breeds));
-        protected virtual void BreedsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void BreedsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void CatsPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cats));
-        protected virtual void CatsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void CatteriesPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Catteries));
-        protected virtual void CatteriesDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatteriesDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void SelectedCatsPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(SelectedCats));
-        protected virtual void SelectedCatsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void SelectedCatsDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsAllBreedsInitial() => _initial_allBreeds == _allBreeds;
 
@@ -1761,6 +1761,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                     item.DeletionRequested += BreedsDeletionRequested;
                     if(IsBeingPopulated)
                     {
+                        if(_breeds.Count == e.NewItems.Count)
+                        {
+                            _initial_breeds.Clear();
+                        }
                         _initial_breeds.Add(item);
                     }
                 }
@@ -1829,6 +1833,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                     item.DeletionRequested += CatsDeletionRequested;
                     if(IsBeingPopulated)
                     {
+                        if(_cats.Count == e.NewItems.Count)
+                        {
+                            _initial_cats.Clear();
+                        }
                         _initial_cats.Add(item);
                     }
                 }
@@ -1897,6 +1905,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                     item.DeletionRequested += CatteriesDeletionRequested;
                     if(IsBeingPopulated)
                     {
+                        if(_catteries.Count == e.NewItems.Count)
+                        {
+                            _initial_catteries.Clear();
+                        }
                         _initial_catteries.Add(item);
                     }
                 }
@@ -1965,6 +1977,10 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                     item.DeletionRequested += SelectedCatsDeletionRequested;
                     if(IsBeingPopulated)
                     {
+                        if(_selectedCats.Count == e.NewItems.Count)
+                        {
+                            _initial_selectedCats.Clear();
+                        }
                         _initial_selectedCats.Add(item);
                     }
                 }

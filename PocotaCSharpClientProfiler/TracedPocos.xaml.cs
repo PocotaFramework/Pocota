@@ -2,20 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Net.Leksi.Pocota.Client
 {
     public partial class TracedPocos : Window
     {
-        private readonly List<ViewTracedPoco> views = new();
+        internal readonly List<ViewTracedPoco> views = new();
 
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
         public CancelChangesCommand CancelChangesCommand { get; init; } = new();
         public ViewTracedPocoCommand ViewTracedPocoCommand { get; init; }
         public CollectionViewSource ModifiedPocosViewSource { get; init; } = new();
+        public List<ViewTracedPoco> Windows => views;
+        public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; } = new();
 
         public TracedPocos(IServiceProvider services)
         {
@@ -52,11 +56,40 @@ namespace Net.Leksi.Pocota.Client
 
         internal void AddView(ViewTracedPoco view)
         {
+            MenuItem mi = new();
+            Binding binding = new();
+            binding.Source = view;
+            binding.Path = new("Title");
+            binding.Mode = BindingMode.OneWay;
+            BindingOperations.SetBinding(mi, MenuItem.HeaderProperty, binding);
+            mi.Click += (obj, arg) =>
+            {
+                if (view.WindowState is WindowState.Minimized)
+                {
+                    view.WindowState = WindowState.Normal;
+                }
+                view.Activate();
+            };
+            WindowsMenuItem.Items.Insert(0, mi);
             views.Add(view);
         }
 
         internal void RemoveView(ViewTracedPoco view)
         {
+            MenuItem? itemToRemove = null;
+            foreach(MenuItem mi in WindowsMenuItem.Items)
+            {
+                Binding binding = BindingOperations.GetBinding(mi, MenuItem.HeaderProperty);
+                if(binding.Source == view)
+                {
+                    itemToRemove = mi;
+                    break;
+                }
+            }
+            if(itemToRemove is { })
+            {
+                WindowsMenuItem.Items.Remove(itemToRemove);
+            }
             views.Remove(view);
         }
 

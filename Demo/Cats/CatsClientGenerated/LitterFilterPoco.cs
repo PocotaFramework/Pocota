@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-02T17:00:55                                  //
+// at 2023-02-06T18:22:36                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -476,9 +476,9 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 #region Poco Changed
 
     protected virtual void FemalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Female));
-        protected virtual void FemaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void FemaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void MalePocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Male));
-        protected virtual void MaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void MaleDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsFemaleInitial() => _initial_female == _female;
 
@@ -536,6 +536,10 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                 {
                     if(IsBeingPopulated)
                     {
+                        if(_strings.Count == e.NewItems.Count)
+                        {
+                            _initial_strings.Clear();
+                        }
                         _initial_strings.Add(item);
                     }
                 }

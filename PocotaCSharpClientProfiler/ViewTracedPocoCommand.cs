@@ -41,9 +41,13 @@ public class ViewTracedPocoCommand : ICommand
                     && poco1.PocoState is not PocoState.Finalized
                 )
                 || (
-                    values.Where(v => v is WeakReference<IPoco>).FirstOrDefault() is WeakReference wr2
+                    values.Where(v => v is WeakReference).FirstOrDefault() is WeakReference wr2
                     && wr2.Target is IPoco poco2
                     && poco2.PocoState is not PocoState.Finalized
+                )
+                || (
+                    values.Where(v => v is IPoco).FirstOrDefault() is IPoco poco3
+                    && poco3.PocoState is not PocoState.Finalized
                 )
             )
             && (
@@ -70,10 +74,15 @@ public class ViewTracedPocoCommand : ICommand
                     && (poco = poco1) == poco
                 )
                 || (
-                    values.Where(v => v is WeakReference<IPoco>).FirstOrDefault() is WeakReference wr2
+                    values.Where(v => v is WeakReference).FirstOrDefault() is WeakReference wr2
                     && wr2.Target is IPoco poco2
                     && poco2.PocoState is not PocoState.Finalized
                     && (poco = poco2) == poco
+                )
+                || (
+                    values.Where(v => v is IPoco).FirstOrDefault() is IPoco poco3
+                    && poco3.PocoState is not PocoState.Finalized
+                    && (poco = poco3) == poco
                 )
             )
         )
@@ -82,11 +91,18 @@ public class ViewTracedPocoCommand : ICommand
             {
                 _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
                 {
-
-                    ViewTracedPoco view = _services.GetRequiredService<ViewTracedPoco>();
-                    _services.GetRequiredService<TracedPocos>().AddView(view);
-                    view.Source = (PocoBase)poco;
-                    view.Show();
+                    ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>().views.Where(v => v._source.TryGetTarget(out PocoBase? target) && target == poco).FirstOrDefault();
+                    ViewTracedPoco view = tmp is { } ? tmp : _services.GetRequiredService<ViewTracedPoco>();
+                    if(tmp is null)
+                    {
+                        _services.GetRequiredService<TracedPocos>().AddView(view);
+                        view.Source = (PocoBase)poco;
+                        view.Show();
+                    }
+                    else
+                    {
+                        view.Activate();
+                    }
                 });
             }
             catch (Exception ex)

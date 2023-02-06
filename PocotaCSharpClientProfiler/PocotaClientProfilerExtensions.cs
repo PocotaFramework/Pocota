@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Threading;
 using System.Windows;
 
 namespace Net.Leksi.Pocota.Client;
@@ -12,7 +14,8 @@ public static class PocotaClientProfilerExtensions
         {
             TracedPocos tracedPocos = new(serv);
             serv.GetRequiredService<IPocoContext>().TracePocos = true;
-            serv.GetRequiredService<T>().MainWindow.Closed += (s, e) =>
+            T app = serv.GetRequiredService<T>();
+            app.MainWindow.Closed += (s, e) =>
             {
                 tracedPocos.CanClose = true;
                 tracedPocos.Close();
@@ -20,10 +23,16 @@ public static class PocotaClientProfilerExtensions
             tracedPocos.Show();
             return tracedPocos;
         });
+        
         services.AddTransient<ViewTracedPoco>();
         services.AddTransient<TracedPocosHeart>();
         services.AddTransient<PropertyValueConverter>();
 
         return services;
+    }
+
+    private static void App_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+    {
+        Console.WriteLine("here");
     }
 }

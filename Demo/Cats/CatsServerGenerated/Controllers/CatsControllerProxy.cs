@@ -2,7 +2,7 @@
 // Controller Proxy                 //
 // CatsContract.CatsControllerProxy //
 // Generated automatically from     //
-// at 2023-02-02T17:00:55           //
+// at 2023-02-06T18:22:36           //
 //////////////////////////////////////
 
 

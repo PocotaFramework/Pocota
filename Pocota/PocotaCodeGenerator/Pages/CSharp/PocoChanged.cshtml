@@ -7,7 +7,7 @@
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
     <text>    protected virtual void @Html.Raw(pm.Name)PocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(@Html.Raw(pm.Name)));
-        protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, NotifyDeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void @Html.Raw(pm.Name)DeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 </text>
 }
 
@@ -54,6 +54,10 @@
                 }
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(IsBeingPopulated)
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty){
+                        @Html.Raw(Model.IsEntity ? "    " : string.Empty)if(@Html.Raw($"{fieldName}.Count") == e.NewItems.Count)
+                        @Html.Raw(Model.IsEntity ? "    " : string.Empty){
+                            @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"_initial{fieldName}.Clear()");
+                        @Html.Raw(Model.IsEntity ? "    " : string.Empty)}
                         @Html.Raw(Model.IsEntity ? "    " : string.Empty)@Html.Raw($"_initial{fieldName}.Add(item)");
                     @Html.Raw(Model.IsEntity ? "    " : string.Empty)}
                 @if(Model.IsEntity)

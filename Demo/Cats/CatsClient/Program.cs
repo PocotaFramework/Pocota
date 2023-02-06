@@ -73,6 +73,7 @@ public class Program
 
         App app = host.Services.GetRequiredService<App>()!;
         app.DispatcherUnhandledException += app.Application_DispatcherUnhandledException;
+
         app.Run(host.Services.GetRequiredService<MainWindow>());
     }
 

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-02T17:00:55                                  //
+// at 2023-02-06T18:22:36                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -2519,13 +2519,13 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 #region Poco Changed
 
     protected virtual void BreedPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Breed));
-        protected virtual void BreedDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void BreedDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void CatteryPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Cattery));
-        protected virtual void CatteryDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void CatteryDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void LitterPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litter));
-        protected virtual void LitterDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void LitterDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
     protected virtual void LittersPocoChanged(object? sender, PocoChangedEventArgs e) => PropagateChangeEvent(e, nameof(Litters));
-        protected virtual void LittersDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
+    protected virtual void LittersDeletionRequested(object? sender, DeletionEventArgs e) => PropagateDeletionEvent(e);
 
     private bool IsDescriptionInitial() => _initial_description == _description;
 
@@ -2697,6 +2697,10 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
                         item.DeletionRequested += LittersDeletionRequested;
                         if(IsBeingPopulated)
                         {
+                            if(_litters.Count == e.NewItems.Count)
+                            {
+                                _initial_litters.Clear();
+                            }
                             _initial_litters.Add(item);
                         }
                     }

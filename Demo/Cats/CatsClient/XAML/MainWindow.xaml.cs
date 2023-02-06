@@ -4,6 +4,7 @@ using CatsCommon.Filters;
 using CatsCommon.Model;
 using CatsContract;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Net.Leksi.Pocota.Client;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,6 @@ public partial class MainWindow : Window
     private bool _firstShown = false;
     private DateTime _startGetCats;
     private DateTime _startRenderingCats;
-
-    private TracedPocos? _tracedPocos = null;
 
     public Dictionary<Window, MenuItem> Windows { get; init; } = new();
 
@@ -67,7 +66,7 @@ public partial class MainWindow : Window
 
     public MainWindow(IServiceProvider services)
     {
-        _tracedPocos = services.GetService<TracedPocos>();
+        services.GetService<TracedPocos>();
 
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");
