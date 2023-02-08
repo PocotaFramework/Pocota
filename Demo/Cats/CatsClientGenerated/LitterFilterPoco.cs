@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-06T18:22:36                                  //
+// at 2023-02-08T18:14:47                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -460,7 +460,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
     public override bool Equals(object? obj)
     {
-        return obj is LitterFilterPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<LitterFilterPoco> other && object.ReferenceEquals(this, other.As<LitterFilterPoco>());
     }
 
     public override int GetHashCode()

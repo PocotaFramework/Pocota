@@ -2,7 +2,7 @@
 // Client Poco Implementation                                                         //
 // Net.Leksi.Pocota.Client.TracedPocosHeartPoco                                       //
 // Generated automatically from Net.Leksi.Pocota.Client.IPocotaClientProfilerContract //
-// at 2023-02-06T12:59:35                                                             //
+// at 2023-02-08T18:15:00                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -313,7 +313,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     public override bool Equals(object? obj)
     {
-        return obj is TracedPocosHeartPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<TracedPocosHeartPoco> other && object.ReferenceEquals(this, other.As<TracedPocosHeartPoco>());
     }
 
     public override int GetHashCode()
@@ -350,6 +350,10 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
                 {
                     if(IsBeingPopulated)
                     {
+                        if(_modifiedPocos.Count == e.NewItems.Count)
+                        {
+                            _initial_modifiedPocos.Clear();
+                        }
                         _initial_modifiedPocos.Add(item);
                     }
                 }
@@ -414,6 +418,10 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
                 {
                     if(IsBeingPopulated)
                     {
+                        if(_tracedPocos.Count == e.NewItems.Count)
+                        {
+                            _initial_tracedPocos.Clear();
+                        }
                         _initial_tracedPocos.Add(item);
                     }
                 }

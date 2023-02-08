@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-06T18:22:36                                  //
+// at 2023-02-08T18:14:46                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -2503,7 +2503,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
 
     public override bool Equals(object? obj)
     {
-        return obj is CatPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<CatPoco> other && object.ReferenceEquals(this, other.As<CatPoco>());
     }
 
     public override int GetHashCode()

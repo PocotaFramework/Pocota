@@ -61,7 +61,6 @@ public class Program
                 services.AddTransient<AddLitterCommand>();
                 services.AddTransient<AddCatCommand>();
                 services.AddTransient<CancelChangesCommand>();
-                services.AddTransient<ViewTracedPocoCommand>();
 
                 services.AddScoped<CopyEntitiesReferencesCommand>();
                 services.AddScoped<PasteParentCommand>();

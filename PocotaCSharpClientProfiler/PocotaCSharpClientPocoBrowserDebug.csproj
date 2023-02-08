@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <RootNamespace>Net.Leksi.Pocota.Client</RootNamespace>
-    <AssemblyName>Net.Leksi.Pocota.CSharpClientProfiler</AssemblyName>
+    <AssemblyName>Net.Leksi.Pocota.CSharpClientPocoBrowser</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

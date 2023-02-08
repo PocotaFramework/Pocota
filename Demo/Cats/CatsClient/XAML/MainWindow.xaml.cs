@@ -25,7 +25,7 @@ namespace CatsClient;
 
 public partial class MainWindow : Window
 {
-    
+
     private ServerDialog? _serverDialog;
     private ConnectingDialog? _connectingDialog;
     private bool _firstShown = false;
@@ -270,7 +270,7 @@ public partial class MainWindow : Window
     {
         FindBreedsCommand.Executed -= FindBreedsCommand_ExecutedFirst;
         FindBreedsCommand.Executed += FindBreedsAndCatteriesCommand_Executed;
-        if(Interlocked.Decrement(ref _breedsAndCatteriesReentering) == 0)
+        if (Interlocked.Decrement(ref _breedsAndCatteriesReentering) == 0)
         {
             _connectingDialog!.DialogResult = true;
         }

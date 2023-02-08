@@ -5,6 +5,7 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -25,16 +26,16 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     internal readonly WeakReference<PocoBase?> _source = new(null);
 
-    ObservableCollection<Tuple<string, object?, object?>> _values = new();
+    ObservableCollection<Tuple<string, object?, object?, bool>> _values = new();
 
-    public ViewTracedPocoCommand ViewTracedPocoCommand { get; init; }
+    public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
 
     public CollectionViewSource CollectionViewSource { get; init; } = new();
 
     public Util Util { get; init; }
 
-    public PocoState PocoState 
-    { 
+    public PocoState PocoState
+    {
         get
         {
             return _pocoState;
@@ -75,7 +76,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         _core = services.GetRequiredService<PocotaCore>();
         Util = services.GetRequiredService<Util>();
         CollectionViewSource.Source = _values;
-        ViewTracedPocoCommand = services.GetRequiredService<ViewTracedPocoCommand>();
+        ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
         InitializeComponent();
     }
 
@@ -84,12 +85,12 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         _services.GetRequiredService<TracedPocos>().RemoveView(this);
         base.OnClosed(e);
     }
-    
+
     public void FillProperties()
     {
         if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
         {
-            Dispatcher.Invoke(() => 
+            Dispatcher.Invoke(() =>
             {
                 PocoState = ((IPoco)target).PocoState;
                 _values.Clear();
@@ -99,11 +100,11 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                 {
                     if (property.Type.IsPrimitive || property.Type.IsEnum || property.Type == typeof(string))
                     {
-                        _values.Add(new Tuple<string, object?, object?>(property.Name, property.GetInitial(target), property.Get(target)));
+                        _values.Add(new Tuple<string, object?, object?, bool>(property.Name, property.GetInitial(target), property.Get(target), property.IsModified(target)));
                     }
                     else
                     {
-                        _values.Add(new Tuple<string, object?, object?>(property.Name, new WeakReference(property.GetInitial(target)), new WeakReference(property.Get(target))));
+                        _values.Add(new Tuple<string, object?, object?, bool>(property.Name, new WeakReference(property.GetInitial(target)), new WeakReference(property.Get(target)), property.IsModified(target)));
                     }
                 }
             });

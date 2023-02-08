@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-06T18:22:36                                          //
+// at 2023-02-08T18:14:47                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -1029,7 +1029,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
 
     public override bool Equals(object? obj)
     {
-        return obj is ViewCatHeartPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<ViewCatHeartPoco> other && object.ReferenceEquals(this, other.As<ViewCatHeartPoco>());
     }
 
     public override int GetHashCode()

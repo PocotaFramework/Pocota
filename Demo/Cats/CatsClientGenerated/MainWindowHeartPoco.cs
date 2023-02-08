@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-06T18:22:36                                          //
+// at 2023-02-08T18:14:47                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -1509,7 +1509,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     public override bool Equals(object? obj)
     {
-        return obj is MainWindowHeartPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<MainWindowHeartPoco> other && object.ReferenceEquals(this, other.As<MainWindowHeartPoco>());
     }
 
     public override int GetHashCode()

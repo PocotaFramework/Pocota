@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Net.Leksi.Pocota.Client;
 
-public static class PocotaClientProfilerExtensions
+public static class PocotaClientPocoBrowserExtensions
 {
     public static IServiceCollection AddPocotaClientProfiler<T>(this IServiceCollection services) where T:Application
     {
@@ -27,12 +26,9 @@ public static class PocotaClientProfilerExtensions
         services.AddTransient<ViewTracedPoco>();
         services.AddTransient<TracedPocosHeart>();
         services.AddTransient<PropertyValueConverter>();
+        services.AddTransient<ViewInBrowserCommand>();
 
         return services;
     }
 
-    private static void App_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-    {
-        Console.WriteLine("here");
-    }
 }

@@ -59,7 +59,7 @@
 
     public override bool Equals(object? obj)
     {
-        return obj is @Html.Raw(Model.ClassName) other && object.ReferenceEquals(this, other);
+        return obj is @Html.Raw($"IProjection<{Model.ClassName}>") other && object.ReferenceEquals(this, @Html.Raw($"other.As<{Model.ClassName}>()"));
     }
 
     public override int GetHashCode()

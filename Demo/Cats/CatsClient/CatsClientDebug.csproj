@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
-    <ProjectReference Include="..\..\..\PocotaCSharpClientProfiler\PocotaCSharpClientProfilerDebug.csproj" />
+    <ProjectReference Include="..\..\..\PocotaCSharpClientProfiler\PocotaCSharpClientPocoBrowserDebug.csproj" />
     <ProjectReference Include="..\..\..\Pocota\PocotaAspNet\PocotaAspNetDebug.csproj" />
     <ProjectReference Include="..\..\..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
     <ProjectReference Include="..\CatsClientGenerated\CatsClientGeneratedDebug.csproj" />

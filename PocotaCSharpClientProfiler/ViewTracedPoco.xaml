@@ -18,7 +18,8 @@
         <DataGrid ItemsSource="{Binding CollectionViewSource.View}" AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <DataTemplate x:Key="Name">
-                    <TextBlock Text="{Binding Item1}"></TextBlock>
+                    <TextBlock Text="{Binding Item1}"
+                        Background="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=ModifiedProperty|#EADDCA}"/>
                 </DataTemplate>
                 <DataTemplate x:Key="Initial">
                     <StackPanel Orientation="Vertical">
@@ -49,21 +50,7 @@
                 <DataTemplate x:Key="Current">
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Visibility="{Binding  Item3, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Text}">
-                            <StackPanel.Resources>
-                                <local1:BindingProxy x:Key="ModifiedPropertyNameBackground">
-                                    <local1:BindingProxy.Data>
-                                        <Binding Converter="{local:ViewTracedPocoConverter}">
-                                            <Binding.ConverterParameter>
-                                                <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
-                                                    <Binding Source="ModifiedProperty">
-                                                </MultiBinding>
-                                            </Binding.ConverterParameter>
-                                        </Binding>
-                                    </local1:BindingProxy.Data>
-                                </local1:BindingProxy>
-                            </StackPanel.Resources>
-                            <TextBlock Text="{Binding Item3, Converter={local:ViewTracedPocoConverter}}" 
-                                       Background="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=ModifiedProperty}">
+                            <TextBlock Text="{Binding Item3, Converter={local:ViewTracedPocoConverter}}" >
                             </TextBlock>
                             <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item3}" Margin="10,0,0,0"
                                 Visibility="{Binding  Item3, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button}">

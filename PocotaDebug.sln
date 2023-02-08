@@ -41,11 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "Tests\TestP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsClientDebug", "Demo\Cats\CatsClient\CatsClientDebug.csproj", "{78AEDEAA-BCF9-4BE9-B4F7-A3148926BAFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaCSharpClientProfilerDebug", "PocotaCSharpClientProfiler\PocotaCSharpClientProfilerDebug.csproj", "{1C5C6864-E012-4F49-93CA-D931DA6F7B31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCSharpClientPocoBrowserDebug", "PocotaCSharpClientProfiler\PocotaCSharpClientPocoBrowserDebug.csproj", "{1C5C6864-E012-4F49-93CA-D931DA6F7B31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaClientProfilerCodeGenDebug", "PocotaClientProfilerContract\PocotaClientProfilerCodeGenDebug.csproj", "{100F6E44-71DE-4A75-AC86-2A45657564E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaClientProfilerCodeGenDebug", "PocotaClientProfilerContract\PocotaClientProfilerCodeGenDebug.csproj", "{100F6E44-71DE-4A75-AC86-2A45657564E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaClientCSharpDebug", "PocotaClientCSharp\PocotaClientCSharpDebug.csproj", "{B4C893CE-E66B-4062-8B55-260EF83217B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaClientCSharpDebug", "PocotaClientCSharp\PocotaClientCSharpDebug.csproj", "{B4C893CE-E66B-4062-8B55-260EF83217B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

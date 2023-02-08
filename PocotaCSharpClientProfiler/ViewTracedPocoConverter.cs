@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Xaml;
 
 namespace Net.Leksi.Pocota.Client;
@@ -24,7 +24,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         {
             value = wr.Target;
         }
-        Console.WriteLine($"{value}, {targetType}, {parameter}");
+        //Console.WriteLine($"{value}, {targetType}, {parameter}");
         if (value is IPoco poco)
         {
             if (targetType == typeof(string))
@@ -41,10 +41,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 {
                     result = Visibility.Collapsed;
                 }
-            }
-            else
-            {
-                result = null;
             }
         }
         else if(value is IList list)
@@ -69,14 +65,28 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                     ((object[])result)[i + 1] = new WeakReference(list[i]);
                 }
             }
-            else
-            {
-                result = null;
-            }
         }
-        else if(value is Tuple<string, object?, object?>)
+        else if(value is Tuple<string, object?, object?, bool> propertyInfo)
         {
-            Console.WriteLine("here");
+            if(targetType == typeof(Brush))
+            {
+                if (
+                    parameters.Where(v => v is string s && s.Contains("ModifiedProperty")).FirstOrDefault() is string s
+                    && propertyInfo.Item4
+                )
+                {
+                    string[] parts = s.Split('|');
+                    if (parts.Where(v => v.StartsWith('#')).FirstOrDefault() is string colorCode)
+                    {
+                        Color color = Color.FromRgb(
+                            byte.Parse(colorCode.Substring(1, 2), NumberStyles.HexNumber),
+                            byte.Parse(colorCode.Substring(3, 2), NumberStyles.HexNumber),
+                            byte.Parse(colorCode.Substring(5, 2), NumberStyles.HexNumber)
+                        );
+                        result = new SolidColorBrush(color);
+                    }
+                }
+            }
         }
         else
         {

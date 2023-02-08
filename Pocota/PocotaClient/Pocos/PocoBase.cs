@@ -87,17 +87,7 @@ public abstract class PocoBase : IPoco
 
     PocoState IPoco.PocoState
     {
-        get
-        {
-            lock (_lock)
-            {
-                if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
-                {
-                    return PocoState.Modified;
-                }
-                return _pocoState;
-            }
-        }
+        get => _pocoState;
     }
 
     public PocoBase(IServiceProvider services)
@@ -145,13 +135,13 @@ public abstract class PocoBase : IPoco
         lock (_lock)
         {
             PocoState oldPocoState = ((IPoco)this).PocoState;
-            if (_pocoState is PocoState.Unchanged && _modified is { } && _modified.Count > 0)
+            if (_pocoState is PocoState.Modified)
             {
                 try
                 {
                     _cancellingChanges = true;
 
-                    foreach (Property property in _modified)
+                    foreach (Property property in _modified!)
                     {
                         property.CancelChange(this);
                         if(property.Get(this) is EntityBase entity1 && entity1._pocoState is PocoState.Deleted)
@@ -169,7 +159,6 @@ public abstract class PocoBase : IPoco
 
                     _modified.Clear();
 
-                    _cancellingChanges = false;
                 }
                 finally
                 {
@@ -312,6 +301,15 @@ public abstract class PocoBase : IPoco
                         else
                         {
                             _modified?.Remove(property);
+                        }
+
+                        if(_modified is { } && _modified.Count > 0 && _pocoState is PocoState.Unchanged)
+                        {
+                            _pocoState = PocoState.Modified;
+                        }
+                        else if(_pocoState is PocoState.Modified && (_modified!.Count == 0))
+                        {
+                            _pocoState = PocoState.Unchanged;
                         }
 
                         PocoState newPocoState = ((IPoco)this).PocoState;

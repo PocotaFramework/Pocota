@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatteryFilterPoco                    //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-06T18:22:36                                  //
+// at 2023-02-08T18:14:46                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -218,7 +218,7 @@ public class CatteryFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, 
 
     public override bool Equals(object? obj)
     {
-        return obj is CatteryFilterPoco other && object.ReferenceEquals(this, other);
+        return obj is IProjection<CatteryFilterPoco> other && object.ReferenceEquals(this, other.As<CatteryFilterPoco>());
     }
 
     public override int GetHashCode()

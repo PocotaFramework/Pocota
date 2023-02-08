@@ -16,6 +16,8 @@
             <RowDefinition/>
             <RowDefinition Height="10"/>
             <RowDefinition/>
+            <RowDefinition Height="10"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True" Grid.Row="0">
             <Menu DockPanel.Dock="Top">
@@ -25,7 +27,9 @@
                 </MenuItem>
             </Menu>
             <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
-            <Button DockPanel.Dock="Top" Click="Button_Click">Собрать мусор</Button>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
+            </StackPanel>
             <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True" >
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
@@ -46,7 +50,7 @@
                     <DataTemplate x:Key="Actions">
                         <StackPanel Orientation="Horizontal">
                             <Button Command="{Binding Data, Source={StaticResource CancelChangesCommandProxy}}" CommandParameter="{Binding Item}" 
-                                    Visibility="{Binding Item, Converter={local:TracedPocoActionConverter}, ConverterParameter=VisibleIfIsEntity}">
+                                    Visibility="{Binding Item, Converter={local:TracedPocosConverter}, ConverterParameter=VisibleIfIsEntity}">
                                 <Button.Content>Отменить изменения</Button.Content>
                             </Button>
                             <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
@@ -60,6 +64,25 @@
                     <DataGridTextColumn Header="Метка" Binding="{Binding Label}" />
                     <DataGridTextColumn Header="Состояние" Binding="{Binding State}" />
                     <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+        <DockPanel LastChildFill="True" Grid.Row="4">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
+                <Button Click="Button_Click_1" Margin="10,10,10,10">Обновить</Button>
+            </StackPanel>
+            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" >
+                <DataGrid.Resources>
+                    <DataTemplate x:Key="Title">
+                        <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
+                    </DataTemplate>
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Заголовок" CellTemplate="{StaticResource Title}"/>
+                    <DataGridTextColumn Header="Top" Binding="{Binding Top}"/>
+                    <DataGridTextColumn Header="Left" Binding="{Binding Left}"/>
                 </DataGrid.Columns>
             </DataGrid>
         </DockPanel>
