@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -8,6 +9,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace Net.Leksi.Pocota.Client
@@ -16,7 +18,9 @@ namespace Net.Leksi.Pocota.Client
     {
         private readonly IServiceProvider _services;
         private readonly List<Window> _windows = new();
-        private readonly ConditionalWeakTable<Window, string> _tracedWindows = new();
+        private readonly ConditionalWeakTable<Window, WeakReference<WindowInfo>> _tracedWindows = new();
+        private readonly ConditionalWeakTable<PropertyInfo, string> _tracedProperties = new();
+        private readonly ConditionalWeakTable<object, string> _tracedTargets = new();
 
         internal readonly List<ViewTracedPoco> _views = new();
 
@@ -44,9 +48,16 @@ namespace Net.Leksi.Pocota.Client
 
             InitializeComponent();
 
+            dgWindows.SelectionChanged += DgWindows_SelectionChanged;
+
             Timer refreshWindowsListTimer = new Timer(1000);
             refreshWindowsListTimer.Elapsed += RefreshWindowsListTimer_Elapsed;
             refreshWindowsListTimer.Start();
+        }
+
+        private void DgWindows_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            (dgWindows.SelectedItem as Window)?.Focus();
         }
 
         private void RefreshWindowsListTimer_Elapsed(object? sender, ElapsedEventArgs e)
@@ -146,17 +157,15 @@ namespace Net.Leksi.Pocota.Client
             RefreshWindowsList();
         }
 
-        private void RefreshWindowsList()
+        private void RefreshWindowsList(bool added = false)
         {
-            bool added = false;
             foreach (Window window in Application.Current.Windows)
             {
                 if (Assembly.GetAssembly(window.GetType()) != Assembly.GetAssembly(GetType()))
                 {
-                    if (!_tracedWindows.TryGetValue(window, out string _))
+                    if (!_tracedWindows.TryGetValue(window, out WeakReference<WindowInfo> _))
                     {
                         _windows.Add(window);
-                        _tracedWindows.Add(window, string.Empty);
                         window.Activated += Window_Activated;
                         window.Closed += Window_Closed;
                         if (window.IsActive)
@@ -164,6 +173,22 @@ namespace Net.Leksi.Pocota.Client
                             LastActiveWindow = window;
                         }
                         added = true;
+                        WindowInfo windowInfo = new() { 
+                            PropertyChangedEventHandler = (s, e) =>
+                            {
+                                if(
+                                    _tracedWindows.TryGetValue((Window)window, out WeakReference<WindowInfo>? wrwi) 
+                                    && wrwi.TryGetTarget(out WindowInfo? wi)
+                                )
+                                {
+                                    wi.IsChanged = true;
+                                }
+                                //Console.WriteLine($"{s} -> {e.PropertyName}");
+                            }
+                        };
+                        _tracedWindows.Add(window, new WeakReference<WindowInfo>(windowInfo));
+                        SubscribeAndUnsubscribePropertyChanged(window, windowInfo.PropertyChangedEventHandler, true);
+                        FindBindings(window);
                     }
                 }
             }
@@ -173,25 +198,115 @@ namespace Net.Leksi.Pocota.Client
             }
         }
 
+        private void SubscribeAndUnsubscribePropertyChanged(object? target, EventHandler<PropertyChangedEventArgs> eh, bool subscribe)
+        {
+            if(target is { } && !_tracedTargets.TryGetValue(target, out string _))
+            {
+                _tracedTargets.Add(target, string.Empty);
+                if (target is INotifyPropertyChanged notify) 
+                {
+                    if (subscribe)
+                    {
+                        PropertyChangedEventManager.AddHandler(notify, eh, string.Empty);
+                    }
+                    else
+                    {
+                        PropertyChangedEventManager.RemoveHandler(notify, eh, string.Empty);
+                    }
+                }
+                foreach (PropertyInfo pi in target.GetType().GetProperties())
+                {
+                    if (!_tracedProperties.TryGetValue(pi, out string _))
+                    {
+                        _tracedProperties.Add(pi, string.Empty);
+                        if (!typeof(Type).IsAssignableFrom(pi.PropertyType) && !typeof(MethodBase).IsAssignableFrom(pi.PropertyType) && pi.CanRead)
+                        {
+                            ParameterInfo[] parameters = pi.GetIndexParameters();
+                            if (parameters.Length == 0)
+                            {
+                                object? value = pi.GetValue(target);
+                                SubscribeAndUnsubscribePropertyChanged(value, eh, subscribe);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void WalkDescendants(Visual element, HashSet<Type> types)
+        {
+            if (element == null)
+            {
+                return;
+            }
+            if (element is FrameworkElement frameworkElement)
+            {
+                frameworkElement.ApplyTemplate();
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+            {
+                if (VisualTreeHelper.GetChild(element, i) is Visual visual)
+                {
+                    if (visual is DependencyObject depo)
+                    {
+                        foreach (
+                            PropertyDescriptor pd
+                            in
+                            TypeDescriptor.GetProperties(
+                                depo,
+                                new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }
+                            )
+                        )
+                        {
+                            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(pd);
+
+                            if (dpd != null)
+                            {
+                                Binding binding = BindingOperations.GetBinding(depo, dpd.DependencyProperty);
+                                if (binding is { })
+                                {
+                                    //Console.WriteLine($"{binding.Source}, {binding.Path.Path}");
+                                }
+                            }
+                        }
+                    }
+                    WalkDescendants(visual, types);
+                }
+            }
+        }
+
+        private void FindBindings(Window window)
+        {
+
+            HashSet<Type> types = new();
+            WalkDescendants(window, types);
+            //Console.WriteLine(string.Join('\n', types));
+        }
+
         private void Window_Closed(object? sender, EventArgs e)
         {
             if (sender is Window window)
             {
-                if(LastActiveWindow == window)
+                if (LastActiveWindow == window)
                 {
                     LastActiveWindow = null;
                 }
                 _windows.Remove(window);
+                if(_tracedWindows.TryGetValue(window, out WeakReference<WindowInfo>? wreh) 
+                    && wreh.TryGetTarget(out WindowInfo? wi))
+                {
+                    SubscribeAndUnsubscribePropertyChanged(window, wi.PropertyChangedEventHandler!, false);
+                }
                 WindowsViewSource.View.Refresh();
             }
         }
 
         private void Window_Activated(object? sender, EventArgs e)
         {
-            if(sender is Window window)
+            if (sender is Window window)
             {
                 LastActiveWindow = window;
-                RefreshWindowsList();
+                RefreshWindowsList(true);
             }
         }
     }

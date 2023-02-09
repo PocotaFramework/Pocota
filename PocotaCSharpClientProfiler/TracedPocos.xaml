@@ -45,7 +45,7 @@
                 <RadioButton GroupName="FilterChangedPocos" Content="Только конверты" Margin="10,10,10,10"  x:Name="FilterEnvelopes" Click="FilterEntities_Click"/>
                 <RadioButton GroupName="FilterChangedPocos" Content="Всё" Margin="10,10,10,10"  Click="FilterEntities_Click"/>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" >
+            <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Resources>
                     <DataTemplate x:Key="Actions">
                         <StackPanel Orientation="Horizontal">
@@ -73,7 +73,7 @@
                 <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
                 <Button Click="Button_Click_1" Margin="10,10,10,10">Обновить</Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" >
+            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows">
                 <DataGrid.Resources>
                     <DataTemplate x:Key="Title">
                         <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>

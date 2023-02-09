@@ -158,7 +158,7 @@ public abstract class PocoBase : IPoco
                     }
 
                     _modified.Clear();
-
+                    _pocoState = PocoState.Unchanged;
                 }
                 finally
                 {
@@ -167,7 +167,7 @@ public abstract class PocoBase : IPoco
             }
             if(this is IEntity entity)
             {
-                if(entity.PocoState is PocoState.Created)
+                if(_pocoState is PocoState.Created)
                 {
                     entity.Delete();
                     return;
@@ -293,7 +293,7 @@ public abstract class PocoBase : IPoco
                         {
                             throw new InvalidOperationException($"{((IPoco)this).PocoState} Poco cannot be modified!");
                         }
-                        PocoState oldPocoState = ((IPoco)this).PocoState;
+                        PocoState oldPocoState = _pocoState;
                         if (!property.IsInitial(this))
                         {
                             (_modified ??= new HashSet<IProperty>()).Add(property);
@@ -312,11 +312,10 @@ public abstract class PocoBase : IPoco
                             _pocoState = PocoState.Unchanged;
                         }
 
-                        PocoState newPocoState = ((IPoco)this).PocoState;
 
-                        if (oldPocoState != newPocoState)
+                        if (oldPocoState != _pocoState)
                         {
-                            OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
+                            OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, _pocoState));
                         }
                         else
                         {
