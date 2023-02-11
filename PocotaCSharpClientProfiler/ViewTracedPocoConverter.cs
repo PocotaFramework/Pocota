@@ -65,13 +65,13 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 }
             }
         }
-        else if (value is Tuple<string, object?, object?, bool> propertyInfo)
+        else if (value is PropertyValueHolder propertyInfo)
         {
             if (targetType == typeof(Brush))
             {
                 if (
                     parameters.Where(v => v is string s && s.Contains("ModifiedProperty")).FirstOrDefault() is string s
-                    && propertyInfo.Item4
+                    && propertyInfo.IsModified
                 )
                 {
                     string[] parts = s.Split('|');

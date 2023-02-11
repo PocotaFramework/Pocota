@@ -5,7 +5,6 @@ using System;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -24,7 +23,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     private readonly PocotaCore _core;
     private PocoState _pocoState;
 
-    private ObservableCollection<Tuple<string, object?, object?, bool>> _values = new();
+    private ObservableCollection<PropertyValueHolder> _values = new();
     private ObservableCollection<Tuple<string, object?>> _keys = new();
 
     internal readonly WeakReference<PocoBase?> _source = new(null);
@@ -83,7 +82,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                     }
                     Title = $"Просмотр {poco.GetType()}: {Util.GetPocoLabel(poco)}";
                     _properties = _core.GetPropertiesList(value.GetType());
-                    FillProperties();
+                    FillProperties(true);
                 }
                 else
                 {
@@ -111,25 +110,22 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         base.OnClosed(e);
     }
 
-    public void FillProperties()
+    public void FillProperties(bool firstTime)
     {
         if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
         {
             Dispatcher.Invoke(() =>
             {
                 PocoState = ((IPoco)target).PocoState;
-                _values.Clear();
-                target.PropertyChanged -= Target_PropertyChanged;
-                target.PropertyChanged += Target_PropertyChanged;
+                if(firstTime)
+                {
+                    target.PropertyChanged += Target_PropertyChanged;
+                }
                 foreach (Property property in _properties)
                 {
-                    if (property.Type.IsPrimitive || property.Type.IsEnum || property.Type == typeof(string) || property.Type.IsValueType)
+                    if (firstTime)
                     {
-                        _values.Add(new Tuple<string, object?, object?, bool>(property.Name, property.GetInitial(target), property.Get(target), property.IsModified(target)));
-                    }
-                    else
-                    {
-                        _values.Add(new Tuple<string, object?, object?, bool>(property.Name, new WeakReference(property.GetInitial(target)), new WeakReference(property.Get(target)), property.IsModified(target)));
+                        _values.Add(new PropertyValueHolder(property, target));
                     }
                 }
             });
@@ -138,7 +134,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     private void Target_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        FillProperties();
+        FillProperties(false);
     }
 
     private void ComboBox_DropDownClosed(object sender, EventArgs e)
