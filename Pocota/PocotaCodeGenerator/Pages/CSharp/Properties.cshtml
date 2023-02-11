@@ -3,6 +3,12 @@
 
 @Html.Raw("#region Properties")
 
+@if (Model.IsEntity)
+{
+    <text>    @Html.Raw("protected override IEnumerable<string> KeyNames => new string[] {")  @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\"")))};
+
+</text>
+}
 @foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";

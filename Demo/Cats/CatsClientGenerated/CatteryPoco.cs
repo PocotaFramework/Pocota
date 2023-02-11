@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-08T18:14:47                                  //
+// at 2023-02-11T12:23:45                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -249,6 +249,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
     
 #region Properties
+
+    protected override IEnumerable<string> KeyNames => new string[] {  "IdCattery"};
 
     private void SetNameEng(String? value)
     {

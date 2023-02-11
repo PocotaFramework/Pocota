@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,13 +17,17 @@ using System.Windows.Threading;
 
 namespace Net.Leksi.Pocota.Client
 {
-    public partial class TracedPocos : Window
+    public partial class TracedPocos : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         private readonly IServiceProvider _services;
         private readonly List<Window> _windows = new();
         private readonly ConditionalWeakTable<Window, WeakReference<WindowInfo>> _tracedWindows = new();
         private readonly ConditionalWeakTable<PropertyInfo, string> _tracedProperties = new();
         private readonly ConditionalWeakTable<object, string> _tracedTargets = new();
+        private Connector? _connector  = null;
+        private ObservableCollection<Tuple<string, MethodInfo?>> _connectorMethods = new();
 
         internal readonly List<ViewTracedPoco> _views = new();
 
@@ -34,6 +41,28 @@ namespace Net.Leksi.Pocota.Client
         public List<ViewTracedPoco> Windows => _views;
         public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; } = new();
         public CollectionViewSource WindowsViewSource { get; init; } = new();
+        public CollectionViewSource ConnectorViewSource { get; init; } = new();
+
+        public Connector? Connector
+        {
+            get => _connector;
+            set
+            {
+                if(_connector != value)
+                {
+                    _connector = value;
+                    _connectorMethods.Clear();
+                    if(_connector is { })
+                    {
+                        foreach(MethodInfo method in _connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
+                        {
+                            _connectorMethods.Add(new Tuple<string, MethodInfo?>(method.Name, method));
+                        }
+                    }
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Connector)));
+                }
+            }
+        }
 
 
         public TracedPocos(IServiceProvider services)
@@ -45,6 +74,7 @@ namespace Net.Leksi.Pocota.Client
             ModifiedPocosViewSource.Source = Heart.ModifiedPocos;
             ModifiedPocosViewSource.Filter += ModifiedPocosViewSource_Filter;
             WindowsViewSource.Source = _windows;
+            ConnectorViewSource.Source = _connectorMethods;
 
             InitializeComponent();
 
@@ -150,11 +180,6 @@ namespace Net.Leksi.Pocota.Client
         private void FilterEntities_Click(object sender, RoutedEventArgs e)
         {
             ModifiedPocosViewSource.View.Refresh();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            RefreshWindowsList();
         }
 
         private void RefreshWindowsList(bool added = false)

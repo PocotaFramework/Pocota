@@ -18,6 +18,8 @@
             <RowDefinition/>
             <RowDefinition Height="10"/>
             <RowDefinition/>
+            <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
+            <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True" Grid.Row="0">
             <Menu DockPanel.Dock="Top">
@@ -26,11 +28,11 @@
                     <MenuItem Header="Закрыть все" Command="{Binding CloseAllWindowsCommand}" CommandParameter="{Binding Path=Windows}"></MenuItem>
                 </MenuItem>
             </Menu>
-            <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
                 <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True" >
+            <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
                     <DataGridTextColumn Header="Количество" Binding="{Binding Count}" />
@@ -40,12 +42,12 @@
         <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
         <DockPanel LastChildFill="True" Grid.Row="2">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Изменённые объекты</TextBlock>
+                <TextBlock Margin="10,10,10,10" FontSize="18">Изменённые объекты</TextBlock>
                 <RadioButton GroupName="FilterChangedPocos" Content="Только сущности" IsChecked="True" Margin="10,10,10,10" x:Name="FilterEntities" Click="FilterEntities_Click"/>
                 <RadioButton GroupName="FilterChangedPocos" Content="Только конверты" Margin="10,10,10,10"  x:Name="FilterEnvelopes" Click="FilterEntities_Click"/>
                 <RadioButton GroupName="FilterChangedPocos" Content="Всё" Margin="10,10,10,10"  Click="FilterEntities_Click"/>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" Margin="10,10,10,10">
                 <DataGrid.Resources>
                     <DataTemplate x:Key="Actions">
                         <StackPanel Orientation="Horizontal">
@@ -70,10 +72,9 @@
         <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
         <DockPanel LastChildFill="True" Grid.Row="4">
             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock DockPanel.Dock="Top" Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
-                <Button Click="Button_Click_1" Margin="10,10,10,10">Обновить</Button>
+                <TextBlock Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
             </StackPanel>
-            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows">
+            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows" Margin="10,10,10,10">
                 <DataGrid.Resources>
                     <DataTemplate x:Key="Title">
                         <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
@@ -84,6 +85,14 @@
                     <DataGridTextColumn Header="Top" Binding="{Binding Top}"/>
                     <DataGridTextColumn Header="Left" Binding="{Binding Left}"/>
                 </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+        <GridSplitter Grid.Row="5" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+        <DockPanel LastChildFill="True" Grid.Row="6">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                <TextBlock Margin="10,10,10,10" FontSize="18">Методы коннектора</TextBlock>
+            </StackPanel>
+            <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="True" IsReadOnly="True"  Margin="10,10,10,10">
             </DataGrid>
         </DockPanel>
     </Grid>

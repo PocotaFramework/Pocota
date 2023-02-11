@@ -853,6 +853,17 @@ public class CodeGenerator : IModelBuilder
                 model.Interfaces.Add(MakeIProjectionName(typeof(Client.PocoBase)));
                 AddUsings(model, typeof(INotifyPropertyChanged));
                 AddUsings(model, typeof(Client.ProjectionList<,>));
+
+                foreach (string name in projector.KeysDefinitions.Keys)
+                {
+                    PrimaryKeyDefinition key = projector.KeysDefinitions[name];
+
+                    PrimaryKeyFieldModel pkm = new()
+                    {
+                        Name = key.Name,
+                    };
+                    model.PrimaryKeys.Add(pkm);
+                }
             }
             else
             {

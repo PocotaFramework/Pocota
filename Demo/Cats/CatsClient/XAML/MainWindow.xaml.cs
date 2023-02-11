@@ -66,10 +66,14 @@ public partial class MainWindow : Window
 
     public MainWindow(IServiceProvider services)
     {
-        services.GetService<TracedPocos>();
-
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");
+
+        if(services.GetService<TracedPocos>() is TracedPocos tracedPocos)
+        {
+            tracedPocos.Connector = Connector;
+        } 
+
 
         Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
         Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");

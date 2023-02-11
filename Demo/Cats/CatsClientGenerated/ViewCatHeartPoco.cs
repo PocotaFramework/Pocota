@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-08T18:14:47                                          //
+// at 2023-02-11T12:23:45                                          //
 /////////////////////////////////////////////////////////////////////
 
 

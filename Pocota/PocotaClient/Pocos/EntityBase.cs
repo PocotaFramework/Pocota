@@ -13,6 +13,10 @@ public abstract class EntityBase : PocoBase, IEntity
 
     internal override bool IsEnvelope => false;
 
+    protected abstract IEnumerable<string> KeyNames { get; }
+
+    IEnumerable<string> IEntity.KeyNames => KeyNames;
+
     ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray();
 
     public EntityBase(IServiceProvider services) : base(services) 

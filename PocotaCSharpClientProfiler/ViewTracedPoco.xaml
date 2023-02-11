@@ -15,7 +15,15 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}}" Margin="10,10,10,10"/>
         </StackPanel>
-        <DataGrid ItemsSource="{Binding CollectionViewSource.View}" AutoGenerateColumns="False">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Visibility="{Binding IsEntity, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Keys}">
+            <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Ключ" Binding="{Binding Item1}"/>
+                    <DataGridTextColumn Header="Значение" Binding="{Binding Item2}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+        <DataGrid ItemsSource="{Binding CollectionViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10">
             <DataGrid.Resources>
                 <DataTemplate x:Key="Name">
                     <TextBlock Text="{Binding Item1}"

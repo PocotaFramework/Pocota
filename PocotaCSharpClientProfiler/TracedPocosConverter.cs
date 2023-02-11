@@ -53,6 +53,13 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter
                 result = Visibility.Visible;
             }
         }
+        else if(targetType == typeof(GridLength))
+        {
+            if (parameters.Contains("Connector"))
+            {
+                result = value is Connector ? new GridLength(1, GridUnitType.Auto) : new GridLength(0); ;
+            }
+        }
         return result;
     }
 

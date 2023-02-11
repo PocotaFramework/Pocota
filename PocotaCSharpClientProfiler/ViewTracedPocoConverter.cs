@@ -24,7 +24,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         {
             value = wr.Target;
         }
-        //Console.WriteLine($"{value}, {targetType}, {parameter}");
         if (value is IPoco poco)
         {
             if (targetType == typeof(string))
@@ -43,7 +42,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 }
             }
         }
-        else if(value is IList list)
+        else if (value is IList list)
         {
             if (targetType == typeof(Visibility))
             {
@@ -66,9 +65,9 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 }
             }
         }
-        else if(value is Tuple<string, object?, object?, bool> propertyInfo)
+        else if (value is Tuple<string, object?, object?, bool> propertyInfo)
         {
-            if(targetType == typeof(Brush))
+            if (targetType == typeof(Brush))
             {
                 if (
                     parameters.Where(v => v is string s && s.Contains("ModifiedProperty")).FirstOrDefault() is string s
@@ -88,8 +87,23 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 }
             }
         }
-        else
+        else if (value is bool boolValue)
         {
+            if (targetType == typeof(Visibility))
+            {
+                if(parameters.Where(v => v is string s && s.Contains("Keys")).FirstOrDefault() is string && boolValue)
+                {
+                    result = Visibility.Visible;
+                }
+                else
+                {
+                    result = Visibility.Collapsed;
+                }
+            }
+        }
+        else 
+        {
+            //Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
             if (targetType == typeof(string))
             {
                 if (value is null)

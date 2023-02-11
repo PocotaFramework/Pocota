@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-08T18:14:47                                  //
+// at 2023-02-11T12:23:45                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -371,6 +371,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
     
 #region Properties
+
+    protected override IEnumerable<string> KeyNames => new string[] {  "IdBreed", "IdGroup"};
 
     private void SetCode(String value)
     {
