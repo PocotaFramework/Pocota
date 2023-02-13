@@ -14,13 +14,9 @@ public class ApiCallContext
     public Action<object?, ApiCallContext?>? OnDone { get; set; } = null;
     public Action<Exception, ApiCallContext>? OnException { get; set; } = null;
     public Action<object?>? OnItem { get; set; } = null!;
-    public Action<IEntity, ApiCallContext?>? OnExternalUpdateChangedEntity { get; set; } = null;
     public Action<Action>? DispatcherWrapper { get; set; } = null;
 
     public HttpRequestMessage? HttpRequest { get; set; } = null;
 
     public string? Caller { get; internal set; } = null;
-
-    internal bool IsRequestForSingleObject { get; set; } = true;
-    internal Type? ItemType { get; set; } = null;
 }

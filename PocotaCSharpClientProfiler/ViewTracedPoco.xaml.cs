@@ -14,7 +14,7 @@ namespace Net.Leksi.Pocota.Client;
 /// <summary>
 /// Логика взаимодействия для ViewTracedPoco.xaml
 /// </summary>
-public partial class ViewTracedPoco : Window, INotifyPropertyChanged
+public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -30,7 +30,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
 
-    public CollectionViewSource CollectionViewSource { get; init; } = new();
+    public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
 
     public Util Util { get; init; }
@@ -98,7 +98,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         _services = services;
         _core = services.GetRequiredService<PocotaCore>();
         Util = services.GetRequiredService<Util>();
-        CollectionViewSource.Source = _values;
+        PropertiesViewSource.Source = _values;
         ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
         KeysViewSource.Source = _keys;
         InitializeComponent();

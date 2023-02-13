@@ -2,7 +2,15 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup />
   <ItemGroup>
+    <Compile Update="ViewConnectorMethod.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Page Update="TracedPocos.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ViewConnectorMethod.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ViewTracedPoco.xaml">

@@ -8,7 +8,7 @@ using System.Windows.Markup;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class ViewInBrowserCommand : MarkupExtension, ICommand
+public class ViewInBrowserCommand : ICommand
 {
     public event EventHandler? CanExecuteChanged
     {
@@ -124,7 +124,9 @@ public class ViewInBrowserCommand : MarkupExtension, ICommand
             {
                 _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
                 {
-                    ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views.Where(v => v._source.TryGetTarget(out PocoBase? target) && target == poco).FirstOrDefault();
+                    ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views
+                        .Where(v => v is ViewTracedPoco viewTracedPoco && viewTracedPoco._source.TryGetTarget(out PocoBase? target) && target == poco)
+                        .Select(v => v as ViewTracedPoco).FirstOrDefault();
                     ViewTracedPoco view = tmp is { } ? tmp : _services.GetRequiredService<ViewTracedPoco>();
                     if(tmp is null)
                     {
@@ -143,10 +145,5 @@ public class ViewInBrowserCommand : MarkupExtension, ICommand
                 MessageBox.Show(ex.ToString());
             }
         }
-    }
-
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-        throw new NotImplementedException();
     }
 }

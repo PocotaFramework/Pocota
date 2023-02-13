@@ -23,7 +23,7 @@
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
-        <DataGrid ItemsSource="{Binding CollectionViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10">
+        <DataGrid ItemsSource="{Binding PropertiesViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10">
             <DataGrid.Resources>
                 <DataTemplate x:Key="Name">
                     <TextBlock Text="{Binding Name}"
@@ -33,7 +33,7 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Horizontal" Visibility="{Binding  Initial, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Text}">
                             <TextBlock Text="{Binding Initial, Converter={local:ViewTracedPocoConverter}}"/>
-                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item2}" Margin="10,0,0,0"
+                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Initial}" Margin="10,0,0,0"
                                 Visibility="{Binding  Initial, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button}">
                                 <Button.Content>Просмотр</Button.Content>
                             </Button>
@@ -60,7 +60,7 @@
                         <StackPanel Orientation="Horizontal" Visibility="{Binding  Current, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Text}">
                             <TextBlock Text="{Binding Current, Converter={local:ViewTracedPocoConverter}}" >
                             </TextBlock>
-                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item3}" Margin="10,0,0,0"
+                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Current}" Margin="10,0,0,0"
                                 Visibility="{Binding  Current, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button}">
                                 <Button.Content>Просмотр</Button.Content>
                             </Button>
@@ -82,11 +82,25 @@
                         </ComboBox>
                     </StackPanel>
                 </DataTemplate>
+                <DataTemplate x:Key="CurrentEdit">
+                    <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                        <TextBox Text="{Binding Current, Converter={local:ViewTracedPocoConverter}, Mode=TwoWay}" HorizontalAlignment="Stretch"
+                                     Visibility="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=Edit}">
+                        </TextBox>
+                        <DockPanel LastChildFill="True" HorizontalAlignment="Stretch">
+                            <Button Visibility="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=Text}" DockPanel.Dock="Right">
+                                <Button.Content>-</Button.Content>
+                            </Button>
+                            <TextBlock Text="{Binding Current, Converter={local:ViewTracedPocoConverter}}"
+                                       Visibility="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=Text}"/>
+                        </DockPanel>
+                    </DockPanel>
+                </DataTemplate>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Свойство" CellTemplate="{StaticResource Name}"/>
                 <DataGridTemplateColumn Header="Исходное значение" CellTemplate="{StaticResource Initial}"/>
-                <DataGridTemplateColumn Header="Текущее значение" CellTemplate="{StaticResource Current}"/>
+                <DataGridTemplateColumn Header="Текущее значение" CellTemplate="{StaticResource Current}" CellEditingTemplate="{StaticResource CurrentEdit}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

@@ -70,6 +70,8 @@ internal class PropertyValueHolder
         }
     }
 
+    public bool IsPoco => _property.IsPoco;
+
     public PropertyValueHolder(Property property, PocoBase target)
     {
         _property = property;

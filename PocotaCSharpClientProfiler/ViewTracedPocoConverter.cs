@@ -13,18 +13,38 @@ namespace Net.Leksi.Pocota.Client;
 
 public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiValueConverter
 {
-    private ViewTracedPoco? _view = null;
+    private IWithUtil? _view = null;
 
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
         object? result = null;
 
+        if (targetType == typeof(Visibility))
+        {
+            result = Visibility.Collapsed;
+        }
+
+
         if (value is WeakReference wr)
         {
             value = wr.Target;
         }
-        if (value is IPoco poco)
+        if(value is ApiCallContext)
+        {
+            if (targetType == typeof(Visibility))
+            {
+                if (parameters.Contains("ButtonPlus") || parameters.Contains("Button"))
+                {
+                    result = Visibility.Collapsed;
+                }
+            }
+            else if(targetType == typeof(string))
+            {
+                result = "<Присутствует>";
+            }
+        }
+        else if (value is IPoco poco)
         {
             if (targetType == typeof(string))
             {
@@ -32,7 +52,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
             else if (targetType == typeof(Visibility))
             {
-                if (parameters.Contains("Text") || parameters.Contains("Button"))
+                if (parameters.Contains("Text") || parameters.Contains("ButtonPlus") || parameters.Contains("Button"))
                 {
                     result = Visibility.Visible;
                 }
@@ -86,6 +106,23 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                     }
                 }
             }
+            else if(targetType == typeof(Visibility))
+            {
+                if (parameters.Contains("Edit"))
+                {
+                    if (!propertyInfo.IsPoco)
+                    {
+                        result = Visibility.Visible;
+                    }
+                }
+                else if (parameters.Contains("Text"))
+                {
+                    if (propertyInfo.IsPoco)
+                    {
+                        result = Visibility.Visible;
+                    }
+                }
+            }
         }
         else if (value is bool boolValue)
         {
@@ -101,6 +138,20 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 }
             }
         }
+        //else if(value is MethodParameterHolder parameterHolder)
+        //{
+        //    if (targetType == typeof(Visibility))
+        //    {
+        //        if (parameters.Contains("Button") && parameterHolder.Value || parameters.Contains("ButtonPlus"))
+        //        {
+        //            result = Visibility.Visible;
+        //        }
+        //        else
+        //        {
+        //            result = Visibility.Collapsed;
+        //        }
+        //    }
+        //}
         else 
         {
             //Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
@@ -117,7 +168,13 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
             else if (targetType == typeof(Visibility))
             {
-                if (parameters.Contains("Text"))
+                if (
+                    parameters.Contains("Text")
+                    || (
+                        value is null 
+                        && parameters.Contains("ButtonPlus")
+                    )
+                )
                 {
                     result = Visibility.Visible;
                 }
@@ -149,7 +206,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
         var root = serviceProvider.GetRequiredService<IRootObjectProvider>();
-        _view =  root.RootObject as ViewTracedPoco;
+        _view =  root.RootObject as IWithUtil;
         return this;
     }
 }

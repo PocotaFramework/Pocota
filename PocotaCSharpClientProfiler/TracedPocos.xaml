@@ -6,94 +6,122 @@
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
         xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
         mc:Ignorable="d"
-        Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+        Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowState="Maximized">
     <Window.Resources>
         <local1:BindingProxy x:Key="CancelChangesCommandProxy" Data="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>
         <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Data="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Data="{Binding Path=ViewConnectorMethodCommand, Mode=OneWay}"/>
     </Window.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition Height="10"/>
-            <RowDefinition/>
-            <RowDefinition Height="10"/>
-            <RowDefinition/>
-            <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
-            <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
-        </Grid.RowDefinitions>
-        <DockPanel LastChildFill="True" Grid.Row="0">
-            <Menu DockPanel.Dock="Top">
-                <MenuItem x:Name="WindowsMenuItem" Header="Окно">
-                    <Separator/>
-                    <MenuItem Header="Закрыть все" Command="{Binding CloseAllWindowsCommand}" CommandParameter="{Binding Path=Windows}"></MenuItem>
-                </MenuItem>
-            </Menu>
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
-                <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
-            </StackPanel>
-            <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
-                    <DataGridTextColumn Header="Количество" Binding="{Binding Count}" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-        <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-        <DockPanel LastChildFill="True" Grid.Row="2">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock Margin="10,10,10,10" FontSize="18">Изменённые объекты</TextBlock>
-                <RadioButton GroupName="FilterChangedPocos" Content="Только сущности" IsChecked="True" Margin="10,10,10,10" x:Name="FilterEntities" Click="FilterEntities_Click"/>
-                <RadioButton GroupName="FilterChangedPocos" Content="Только конверты" Margin="10,10,10,10"  x:Name="FilterEnvelopes" Click="FilterEntities_Click"/>
-                <RadioButton GroupName="FilterChangedPocos" Content="Всё" Margin="10,10,10,10"  Click="FilterEntities_Click"/>
-            </StackPanel>
-            <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" Margin="10,10,10,10">
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="Actions">
-                        <StackPanel Orientation="Horizontal">
-                            <Button Command="{Binding Data, Source={StaticResource CancelChangesCommandProxy}}" CommandParameter="{Binding Item}" 
+    <DockPanel LastChildFill="True" >
+        <Menu DockPanel.Dock="Top">
+            <MenuItem x:Name="WindowsMenuItem" Header="Окно">
+                <Separator/>
+                <MenuItem Header="Закрыть все" Command="{Binding CloseAllWindowsCommand}" CommandParameter="{Binding Path=Windows}"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="10"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
+                    <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
+                </Grid.RowDefinitions>
+                <DockPanel LastChildFill="True" Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
+                        <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
+                            <DataGridTextColumn Header="Количество" Binding="{Binding Count}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                <DockPanel LastChildFill="True" Grid.Row="2">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Изменённые объекты</TextBlock>
+                        <RadioButton GroupName="FilterChangedPocos" Content="Только сущности" IsChecked="True" Margin="10,10,10,10" x:Name="FilterEntities" Click="FilterEntities_Click"/>
+                        <RadioButton GroupName="FilterChangedPocos" Content="Только конверты" Margin="10,10,10,10"  x:Name="FilterEnvelopes" Click="FilterEntities_Click"/>
+                        <RadioButton GroupName="FilterChangedPocos" Content="Всё" Margin="10,10,10,10"  Click="FilterEntities_Click" IsChecked="True" />
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding ModifiedPocosViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" Margin="10,10,10,10">
+                        <DataGrid.Resources>
+                            <DataTemplate x:Key="Actions">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Command="{Binding Data, Source={StaticResource CancelChangesCommandProxy}}" CommandParameter="{Binding Item}" 
                                     Visibility="{Binding Item, Converter={local:TracedPocosConverter}, ConverterParameter=VisibleIfIsEntity}">
-                                <Button.Content>Отменить изменения</Button.Content>
-                            </Button>
-                            <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
-                                <Button.Content>Просмотр</Button.Content>
-                            </Button>
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
-                    <DataGridTextColumn Header="Метка" Binding="{Binding Label}" />
-                    <DataGridTextColumn Header="Состояние" Binding="{Binding State}" />
-                    <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-        <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-        <DockPanel LastChildFill="True" Grid.Row="4">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
-            </StackPanel>
-            <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows" Margin="10,10,10,10">
-                <DataGrid.Resources>
-                    <DataTemplate x:Key="Title">
-                        <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
-                    </DataTemplate>
-                </DataGrid.Resources>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Заголовок" CellTemplate="{StaticResource Title}"/>
-                    <DataGridTextColumn Header="Top" Binding="{Binding Top}"/>
-                    <DataGridTextColumn Header="Left" Binding="{Binding Left}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </DockPanel>
-        <GridSplitter Grid.Row="5" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-        <DockPanel LastChildFill="True" Grid.Row="6">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                <TextBlock Margin="10,10,10,10" FontSize="18">Методы коннектора</TextBlock>
-            </StackPanel>
-            <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="True" IsReadOnly="True"  Margin="10,10,10,10">
-            </DataGrid>
-        </DockPanel>
-    </Grid>
+                                        <Button.Content>Отменить изменения</Button.Content>
+                                    </Button>
+                                    <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
+                                        <Button.Content>Просмотр</Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
+                            <DataGridTextColumn Header="Метка" Binding="{Binding Label}" />
+                            <DataGridTextColumn Header="Состояние" Binding="{Binding State}" />
+                            <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                <DockPanel LastChildFill="True" Grid.Row="4">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Окна</TextBlock>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows" Margin="10,10,10,10">
+                        <DataGrid.Resources>
+                            <DataTemplate x:Key="Title">
+                                <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
+                            </DataTemplate>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Заголовок" CellTemplate="{StaticResource Title}"/>
+                            <DataGridTextColumn Header="Top" Binding="{Binding Top}"/>
+                            <DataGridTextColumn Header="Left" Binding="{Binding Left}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <GridSplitter Grid.Row="5" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                <DockPanel LastChildFill="True" Grid.Row="6">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Методы коннектора</TextBlock>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
+                        <DataGrid.Resources>
+                            <DataTemplate x:Key="Actions">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Command="{Binding Data, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}">
+                                        <Button.Content>Просмотр</Button.Content>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGrid.Resources>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Item1}"/>
+                            <DataGridTextColumn Header="Метрика" Binding="{Binding Item2}"/>
+                            <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </Grid>
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+            <Grid Grid.Column="2">
+
+            </Grid>
+        </Grid>
+    </DockPanel>
 </Window>

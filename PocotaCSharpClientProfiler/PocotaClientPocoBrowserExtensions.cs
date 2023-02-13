@@ -27,6 +27,10 @@ public static class PocotaClientPocoBrowserExtensions
         services.AddTransient<TracedPocosHeart>();
         services.AddTransient<PropertyValueConverter>();
         services.AddTransient<ViewInBrowserCommand>();
+        services.AddTransient<ViewConnectorMethodCommand>();
+        services.AddTransient<ViewConnectorMethod>();
+        services.AddTransient<SetFilterCommand>();
+        services.AddTransient<UnsetFilterCommand>();
 
         return services;
     }

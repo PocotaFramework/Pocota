@@ -29,7 +29,7 @@ namespace Net.Leksi.Pocota.Client
         private Connector? _connector  = null;
         private ObservableCollection<Tuple<string, MethodInfo?>> _connectorMethods = new();
 
-        internal readonly List<ViewTracedPoco> _views = new();
+        internal readonly List<Window> _views = new();
 
         internal Window? LastActiveWindow { get; private set; }
 
@@ -38,10 +38,11 @@ namespace Net.Leksi.Pocota.Client
         public CancelChangesCommand CancelChangesCommand { get; init; } = new();
         public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
         public CollectionViewSource ModifiedPocosViewSource { get; init; } = new();
-        public List<ViewTracedPoco> Windows => _views;
+        public List<Window> Windows => _views;
         public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; } = new();
         public CollectionViewSource WindowsViewSource { get; init; } = new();
         public CollectionViewSource ConnectorViewSource { get; init; } = new();
+        public ViewConnectorMethodCommand ViewConnectorMethodCommand { get; init; }
 
         public Connector? Connector
         {
@@ -70,6 +71,7 @@ namespace Net.Leksi.Pocota.Client
             _services = services;
             Heart = services.GetRequiredService<ITracedPocosHeart>();
             ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
+            ViewConnectorMethodCommand = services.GetRequiredService<ViewConnectorMethodCommand>();
             CancelChangesCommand.DispatcherWrapper = callback => Dispatcher.Invoke(callback);
             ModifiedPocosViewSource.Source = Heart.ModifiedPocos;
             ModifiedPocosViewSource.Filter += ModifiedPocosViewSource_Filter;
@@ -118,7 +120,7 @@ namespace Net.Leksi.Pocota.Client
             }
         }
 
-        internal void AddView(ViewTracedPoco view)
+        internal void AddView(Window view)
         {
             MenuItem mi = new();
             Binding binding = new();
@@ -138,7 +140,7 @@ namespace Net.Leksi.Pocota.Client
             _views.Add(view);
         }
 
-        internal void RemoveView(ViewTracedPoco view)
+        internal void RemoveView(Window view)
         {
             MenuItem? itemToRemove = null;
             foreach (MenuItem mi in WindowsMenuItem.Items)
