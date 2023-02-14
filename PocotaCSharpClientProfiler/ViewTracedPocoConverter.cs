@@ -30,7 +30,19 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         {
             value = wr.Target;
         }
-        if(value is ApiCallContext)
+
+
+        if (parameters.Contains("IsNull"))
+        {
+            return value is null;
+        }
+
+        if (parameters.Contains("IsPoco"))
+        {
+            return value is IPoco;
+        }
+
+        if (value is ApiCallContext)
         {
             if (targetType == typeof(Visibility))
             {
