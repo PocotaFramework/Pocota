@@ -18,7 +18,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
-        object? result = null;
+        object? result = value;
 
         if (targetType == typeof(Visibility))
         {

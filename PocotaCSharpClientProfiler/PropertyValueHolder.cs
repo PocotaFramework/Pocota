@@ -39,7 +39,7 @@ internal class PropertyValueHolder
             {
                 if (_property.Type.IsPrimitive || _property.Type.IsEnum || _property.Type == typeof(string) || _property.Type.IsValueType)
                 {
-                    _lastCurrent = _property.GetInitial(poco);
+                    _lastCurrent = _property.Get(poco);
                 }
                 else
                 {
@@ -71,6 +71,10 @@ internal class PropertyValueHolder
     }
 
     public bool IsPoco => _property.IsPoco;
+
+    public bool IsCollection => _property.IsCollection;
+
+    public Type Type => _property.Type;
 
     public PropertyValueHolder(Property property, PocoBase target)
     {
