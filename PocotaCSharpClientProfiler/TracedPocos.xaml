@@ -64,7 +64,7 @@
                                         <Button.Content>Отменить изменения</Button.Content>
                                     </Button>
                                     <Button Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
-                                        <Button.Content>Просмотр</Button.Content>
+                                        <Button.Content>👁</Button.Content>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
@@ -105,7 +105,7 @@
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding Data, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}">
-                                        <Button.Content>Просмотр</Button.Content>
+                                        <Button.Content>👁</Button.Content>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
