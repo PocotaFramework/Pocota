@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
-    <ProjectReference Include="..\Pocota\PocotaCodeGenerator\PocotaCodeGeneratorDebug.csproj" />
+    <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
+    <ProjectReference Include="..\PocotaCodeGenerator\PocotaCodeGeneratorDebug.csproj" />
   </ItemGroup>
 
 </Project>

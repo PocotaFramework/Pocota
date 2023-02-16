@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
-    <ProjectReference Include="..\PocotaClientProfilerContract\PocotaClientProfilerCodeGenDebug.csproj" />
-    <ProjectReference Include="..\Pocota\PocotaClient\PocotaClientDebug.csproj" />
+    <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
+    <ProjectReference Include="..\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientPocoBrowserCodeGenDebug.csproj" />
   </ItemGroup>
 
   <ItemGroup>
