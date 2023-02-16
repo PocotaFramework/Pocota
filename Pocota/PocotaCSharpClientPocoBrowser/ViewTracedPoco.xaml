@@ -96,14 +96,14 @@
         </DataTemplate>
         <DataTemplate x:Key="ViewCollectionDataTemplate" x:Shared="False">
             <StackPanel>
-                <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNull}">null</TextBlock>
-                <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}, Delay=1000}" 
+                <TextBlock d:Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNull}">null</TextBlock>
+                <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
                         SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed"
-                        Style="{local1:ParameterizedResource ViewCollectionComboBoxStyle}">
+                        d:Style="{local1:ParameterizedResource ViewCollectionComboBoxStyle}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <DockPanel LastChildFill="True">
-                                <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsPoco}" 
+                                <Button DockPanel.Dock="Right" d:Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsPoco}" 
                                             Command="{StaticResource ViewTracedPocoCommandProxy}" 
                                             CommandParameter="{Binding}" Margin="10,0,0,0">
                                     <Button.Content>👁</Button.Content>

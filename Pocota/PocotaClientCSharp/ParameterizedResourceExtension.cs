@@ -18,6 +18,7 @@ public class ParameterizedResourceExtension : MarkupExtension
     private string? _replaces;
     private static readonly Dictionary<object, Stack<ParameterizedResourceExtension>> s_callStacks = new();
     private string _indention = string.Empty;
+    private readonly HashSet<object> _touchedProperties = new();
 
     public string? Replaces 
     { 
@@ -88,26 +89,31 @@ public class ParameterizedResourceExtension : MarkupExtension
         return result;
     }
 
-    private void WalkMarkup(MarkupObject markupObject)
+    private void WalkMarkup(MarkupObject markupObject, int level = 0)
     {
+        string indention = string.Format($"{{0,{level}}}", "").Replace(" ", "    ");
         foreach (MarkupProperty? prop in markupObject.Properties)
         {
-            try
+            if (_touchedProperties.Add(prop.Value))
             {
-                foreach (MarkupObject? item in prop.Items)
+                Console.WriteLine($"{indention}{prop.Name}, {prop.DependencyProperty}, {prop.Value}");
+                try
                 {
-                    if (item.Instance is Binding binding)
+                    foreach (MarkupObject? item in prop.Items)
                     {
-                        OnBinding(binding);
-                    }
-                    else if (!(item.Instance is TypeExtension))
-                    {
-                        WalkMarkup(item);
+                        if (item.Instance is Binding binding)
+                        {
+                            OnBinding(binding);
+                        }
+                        else if (!(item.Instance is TypeExtension))
+                        {
+                            WalkMarkup(item, level + 1);
+                        }
                     }
                 }
-            }
-            catch (Exception)
-            {
+                catch (Exception)
+                {
+                }
             }
         }
     }
