@@ -1,15 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
-using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
-using System.Windows.Media;
 using System.Xaml;
 using IValueConverter = System.Windows.Data.IValueConverter;
 
@@ -24,6 +21,11 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
         object? result = value;
 
+        if (parameters.Contains("jopa"))
+        {
+            Console.WriteLine($"{value}, {targetType}");
+        }
+
         if (value is WeakReference wr)
         {
             value = wr.Target;
@@ -34,10 +36,30 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             value = poco1;
         }
 
+        if (value is PropertyValueHolder property)
+        {
+            if (parameters.Contains("IsNullAndWritable"))
+            {
+                return !property.IsReadOnly && property.Current is null;
+            }
+
+            if (parameters.Contains("IsNotNullAndWritable"))
+            {
+                return !property.IsReadOnly && property.Current is { };
+            }
+
+            if (parameters.Contains("IsModified"))
+            {
+                return property.IsModified;
+
+            }
+        }
+
         if (parameters.Contains("IsNull"))
         {
             return value is null;
         }
+
 
         if (parameters.Contains("IsNotNull"))
         {
@@ -52,11 +74,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         if (parameters.Contains("IsNotEntity"))
         {
             return value is not IProjection<IEntity> || ((IProjection)value).As<IEntity>() is not IEntity;
-        }
-
-        if (value is PropertyValueHolder propertyInfo1 && parameters.Contains("IsModified"))
-        {
-            return propertyInfo1.IsModified;
         }
 
         if (targetType == typeof(string) && value is null)

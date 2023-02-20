@@ -11,6 +11,8 @@ internal class PropertyValueHolder
     private bool _lastIsModified = true;
 
     public string Name => _property.Name;
+
+    public bool IsReadOnly => _property.IsReadOnly;
     
     public object? Initial
     {

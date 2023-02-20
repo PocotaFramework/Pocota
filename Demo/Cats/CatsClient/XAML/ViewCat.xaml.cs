@@ -8,6 +8,7 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,7 +19,18 @@ namespace CatsClient;
 public partial class ViewCat : Window
 {
 
-    
+    public class BindingTraceListener : TraceListener
+    {
+        public override void Write(string? message)
+        {
+            Console.Write($"BindingTraceSource: {message}");
+        }
+
+        public override void WriteLine(string? message)
+        {
+            Console.WriteLine($"BindingTraceSource: {message}");
+        }
+    }
 
     private readonly IServiceProvider _services;
 
@@ -69,6 +81,11 @@ public partial class ViewCat : Window
         Heart = _services.GetRequiredService<IViewCatHeart>();
         ((INotifyPropertyChanged)Heart).PropertyChanged += ViewCat_PropertyChanged;
         ChildrenSource.Filter += Heart.ChildrenFilter;
+
+        BindingTraceListener listener = new();
+
+        PresentationTraceSources.DataBindingSource.Listeners.Add(listener);
+
 
         InitializeComponent();
 
