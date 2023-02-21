@@ -2,6 +2,7 @@
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -24,11 +25,14 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
     private PocoState _pocoState;
 
     private ObservableCollection<PropertyValueHolder> _values = new();
+    private Dictionary<Property, PropertyValueHolder> _valuesByProperty = new();
     private ObservableCollection<Tuple<string, object?>> _keys = new();
 
     internal readonly WeakReference<PocoBase?> _source = new(null);
 
     public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
+    public ClearPocoPropertyCommand ClearPocoPropertyCommand { get; init; }
+    public AddNewPocoPropertyCommand AddNewPocoPropertyCommand { get; init; }
 
     public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
@@ -82,7 +86,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
                     }
                     Title = $"Просмотр {poco.GetType()}: {Util.GetPocoLabel(poco)}";
                     _properties = _core.GetPropertiesList(value.GetType());
-                    FillProperties(true);
+                    FillProperties(true, string.Empty);
                 }
                 else
                 {
@@ -100,6 +104,8 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
         Util = services.GetRequiredService<Util>();
         PropertiesViewSource.Source = _values;
         ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
+        ClearPocoPropertyCommand = services.GetRequiredService<ClearPocoPropertyCommand>();
+        AddNewPocoPropertyCommand = services.GetRequiredService<AddNewPocoPropertyCommand>();
         KeysViewSource.Source = _keys;
         InitializeComponent();
     }
@@ -107,10 +113,16 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
     protected override void OnClosed(EventArgs e)
     {
         _services.GetRequiredService<TracedPocos>().RemoveView(this);
+        if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
+        {
+            target.PropertyChanged -= Target_PropertyChanged;
+            _values.Clear();
+            _valuesByProperty.Clear();
+        }
         base.OnClosed(e);
     }
 
-    public void FillProperties(bool firstTime)
+    public void FillProperties(bool firstTime, string changedProperty)
     {
         if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
         {
@@ -125,7 +137,13 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
                 {
                     if (firstTime)
                     {
-                        _values.Add(new PropertyValueHolder(property, target));
+                        PropertyValueHolder pvh = new(property, target);
+                        _valuesByProperty.Add(property, pvh);
+                        _values.Add(pvh);
+                    }
+                    else if(string.IsNullOrEmpty(changedProperty) || property.Name.Equals(changedProperty))
+                    {
+                        _valuesByProperty[property].Touch();
                     }
                 }
             });
@@ -134,11 +152,19 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
 
     private void Target_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        FillProperties(false);
+        FillProperties(false, e?.PropertyName ?? string.Empty);
     }
 
     private void ComboBox_DropDownClosed(object sender, EventArgs e)
     {
         ((ComboBox)sender).SelectedIndex = 0;
+    }
+
+    private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if(((ComboBox)sender).SelectedIndex != 0)
+        {
+            ((ComboBox)sender).SelectedIndex = 0;
+        }
     }
 }

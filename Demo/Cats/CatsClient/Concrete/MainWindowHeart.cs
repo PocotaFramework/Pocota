@@ -2,13 +2,11 @@
 using CatsCommon.Model;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client;
-using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace CatsClient;
 

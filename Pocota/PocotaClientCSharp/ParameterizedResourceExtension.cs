@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Intrinsics.Arm;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Diagnostics;
 using System.Windows.Markup;
 using System.Windows.Markup.Primitives;
 using System.Windows.Media;
@@ -16,28 +15,27 @@ namespace Net.Leksi.Pocota.Client;
 
 public class ParameterizedResourceExtension : MarkupExtension
 {
-
+    private const string s_indentionStep = "  ";
     private readonly StaticResourceExtension _value;
     private readonly Dictionary<string, string> _replacements = new();
     private string? _replaces;
     private static readonly Dictionary<object, Stack<ParameterizedResourceExtension>> s_callStacks = new();
     private Stack<ParameterizedResourceExtension> _stack = null!;
-    private readonly HashSet<object> _touchedProperties = new(ReferenceEqualityComparer.Instance);
     private string _indention = string.Empty;
+    private readonly HashSet<object> _seenObjects = new(ReferenceEqualityComparer.Instance);
 
-
-    public string? Replaces 
-    { 
-        get => _replaces; 
-        set 
+    public string? Replaces
+    {
+        get => _replaces;
+        set
         {
-            if(!object.Equals(_replaces, value))
+            if (!object.Equals(_replaces, value))
             {
                 _replaces = value;
                 _replacements.Clear();
                 if (_replaces is { })
                 {
-                    foreach(
+                    foreach (
                         string[] ent in _replaces.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                             .Select(entry => entry.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                             .Where(entry => entry.Length == 2)
@@ -50,7 +48,11 @@ public class ParameterizedResourceExtension : MarkupExtension
         }
     }
 
-    public bool Verbose { get; set; } = false;
+    public string At { get; set; } = string.Empty;
+
+    public int Verbose { get; set; } = 0;
+
+    public bool Strict { get; set; } = true;
 
     public ParameterizedResourceExtension(object key)
     {
@@ -66,25 +68,41 @@ public class ParameterizedResourceExtension : MarkupExtension
             s_callStacks.Add(rootObject, _stack);
         }
 
-        _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", "    ");
+        _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", s_indentionStep) + $"[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
+
+
+        if (Verbose > 0)
+        {
+            Console.WriteLine($"{_indention} < ProvideValue >");
+            foreach (string parameterName in _replacements.Keys)
+            {
+                Console.WriteLine($"{_indention} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
+            }
+        }
 
         if (_stack.Count > 0)
         {
             foreach (ParameterizedResourceExtension resource in _stack)
             {
-                if (!Verbose && resource.Verbose)
+                if(Verbose == 0 && resource.Verbose > 0)
                 {
-                    Verbose = true;
-                    _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", "    ");
-                    Console.WriteLine($"{_indention}ProvideValue: {_value.ResourceKey}");
+                    Console.WriteLine($"{_indention} < ProvideValue >");
+                    foreach (string parameterName in _replacements.Keys)
+                    {
+                        Console.WriteLine($"{_indention} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
+                    }
+                }
+                if (Verbose < resource.Verbose)
+                {
+                    Verbose = resource.Verbose;
                 }
                 foreach (string parameterName in resource._replacements.Keys)
                 {
                     if (_replacements.TryAdd(parameterName, resource._replacements[parameterName]))
                     {
-                        if (Verbose)
+                        if (Verbose > 0)
                         {
-                            Console.WriteLine($"{_indention}from {resource._value.ResourceKey}: {parameterName}={resource._replacements[parameterName]}");
+                            Console.WriteLine($"{_indention} < {parameterName}={resource._replacements[parameterName]} (from {resource._value.ResourceKey}) >");
                         }
                     }
                 }
@@ -92,100 +110,42 @@ public class ParameterizedResourceExtension : MarkupExtension
         }
 
         _stack.Push(this);
-        Console.WriteLine($"{_indention}ProvideValue: {_value.ResourceKey}");
-
-        BindingDiagnostics.BindingFailed += BindingDiagnostics_BindingFailed;
 
         object result = _value.ProvideValue(serviceProvider);
 
-        //Walk3(result, 1);
+        List<string> route = new();
+        WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
 
         _stack.Pop();
         if (_stack.Count == 0)
         {
             s_callStacks.Remove(rootObject);
         }
+
+        if (Verbose > 0)
+        {
+            Console.WriteLine($"{_indention} < Done >");
+        }
         return result;
     }
 
-    private void BindingDiagnostics_BindingFailed(object? sender, BindingFailedEventArgs e)
+    private void WalkMarkup(MarkupObject mo, List<string> route)
     {
-        Console.WriteLine(e);
-    }
-
-    private void Walk3(object result, int level)
-    {
-        string indention = string.Format($"{_indention}{{0,{level}}}", "").Replace(" ", "  ");
-        Console.WriteLine($"{indention}{result}");
-
-        if (result is DependencyObject dObj)
+        if (_seenObjects.Add(mo.Instance))
         {
-            foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(dObj,
-                    new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }))
+            if(mo.Instance is DependencyObject dependencyObject)
             {
-                if (pd.GetValue(dObj) is object value)
+                foreach (
+                    PropertyDescriptor pd in TypeDescriptor.GetProperties(
+                        dependencyObject, new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }
+                    )
+                )
                 {
-                    if (pd.PropertyType == typeof(BindingBase) && value is Binding binding1)
+                    if (pd.GetValue(dependencyObject) is object value)
                     {
-                        OnBinding(binding1, $"{pd.Name}(1)");
-                    }
-                }
-                DependencyPropertyDescriptor dpd =
-                    DependencyPropertyDescriptor.FromProperty(pd);
-
-                if (dpd is { })
-                {
-                    if (BindingOperations.GetBinding(dObj, dpd.DependencyProperty) is Binding binding2)
-                    {
-                        OnBinding(binding2, $"{dpd.Name}");
-                    }
-                }
-            }
-            if (dObj is Visual)
-            {
-                int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
-                if (childrenCount > 0)
-                {
-                    for (int i = 0; i < childrenCount; i++)
-                    {
-                        DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
-                        if (_touchedProperties.Add(child))
+                        if (pd.PropertyType == typeof(BindingBase) && value is Binding binding)
                         {
-                            Walk3(child, level + 1);
-                        }
-                    }
-                }
-            }
-        }
-        else if(result is FrameworkTemplate template)
-        {
-            Walk3(template.VisualTree, level);
-        }
-        else
-        {
-
-        }
-    }
-
-    private void Walk2(MarkupObject markupObject, int level)
-    {
-        if(markupObject.Instance is Binding binding)
-        {
-            OnBinding(binding, string.Empty);
-        }
-        else
-        {
-            string indention = string.Format($"{_indention}{{0,{level}}}", "").Replace(" ", "  ");
-            if (markupObject.Instance is DependencyObject dObj)
-            {
-                foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(dObj,
-                        new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }))
-                {
-                    if (pd.GetValue(dObj) is object value)
-                    {
-                        if (pd.PropertyType == typeof(BindingBase) && value is Binding binding1)
-                        {
-                            OnBinding(binding1, $"{pd.Name}(1)");
+                            OnBinding(binding, route);
                         }
                     }
                     DependencyPropertyDescriptor dpd =
@@ -193,358 +153,203 @@ public class ParameterizedResourceExtension : MarkupExtension
 
                     if (dpd is { })
                     {
-                        if (BindingOperations.GetBinding(dObj, dpd.DependencyProperty) is Binding binding2)
+                        if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding1)
                         {
-                            OnBinding(binding2, $"{dpd.Name}");
+                            route.Add(pd.Name);
+                            OnBinding(binding1, route);
+                            route.RemoveAt(route.Count - 1);
+                        }
+                        else if(BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
+                        {
+                            route.Add(pd.Name);
+                            OnBinding(multiBinding, route);
+                            route.RemoveAt(route.Count - 1);
                         }
                     }
                 }
-                if (dObj is Visual)
+                if (dependencyObject is Visual visual)
                 {
-                    int childrenCount = VisualTreeHelper.GetChildrenCount(dObj);
+                    int childrenCount = VisualTreeHelper.GetChildrenCount(visual);
                     if (childrenCount > 0)
                     {
-                        for (int i = 0; i < childrenCount; i++)
+                        for (int i = 0; i < childrenCount; ++i)
                         {
-                            DependencyObject child = VisualTreeHelper.GetChild(dObj, i);
-                            if (_touchedProperties.Add(child))
+                            DependencyObject child = VisualTreeHelper.GetChild(visual, i);
+                            route.Add(child.GetType().ToString());
+                            WalkMarkup(MarkupWriter.GetMarkupObjectFor(child), route);
+                            route.RemoveAt(route.Count - 1);
+                        }
+                    }
+                }
+            }
+            foreach (var prop in mo.Properties)
+            {
+                if (prop.PropertyType == typeof(BindingBase))
+                {
+                    OnBinding((BindingBase)prop.Value, route);
+                }
+                else
+                {
+                    route.Add(prop.Name);
+                    if(Verbose > 1)
+                    {
+                        Console.WriteLine($"{_indention} {string.Join('/', route)}");
+                    }
+                    if (prop.DependencyProperty is { })
+                    {
+                        if (BindingOperations.GetBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is Binding binding)
+                        {
+                            OnBinding(binding, route);
+                        }
+                        else if (BindingOperations.GetMultiBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is MultiBinding multiBinding)
+                        {
+                            OnBinding(multiBinding, route);
+                        }
+                    }
+                    try
+                    {
+                        if (prop.IsComposite)
+                        {
+                            foreach (var item in prop.Items)
                             {
-                                Console.WriteLine($"{indention}  {child}");
-                                Walk2(MarkupWriter.GetMarkupObjectFor(child), level + 1);
+                                WalkMarkup(item, route);
                             }
                         }
                     }
-                }
-            }
-            foreach (var prop in markupObject.Properties)
-            {
-                try
-                {
-                    if (
-                        prop is { }
-                        && prop.Value is { }
-                        && prop.PropertyType != typeof(ResourceDictionary)
-                        && prop.PropertyType != typeof(TemplateContent)
-                        && prop.PropertyType != typeof(Type)
-                        && _touchedProperties.Add(prop.Value)
-                    )
+                    catch (NullReferenceException)
                     {
-                        Console.WriteLine($"{indention}{prop.Name}, {prop.Value}");
-                        if (prop.Value is IList)
-                        {
-                            foreach (var item in (IList)prop.Value)
-                            {
-                                if (
-                                    item is { }
-                                    && item is not ResourceDictionary
-                                    && item is not TemplateContent
-                                    && item is not Type
-                                    && _touchedProperties.Add(item)
-                                )
-                                {
-                                    Console.WriteLine($"{indention}  {item}");
-                                    Walk2(MarkupWriter.GetMarkupObjectFor(item), level + 1);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Walk2(MarkupWriter.GetMarkupObjectFor(prop.Value), level + 1);
-                        }
-
                     }
-                }
-                catch (NullReferenceException) { }
-            }
-        }
-    }
-
-    public /*override */object ProvideValue1(IServiceProvider serviceProvider)
-    {
-        object rootObject = serviceProvider.GetRequiredService<IRootObjectProvider>().RootObject;
-        if (!s_callStacks.TryGetValue(rootObject, out _stack))
-        {
-            _stack = new Stack<ParameterizedResourceExtension>();
-            s_callStacks.Add(rootObject, _stack);
-        }
-
-        if (Verbose)
-        {
-            _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", "    ");
-            Console.WriteLine($"{_indention}ProvideValue: {_value.ResourceKey}");
-        }
-
-        if (_stack.Count > 0)
-        {
-            foreach (ParameterizedResourceExtension resource in _stack)
-            {
-                if (!Verbose && resource.Verbose)
-                {
-                    Verbose = true;
-                    _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", "    ");
-                    Console.WriteLine($"{_indention}ProvideValue: {_value.ResourceKey}");
-                }
-                foreach (string parameterName in resource._replacements.Keys)
-                {
-                    if(_replacements.TryAdd(parameterName, resource._replacements[parameterName]))
-                    {
-                        if (Verbose)
-                        {
-                            Console.WriteLine($"{_indention}from {resource._value.ResourceKey}: {parameterName}={resource._replacements[parameterName]}");
-                        }
-                    }
-                }
-            }
-        }
-
-        _stack.Push(this);
-
-        object result = _value.ProvideValue(serviceProvider);
-
-
-        if(rootObject is Window window)
-        {
-            object v = window.FindResource(_value.ResourceKey);
-            Console.WriteLine(v);
-        }
-
-
-        //Walk(result);
-        
-        _stack.Pop();
-        if(_stack.Count == 0)
-        {
-            s_callStacks.Remove(rootObject);
-        }
-
-        if (Verbose)
-        {
-            Console.WriteLine($"{_indention}Provided: {_value.ResourceKey}");
-        }
-        return result;
-    }
-
-    private void Walk(object result)
-    {
-        if (result is DependencyObject dependencyObject)
-        {
-            foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(dependencyObject,
-                    new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }))
-            {
-                if (pd.GetValue(dependencyObject) is object value)
-                {
-                    if (pd.PropertyType == typeof(BindingBase) && value is Binding binding1)
-                    {
-                        OnBinding(binding1, $"{pd.Name}(1)");
-                    }
-                    else
-                    {
-                        DependencyPropertyDescriptor dpd =
-                            DependencyPropertyDescriptor.FromProperty(pd);
-
-                        if (dpd is { })
-                        {
-                            if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding)
-                            {
-                                OnBinding(binding, $"{dpd.Name}(2)");
-                            }
-                        }
-                    }
-                }
-            }
-            if (dependencyObject is Visual)
-            {
-                int childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
-                if (childrenCount > 0)
-                {
-                    for (int i = 0; i < childrenCount; i++)
-                    {
-                        DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
-                        if (_touchedProperties.Add(child))
-                        {
-                            Walk(child);
-                        }
-                    }
-                }
-            }
-            foreach(var child in LogicalTreeHelper.GetChildren(dependencyObject))
-            {
-                if (_touchedProperties.Add(child))
-                {
-                    Walk(child);
-                }
-            }
-        }
-        if (result is { } && MarkupWriter.GetMarkupObjectFor(result) is MarkupObject markupObject)
-        {
-            WalkMarkup(markupObject);
-        }
-    }
-
-    private void Walk1(object result)
-    {
-        if (result is DependencyObject dependencyObject)
-        {
-            foreach (PropertyDescriptor pd in TypeDescriptor.GetProperties(dependencyObject,
-                    new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }))
-            {
-                if(pd.GetValue(dependencyObject) is object value)
-                {
-                    if (pd.PropertyType == typeof(BindingBase) && value is Binding binding1)
-                    {
-                        OnBinding(binding1, $"{pd.Name}(1)");
-                    }
-                    else
-                    {
-                        DependencyPropertyDescriptor dpd =
-                            DependencyPropertyDescriptor.FromProperty(pd);
-
-                        if (dpd is { })
-                        {
-                            if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding)
-                            {
-                                OnBinding(binding, $"{dpd.Name}(2)");
-                            }
-                        }
-                    }
-                    if (value is not ValueType && _touchedProperties.Add(value))
-                    {
-                        Walk(value);
-                    }
-                }
-            }
-            if(dependencyObject is Visual)
-            {
-                int childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
-                if (childrenCount > 0)
-                {
-                    for (int i = 0; i < childrenCount; i++)
-                    {
-                        DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
-                        if (_touchedProperties.Add(child))
-                        {
-                            Walk(child);
-                        }
-                    }
-                }
-            }
-        }
-        if(result is { } && MarkupWriter.GetMarkupObjectFor(result) is MarkupObject markupObject)
-        {
-            WalkMarkup(markupObject);
-        }
-    }
-
-    private void WalkMarkup(MarkupObject markupObject)
-    {
-        foreach (MarkupProperty? prop in markupObject.Properties)
-        {
-            if (_touchedProperties.Add(prop.Value))
-            {
-                try
-                {
-                    foreach (MarkupObject? item in prop.Items)
-                    {
-                        if (item.Instance is Binding binding)
-                        {
-                            OnBinding(binding, $"{prop.Name}(3)");
-                        }
-                        else if (!(item.Instance is TypeExtension))
-                        {
-                            Walk(item.Instance);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if(ex is InvalidOperationException)
-                    {
-                        throw;
-                    }
+                    route.RemoveAt(route.Count - 1);
                 }
             }
         }
     }
 
-    private void OnBinding(Binding binding, string propertyName)
+    private void OnBinding(BindingBase bindingBase, List<string> route)
     {
-        if (_touchedProperties.Add(binding))
+        if(bindingBase is Binding binding)
         {
-            if (binding.Path.Path is { } && binding.Path.Path.StartsWith('$'))
+            if (binding.Path is { } && binding.Path.Path is { } && binding.Path.Path.StartsWith('$'))
             {
-                if (Verbose)
+                if (Verbose > 0)
                 {
-                    Console.Write($"{_indention}{_value.ResourceKey}> Path: {binding.Path.Path}");
+                    Console.Write($"{_indention} {string.Join('/', route)} < Path: {binding.Path.Path}");
                 }
                 if (_replacements.TryGetValue(binding.Path.Path, out string? newPath))
                 {
                     binding.Path.Path = newPath;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.Path.Path} >");
+                    }
                 }
-                else if(_stack.Count == 1)
+                else if (Strict)
                 {
-                    throw new InvalidOperationException($"Path parameter is not provided: {binding.Path.Path} at {_value.ResourceKey}");
+                    throw new System.Windows.Markup.XamlParseException($"Path parameter is not provided: {binding.Path.Path} at {_value.ResourceKey}");
                 }
-                if (Verbose)
+                else if (Verbose > 0)
                 {
-                    Console.WriteLine($" -> {binding.Path.Path}");
+                    Console.WriteLine($" - is not provided! >");
                 }
             }
             if (binding.ConverterParameter is string converterParameter && converterParameter.StartsWith('$'))
             {
-                if (Verbose)
+                if (Verbose > 0)
                 {
-                    Console.Write($"{_indention}{_value.ResourceKey}> ConverterParameter: {binding.ConverterParameter}");
+                    Console.Write($"{_indention} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
                 }
                 if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
                 {
                     binding.ConverterParameter = newConverterParameter;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.ConverterParameter} >");
+                    }
                 }
-                else if (_stack.Count == 1)
+                else if (Strict)
                 {
-                    throw new InvalidOperationException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
+                    throw new System.Windows.Markup.XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
                 }
-                if (Verbose)
+                else if (Verbose > 0)
                 {
-                    Console.WriteLine($" -> {binding.ConverterParameter}");
+                    Console.WriteLine($" - is not provided! >");
                 }
             }
             if (binding.XPath is string xPath && xPath.StartsWith('$'))
             {
-                if (Verbose)
+                if (Verbose > 0)
                 {
-                    Console.Write($"{_indention}{_value.ResourceKey}> XPath: {binding.XPath}");
+                    Console.Write($"{_indention} {string.Join('/', route)} < XPath: {binding.XPath}");
                 }
                 if (_replacements.TryGetValue(xPath, out string? newXPath))
                 {
                     binding.XPath = newXPath;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.XPath} >");
+                    }
                 }
-                else if (_stack.Count == 1)
+                else if (Strict)
                 {
-                    throw new InvalidOperationException($"XPath parameter is not provided: {xPath} at {_value.ResourceKey}");
+                    throw new System.Windows.Markup.XamlParseException($"XPath parameter is not provided: {xPath} at {_value.ResourceKey}");
                 }
-                if (Verbose)
+                else if (Verbose > 0)
                 {
-                    Console.WriteLine($" -> {binding.XPath}");
+                    Console.WriteLine($" - is not provided! >");
                 }
             }
             if (binding.ElementName is string elementName && elementName.StartsWith('$'))
             {
-                if (Verbose)
+                if (Verbose > 0)
                 {
-                    Console.Write($"{_indention}{_value.ResourceKey}> ElementName: {binding.ElementName}");
+                    Console.Write($"{_indention} {string.Join('/', route)} < ElementName: {binding.ElementName}");
                 }
                 if (_replacements.TryGetValue(elementName, out string? newElementName))
                 {
                     binding.ElementName = newElementName;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.ElementName} >");
+                    }
                 }
-                else if (_stack.Count == 1)
+                else if (Strict)
                 {
-                    throw new InvalidOperationException($"ElementName parameter is not provided: {elementName} at {_value.ResourceKey}");
+                    throw new System.Windows.Markup.XamlParseException($"ElementName parameter is not provided: {elementName} at {_value.ResourceKey}");
                 }
-                if (Verbose)
+                else if (Verbose > 0)
                 {
-                    Console.WriteLine($" -> {binding.ElementName}");
+                    Console.WriteLine($" - is not provided! >");
                 }
+            }
+        }
+        else if(bindingBase is MultiBinding multiBinding)
+        {
+            if (multiBinding.ConverterParameter is string converterParameter && converterParameter.StartsWith('$'))
+            {
+                if (Verbose > 0)
+                {
+                    Console.Write($"{_indention} {string.Join('/', route)} < ConverterParameter: {multiBinding.ConverterParameter}");
+                }
+                if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
+                {
+                    multiBinding.ConverterParameter = newConverterParameter;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {multiBinding.ConverterParameter} >");
+                    }
+                }
+                else if (Strict)
+                {
+                    throw new System.Windows.Markup.XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
+                }
+                else if (Verbose > 0)
+                {
+                    Console.WriteLine($" - is not provided! >");
+                }
+            }
+            foreach(Binding bindingItem in multiBinding.Bindings)
+            {
+                OnBinding(bindingItem, route);
             }
         }
     }

@@ -124,9 +124,10 @@ public class ViewInBrowserCommand : ICommand
             {
                 _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
                 {
-                    ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views
-                        .Where(v => v is ViewTracedPoco viewTracedPoco && viewTracedPoco._source.TryGetTarget(out PocoBase? target) && target == poco)
-                        .Select(v => v as ViewTracedPoco).FirstOrDefault();
+                    ViewTracedPoco? tmp = null;
+                    //ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views
+                    //    .Where(v => v is ViewTracedPoco viewTracedPoco && viewTracedPoco._source.TryGetTarget(out PocoBase? target) && target == poco)
+                    //    .Select(v => v as ViewTracedPoco).FirstOrDefault();
                     ViewTracedPoco view = tmp is { } ? tmp : _services.GetRequiredService<ViewTracedPoco>();
                     if(tmp is null)
                     {

@@ -19,12 +19,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
-        object? result = value;
-
-        if (parameters.Contains("jopa"))
-        {
-            Console.WriteLine($"{value}, {targetType}");
-        }
 
         if (value is WeakReference wr)
         {
@@ -60,6 +54,10 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return value is null;
         }
 
+        if (parameters.Contains("SetSelectedIndex_0"))
+        {
+            return 0;
+        }
 
         if (parameters.Contains("IsNotNull"))
         {
@@ -83,7 +81,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
 
         if (value is IList list1 && targetType == typeof(IEnumerable))
         {
-            result = new object[list1.Count + 1];
+            object result = new object[list1.Count + 1];
             ((object[])result)[0] = $"Количество: {list1.Count}";
             for (int i = 0; i < list1.Count; ++i)
             {
@@ -101,9 +99,46 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         return value;
     }
 
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        throw new NotImplementedException();
+        object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
+
+        PropertyValueHolder? property = null;
+        if (
+            (
+                (values.Length > 0 && values[0] is PropertyValueHolder property1 && (property = property1) == property)
+                || (values.Length > 1 && values[1] is PropertyValueHolder property2 && (property = property2) == property)
+            )
+            && (
+                parameters.Contains("IsNullAndWritable")
+                || parameters.Contains("IsNotNullAndWritable")
+                || parameters.Contains("IsModified")
+            )
+        )
+        {
+            return Convert(property, targetType, parameter, culture);
+        }
+
+        object? value = null;
+        if (
+            (
+                parameters.Contains("IsNull")
+                || parameters.Contains("IsNotNull")
+                || parameters.Contains("IsNotEntity")
+                || parameters.Contains("IsPoco")
+            )
+            && (
+                (values.Length > 0 && values[0] is not PropertyValueHolder && (value = values[0]) == value)
+                || (values.Length > 1 && values[1] is not PropertyValueHolder && (value = values[1]) == value)
+            )
+        )
+        {
+            return Convert(value, targetType, parameter, culture);
+        }
+
+        Console.WriteLine($"Convert [{string.Join(',', values)}], {targetType}, {parameter}");
+
+        return null;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

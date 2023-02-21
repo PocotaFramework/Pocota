@@ -10,19 +10,24 @@
         Height="450" Width="800"  DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
         <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Data="{Binding ViewTracedPocoCommand}"/>
+        <local1:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Data="{Binding ClearPocoPropertyCommand}"/>
+        <local1:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Data="{Binding AddNewPocoPropertyCommand}"/>
         <Style TargetType="Button" x:Key="ViewButtonStyle" x:Shared="False">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=$test}" Value="True">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=$test}" Value="False">
+                <DataTrigger d:Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=$test}" Value="False">
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{local:ViewTracedPocoConverter}" ConverterParameter="$test">
+                            <Binding Path="."/>
+                            <Binding Path="$path"/>
+                        </MultiBinding>
+                    </DataTrigger.Binding>
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="TextBlock" x:Key="ModifiedPropertyStyle" x:Shared="False">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=IsModified}" Value="True">
+                <DataTrigger Binding="{Binding IsModified}" Value="True">
                     <Setter Property="Background" Value="#EADDCA"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -32,17 +37,11 @@
                 <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=IsNull}" Value="True">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
-                <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=IsNull}" Value="False">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style TargetType="TextBlock" x:Key="ViewTextStyle" x:Shared="False">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=$test}" Value="True">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
-                <DataTrigger Binding="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=$test}" Value="False">
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -56,9 +55,11 @@
         </Style>
         <DataTemplate x:Key="ViewCollectionDataTemplate" x:Shared="False">
             <StackPanel>
-                <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNull}">null</TextBlock>
+                <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNotNull}">null</TextBlock>
                 <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
-                        SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed"
+                        SelectedIndex="0" 
+                        DropDownClosed="ComboBox_DropDownClosed" 
+                        SelectionChanged="ComboBox_SelectionChanged"
                         Style="{local1:ParameterizedResource ViewCollectionComboBoxStyle}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -102,41 +103,36 @@
                                         CommandParameter="{Binding $path}">
                             <Button.Content>👁</Button.Content>
                         </Button>
-                        <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsNullAndWritable}" 
-                                        Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" 
+                        <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNullAndWritable}" 
+                                        Command="{Binding Data, Source={StaticResource AddNewPocoPropertyCommandProxy}}" 
                                         CommandParameter="{Binding}">
                             <Button.Content>➕</Button.Content>
+                            <Button.ToolTip>Присвоить</Button.ToolTip>
                         </Button>
-                        <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsNotNullAndWritable}" 
-                                        Command="{Binding Data, Source={StaticResource ViewTracedPocoCommandProxy}}" 
-                                        CommandParameter="{Binding}" Margin="10,0,0,0">
-                            <Button.Content>−</Button.Content>
+                        <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNotNullAndWritable}" 
+                                        Command="{Binding Data, Source={StaticResource ClearPocoPropertyCommandProxy}}" 
+                                        CommandParameter="{Binding}"
+                                        Margin="10,0,0,0">
+                            <Button.Content>➖</Button.Content>
+                            <Button.ToolTip>Обнулить</Button.ToolTip>
                         </Button>
-                        <TextBlock Text="{Binding $path, Converter={local:ViewTracedPocoConverter}, ConverterParameter=jopa}"/>
+                        <TextBlock Text="{Binding $path, Converter={local:ViewTracedPocoConverter}}"/>
                     </DockPanel>
                 </DataTemplate>
             </local:ViewTracedPocoDataTemplateSelector.Poco>
             <local:ViewTracedPocoDataTemplateSelector.Value>
                 <DataTemplate>
-                    <TextBox Text="{Binding $path, Converter={local:ViewTracedPocoConverter}, Mode=TwoWay}" HorizontalAlignment="Stretch"
-                                     Visibility="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=Edit}">
+                    <TextBox Text="{Binding $path, Converter={local:ViewTracedPocoConverter}, Mode=TwoWay}" HorizontalAlignment="Stretch">
                     </TextBox>
                 </DataTemplate>
             </local:ViewTracedPocoDataTemplateSelector.Value>
-            <local:ViewTracedPocoDataTemplateSelector.Collection>
-                <DataTemplate>
-                    <TextBox Text="{Binding $path, Converter={local:ViewTracedPocoConverter}, Mode=TwoWay}" HorizontalAlignment="Stretch"
-                                     Visibility="{Binding Converter={local:ViewTracedPocoConverter}, ConverterParameter=Edit}">
-                    </TextBox>
-                </DataTemplate>
-            </local:ViewTracedPocoDataTemplateSelector.Collection>
         </local:ViewTracedPocoDataTemplateSelector>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}}" Margin="10,10,10,10"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" d:Style="{local1:ParameterizedResource PrimaryKeyStyle}">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Ключ" Binding="{Binding Item1}"/>
@@ -152,9 +148,9 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Свойство" CellTemplate="{StaticResource Name}"/>
-                <DataGridTemplateColumn Header="Исходное значение" d:CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Initial}"/>
-                <DataGridTemplateColumn Header="Текущее значение" d:CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Current}" 
-                    CellEditingTemplateSelector="{local1:ParameterizedResource EditTracedPocoDataTemplateSelector, Replaces=$path:Current, Verbose=True}"
+                <DataGridTemplateColumn Header="Исходное значение" CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Initial}"/>
+                <DataGridTemplateColumn Header="Текущее значение" CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Current}" 
+                    CellEditingTemplateSelector="{local1:ParameterizedResource EditTracedPocoDataTemplateSelector, Replaces=$path:Current}"
                     />
             </DataGrid.Columns>
         </DataGrid>

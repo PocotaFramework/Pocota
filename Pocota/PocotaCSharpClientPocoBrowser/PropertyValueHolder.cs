@@ -1,9 +1,28 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Net.Leksi.Pocota.Client;
 
-internal class PropertyValueHolder
+internal class PropertyValueHolder: INotifyPropertyChanged
 {
+    private event PropertyChangedEventHandler? _propertyChanged;
+
+    public event PropertyChangedEventHandler? PropertyChanged
+    {
+        add
+        {
+            if ("CatFilter".Equals(Name))
+            {
+                Console.WriteLine($"PropertyChanged.add {value}");
+            }
+            _propertyChanged += value;
+        }
+        remove
+        {
+            _propertyChanged -= value;
+        }
+    }
+
     private readonly Property _property = null!;
     private readonly WeakReference<PocoBase> _targetRererence = new(null!);
     private object? _lastInitial = null;
@@ -26,7 +45,15 @@ internal class PropertyValueHolder
                 }
                 else
                 {
-                    _lastInitial = new WeakReference(_property.GetInitial(poco));
+                    object? result = _property.GetInitial(poco);
+                    if (result is { })
+                    {
+                        _lastInitial = new WeakReference(result);
+                    }
+                    else
+                    {
+                        _lastInitial = null;
+                    }
                 }
             }
             return _lastInitial;
@@ -45,7 +72,15 @@ internal class PropertyValueHolder
                 }
                 else
                 {
-                    _lastCurrent = new WeakReference(_property.Get(poco));
+                    object? result = _property.Get(poco);
+                    if(result is { })
+                    {
+                        _lastCurrent = new WeakReference(result);
+                    }
+                    else
+                    {
+                        _lastCurrent = null;
+                    }
                 }
             }
             return _lastCurrent;
@@ -56,6 +91,7 @@ internal class PropertyValueHolder
             {
                 _property.Set(poco, value);
                 _ = Current;
+                Touch();
             }
         }
     }
@@ -82,5 +118,10 @@ internal class PropertyValueHolder
     {
         _property = property;
         _targetRererence.SetTarget(target);
+    }
+
+    internal void Touch()
+    {
+        _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
 }

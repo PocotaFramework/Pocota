@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using System.Windows.Input;
 
 namespace Net.Leksi.Pocota.Client;
 
@@ -31,6 +30,8 @@ public static class PocotaClientPocoBrowserExtensions
         services.AddTransient<ViewConnectorMethod>();
         services.AddTransient<SetFilterCommand>();
         services.AddTransient<UnsetFilterCommand>();
+        services.AddTransient<ClearPocoPropertyCommand>();
+        services.AddTransient<AddNewPocoPropertyCommand>();
 
         return services;
     }
