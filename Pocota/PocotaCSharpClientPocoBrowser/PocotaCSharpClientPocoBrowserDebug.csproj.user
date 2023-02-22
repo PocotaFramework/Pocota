@@ -7,6 +7,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Dictionary1.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="TracedPocos.xaml">
       <SubType>Designer</SubType>
     </Page>

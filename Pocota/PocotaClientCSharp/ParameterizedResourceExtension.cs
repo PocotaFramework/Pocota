@@ -1,26 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Markup.Primitives;
 using System.Windows.Media;
-using System.Xaml;
 
 namespace Net.Leksi.Pocota.Client;
 
 public class ParameterizedResourceExtension : MarkupExtension
 {
     private const string s_indentionStep = "  ";
-    private readonly StaticResourceExtension _value;
+    private StaticResourceExtension _value = null!;
     private readonly Dictionary<string, string> _replacements = new();
     private string? _replaces;
-    private static readonly Dictionary<object, Stack<ParameterizedResourceExtension>> s_callStacks = new();
-    private Stack<ParameterizedResourceExtension> _stack = null!;
+    private static readonly Stack<ParameterizedResourceExtension> s_callStacks = new();
     private string _indention = string.Empty;
     private readonly HashSet<object> _seenObjects = new(ReferenceEqualityComparer.Instance);
 
@@ -50,9 +46,9 @@ public class ParameterizedResourceExtension : MarkupExtension
 
     public string At { get; set; } = string.Empty;
 
-    public int Verbose { get; set; } = 0;
+    public int Verbose { get; set; } = 2;
 
-    public bool Strict { get; set; } = true;
+    public bool Strict { get; set; } = false;
 
     public ParameterizedResourceExtension(object key)
     {
@@ -61,15 +57,7 @@ public class ParameterizedResourceExtension : MarkupExtension
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        object rootObject = serviceProvider.GetRequiredService<IRootObjectProvider>().RootObject;
-        if (!s_callStacks.TryGetValue(rootObject, out _stack))
-        {
-            _stack = new Stack<ParameterizedResourceExtension>();
-            s_callStacks.Add(rootObject, _stack);
-        }
-
-        _indention = string.Format($"{{0,{_stack.Count}}}", "").Replace(" ", s_indentionStep) + $"[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
-
+        _indention = string.Format($"{{0,{s_callStacks.Count}}}", "").Replace(" ", s_indentionStep) + $"[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
 
         if (Verbose > 0)
         {
@@ -80,17 +68,21 @@ public class ParameterizedResourceExtension : MarkupExtension
             }
         }
 
-        if (_stack.Count > 0)
+        if (s_callStacks.Count > 0)
         {
-            foreach (ParameterizedResourceExtension resource in _stack)
+            foreach (ParameterizedResourceExtension resource in s_callStacks)
             {
-                if(Verbose == 0 && resource.Verbose > 0)
+                if (Verbose == 0 && resource.Verbose > 0)
                 {
                     Console.WriteLine($"{_indention} < ProvideValue >");
                     foreach (string parameterName in _replacements.Keys)
                     {
                         Console.WriteLine($"{_indention} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
                     }
+                }
+                if (Strict && !resource.Strict)
+                {
+                    Strict = false;
                 }
                 if (Verbose < resource.Verbose)
                 {
@@ -109,31 +101,61 @@ public class ParameterizedResourceExtension : MarkupExtension
             }
         }
 
-        _stack.Push(this);
+        s_callStacks.Push(this);
 
-        object result = _value.ProvideValue(serviceProvider);
+        bool properKey = true;
 
-        List<string> route = new();
-        WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
-
-        _stack.Pop();
-        if (_stack.Count == 0)
+        if (_value.ResourceKey.ToString()!.StartsWith('$'))
         {
-            s_callStacks.Remove(rootObject);
+            if (Verbose > 0)
+            {
+                Console.Write($"< ResourceKey: {_value.ResourceKey}");
+            }
+            properKey = false;
+            if(_replacements.TryGetValue(_value.ResourceKey.ToString()!, out string? newKey))
+            {
+                _value = new StaticResourceExtension(newKey);
+                properKey = true;
+                if (Verbose > 0)
+                {
+                    Console.WriteLine($" -> {_value.ResourceKey} >");
+                }
+            }
+            else if (Strict)
+            {
+                throw new System.Windows.Markup.XamlParseException($"ResourceKey parameter is not provided: {_value.ResourceKey.ToString()}!");
+            }
+            else if (Verbose > 0)
+            {
+                Console.WriteLine($" - is not provided! >");
+            }
         }
 
-        if (Verbose > 0)
+        if (properKey)
         {
-            Console.WriteLine($"{_indention} < Done >");
+            object result = _value.ProvideValue(serviceProvider);
+
+            List<string> route = new();
+            WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
+
+            s_callStacks.Pop();
+
+            if (Verbose > 0)
+            {
+                Console.WriteLine($"{_indention} < Done >");
+            }
+            return result;
         }
-        return result;
+
+        return null;
+
     }
 
     private void WalkMarkup(MarkupObject mo, List<string> route)
     {
         if (_seenObjects.Add(mo.Instance))
         {
-            if(mo.Instance is DependencyObject dependencyObject)
+            if (mo.Instance is DependencyObject dependencyObject)
             {
                 foreach (
                     PropertyDescriptor pd in TypeDescriptor.GetProperties(
@@ -159,7 +181,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                             OnBinding(binding1, route);
                             route.RemoveAt(route.Count - 1);
                         }
-                        else if(BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
+                        else if (BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
                         {
                             route.Add(pd.Name);
                             OnBinding(multiBinding, route);
@@ -191,7 +213,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 else
                 {
                     route.Add(prop.Name);
-                    if(Verbose > 1)
+                    if (Verbose > 1)
                     {
                         Console.WriteLine($"{_indention} {string.Join('/', route)}");
                     }
@@ -227,7 +249,7 @@ public class ParameterizedResourceExtension : MarkupExtension
 
     private void OnBinding(BindingBase bindingBase, List<string> route)
     {
-        if(bindingBase is Binding binding)
+        if (bindingBase is Binding binding)
         {
             if (binding.Path is { } && binding.Path.Path is { } && binding.Path.Path.StartsWith('$'))
             {
@@ -322,7 +344,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
             }
         }
-        else if(bindingBase is MultiBinding multiBinding)
+        else if (bindingBase is MultiBinding multiBinding)
         {
             if (multiBinding.ConverterParameter is string converterParameter && converterParameter.StartsWith('$'))
             {
@@ -347,7 +369,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                     Console.WriteLine($" - is not provided! >");
                 }
             }
-            foreach(Binding bindingItem in multiBinding.Bindings)
+            foreach (Binding bindingItem in multiBinding.Bindings)
             {
                 OnBinding(bindingItem, route);
             }
