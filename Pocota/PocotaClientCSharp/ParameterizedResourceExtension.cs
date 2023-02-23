@@ -18,7 +18,9 @@ public class ParameterizedResourceExtension : MarkupExtension
     private string? _replaces;
     private static readonly Stack<ParameterizedResourceExtension> s_callStacks = new();
     private string _indention = string.Empty;
+    private string _prompt = string.Empty;
     private readonly HashSet<object> _seenObjects = new(ReferenceEqualityComparer.Instance);
+    private IServiceProvider _services = null!;
 
     public string? Replaces
     {
@@ -46,25 +48,27 @@ public class ParameterizedResourceExtension : MarkupExtension
 
     public string At { get; set; } = string.Empty;
 
-    public int Verbose { get; set; } = 2;
+    public int Verbose { get; set; } = 0;
 
-    public bool Strict { get; set; } = false;
+    public bool Strict { get; set; } = true;
 
     public ParameterizedResourceExtension(object key)
     {
         _value = new StaticResourceExtension(key);
     }
 
-    public override object ProvideValue(IServiceProvider serviceProvider)
+    public override object? ProvideValue(IServiceProvider serviceProvider)
     {
-        _indention = string.Format($"{{0,{s_callStacks.Count}}}", "").Replace(" ", s_indentionStep) + $"[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
+        _indention = string.Format($"{{0,{s_callStacks.Count}}}", "").Replace(" ", s_indentionStep);
+        _prompt = $"{_indention}[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
+
 
         if (Verbose > 0)
         {
-            Console.WriteLine($"{_indention} < ProvideValue >");
+            Console.WriteLine($"{_prompt} < ProvideValue >");
             foreach (string parameterName in _replacements.Keys)
             {
-                Console.WriteLine($"{_indention} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
+                Console.WriteLine($"{_prompt} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
             }
         }
 
@@ -74,10 +78,10 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose == 0 && resource.Verbose > 0)
                 {
-                    Console.WriteLine($"{_indention} < ProvideValue >");
+                    Console.WriteLine($"{_prompt} < ProvideValue >");
                     foreach (string parameterName in _replacements.Keys)
                     {
-                        Console.WriteLine($"{_indention} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
+                        Console.WriteLine($"{_prompt} < {parameterName}={_replacements[parameterName]} (from {nameof(Replaces)}) >");
                     }
                 }
                 if (Strict && !resource.Strict)
@@ -94,12 +98,18 @@ public class ParameterizedResourceExtension : MarkupExtension
                     {
                         if (Verbose > 0)
                         {
-                            Console.WriteLine($"{_indention} < {parameterName}={resource._replacements[parameterName]} (from {resource._value.ResourceKey}) >");
+                            Console.WriteLine($"{_prompt} < {parameterName}={resource._replacements[parameterName]} (from {resource._value.ResourceKey}) >");
                         }
                     }
                 }
+                _services = resource._services;
             }
         }
+        else
+        {
+            _services = serviceProvider;
+        }
+
 
         s_callStacks.Push(this);
 
@@ -109,12 +119,14 @@ public class ParameterizedResourceExtension : MarkupExtension
         {
             if (Verbose > 0)
             {
-                Console.Write($"< ResourceKey: {_value.ResourceKey}");
+                Console.Write($"{_indention}< ResourceKey: {_value.ResourceKey}");
             }
             properKey = false;
             if(_replacements.TryGetValue(_value.ResourceKey.ToString()!, out string? newKey))
             {
                 _value = new StaticResourceExtension(newKey);
+                _prompt = $"{_indention}[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
+
                 properKey = true;
                 if (Verbose > 0)
                 {
@@ -133,7 +145,7 @@ public class ParameterizedResourceExtension : MarkupExtension
 
         if (properKey)
         {
-            object result = _value.ProvideValue(serviceProvider);
+            object result = _value.ProvideValue(_services);
 
             List<string> route = new();
             WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
@@ -142,7 +154,7 @@ public class ParameterizedResourceExtension : MarkupExtension
 
             if (Verbose > 0)
             {
-                Console.WriteLine($"{_indention} < Done >");
+                Console.WriteLine($"{_prompt} < Done >");
             }
             return result;
         }
@@ -215,7 +227,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                     route.Add(prop.Name);
                     if (Verbose > 1)
                     {
-                        Console.WriteLine($"{_indention} {string.Join('/', route)}");
+                        Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)}");
                     }
                     if (prop.DependencyProperty is { })
                     {
@@ -255,7 +267,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose > 0)
                 {
-                    Console.Write($"{_indention} {string.Join('/', route)} < Path: {binding.Path.Path}");
+                    Console.Write($"{_prompt} {string.Join('/', route)} < Path: {binding.Path.Path}");
                 }
                 if (_replacements.TryGetValue(binding.Path.Path, out string? newPath))
                 {
@@ -267,7 +279,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 else if (Strict)
                 {
-                    throw new System.Windows.Markup.XamlParseException($"Path parameter is not provided: {binding.Path.Path} at {_value.ResourceKey}");
+                    throw new XamlParseException($"Path parameter is not provided: {binding.Path.Path} at {_value.ResourceKey}");
                 }
                 else if (Verbose > 0)
                 {
@@ -278,7 +290,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose > 0)
                 {
-                    Console.Write($"{_indention} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
+                    Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
                 }
                 if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
                 {
@@ -290,7 +302,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 else if (Strict)
                 {
-                    throw new System.Windows.Markup.XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
+                    throw new XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
                 }
                 else if (Verbose > 0)
                 {
@@ -301,7 +313,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose > 0)
                 {
-                    Console.Write($"{_indention} {string.Join('/', route)} < XPath: {binding.XPath}");
+                    Console.Write($"{_prompt} {string.Join('/', route)} < XPath: {binding.XPath}");
                 }
                 if (_replacements.TryGetValue(xPath, out string? newXPath))
                 {
@@ -313,7 +325,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 else if (Strict)
                 {
-                    throw new System.Windows.Markup.XamlParseException($"XPath parameter is not provided: {xPath} at {_value.ResourceKey}");
+                    throw new XamlParseException($"XPath parameter is not provided: {xPath} at {_value.ResourceKey}");
                 }
                 else if (Verbose > 0)
                 {
@@ -324,7 +336,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose > 0)
                 {
-                    Console.Write($"{_indention} {string.Join('/', route)} < ElementName: {binding.ElementName}");
+                    Console.Write($"{_prompt} {string.Join('/', route)} < ElementName: {binding.ElementName}");
                 }
                 if (_replacements.TryGetValue(elementName, out string? newElementName))
                 {
@@ -336,7 +348,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 else if (Strict)
                 {
-                    throw new System.Windows.Markup.XamlParseException($"ElementName parameter is not provided: {elementName} at {_value.ResourceKey}");
+                    throw new XamlParseException($"ElementName parameter is not provided: {elementName} at {_value.ResourceKey}");
                 }
                 else if (Verbose > 0)
                 {
@@ -350,7 +362,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 if (Verbose > 0)
                 {
-                    Console.Write($"{_indention} {string.Join('/', route)} < ConverterParameter: {multiBinding.ConverterParameter}");
+                    Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {multiBinding.ConverterParameter}");
                 }
                 if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
                 {
@@ -362,7 +374,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 else if (Strict)
                 {
-                    throw new System.Windows.Markup.XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
+                    throw new XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
                 }
                 else if (Verbose > 0)
                 {

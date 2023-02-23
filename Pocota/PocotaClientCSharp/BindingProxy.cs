@@ -11,6 +11,15 @@ public class BindingProxy : Freezable
 
     public object? Data { get; set; }
 
+    protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+    {
+        if(e.NewValue is { })
+        {
+            //Console.WriteLine(e.NewValue.GetType());
+        }
+        base.OnPropertyChanged(e);
+    }
+
     protected override Freezable CreateInstanceCore()
     {
         throw new NotImplementedException();

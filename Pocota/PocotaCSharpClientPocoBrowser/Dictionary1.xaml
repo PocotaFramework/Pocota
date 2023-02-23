@@ -51,15 +51,15 @@
             <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNotNull}">null</TextBlock>
             <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
                         SelectedIndex="0" 
-                        d:DropDownClosed="{Binding Data, Source={StaticResource ComboBox_DropDownClosedProxy}}" 
-                        d:SelectionChanged="{Binding Data, Source={StaticResource ComboBox_SelectionChangedProxy}}"
+                        DropDownClosed="{Binding Data, Source={local1:ParameterizedResource $ComboBox_DropDownClosedProxy}}" 
+                        SelectionChanged="{Binding Data, Source={local1:ParameterizedResource $ComboBox_SelectionChangedProxy}}"
                         Style="{local1:ParameterizedResource ViewCollectionComboBoxStyle}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True">
                             <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsPoco}" 
-                                            Command="{local1:ParameterizedResource $ViewTracedPocoCommandProxy}" 
-                                            CommandParameter="{Binding}" Margin="10,0,0,0">
+                                    Command="{Binding Data, Source={local1:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
+                                    CommandParameter="{Binding}" Margin="10,0,0,0">
                                 <Button.Content>👁</Button.Content>
                             </Button>
                             <TextBlock Text="{Binding Converter={local:ViewTracedPocoConverter}}"/>
@@ -72,8 +72,8 @@
     <DataTemplate x:Key="ViewPocoDataTemplate" x:Shared="False">
         <DockPanel LastChildFill="True">
             <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNotNull}"  Margin="10,0,0,0"
-                                        Command="{local1:ParameterizedResource $ViewTracedPocoCommandProxy}" 
-                                        CommandParameter="{Binding $path}">
+                    Command="{Binding Data, Source={local1:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
+                    CommandParameter="{Binding $path}">
                 <Button.Content>👁</Button.Content>
             </Button>
             <TextBlock Text="{Binding $path, Converter={local:ViewTracedPocoConverter}}" />
@@ -92,19 +92,18 @@
             <DataTemplate>
                 <DockPanel LastChildFill="True">
                     <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNotNull}" 
-                                        Command="{Binding Data, Source={StaticResource $ViewTracedPocoCommandProxy}}" 
+                                        Command="{Binding Data, Source={local1:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
                                         CommandParameter="{Binding $path}">
                         <Button.Content>👁</Button.Content>
                     </Button>
                     <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNullAndWritable}" 
                                         Command="{Binding Data, Source={local1:ParameterizedResource $AddNewPocoPropertyCommandProxy}}" 
-                                        d:Command="{Binding Data, Source={StaticResource AddNewPocoPropertyCommandProxy}}" 
                                         CommandParameter="{Binding}">
                         <Button.Content>➕</Button.Content>
                         <Button.ToolTip>Присвоить</Button.ToolTip>
                     </Button>
                     <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$test:IsNotNullAndWritable}" 
-                                        d:Command="{Binding Data, Source={StaticResource ClearPocoPropertyCommandProxy}}" 
+                                        Command="{Binding Data, Source={local1:ParameterizedResource $ClearPocoPropertyCommandProxy}}" 
                                         CommandParameter="{Binding}"
                                         Margin="10,0,0,0">
                         <Button.Content>➖</Button.Content>

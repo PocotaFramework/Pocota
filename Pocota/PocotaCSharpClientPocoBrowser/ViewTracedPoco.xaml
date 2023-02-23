@@ -24,7 +24,7 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}}" Margin="10,10,10,10"/>
         </StackPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle, Strict=False, Verbose=2}">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Ключ" Binding="{Binding Item1}"/>
@@ -40,9 +40,10 @@
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Свойство" CellTemplate="{StaticResource Name}"/>
-                <DataGridTemplateColumn Header="Исходное значение" CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Initial|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy, Strict=False, Verbose=2}"/>
-                <DataGridTemplateColumn Header="Текущее значение" CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Current|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy, Strict=False, Verbose=2}" 
-                    CellEditingTemplateSelector="{local1:ParameterizedResource EditTracedPocoDataTemplateSelector, Replaces=$path:Current|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy, Strict=False, Verbose=2}"
+                <DataGridTemplateColumn Header="Исходное значение" d:CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Initial|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy|$ComboBox_DropDownClosedProxy:ComboBox_DropDownClosedProxy|$ComboBox_SelectionChangedProxy:ComboBox_SelectionChangedProxy}"/>
+                <DataGridTemplateColumn Header="Текущее значение" CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, Replaces=$path:Current|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy|$ComboBox_DropDownClosedProxy:ComboBox_DropDownClosedProxy|$ComboBox_SelectionChangedProxy:ComboBox_SelectionChangedProxy, Verbose=2}" 
+                    d:CellEditingTemplateSelector="{local1:ParameterizedResource EditTracedPocoDataTemplateSelector, 
+                    Replaces=$path:Current|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy|$AddNewPocoPropertyCommandProxy:AddNewPocoPropertyCommandProxy|$ClearPocoPropertyCommandProxy:ClearPocoPropertyCommandProxy}"
                     />
             </DataGrid.Columns>
         </DataGrid>
