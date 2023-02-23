@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -7,6 +8,8 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Markup.Primitives;
 using System.Windows.Media;
+using System.Xaml;
+using XamlParseException = System.Windows.Markup.XamlParseException;
 
 namespace Net.Leksi.Pocota.Client;
 

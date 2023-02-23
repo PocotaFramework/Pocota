@@ -51,8 +51,8 @@
             <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNotNull}">null</TextBlock>
             <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
                         SelectedIndex="0" 
-                        DropDownClosed="{Binding Data, Source={local1:ParameterizedResource $ComboBox_DropDownClosedProxy}}" 
-                        SelectionChanged="{Binding Data, Source={local1:ParameterizedResource $ComboBox_SelectionChangedProxy}}"
+                        DropDownClosed="{Binding Data, Converter={local:ProbeCovnverter}, Source={local1:ParameterizedResource $ComboBox_DropDownClosedProxy}}" 
+                        SelectionChanged="{Binding Data, Converter={local:ProbeCovnverter}, Source={local1:ParameterizedResource $ComboBox_SelectionChangedProxy}}"
                         Style="{local1:ParameterizedResource ViewCollectionComboBoxStyle}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
