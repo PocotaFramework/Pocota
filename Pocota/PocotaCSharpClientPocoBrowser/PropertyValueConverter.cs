@@ -27,8 +27,8 @@ public class PropertyValueConverter : MarkupExtension, IValueConverter
                             && (util = util1) == util
                         )
                         || (
-                            parameters.Where(v => v is BindingProxy).FirstOrDefault() is BindingProxy proxy
-                            && proxy.Data is Util util2
+                            parameters.Where(v => v is BindingAvatar).FirstOrDefault() is BindingAvatar avatar
+                            && avatar.Avatar is Util util2
                             && (util = util2) == util
                         )
                     )

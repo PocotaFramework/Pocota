@@ -10,7 +10,7 @@
         Title="Кошки" Height="468" Width="800" MinWidth="800" MinHeight="277" DataContext="{Binding RelativeSource={RelativeSource Self}}" 
         x:Name="TheMainWindow" WindowStartupLocation="CenterScreen" Closing="TheMainWindow_Closing">
     <Window.Resources>
-        <local1:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Data="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
+        <local1:BindingAvatar x:Key="CopyEntityReferenceCommandProxy" Driver="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top" >
