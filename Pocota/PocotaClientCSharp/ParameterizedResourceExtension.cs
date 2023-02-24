@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +7,6 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Markup.Primitives;
 using System.Windows.Media;
-using System.Xaml;
 using XamlParseException = System.Windows.Markup.XamlParseException;
 
 namespace Net.Leksi.Pocota.Client;
@@ -18,14 +16,16 @@ public class ParameterizedResourceExtension : MarkupExtension
     private const string s_indentionStep = "  ";
     private StaticResourceExtension _value = null!;
     private readonly Dictionary<string, string> _replacements = new();
-    private string? _replaces;
+    private readonly Dictionary<string, string> _defaults = new();
+    private object? _replaces;
+    private object? _defaultsString;
     private static readonly Stack<ParameterizedResourceExtension> s_callStacks = new();
     private string _indention = string.Empty;
     private string _prompt = string.Empty;
     private readonly HashSet<object> _seenObjects = new(ReferenceEqualityComparer.Instance);
     private IServiceProvider _services = null!;
 
-    public string? Replaces
+    public object? Replaces
     {
         get => _replaces;
         set
@@ -34,15 +34,65 @@ public class ParameterizedResourceExtension : MarkupExtension
             {
                 _replaces = value;
                 _replacements.Clear();
-                if (_replaces is { })
+                if (_replaces is string str)
                 {
                     foreach (
-                        string[] ent in _replaces.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        string[] ent in str.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                             .Select(entry => entry.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
                             .Where(entry => entry.Length == 2)
                     )
                     {
                         _replacements.TryAdd(ent[0], ent[1]);
+                    }
+                }
+                else if (_replaces is object[] arr)
+                {
+                    foreach (
+                        string[]? ent in arr.Select(entry => entry.ToString()?.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                            .Where(entry => entry is { } && entry.Length == 2)
+                    )
+                    {
+                        if(ent is { })
+                        {
+                            _replacements.TryAdd(ent[0], ent[1]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public object? Defaults
+    {
+        get => _defaultsString;
+        set
+        {
+            if (!object.Equals(_defaultsString, value))
+            {
+                _defaultsString = value;
+                _defaults.Clear();
+                if (_defaultsString is string str)
+                {
+                    foreach (
+                        string[] ent in str.Split('|', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                            .Select(entry => entry.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                            .Where(entry => entry.Length == 2)
+                    )
+                    {
+                        _defaults.TryAdd(ent[0], ent[1]);
+                    }
+                }
+                else if (_defaultsString is object[] arr)
+                {
+                    foreach (
+                        string[]? ent in arr.Select(entry => entry.ToString()?.Split(':', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                            .Where(entry => entry is { } && entry.Length == 2)
+                    )
+                    {
+                        if (ent is { })
+                        {
+                            _defaults.TryAdd(ent[0], ent[1]);
+                        }
                     }
                 }
             }
@@ -125,7 +175,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 Console.Write($"{_indention}< ResourceKey: {_value.ResourceKey}");
             }
             properKey = false;
-            if(_replacements.TryGetValue(_value.ResourceKey.ToString()!, out string? newKey))
+            if (_replacements.TryGetValue(_value.ResourceKey.ToString()!, out string? newKey))
             {
                 _value = new StaticResourceExtension(newKey);
                 _prompt = $"{_indention}[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
@@ -178,29 +228,42 @@ public class ParameterizedResourceExtension : MarkupExtension
                     )
                 )
                 {
+                    bool isBinding = false;
+
                     if (pd.GetValue(dependencyObject) is object value)
                     {
-                        if (pd.PropertyType == typeof(BindingBase) && value is Binding binding)
+                        if (pd.PropertyType == typeof(BindingBase))
                         {
-                            OnBinding(binding, route);
+                            isBinding = true;
+                            if (value is Binding binding)
+                            {
+                                OnBinding(binding, route);
+                            }
+                            else if (value is MultiBinding multiBinding)
+                            {
+                                OnBinding(multiBinding, route);
+                            }
                         }
                     }
-                    DependencyPropertyDescriptor dpd =
-                        DependencyPropertyDescriptor.FromProperty(pd);
-
-                    if (dpd is { })
+                    if (!isBinding)
                     {
-                        if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding1)
+                        DependencyPropertyDescriptor dpd =
+                            DependencyPropertyDescriptor.FromProperty(pd);
+
+                        if (dpd is { })
                         {
-                            route.Add(pd.Name);
-                            OnBinding(binding1, route);
-                            route.RemoveAt(route.Count - 1);
-                        }
-                        else if (BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
-                        {
-                            route.Add(pd.Name);
-                            OnBinding(multiBinding, route);
-                            route.RemoveAt(route.Count - 1);
+                            if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding1)
+                            {
+                                route.Add(pd.Name);
+                                OnBinding(binding1, route);
+                                route.RemoveAt(route.Count - 1);
+                            }
+                            else if (BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
+                            {
+                                route.Add(pd.Name);
+                                OnBinding(multiBinding, route);
+                                route.RemoveAt(route.Count - 1);
+                            }
                         }
                     }
                 }
@@ -277,7 +340,15 @@ public class ParameterizedResourceExtension : MarkupExtension
                     binding.Path.Path = newPath;
                     if (Verbose > 0)
                     {
-                        Console.WriteLine($" -> {binding.Path.Path} >");
+                        Console.WriteLine($" -> {binding.Path.Path} (from {nameof(Replaces)}) >");
+                    }
+                }
+                else if (_defaults.TryGetValue(binding.Path.Path, out string? defaultPath))
+                {
+                    binding.Path.Path = defaultPath;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.Path.Path} (from {nameof(Defaults)}) >");
                     }
                 }
                 else if (Strict)
@@ -300,7 +371,15 @@ public class ParameterizedResourceExtension : MarkupExtension
                     binding.ConverterParameter = newConverterParameter;
                     if (Verbose > 0)
                     {
-                        Console.WriteLine($" -> {binding.ConverterParameter} >");
+                        Console.WriteLine($" -> {binding.ConverterParameter} (from {nameof(Replaces)}) >");
+                    }
+                }
+                else if (_defaults.TryGetValue(converterParameter, out string? defaultConverterParameter))
+                {
+                    binding.ConverterParameter = defaultConverterParameter;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.ConverterParameter} (from {nameof(Defaults)}) >");
                     }
                 }
                 else if (Strict)
@@ -323,7 +402,15 @@ public class ParameterizedResourceExtension : MarkupExtension
                     binding.XPath = newXPath;
                     if (Verbose > 0)
                     {
-                        Console.WriteLine($" -> {binding.XPath} >");
+                        Console.WriteLine($" -> {binding.XPath} (from {nameof(Replaces)}) >");
+                    }
+                }
+                else if (_defaults.TryGetValue(xPath, out string? defaultXPath))
+                {
+                    binding.XPath = defaultXPath;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.XPath} (from {nameof(Defaults)}) >");
                     }
                 }
                 else if (Strict)
@@ -346,7 +433,15 @@ public class ParameterizedResourceExtension : MarkupExtension
                     binding.ElementName = newElementName;
                     if (Verbose > 0)
                     {
-                        Console.WriteLine($" -> {binding.ElementName} >");
+                        Console.WriteLine($" -> {binding.ElementName} (from {nameof(Replaces)}) >");
+                    }
+                }
+                else if (_defaults.TryGetValue(elementName, out string? defaultElementName))
+                {
+                    binding.ElementName = defaultElementName;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {binding.ElementName} (from {nameof(Defaults)}) >");
                     }
                 }
                 else if (Strict)
@@ -372,7 +467,15 @@ public class ParameterizedResourceExtension : MarkupExtension
                     multiBinding.ConverterParameter = newConverterParameter;
                     if (Verbose > 0)
                     {
-                        Console.WriteLine($" -> {multiBinding.ConverterParameter} >");
+                        Console.WriteLine($" -> {multiBinding.ConverterParameter} (from {nameof(Replaces)}) >");
+                    }
+                }
+                else if (_defaults.TryGetValue(converterParameter, out string? defaultConverterParameter))
+                {
+                    multiBinding.ConverterParameter = defaultConverterParameter;
+                    if (Verbose > 0)
+                    {
+                        Console.WriteLine($" -> {multiBinding.ConverterParameter} (from {nameof(Defaults)}) >");
                     }
                 }
                 else if (Strict)

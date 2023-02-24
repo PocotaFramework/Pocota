@@ -5,23 +5,7 @@ namespace Net.Leksi.Pocota.Client;
 
 internal class PropertyValueHolder: INotifyPropertyChanged
 {
-    private event PropertyChangedEventHandler? _propertyChanged;
-
-    public event PropertyChangedEventHandler? PropertyChanged
-    {
-        add
-        {
-            if ("CatFilter".Equals(Name))
-            {
-                Console.WriteLine($"PropertyChanged.add {value}");
-            }
-            _propertyChanged += value;
-        }
-        remove
-        {
-            _propertyChanged -= value;
-        }
-    }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly Property _property = null!;
     private readonly WeakReference<PocoBase> _targetRererence = new(null!);
@@ -122,6 +106,6 @@ internal class PropertyValueHolder: INotifyPropertyChanged
 
     internal void Touch()
     {
-        _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
 }
