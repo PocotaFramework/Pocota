@@ -183,7 +183,18 @@ public class ParameterizedResourceExtension : MarkupExtension
                 properKey = true;
                 if (Verbose > 0)
                 {
-                    Console.WriteLine($" -> {_value.ResourceKey} >");
+                    Console.WriteLine($" -> {_value.ResourceKey} (from {nameof(Replaces)}) >");
+                }
+            }
+            else if (_defaults.TryGetValue(_value.ResourceKey.ToString()!, out string? defaultKey))
+            {
+                _value = new StaticResourceExtension(defaultKey);
+                _prompt = $"{_indention}[{_value.ResourceKey}{(string.IsNullOrEmpty(At) ? string.Empty : $"@{At}")}]";
+
+                properKey = true;
+                if (Verbose > 0)
+                {
+                    Console.WriteLine($" -> {_value.ResourceKey} (from {nameof(Defaults)}) >");
                 }
             }
             else if (Strict)

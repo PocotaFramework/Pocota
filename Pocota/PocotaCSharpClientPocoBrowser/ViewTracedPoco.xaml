@@ -16,11 +16,10 @@
             <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Data="{Binding ViewTracedPocoCommand}"/>
             <local1:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Data="{Binding ClearPocoPropertyCommand}"/>
             <local1:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Data="{Binding AddNewPocoPropertyCommand}"/>
-            <local1:BindingProxy x:Key="ComboBox_DropDownClosedProxy" Data="{Binding ComboBox_DropDownClosed}"/>
-            <local1:BindingProxy x:Key="ComboBox_SelectionChangedProxy" Data="{Binding ComboBox_SelectionChanged}"/>
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{local1:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
                 <EventSetter Event="SelectionChanged" Handler="ComboBox_SelectionChanged"/>
+                <Setter Property="ItemsSource" Value="{Binding $path, Converter={local:ViewTracedPocoConverter}}"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -45,13 +44,13 @@
                      x:Key="ViewTracedPocoDataTemplateSelectorInitialReplaces">
                     <sys:String>$path:Initial</sys:String>
                     <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
-                    <sys:String>$ViewCollectionComboBoxStyleExt:ViewCollectionComboBoxStyleExt</sys:String>
+                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
                 </x:Array>
                 <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String" 
                      x:Key="ViewTracedPocoDataTemplateSelectorCurrentReplaces">
                     <sys:String>$path:Current</sys:String>
                     <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
-                    <sys:String>$ViewCollectionComboBoxStyleExt:ViewCollectionComboBoxStyleExt</sys:String>
+                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
                 </x:Array>
                 <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String" 
                      x:Key="EditTracedPocoDataTemplateSelectorReplaces">

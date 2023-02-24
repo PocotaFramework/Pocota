@@ -49,10 +49,10 @@
     <DataTemplate x:Key="ViewCollectionDataTemplate" x:Shared="False">
         <StackPanel>
             <TextBlock Style="{local1:ParameterizedResource ViewTextStyle, Replaces=$test:IsNotNull}">null</TextBlock>
-            <ComboBox ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
+            <ComboBox d:ItemsSource="{Binding $path, Converter={local:ViewTracedPocoConverter}}" 
                         SelectedIndex="0" 
-                        Style="{local1:ParameterizedResource $ViewCollectionComboBoxStyleExt, 
-                            Defaults=$ViewCollectionComboBoxStyleExt:ViewCollectionComboBoxStyle}">
+                        Style="{local1:ParameterizedResource $ViewCollectionComboBoxStyle, 
+                            Defaults=$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyle}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <DockPanel LastChildFill="True">
