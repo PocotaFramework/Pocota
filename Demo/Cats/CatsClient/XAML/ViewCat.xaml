@@ -8,19 +8,19 @@
         mc:Ignorable="d"
         Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local1:BindingAvatar x:Key="TrueIfReadOnly" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}" />
-        <local1:BindingAvatar x:Key="TrueIfNotEditInline" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
-        <local1:BindingAvatar x:Key="TrueIfEditInline" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
-        <local1:BindingAvatar x:Key="VisibleIfNotReadOnly" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
-        <local1:BindingAvatar x:Key="VisibleIfReadOnly" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfReadOnly}"/>
-        <local1:BindingAvatar x:Key="VisibleIfEditInline" Driver="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfEditInline}"/>
-        <local1:BindingAvatar x:Key="CatteriesProxy" Driver="{Binding Catteries}"/>
-        <local1:BindingAvatar x:Key="BreedsProxy" Driver="{Binding Breeds}"/>
-        <local1:BindingAvatar x:Key="MotherProxy" Driver="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="FatherProxy" Driver="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="GendersProxy" Driver="{Binding Path=Genders, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="PasteParentCommandProxy" Driver="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="CopyEntityReferenceCommandProxy" Driver="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="TrueIfReadOnly" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfReadOnly}" />
+        <local1:BindingProxy x:Key="TrueIfNotEditInline" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfNotEditInline}"/>
+        <local1:BindingProxy x:Key="TrueIfEditInline" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=TrueIfEditInline}"/>
+        <local1:BindingProxy x:Key="VisibleIfNotReadOnly" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfNotReadOnly}"/>
+        <local1:BindingProxy x:Key="VisibleIfReadOnly" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfReadOnly}"/>
+        <local1:BindingProxy x:Key="VisibleIfEditInline" Value="{Binding Heart.EditKind, Mode=OneWay, Converter={local:EditKindToStateConverter}, ConverterParameter=VisibleIfEditInline}"/>
+        <local1:BindingProxy x:Key="CatteriesProxy" Value="{Binding Catteries}"/>
+        <local1:BindingProxy x:Key="BreedsProxy" Value="{Binding Breeds}"/>
+        <local1:BindingProxy x:Key="MotherProxy" Value="{Binding Path=Heart.Cat.Litter.Female, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="FatherProxy" Value="{Binding Path=Heart.Cat.Litter.Male, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="GendersProxy" Value="{Binding Path=Genders, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="PasteParentCommandProxy" Value="{Binding Path=PasteParentCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="CopyEntityReferenceCommandProxy" Value="{Binding Path=CopyEntityReferenceCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Window.Title>
         <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="Title">
@@ -599,14 +599,14 @@
                             </MenuItem>
                             <MenuItem Header="Использовать в фильтре" Command="{Binding SetCatFilterCommand}">
                                 <MenuItem.Resources>
-                                    <local1:BindingAvatar x:Key="AsLitterIsEnabled" >
-                                        <local1:BindingAvatar.Driver>
+                                    <local1:BindingProxy x:Key="AsLitterIsEnabled" >
+                                        <local1:BindingProxy.Value>
                                             <MultiBinding Converter="{local:ViewCatConverter}"  ConverterParameter="AsLitterIsEnabled">
                                                 <Binding Path="Heart.Cat" Mode="OneWay"/>
                                                 <Binding Path="Heart.SelectedLitters"  Mode="OneWay"/>
                                             </MultiBinding>
-                                        </local1:BindingAvatar.Driver>
-                                    </local1:BindingAvatar>
+                                        </local1:BindingProxy.Value>
+                                    </local1:BindingProxy>
                                 </MenuItem.Resources>
                                 <MenuItem.CommandParameter>
                                     <MultiBinding Converter="{local1:MultiValueToArrayConverter}">

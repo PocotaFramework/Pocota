@@ -13,7 +13,7 @@ namespace Net.Leksi.Pocota.Client
     /// <summary>
     /// Логика взаимодействия для ViewConnectorMethod.xaml
     /// </summary>
-    public partial class ViewConnectorMethod : Window, INotifyPropertyChanged, IWithUtil
+    public partial class ViewConnectorMethod : Window, INotifyPropertyChanged
     {
         private MethodInfo _method = null!;
         private readonly IServiceProvider _services;
@@ -24,8 +24,7 @@ namespace Net.Leksi.Pocota.Client
         public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
         public SetFilterCommand SetFilterCommand { get; init; }
         public UnsetFilterCommand UnsetFilterCommand { get; init; }
-        public Util Util { get; init; }
-
+        
         public MethodInfo Method
         {
             get => _method;
@@ -79,7 +78,6 @@ namespace Net.Leksi.Pocota.Client
             ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
             SetFilterCommand = services.GetRequiredService<SetFilterCommand>();
             UnsetFilterCommand = services.GetRequiredService<UnsetFilterCommand>();
-            Util = services.GetRequiredService<Util>();
             _services = services;
             ParametersViewSource.Source = _parameters;
             InitializeComponent();

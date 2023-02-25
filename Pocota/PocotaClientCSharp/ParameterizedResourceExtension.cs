@@ -278,6 +278,9 @@ public class ParameterizedResourceExtension : MarkupExtension
                         }
                     }
                 }
+                foreach(EventDescriptor eve in TypeDescriptor.GetEvents(dependencyObject))
+                {
+                }
                 if (dependencyObject is Visual visual)
                 {
                     int childrenCount = VisualTreeHelper.GetChildrenCount(visual);
@@ -371,35 +374,25 @@ public class ParameterizedResourceExtension : MarkupExtension
                     Console.WriteLine($" - is not provided! >");
                 }
             }
-            if (binding.ConverterParameter is string converterParameter && converterParameter.StartsWith('$'))
+            if (binding.ConverterParameter is string converterParameter && converterParameter.Contains('$'))
             {
                 if (Verbose > 0)
                 {
                     Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
                 }
-                if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
+                string newConverterParameter = converterParameter;
+                foreach (string key in _replacements.Keys)
                 {
-                    binding.ConverterParameter = newConverterParameter;
-                    if (Verbose > 0)
-                    {
-                        Console.WriteLine($" -> {binding.ConverterParameter} (from {nameof(Replaces)}) >");
-                    }
+                    newConverterParameter = newConverterParameter.Replace(key, _replacements[key]);
                 }
-                else if (_defaults.TryGetValue(converterParameter, out string? defaultConverterParameter))
+                foreach (string key in _defaults.Keys)
                 {
-                    binding.ConverterParameter = defaultConverterParameter;
-                    if (Verbose > 0)
-                    {
-                        Console.WriteLine($" -> {binding.ConverterParameter} (from {nameof(Defaults)}) >");
-                    }
+                    newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
                 }
-                else if (Strict)
+                binding.ConverterParameter = newConverterParameter;
+                if (Verbose > 0)
                 {
-                    throw new XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
-                }
-                else if (Verbose > 0)
-                {
-                    Console.WriteLine($" - is not provided! >");
+                    Console.WriteLine($" -> {binding.ConverterParameter} >");
                 }
             }
             if (binding.XPath is string xPath && xPath.StartsWith('$'))
@@ -467,35 +460,25 @@ public class ParameterizedResourceExtension : MarkupExtension
         }
         else if (bindingBase is MultiBinding multiBinding)
         {
-            if (multiBinding.ConverterParameter is string converterParameter && converterParameter.StartsWith('$'))
+            if (multiBinding.ConverterParameter is string converterParameter && converterParameter.Contains('$'))
             {
                 if (Verbose > 0)
                 {
                     Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {multiBinding.ConverterParameter}");
                 }
-                if (_replacements.TryGetValue(converterParameter, out string? newConverterParameter))
+                string newConverterParameter = converterParameter;
+                foreach (string key in _replacements.Keys)
                 {
-                    multiBinding.ConverterParameter = newConverterParameter;
-                    if (Verbose > 0)
-                    {
-                        Console.WriteLine($" -> {multiBinding.ConverterParameter} (from {nameof(Replaces)}) >");
-                    }
+                    newConverterParameter = newConverterParameter.Replace(key, _replacements[key]);
                 }
-                else if (_defaults.TryGetValue(converterParameter, out string? defaultConverterParameter))
+                foreach (string key in _defaults.Keys)
                 {
-                    multiBinding.ConverterParameter = defaultConverterParameter;
-                    if (Verbose > 0)
-                    {
-                        Console.WriteLine($" -> {multiBinding.ConverterParameter} (from {nameof(Defaults)}) >");
-                    }
+                    newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
                 }
-                else if (Strict)
+                multiBinding.ConverterParameter = newConverterParameter;
+                if (Verbose > 0)
                 {
-                    throw new XamlParseException($"ConverterParameter parameter is not provided: {converterParameter} at {_value.ResourceKey}");
-                }
-                else if (Verbose > 0)
-                {
-                    Console.WriteLine($" - is not provided! >");
+                    Console.WriteLine($" -> {multiBinding.ConverterParameter} >");
                 }
             }
             foreach (Binding bindingItem in multiBinding.Bindings)

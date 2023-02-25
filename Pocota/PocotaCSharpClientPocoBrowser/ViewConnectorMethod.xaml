@@ -8,9 +8,9 @@
         mc:Ignorable="d"
         Title="{Binding TitleText}" Height="450" Width="800"  DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local1:BindingAvatar x:Key="ViewTracedPocoCommandProxy" Driver="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="SetFilterCommandProxy" Driver="{Binding Path=SetFilterCommand, Mode=OneWay}"/>
-        <local1:BindingAvatar x:Key="UnsetFilterCommandProxy" Driver="{Binding Path=UnsetFilterCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="SetFilterCommandProxy" Value="{Binding Path=SetFilterCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="UnsetFilterCommandProxy" Value="{Binding Path=UnsetFilterCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -22,17 +22,17 @@
             <DataGrid.Resources>
                 <DataTemplate x:Key="Value">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Value, Converter={local:ViewTracedPocoConverter}}"/>
-                        <Button Command="{Binding Avatar, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Value}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button}">
+                        <TextBlock Text="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=25}"/>
+                        <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Value}" Margin="10,0,0,0"
+                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button|27}">
                             <Button.Content>Просмотр</Button.Content>
                         </Button>
-                        <Button Command="{Binding Avatar, Source={StaticResource SetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=ButtonPlus}">
+                        <Button Command="{Binding Value, Source={StaticResource SetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
+                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=ButtonPlus|31}">
                             <Button.Content>+</Button.Content>
                         </Button>
-                        <Button Command="{Binding Avatar, Source={StaticResource UnsetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button}">
+                        <Button Command="{Binding Value, Source={StaticResource UnsetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
+                                            Visibility="{Binding Value, Converter={local:ViewTracedPocoConverter}, ConverterParameter=Button|35}">
                             <Button.Content>-</Button.Content>
                         </Button>
                     </StackPanel>

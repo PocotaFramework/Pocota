@@ -13,19 +13,18 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Dictionary1.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local1:BindingAvatar x:Key="ViewTracedPocoCommandAvatar" Driver="{Binding ViewTracedPocoCommand}"/>
-            <local1:BindingAvatar x:Key="ClearPocoPropertyCommandAvatar" Driver="{Binding ClearPocoPropertyCommand}"/>
-            <local1:BindingAvatar x:Key="AddNewPocoPropertyCommandAvatar" Driver="{Binding AddNewPocoPropertyCommand}"/>
+            <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding ViewTracedPocoCommand}"/>
+            <local1:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Value="{Binding ClearPocoPropertyCommand}"/>
+            <local1:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{local1:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
                 <EventSetter Event="SelectionChanged" Handler="ComboBox_SelectionChanged"/>
-                <Setter Property="ItemsSource" Value="{Binding $path, Converter={local:ViewTracedPocoConverter}}"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}}" Margin="10,10,10,10"/>
+            <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">
@@ -43,21 +42,21 @@
                 <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String" 
                      x:Key="ViewTracedPocoDataTemplateSelectorInitialReplaces">
                     <sys:String>$path:Initial</sys:String>
-                    <sys:String>$ViewTracedPocoCommand:ViewTracedPocoCommandAvatar</sys:String>
+                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                     <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
                 </x:Array>
                 <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String" 
                      x:Key="ViewTracedPocoDataTemplateSelectorCurrentReplaces">
                     <sys:String>$path:Current</sys:String>
-                    <sys:String>$ViewTracedPocoCommand:ViewTracedPocoCommandAvatar</sys:String>
+                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                     <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
                 </x:Array>
                 <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String" 
                      x:Key="EditTracedPocoDataTemplateSelectorReplaces">
                     <sys:String>$path:Current</sys:String>
-                    <sys:String>$ViewTracedPocoCommand:ViewTracedPocoCommandAvatar</sys:String>
-                    <sys:String>$AddNewPocoPropertyCommand:AddNewPocoPropertyCommandAvatar</sys:String>
-                    <sys:String>$ClearPocoPropertyCommand:ClearPocoPropertyCommandAvatar</sys:String>
+                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
+                    <sys:String>$AddNewPocoPropertyCommandProxy:AddNewPocoPropertyCommandProxy</sys:String>
+                    <sys:String>$ClearPocoPropertyCommandProxy:ClearPocoPropertyCommandProxy</sys:String>
                 </x:Array>
             </DataGrid.Resources>
             <DataGrid.Columns>

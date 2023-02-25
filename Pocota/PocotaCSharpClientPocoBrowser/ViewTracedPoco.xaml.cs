@@ -15,7 +15,7 @@ namespace Net.Leksi.Pocota.Client;
 /// <summary>
 /// Логика взаимодействия для ViewTracedPoco.xaml
 /// </summary>
-public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
+public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -37,9 +37,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
     public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
 
-    public Util Util { get; init; }
-
-    public PocoState PocoState
+     public PocoState PocoState
     {
         get
         {
@@ -84,7 +82,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
                             ++i;
                         }
                     }
-                    Title = $"Просмотр {poco.GetType()}: {Util.GetPocoLabel(poco)}";
+                    Title = $"Просмотр {poco.GetType()}: {_services.GetRequiredService<Util>().GetPocoLabel(poco)}";
                     _properties = _core.GetPropertiesList(value.GetType());
                     FillProperties(true, string.Empty);
                 }
@@ -101,7 +99,6 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
     {
         _services = services;
         _core = services.GetRequiredService<PocotaCore>();
-        Util = services.GetRequiredService<Util>();
         PropertiesViewSource.Source = _values;
         ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
         ClearPocoPropertyCommand = services.GetRequiredService<ClearPocoPropertyCommand>();
@@ -166,5 +163,10 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IWithUtil
         {
             ((ComboBox)sender).SelectedIndex = 0;
         }
+    }
+
+    private void ComboBox_Drop(object sender, DragEventArgs e)
+    {
+
     }
 }

@@ -21,7 +21,6 @@ namespace Net.Leksi.Pocota.Client
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private readonly IServiceProvider _services;
         private readonly List<Window> _windows = new();
         private readonly ConditionalWeakTable<Window, WeakReference<WindowInfo>> _tracedWindows = new();
         private readonly ConditionalWeakTable<PropertyInfo, string> _tracedProperties = new();
@@ -32,6 +31,10 @@ namespace Net.Leksi.Pocota.Client
         internal readonly List<Window> _views = new();
 
         internal Window? LastActiveWindow { get; private set; }
+
+        public IServiceProvider Services { get; private set; }
+
+        public static TracedPocos Instance { get; internal set; } = null!;
 
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
@@ -66,9 +69,9 @@ namespace Net.Leksi.Pocota.Client
         }
 
 
-        public TracedPocos(IServiceProvider services)
+        internal TracedPocos(IServiceProvider services)
         {
-            _services = services;
+            Services = services;
             Heart = services.GetRequiredService<ITracedPocosHeart>();
             ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
             ViewConnectorMethodCommand = services.GetRequiredService<ViewConnectorMethodCommand>();

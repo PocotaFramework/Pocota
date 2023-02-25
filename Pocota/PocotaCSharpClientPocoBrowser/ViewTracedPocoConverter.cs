@@ -7,18 +7,16 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Markup;
-using System.Xaml;
 using IValueConverter = System.Windows.Data.IValueConverter;
 
 namespace Net.Leksi.Pocota.Client;
 
 public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiValueConverter
 {
-    private IWithUtil? _view = null;
-
+ 
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
-        object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
+        object?[] parameters = SplitParameter(parameter);
 
         if (value is WeakReference wr)
         {
@@ -91,7 +89,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         }
         if (targetType == typeof(string) && value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2)
         {
-            return $"{value.GetType()}: {_view?.Util.GetPocoLabel(poco2)}";
+            return $"{value.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco2)}";
         }
 
         //Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
@@ -99,9 +97,17 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         return value;
     }
 
+    private static object?[] SplitParameter(object parameter)
+    {
+        return parameter is object?[]? (parameter as object?[])!
+                    : (
+                        parameter is string ? parameter.ToString()!.Split('|') : new object?[] { parameter }
+                    );
+    }
+
     public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
+        object?[] parameters = SplitParameter(parameter);
 
         PropertyValueHolder? property = null;
         if (
@@ -136,7 +142,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return Convert(value, targetType, parameter, culture);
         }
 
-        Console.WriteLine($"Convert [{string.Join(',', values)}], {targetType}, {parameter}");
+        Console.WriteLine($"Convert [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
 
         return null;
     }
@@ -153,8 +159,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        var root = serviceProvider.GetRequiredService<IRootObjectProvider>();
-        _view =  root.RootObject as IWithUtil;
         return this;
     }
 }

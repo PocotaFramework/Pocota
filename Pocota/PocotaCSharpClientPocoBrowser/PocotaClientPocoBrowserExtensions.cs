@@ -8,18 +8,18 @@ public static class PocotaClientPocoBrowserExtensions
     public static IServiceCollection AddPocotaClientProfiler<T>(this IServiceCollection services) where T:Application
     {
         services.AddSingleton<Util>();
-        services.AddSingleton<TracedPocos>(serv => 
+        services.AddSingleton(serv => 
         {
-            TracedPocos tracedPocos = new(serv);
+            TracedPocos.Instance = new(serv);
             serv.GetRequiredService<IPocoContext>().TracePocos = true;
             T app = serv.GetRequiredService<T>();
             app.MainWindow.Closed += (s, e) =>
             {
-                tracedPocos.CanClose = true;
-                tracedPocos.Close();
+                TracedPocos.Instance.CanClose = true;
+                TracedPocos.Instance.Close();
             };
-            tracedPocos.Show();
-            return tracedPocos;
+            TracedPocos.Instance.Show();
+            return TracedPocos.Instance;
         });
         
         services.AddTransient<ViewTracedPoco>();
