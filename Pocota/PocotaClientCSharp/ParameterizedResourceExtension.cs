@@ -278,9 +278,6 @@ public class ParameterizedResourceExtension : MarkupExtension
                         }
                     }
                 }
-                foreach(EventDescriptor eve in TypeDescriptor.GetEvents(dependencyObject))
-                {
-                }
                 if (dependencyObject is Visual visual)
                 {
                     int childrenCount = VisualTreeHelper.GetChildrenCount(visual);
