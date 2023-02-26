@@ -87,22 +87,25 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
             return result;
         }
+
         if (targetType == typeof(string) && value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2)
         {
             return $"{value.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco2)}";
         }
 
-        //Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
+        if(
+            value is PropertyValueHolder pvh 
+            && targetType == typeof(IEnumerable) 
+            && parameters.Contains("Enum")
+            && pvh.Type.IsEnum
+        )
+        {
+            return Enum.GetValues(pvh.Type);
+        }
+
+        Console.WriteLine($"ConvertSingle {value}, {targetType}, [{string.Join(',', parameters)}]");
 
         return value;
-    }
-
-    private static object?[] SplitParameter(object parameter)
-    {
-        return parameter is object?[]? (parameter as object?[])!
-                    : (
-                        parameter is string ? parameter.ToString()!.Split('|') : new object?[] { parameter }
-                    );
     }
 
     public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
@@ -142,7 +145,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return Convert(value, targetType, parameter, culture);
         }
 
-        Console.WriteLine($"Convert [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
+        Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
 
         return null;
     }
@@ -161,4 +164,13 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     {
         return this;
     }
+
+    private static object?[] SplitParameter(object parameter)
+    {
+        return parameter is object?[]? (parameter as object?[])!
+                    : (
+                        parameter is string ? parameter.ToString()!.Split('|') : new object?[] { parameter }
+                    );
+    }
+
 }

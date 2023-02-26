@@ -10,6 +10,7 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
     public DataTemplate? Value { get; set; }
     public DataTemplate? Collection { get; set; }
     public DataTemplate? Bool { get; set; }
+    public DataTemplate? Enum { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
@@ -29,11 +30,18 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
                     return Poco;
                 }
             }
-            if(pvh.Type == typeof(bool))
+            if (pvh.Type == typeof(bool))
             {
                 if (Bool is { })
                 {
                     return Bool;
+                }
+            }
+            if (pvh.Type.IsEnum)
+            {
+                if (Enum is { })
+                {
+                    return Enum;
                 }
             }
             return Value;
