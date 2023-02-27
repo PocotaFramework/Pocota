@@ -33,23 +33,22 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
+    <DataTemplate x:Key="ViewCollectionItemTemplate" x:Shared="False">
+        <DockPanel LastChildFill="True">
+            <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle}" 
+                                    Command="{Binding Value, Source={local1:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
+                                    CommandParameter="{Binding}" Margin="10,0,0,0">
+                <Button.Content>👁</Button.Content>
+            </Button>
+            <TextBlock Text="{Binding Converter={local1:ParameterizedResource $converter}, ConverterParameter=57}"/>
+        </DockPanel>
+    </DataTemplate>
     <DataTemplate x:Key="ViewCollectionDataTemplate" x:Shared="False">
         <StackPanel>
             <ComboBox SelectedIndex="0" 
                       Style="{local1:ParameterizedResource $ViewCollectionComboBoxStyle, 
-                            Defaults=$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyle}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <DockPanel LastChildFill="True">
-                            <Button DockPanel.Dock="Right" Style="{local1:ParameterizedResource ViewButtonStyle, Replaces=$path:.|$test:IsPoco}" 
-                                    Command="{Binding Value, Source={local1:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
-                                    CommandParameter="{Binding}" Margin="10,0,0,0">
-                            <Button.Content>👁</Button.Content>
-                            </Button>
-                            <TextBlock Text="{Binding Converter={local1:ParameterizedResource $converter}, ConverterParameter=57}"/>
-                        </DockPanel>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+                            Defaults=$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyle}"
+                      ItemTemplate="{local1:ParameterizedResource ViewCollectionItemTemplate, Replaces=$path:.|$test:IsPoco}">
             </ComboBox>
         </StackPanel>
     </DataTemplate>

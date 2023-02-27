@@ -8,9 +8,16 @@
         mc:Ignorable="d"
         Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowState="Maximized">
     <Window.Resources>
-        <!--<local1:BindingProxy x:Key="CancelChangesCommandProxy" Value="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>-->
-        <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
-        <local1:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand, Mode=OneWay}"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionary1.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--<local1:BindingProxy x:Key="CancelChangesCommandProxy" Value="{Binding Path=CancelChangesCommand}"/>-->
+            <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand}"/>
+            <local1:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand}"/>
+            <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
+        </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True" >
         <Menu DockPanel.Dock="Top">
@@ -60,13 +67,17 @@
                                         <Setter Property="ItemsSource" Value="{Binding Type, Converter={local:TracedPocosConverter}}"/>
                                         <Setter Property="IsDropDownOpen" Value="True"/>
                                         <Setter Property="SelectedIndex" Value="0"/>
+                                        <Setter Property="ItemTemplate" Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
+                                                Replaces=$path:Type|$converter:ViewTracedPocoConverter|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy,
+                                                Verbose=1, Strict=False}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                             <DataTemplate x:Key="CountDataTemplate">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Count}"/>
-                                    <ComboBox Style="{StaticResource ComboBoxStyle}" DropDownClosed="ComboBox_DropDownClosed">
+                                    <ComboBox Style="{StaticResource ComboBoxStyle}" 
+                                            DropDownClosed="ComboBox_DropDownClosed">
                                     </ComboBox>
                                 </StackPanel>
                             </DataTemplate>

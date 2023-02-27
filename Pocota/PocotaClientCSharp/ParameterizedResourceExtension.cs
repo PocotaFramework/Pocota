@@ -199,7 +199,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             }
             else if (Strict)
             {
-                throw new System.Windows.Markup.XamlParseException($"ResourceKey parameter is not provided: {_value.ResourceKey.ToString()}!");
+                throw new XamlParseException($"ResourceKey parameter is not provided: {_value.ResourceKey.ToString()}!");
             }
             else if (Verbose > 0)
             {
@@ -209,18 +209,26 @@ public class ParameterizedResourceExtension : MarkupExtension
 
         if (properKey)
         {
-            object result = _value.ProvideValue(_services);
-
-            List<string> route = new();
-            WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
-
-            s_callStacks.Pop();
-
-            if (Verbose > 0)
+            try
             {
-                Console.WriteLine($"{_prompt} < Done >");
+                object result = _value.ProvideValue(_services);
+
+                List<string> route = new();
+                WalkMarkup(MarkupWriter.GetMarkupObjectFor(result), route);
+
+                s_callStacks.Pop();
+
+                if (Verbose > 0)
+                {
+                    Console.WriteLine($"{_prompt} < Done >");
+                }
+                return result;
             }
-            return result;
+            catch(XamlParseException ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         return null;
