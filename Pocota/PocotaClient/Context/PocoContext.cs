@@ -16,7 +16,7 @@ internal class PocoContext : IPocoContext
 
     private readonly IServiceProvider _services;
     private readonly PocotaCore _core;
-    private readonly Dictionary<Type, int> _tracedPocos = new();
+    private readonly Dictionary<Type, ConditionalWeakTable<IPoco, string>> _tracedPocos = new();
     private readonly Dictionary<Type, Dictionary<object?[], WeakReference>> _cachedObjects = new();
     private readonly object _getSourceLock = new();
     private readonly ConditionalWeakTable<IPoco, string> _changedPocos = new();
@@ -43,7 +43,7 @@ internal class PocoContext : IPocoContext
         }
     }
 
-    public IDictionary<Type, int> TracedPocos => _tracedPocos;
+    public IDictionary<Type, int> TracedPocos => _tracedPocos.ToDictionary(e => e.Key, e => e.Value.Count());
 
     public List<WeakReference<IPoco>> ModifiedPocos => _changedPocos.Select(e => new WeakReference<IPoco>(e.Key)).ToList();
 
@@ -72,6 +72,15 @@ internal class PocoContext : IPocoContext
         context.JsonSerializerOptions = options;
         _core.AddPocoJsonContext(options, context);
         return options;
+    }
+
+    public List<WeakReference<IPoco>>? ListTracedPocos(Type type)
+    {
+        if (_tracePocos && _tracedPocos.TryGetValue(type, out ConditionalWeakTable<IPoco, string>? table))
+        {
+            return table.Where(it => it.Key is { }).Select(it => new WeakReference<IPoco>(it.Key)).ToList();
+        }
+        return null;
     }
 
     public IPocoTraversalContext? GetTraversalContext(JsonSerializerOptions options)
@@ -174,12 +183,9 @@ internal class PocoContext : IPocoContext
             {
                 if (!_tracedPocos.ContainsKey(poco.GetType()))
                 {
-                    _tracedPocos.Add(poco.GetType(), 1);
+                    _tracedPocos.Add(poco.GetType(), new ConditionalWeakTable<IPoco, string>());
                 }
-                else
-                {
-                    ++_tracedPocos[poco.GetType()];
-                }
+                _tracedPocos[poco.GetType()].Add(poco, string.Empty);
             }
             if (_freezeTracingPocosReenters == 0)
             {
@@ -194,8 +200,8 @@ internal class PocoContext : IPocoContext
         poco.PocoStateChanged -= OnPocoStateChanged;
         if (_tracePocos)
         {
-            --_tracedPocos[poco.GetType()];
-            if(_freezeTracingPocosReenters == 0)
+            _tracedPocos[poco.GetType()].Remove(poco);
+            if (_freezeTracingPocosReenters == 0)
             {
                 TracedPocosChanged?.Invoke(this, new EventArgs());
                 ModifiedPocosChanged?.Invoke(this, new EventArgs());
@@ -216,4 +222,5 @@ internal class PocoContext : IPocoContext
             ModifiedPocosChanged?.Invoke(this, new EventArgs());
         }
     }
+
 }

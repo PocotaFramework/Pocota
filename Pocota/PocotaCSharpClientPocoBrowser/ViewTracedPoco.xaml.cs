@@ -23,17 +23,18 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     private readonly IServiceProvider _services;
     private ImmutableList<IProperty>? _properties = null;
     private readonly PocotaCore _core;
-    private PocoState _pocoState;
 
     private ObservableCollection<PropertyValueHolder> _values = new();
     private Dictionary<Property, PropertyValueHolder> _valuesByProperty = new();
     private ObservableCollection<Tuple<string, object?>> _keys = new();
 
-    internal readonly WeakReference<PocoBase?> _source = new(null);
+    public WeakReference<PocoBase?> SourceReference { get; init; } = new(null);
 
     public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
     public ClearPocoPropertyCommand ClearPocoPropertyCommand { get; init; }
     public AddNewPocoPropertyCommand AddNewPocoPropertyCommand { get; init; }
+    public CancelChangesCommand CancelChangesCommand { get; init; }
+    public AcceptChangesCommand AcceptChangesCommand { get; init; }
 
     public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
@@ -42,12 +43,11 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     {
         get
         {
-            return _pocoState;
-        }
-        private set
-        {
-            _pocoState = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PocoState)));
+            if (SourceReference is { } && SourceReference.TryGetTarget(out PocoBase? poco) && poco is IPoco ipoco)
+            {
+                return ipoco.PocoState;
+            }
+            return PocoState.Uncertain;
         }
     }
 
@@ -55,7 +55,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     {
         get
         {
-            if(_source is { } && _source.TryGetTarget(out PocoBase? poco))
+            if(SourceReference is { } && SourceReference.TryGetTarget(out PocoBase? poco))
             {
                 return poco is IEntity;
             }
@@ -71,15 +71,15 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
             _properties = null;
             if (value is { })
             {
-                _source.SetTarget(value);
-                if (_source is { } && _source.TryGetTarget(out PocoBase? poco))
+                SourceReference.SetTarget(value);
+                if (SourceReference is { } && SourceReference.TryGetTarget(out PocoBase? poco))
                 {
                     if(poco is IEntity entity)
                     {
                         int i = 0;
                         foreach(string name in entity.KeyNames)
                         {
-                            _keys.Add(new Tuple<string, object?>(name, entity.PrimaryKey!.Value[i]));
+                            _keys.Add(new Tuple<string, object?>(name, entity.PrimaryKey is { } ? entity.PrimaryKey!.Value[i] : null));
                             ++i;
                         }
                     }
@@ -93,6 +93,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                 }
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsEntity)));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceReference)));
         }
     }
 
@@ -104,6 +105,8 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         ViewTracedPocoCommand = services.GetRequiredService<ViewInBrowserCommand>();
         ClearPocoPropertyCommand = services.GetRequiredService<ClearPocoPropertyCommand>();
         AddNewPocoPropertyCommand = services.GetRequiredService<AddNewPocoPropertyCommand>();
+        CancelChangesCommand = services.GetRequiredService<CancelChangesCommand>();
+        AcceptChangesCommand = services.GetRequiredService<AcceptChangesCommand>();
         KeysViewSource.Source = _keys;
         InitializeComponent();
     }
@@ -111,9 +114,10 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     protected override void OnClosed(EventArgs e)
     {
         _services.GetRequiredService<TracedPocos>().RemoveView(this);
-        if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
+        if (_properties is { } && SourceReference.TryGetTarget(out PocoBase? target) && target is { })
         {
             target.PropertyChanged -= Target_PropertyChanged;
+            target.PocoChanged -= Target_PocoChanged;
             _values.Clear();
             _valuesByProperty.Clear();
         }
@@ -122,14 +126,15 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     public void FillProperties(bool firstTime, string changedProperty)
     {
-        if (_properties is { } && _source.TryGetTarget(out PocoBase? target) && target is { })
+        if (_properties is { } && SourceReference.TryGetTarget(out PocoBase? target) && target is { })
         {
             Dispatcher.Invoke(() =>
             {
-                PocoState = ((IPoco)target).PocoState;
                 if(firstTime)
                 {
                     target.PropertyChanged += Target_PropertyChanged;
+                    target.PocoChanged += Target_PocoChanged;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PocoState)));
                 }
                 foreach (Property property in _properties)
                 {
@@ -148,14 +153,15 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         }
     }
 
+    private void Target_PocoChanged(object? sender, PocoChangedEventArgs e)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PocoState)));
+        FillProperties(false, string.Empty);
+    }
+
     private void Target_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         FillProperties(false, e?.PropertyName ?? string.Empty);
-    }
-
-    private void ComboBox_DropDownClosed(object sender, EventArgs e)
-    {
-        ((ComboBox)sender).SelectedIndex = 0;
     }
 
     private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -166,8 +172,4 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         }
     }
 
-    private void ComboBox_Drop(object sender, DragEventArgs e)
-    {
-
-    }
 }

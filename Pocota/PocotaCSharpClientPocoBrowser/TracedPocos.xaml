@@ -8,9 +8,9 @@
         mc:Ignorable="d"
         Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowState="Maximized">
     <Window.Resources>
-        <local1:BindingProxy x:Key="CancelChangesCommandAvatar" Value="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>
-        <local1:BindingProxy x:Key="ViewTracedPocoCommandAvatar" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
-        <local1:BindingProxy x:Key="ViewConnectorMethodCommandAvatar" Value="{Binding Path=ViewConnectorMethodCommand, Mode=OneWay}"/>
+        <!--<local1:BindingProxy x:Key="CancelChangesCommandProxy" Value="{Binding Path=CancelChangesCommand, Mode=OneWay}"/>-->
+        <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
+        <local1:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand, Mode=OneWay}"/>
     </Window.Resources>
     <DockPanel LastChildFill="True" >
         <Menu DockPanel.Dock="Top">
@@ -40,10 +40,49 @@
                         <TextBlock Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
                         <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
                     </StackPanel>
-                    <DataGrid ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
+                    <DataGrid x:Name="PocosByTypes" ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
+                        <DataGrid.Resources>
+                            <Style TargetType="TextBlock" x:Key="TextBlockStyle">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsShowing}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <Style TargetType="ComboBox" x:Key="ComboBoxStyle">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsShowing}" Value="False">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="ItemsSource" Value="{x:Null}"/>
+                                        <Setter Property="IsDropDownOpen" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsShowing}" Value="True">
+                                        <Setter Property="ItemsSource" Value="{Binding Type, Converter={local:TracedPocosConverter}}"/>
+                                        <Setter Property="IsDropDownOpen" Value="True"/>
+                                        <Setter Property="SelectedIndex" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                            <DataTemplate x:Key="CountDataTemplate">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Count}"/>
+                                    <ComboBox Style="{StaticResource ComboBoxStyle}" DropDownClosed="ComboBox_DropDownClosed">
+                                    </ComboBox>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate x:Key="ActionsDataTemplate">
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Click="Button_Click_1">
+                                        <Button.Content>👁</Button.Content>
+                                        <Button.ToolTip>Посмотреть</Button.ToolTip>
+                                    </Button>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGrid.Resources>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Тип" Binding="{Binding Type}" />
-                            <DataGridTextColumn Header="Количество" Binding="{Binding Count}" />
+                            <DataGridTemplateColumn Header="Количество" CellTemplate="{StaticResource CountDataTemplate}" />
+                            <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource ActionsDataTemplate}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
@@ -59,11 +98,11 @@
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Command="{Binding Value, Source={StaticResource CancelChangesCommandAvatar}}" CommandParameter="{Binding Item}" 
+                                    <Button d:Command="{Binding Value, Source={StaticResource CancelChangesCommandProxy}}" d:CommandParameter="{Binding Item}" 
                                     Visibility="{Binding Item, Converter={local:TracedPocosConverter}, ConverterParameter=VisibleIfIsEntity}">
                                         <Button.Content>Отменить изменения</Button.Content>
                                     </Button>
-                                    <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandAvatar}}" CommandParameter="{Binding Item}">
+                                    <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
                                         <Button.Content>👁</Button.Content>
                                     </Button>
                                 </StackPanel>
@@ -104,7 +143,7 @@
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandAvatar}}" CommandParameter="{Binding Item2}">
+                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}">
                                         <Button.Content>👁</Button.Content>
                                     </Button>
                                 </StackPanel>

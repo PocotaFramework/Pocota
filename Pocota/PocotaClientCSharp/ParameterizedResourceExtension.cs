@@ -295,7 +295,7 @@ public class ParameterizedResourceExtension : MarkupExtension
             }
             foreach (var prop in mo.Properties)
             {
-                if (prop.PropertyType == typeof(BindingBase))
+                if (prop.Value is BindingBase)
                 {
                     OnBinding((BindingBase)prop.Value, route);
                 }
@@ -321,6 +321,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                     {
                         if (prop.IsComposite)
                         {
+                            route[route.Count - 1] += "[]";
                             foreach (var item in prop.Items)
                             {
                                 WalkMarkup(item, route);
@@ -329,6 +330,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                     }
                     catch (NullReferenceException)
                     {
+                        //Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)} NullReferenceException");
                     }
                     route.RemoveAt(route.Count - 1);
                 }
@@ -340,6 +342,27 @@ public class ParameterizedResourceExtension : MarkupExtension
     {
         if (bindingBase is Binding binding)
         {
+            if (binding.ConverterParameter is string converterParameter && converterParameter.Contains('$'))
+            {
+                if (Verbose > 0)
+                {
+                    Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
+                }
+                string newConverterParameter = converterParameter;
+                foreach (string key in _replacements.Keys)
+                {
+                    newConverterParameter = newConverterParameter.Replace(key, _replacements[key]);
+                }
+                foreach (string key in _defaults.Keys)
+                {
+                    newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
+                }
+                binding.ConverterParameter = newConverterParameter;
+                if (Verbose > 0)
+                {
+                    Console.WriteLine($" -> {binding.ConverterParameter} >");
+                }
+            }
             if (binding.Path is { } && binding.Path.Path is { } && binding.Path.Path.StartsWith('$'))
             {
                 if (Verbose > 0)
@@ -369,27 +392,6 @@ public class ParameterizedResourceExtension : MarkupExtension
                 else if (Verbose > 0)
                 {
                     Console.WriteLine($" - is not provided! >");
-                }
-            }
-            if (binding.ConverterParameter is string converterParameter && converterParameter.Contains('$'))
-            {
-                if (Verbose > 0)
-                {
-                    Console.Write($"{_prompt} {string.Join('/', route)} < ConverterParameter: {binding.ConverterParameter}");
-                }
-                string newConverterParameter = converterParameter;
-                foreach (string key in _replacements.Keys)
-                {
-                    newConverterParameter = newConverterParameter.Replace(key, _replacements[key]);
-                }
-                foreach (string key in _defaults.Keys)
-                {
-                    newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
-                }
-                binding.ConverterParameter = newConverterParameter;
-                if (Verbose > 0)
-                {
-                    Console.WriteLine($" -> {binding.ConverterParameter} >");
                 }
             }
             if (binding.XPath is string xPath && xPath.StartsWith('$'))

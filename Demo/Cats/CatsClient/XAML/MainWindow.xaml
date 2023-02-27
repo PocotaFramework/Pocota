@@ -310,7 +310,7 @@
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Копировать" Command="{Binding Data, Source={StaticResource CopyEntityReferenceCommandProxy}}"
+                    <MenuItem Header="Копировать" Command="{Binding Value, Source={StaticResource CopyEntityReferenceCommandProxy}}"
                               CommandParameter="{Binding Path=Heart.SelectedCat}"/>
                     <Separator/>
                     <MenuItem Header="Использовать в фильтре как..." IsEnabled="{Binding Path=Heart.IsCatSelected, Mode=OneWay}">

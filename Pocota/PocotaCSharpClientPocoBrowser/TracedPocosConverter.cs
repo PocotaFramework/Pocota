@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -10,10 +13,8 @@ using System.Xaml;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class TracedPocosConverter : MarkupExtension, IValueConverter
+public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValueConverter
 {
-    private TracedPocos? _view = null;
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
@@ -34,7 +35,7 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter
         {
             if (
                 parameters.Where(v => v is string s && s.Contains("LastActiveWindow")).FirstOrDefault() is string s
-                && value == _view.LastActiveWindow
+                && value == TracedPocos.Instance.Services.GetRequiredService<TracedPocos>().LastActiveWindow
             )
             {
                 string[] parts = s.Split('|');
@@ -60,7 +61,31 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter
                 result = value is Connector ? new GridLength(1, GridUnitType.Auto) : new GridLength(0); ;
             }
         }
+        else if (value is Type type &&  typeof(IEnumerable).IsAssignableFrom(targetType))
+        {
+            Console.WriteLine("here");
+            List<WeakReference<IPoco>>? list1 = TracedPocos.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(type);
+            int count = list1?.Count ?? 0;
+            result = new object[count + 1];
+            ((object[])result)[0] = $"Количество: {count}";
+            if(list1 is { })
+            {
+                for (int i = 0; i < list1.Count; ++i)
+                {
+                    ((object[])result)[i + 1] = list1[i];
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
+        }
         return result;
+    }
+
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -68,10 +93,13 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter
         throw new NotImplementedException();
     }
 
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
-        var root = serviceProvider.GetRequiredService<IRootObjectProvider>();
-        _view = root.RootObject as TracedPocos;
         return this;
     }
 }

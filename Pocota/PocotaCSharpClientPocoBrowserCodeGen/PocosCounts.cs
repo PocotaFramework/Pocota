@@ -1,13 +1,47 @@
-﻿namespace Net.Leksi.Pocota.Client;
+﻿using System.ComponentModel;
 
-public class PocosCounts
+namespace Net.Leksi.Pocota.Client;
+
+public class PocosCounts: INotifyPropertyChanged
 {
-    public Type Type { get; init; }
-    public int Count { get; init; }
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    public PocosCounts(Type type, int count)
+    private int _count = 0;
+    private bool _isShowing = false;
+
+    public Type Type { get; init; }
+    public int Count 
+    { 
+        get => _count; 
+        set 
+        { 
+            if (_count != value)
+            {
+                _count = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Count)));
+            }
+        } 
+    }
+    public bool IsShowing
+    {
+        get => _isShowing;
+        set
+        {
+            if (_isShowing != value)
+            {
+                _isShowing = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsShowing)));
+            }
+        }
+    }
+
+    public PocosCounts(Type type)
     {
         Type = type;
-        Count = count;
+    }
+
+    public void Touch()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
     }
 }

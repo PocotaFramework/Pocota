@@ -21,4 +21,6 @@ public interface IPocoContext
     void AddJsonConverters<TTarget>(JsonSerializerOptions jsonSerializerOptions);
 
     bool TryGetSource(Type type, object[] primaryKey, out object? value);
+
+    List<WeakReference<IPoco>>? ListTracedPocos(Type type);
 }

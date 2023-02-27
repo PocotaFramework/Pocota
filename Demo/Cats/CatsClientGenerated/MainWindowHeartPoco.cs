@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-11T12:23:45                                          //
+// at 2023-02-27T16:24:13                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -47,7 +47,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).AllBreeds;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllBreeds((List<IBreed>)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllBreeds(Convert<List<IBreed>>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllBreedsModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllBreedsInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreedsCancelChange();
@@ -70,7 +70,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).AllBreedsCount;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllBreedsCount((Int32)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllBreedsCount(Convert<Int32>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllBreedsCountModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllBreedsCountInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllBreedsCountCancelChange();
@@ -93,7 +93,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).AllCatteries;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllCatteries((List<ICattery>)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllCatteries(Convert<List<ICattery>>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllCatteriesModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllCatteriesInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteriesCancelChange();
@@ -116,7 +116,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).AllCatteriesCount;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllCatteriesCount((Int32)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetAllCatteriesCount(Convert<Int32>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllCatteriesCountModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsAllCatteriesCountInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.AllCatteriesCountCancelChange();
@@ -139,7 +139,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).BreedsCount;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetBreedsCount((Int32)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetBreedsCount(Convert<Int32>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsBreedsCountModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsBreedsCountInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.BreedsCountCancelChange();
@@ -162,7 +162,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).CatteriesCount;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetCatteriesCount((Int32)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.SetCatteriesCount(Convert<Int32>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsCatteriesCountModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsCatteriesCountInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.CatteriesCountCancelChange();
@@ -185,7 +185,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).GetCatsTimeSpent;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetGetCatsTimeSpent((TimeSpan)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetGetCatsTimeSpent(Convert<TimeSpan>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsGetCatsTimeSpentModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsGetCatsTimeSpentInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.GetCatsTimeSpentCancelChange();
@@ -208,7 +208,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).IsCatSelected;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetIsCatSelected((Boolean)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetIsCatSelected(Convert<Boolean>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsIsCatSelectedModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsIsCatSelectedInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsCatSelectedCancelChange();
@@ -231,7 +231,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? Get(object target) => ((MainWindowHeartIMainWindowHeartProjection)target).RenderingCatsTimeSpent;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetRenderingCatsTimeSpent((TimeSpan)value!);
+            public override void Set(object target, object? value) => ((MainWindowHeartIMainWindowHeartProjection)target).SetRenderingCatsTimeSpent(Convert<TimeSpan>(value));
             public override bool IsModified(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsRenderingCatsTimeSpentModified();
             public override bool IsInitial(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.IsRenderingCatsTimeSpentInitial();
             public override void CancelChange(object target) => ((MainWindowHeartIMainWindowHeartProjection)target)._projector.RenderingCatsTimeSpentCancelChange();
@@ -620,7 +620,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).AllBreeds;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllBreeds((List<IBreed>)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllBreeds(Convert<List<IBreed>>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsAllBreedsModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsAllBreedsInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).AllBreedsCancelChange();
@@ -643,7 +643,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).AllBreedsCount;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllBreedsCount((Int32)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllBreedsCount(Convert<Int32>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsAllBreedsCountModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsAllBreedsCountInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).AllBreedsCountCancelChange();
@@ -666,7 +666,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).AllCatteries;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllCatteries((List<ICattery>)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllCatteries(Convert<List<ICattery>>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsAllCatteriesModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsAllCatteriesInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).AllCatteriesCancelChange();
@@ -689,7 +689,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).AllCatteriesCount;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllCatteriesCount((Int32)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetAllCatteriesCount(Convert<Int32>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsAllCatteriesCountModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsAllCatteriesCountInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).AllCatteriesCountCancelChange();
@@ -712,7 +712,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).BreedsCount;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetBreedsCount((Int32)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetBreedsCount(Convert<Int32>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsBreedsCountModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsBreedsCountInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).BreedsCountCancelChange();
@@ -735,7 +735,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).CatteriesCount;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetCatteriesCount((Int32)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetCatteriesCount(Convert<Int32>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsCatteriesCountModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsCatteriesCountInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).CatteriesCountCancelChange();
@@ -758,7 +758,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).GetCatsTimeSpent;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetGetCatsTimeSpent((TimeSpan)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetGetCatsTimeSpent(Convert<TimeSpan>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsGetCatsTimeSpentModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsGetCatsTimeSpentInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).GetCatsTimeSpentCancelChange();
@@ -781,7 +781,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).IsCatSelected;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetIsCatSelected((Boolean)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetIsCatSelected(Convert<Boolean>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsIsCatSelectedModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsIsCatSelectedInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).IsCatSelectedCancelChange();
@@ -804,7 +804,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? Get(object target) => ((MainWindowHeartPoco)target).RenderingCatsTimeSpent;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetRenderingCatsTimeSpent((TimeSpan)value!);
+        public override void Set(object target, object? value) => ((MainWindowHeartPoco)target).SetRenderingCatsTimeSpent(Convert<TimeSpan>(value));
         public override bool IsModified(object target) => ((MainWindowHeartPoco)target).IsRenderingCatsTimeSpentModified();
         public override bool IsInitial(object target) => ((MainWindowHeartPoco)target).IsRenderingCatsTimeSpentInitial();
         public override void CancelChange(object target) => ((MainWindowHeartPoco)target).RenderingCatsTimeSpentCancelChange();
@@ -1806,6 +1806,21 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void BreedsAcceptChange()
     {
+        for(int i = _initial_breeds.Count - 1; i >= 0; --i)
+        {
+            if(!_breeds.Contains(_breeds[i]))
+            {
+                _initial_breeds.RemoveAt(i);
+            }
+        }
+        foreach(var item in _breeds)
+        {
+            if(!_initial_breeds.Contains(item))
+            {
+                _initial_breeds.Add(item);
+            }
+        }
+
     }
 
 
@@ -1878,6 +1893,21 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void CatsAcceptChange()
     {
+        for(int i = _initial_cats.Count - 1; i >= 0; --i)
+        {
+            if(!_cats.Contains(_cats[i]))
+            {
+                _initial_cats.RemoveAt(i);
+            }
+        }
+        foreach(var item in _cats)
+        {
+            if(!_initial_cats.Contains(item))
+            {
+                _initial_cats.Add(item);
+            }
+        }
+
     }
 
 
@@ -1950,6 +1980,21 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void CatteriesAcceptChange()
     {
+        for(int i = _initial_catteries.Count - 1; i >= 0; --i)
+        {
+            if(!_catteries.Contains(_catteries[i]))
+            {
+                _initial_catteries.RemoveAt(i);
+            }
+        }
+        foreach(var item in _catteries)
+        {
+            if(!_initial_catteries.Contains(item))
+            {
+                _initial_catteries.Add(item);
+            }
+        }
+
     }
 
 
@@ -2022,6 +2067,21 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
     private void SelectedCatsAcceptChange()
     {
+        for(int i = _initial_selectedCats.Count - 1; i >= 0; --i)
+        {
+            if(!_selectedCats.Contains(_selectedCats[i]))
+            {
+                _initial_selectedCats.RemoveAt(i);
+            }
+        }
+        foreach(var item in _selectedCats)
+        {
+            if(!_initial_selectedCats.Contains(item))
+            {
+                _initial_selectedCats.Add(item);
+            }
+        }
+
     }
 
 

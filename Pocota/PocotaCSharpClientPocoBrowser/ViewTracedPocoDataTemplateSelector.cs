@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Net.Http.Headers;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -11,6 +13,10 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
     public DataTemplate? Collection { get; set; }
     public DataTemplate? Bool { get; set; }
     public DataTemplate? Enum { get; set; }
+    public DataTemplate? TimeSpan { get; set; }
+    public DataTemplate? DateTime { get; set; }
+    public DataTemplate? DateOnly { get; set; }
+    public DataTemplate? TimeOnly { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
@@ -42,6 +48,34 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
                 if (Enum is { })
                 {
                     return Enum;
+                }
+            }
+            if (typeof(TimeSpan).IsAssignableFrom(pvh.Type))
+            {
+                if (TimeSpan is { })
+                {
+                    return TimeSpan;
+                }
+            }
+            if (typeof(DateTime).IsAssignableFrom(pvh.Type))
+            {
+                if (DateTime is { })
+                {
+                    return DateTime;
+                }
+            }
+            if (typeof(DateOnly).IsAssignableFrom(pvh.Type))
+            {
+                if (DateOnly is { })
+                {
+                    return DateOnly;
+                }
+            }
+            if (typeof(TimeOnly).IsAssignableFrom(pvh.Type))
+            {
+                if (TimeOnly is { })
+                {
+                    return TimeOnly;
                 }
             }
             return Value;

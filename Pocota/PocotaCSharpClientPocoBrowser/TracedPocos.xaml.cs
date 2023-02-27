@@ -339,5 +339,21 @@ namespace Net.Leksi.Pocota.Client
                 RefreshWindowsList(true);
             }
         }
+
+        private void ComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            if (sender is ComboBox comboBox && comboBox.DataContext is PocosCounts counts && counts.IsShowing)
+            {
+                counts.IsShowing = false;
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if((sender as Button)!.DataContext is PocosCounts counts && !counts.IsShowing)
+            {
+                counts.IsShowing = true;
+            }
+        }
     }
 }

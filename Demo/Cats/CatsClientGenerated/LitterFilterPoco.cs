@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -581,6 +581,21 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
     private void StringsAcceptChange()
     {
+        for(int i = _initial_strings.Count - 1; i >= 0; --i)
+        {
+            if(!_strings.Contains(_strings[i]))
+            {
+                _initial_strings.RemoveAt(i);
+            }
+        }
+        foreach(var item in _strings)
+        {
+            if(!_initial_strings.Contains(item))
+            {
+                _initial_strings.Add(item);
+            }
+        }
+
     }
 
 

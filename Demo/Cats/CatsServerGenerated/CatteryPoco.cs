@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -42,7 +42,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng((String)value!);
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng(Convert<String>(value));
         }
 
         public class NameNatProperty: IProperty
@@ -59,7 +59,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
             public object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat((String)value!);
+            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat(Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -144,7 +144,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
         public object? Get(object target) => ((CatteryPoco)target).NameEng;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng((String)value!);
+        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng(Convert<String>(value));
     }
 
     public class NameNatProperty: IProperty
@@ -161,7 +161,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
         public object? Get(object target) => ((CatteryPoco)target).NameNat;
         public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat((String)value!);
+        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat(Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
 using System.Windows;
 
 namespace Net.Leksi.Pocota.Client;
@@ -32,6 +33,15 @@ public static class PocotaClientPocoBrowserExtensions
         services.AddTransient<UnsetFilterCommand>();
         services.AddTransient<ClearPocoPropertyCommand>();
         services.AddTransient<AddNewPocoPropertyCommand>();
+
+        if (!services.Where(it => it.ServiceType == typeof(CancelChangesCommand)).Any())
+        {
+            services.AddTransient<CancelChangesCommand>();
+        }
+        if (!services.Where(it => it.ServiceType == typeof(AcceptChangesCommand)).Any())
+        {
+            services.AddTransient<AcceptChangesCommand>();
+        }
 
         return services;
     }

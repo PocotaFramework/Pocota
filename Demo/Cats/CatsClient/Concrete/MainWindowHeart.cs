@@ -20,21 +20,27 @@ public class MainWindowHeart : MainWindowHeartPoco
         AcceptCatFilterChanges();
         Breeds.CollectionChanged += (o, e) =>
         {
-            if (AllBreeds.Count < Breeds.Count)
+            if(AllBreeds is { })
             {
-                AllBreeds.Clear();
-                AllBreeds.AddRange(Breeds.Select(v => v.As<IBreed>()!));
-                AllBreedsCount = AllBreeds.Count;
+                if (AllBreeds.Count < Breeds.Count)
+                {
+                    AllBreeds.Clear();
+                    AllBreeds.AddRange(Breeds.Select(v => v.As<IBreed>()!));
+                    AllBreedsCount = AllBreeds.Count;
+                }
             }
             BreedsCount = Breeds.Count;
         };
         Catteries.CollectionChanged += (o, e) =>
         {
-            if (AllCatteries.Count < Catteries.Count)
+            if(AllCatteries is { })
             {
-                AllCatteries.Clear();
-                AllCatteries.AddRange(Catteries.Select(v => v.As<ICattery>()!));
-                AllCatteriesCount = AllCatteries.Count;
+                if (AllCatteries.Count < Catteries.Count)
+                {
+                    AllCatteries.Clear();
+                    AllCatteries.AddRange(Catteries.Select(v => v.As<ICattery>()!));
+                    AllCatteriesCount = AllCatteries.Count;
+                }
             }
             CatteriesCount = Catteries.Count;
         };
@@ -42,7 +48,7 @@ public class MainWindowHeart : MainWindowHeartPoco
 
     public override void AcceptCatFilterChanges()
     {
-        ((IPoco)CatFilter).AcceptChanges();
+        ((IPoco)CatFilter)?.AcceptChanges();
     }
 
     public override void CatsSelectionChanged(object sender, EventArgs e)

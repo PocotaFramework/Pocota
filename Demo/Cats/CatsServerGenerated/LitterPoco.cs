@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -43,7 +43,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterProjection)target).Date;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetDate((DateOnly)value!);
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetDate(Convert<DateOnly>(value));
         }
 
         public class OrderProperty: IProperty
@@ -60,7 +60,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterProjection)target).Order;
             public void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_order = true;
-            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetOrder((Int32)value!);
+            public void Set(object target, object? value) => ((LitterILitterProjection)target).SetOrder(Convert<Int32>(value));
         }
 
         public class FemaleProperty: IProperty
@@ -251,7 +251,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetDate((DateOnly)value!);
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetDate(Convert<DateOnly>(value));
         }
 
         public class OrderProperty: IProperty
@@ -268,7 +268,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order;
             public object? Get(object target) => ((LitterILitterForCatProjection)target).Order;
             public void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order = true;
-            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetOrder((Int32)value!);
+            public void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetOrder(Convert<Int32>(value));
         }
 
         public class FemaleProperty: IProperty
@@ -432,7 +432,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public bool IsSet(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date;
             public object? Get(object target) => ((LitterILitterForDateProjection)target).Date;
             public void Touch(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date = true;
-            public void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.SetDate((DateOnly)value!);
+            public void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.SetDate(Convert<DateOnly>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -632,7 +632,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_date;
         public object? Get(object target) => ((LitterPoco)target).Date;
         public void Touch(object target) => ((LitterPoco)target)._is_set_date = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).SetDate((DateOnly)value!);
+        public void Set(object target, object? value) => ((LitterPoco)target).SetDate(Convert<DateOnly>(value));
     }
 
     public class OrderProperty: IProperty
@@ -649,7 +649,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public bool IsSet(object target) => ((LitterPoco)target)._is_set_order;
         public object? Get(object target) => ((LitterPoco)target).Order;
         public void Touch(object target) => ((LitterPoco)target)._is_set_order = true;
-        public void Set(object target, object? value) => ((LitterPoco)target).SetOrder((Int32)value!);
+        public void Set(object target, object? value) => ((LitterPoco)target).SetOrder(Convert<Int32>(value));
     }
 
     public class FemaleProperty: IProperty

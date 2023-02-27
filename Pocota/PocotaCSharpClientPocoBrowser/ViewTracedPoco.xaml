@@ -29,11 +29,28 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+            <Style TargetType="StackPanel" x:Key="PrimaryKeyStyle" x:Shared="False">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsEntity}" Value="False">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="Button" x:Key="AcceptChangesStyle" x:Shared="False">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsEntity}" Value="True">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10"/>
+            <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
+                     Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}">Принять изменения</Button>
+            <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}">Отменить изменения</Button>
         </StackPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">

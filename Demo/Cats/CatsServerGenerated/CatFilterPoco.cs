@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).BornAfter;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter((DateOnly)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter(Convert<DateOnly>(value));
         }
 
         public class BornBeforeProperty: IProperty
@@ -62,7 +62,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).BornBefore;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore((DateOnly)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore(Convert<DateOnly>(value));
         }
 
         public class ExteriorRegexProperty: IProperty
@@ -80,7 +80,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).ExteriorRegex;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex((String)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex(Convert<String>(value));
         }
 
         public class GenderProperty: IProperty
@@ -98,7 +98,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).Gender;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender((Gender)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender(Convert<Gender>(value));
         }
 
         public class NameRegexProperty: IProperty
@@ -116,7 +116,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).NameRegex;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex((String)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex(Convert<String>(value));
         }
 
         public class TitleRegexProperty: IProperty
@@ -134,7 +134,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public object? Get(object target) => ((CatFilterICatFilterProjection)target).TitleRegex;
             public void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex((String)value!);
+            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex(Convert<String>(value));
         }
 
         public class AncestorProperty: IProperty
@@ -525,7 +525,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).BornAfter;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter((DateOnly)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter(Convert<DateOnly>(value));
     }
 
     public class BornBeforeProperty: IProperty
@@ -543,7 +543,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).BornBefore;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore((DateOnly)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore(Convert<DateOnly>(value));
     }
 
     public class ExteriorRegexProperty: IProperty
@@ -561,7 +561,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex((String)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex(Convert<String>(value));
     }
 
     public class GenderProperty: IProperty
@@ -579,7 +579,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).Gender;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetGender((Gender)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetGender(Convert<Gender>(value));
     }
 
     public class NameRegexProperty: IProperty
@@ -597,7 +597,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).NameRegex;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex((String)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex(Convert<String>(value));
     }
 
     public class TitleRegexProperty: IProperty
@@ -615,7 +615,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
         public void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex((String)value!);
+        public void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex(Convert<String>(value));
     }
 
     public class AncestorProperty: IProperty

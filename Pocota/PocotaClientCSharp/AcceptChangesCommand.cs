@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class CancelChangesCommand : ICommand
+public class AcceptChangesCommand : ICommand
 {
     public Action<Action>? DispatcherWrapper { get; set; }
 
@@ -34,6 +34,7 @@ public class CancelChangesCommand : ICommand
                 || (values[0] is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco2) && (poco = poco2) == poco)
                 || (values[0] is WeakReference<PocoBase> wr2 && wr2.TryGetTarget(out PocoBase? poco3) && (poco = poco3) == poco)
             )
+            && poco is not IEntity
             && poco.PocoState is PocoState pocoState
             && pocoState is not PocoState.Unchanged
             && (
@@ -64,12 +65,12 @@ public class CancelChangesCommand : ICommand
                 {
                     DispatcherWrapper.Invoke(() =>
                     {
-                        poco.CancelChanges();
+                        poco.AcceptChanges();
                     });
                 }
                 else
                 {
-                    poco.CancelChanges();
+                    poco.AcceptChanges();
                 }
             }
             catch (Exception ex)

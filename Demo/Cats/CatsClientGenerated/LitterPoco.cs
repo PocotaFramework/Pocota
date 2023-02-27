@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector.IsDateSet();
             public override object? Get(object target) => ((LitterILitterProjection)target).Date;
             public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_date = true;
-            public override void Set(object target, object? value) => ((LitterILitterProjection)target).SetDate((DateOnly)value!);
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target).SetDate(Convert<DateOnly>(value));
             public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsDateModified();
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.DateCancelChange();
@@ -66,7 +66,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector.IsOrderSet();
             public override object? Get(object target) => ((LitterILitterProjection)target).Order;
             public override void Touch(object target) => ((LitterILitterProjection)target)._projector._is_set_order = true;
-            public override void Set(object target, object? value) => ((LitterILitterProjection)target).SetOrder((Int32)value!);
+            public override void Set(object target, object? value) => ((LitterILitterProjection)target).SetOrder(Convert<Int32>(value));
             public override bool IsModified(object target) => ((LitterILitterProjection)target)._projector.IsOrderModified();
             public override bool IsInitial(object target) => ((LitterILitterProjection)target)._projector.IsOrderInitial();
             public override void CancelChange(object target) => ((LitterILitterProjection)target)._projector.OrderCancelChange();
@@ -303,7 +303,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateSet();
             public override object? Get(object target) => ((LitterILitterForCatProjection)target).Date;
             public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date = true;
-            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetDate((DateOnly)value!);
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetDate(Convert<DateOnly>(value));
             public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateModified();
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.DateCancelChange();
@@ -325,7 +325,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderSet();
             public override object? Get(object target) => ((LitterILitterForCatProjection)target).Order;
             public override void Touch(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order = true;
-            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetOrder((Int32)value!);
+            public override void Set(object target, object? value) => ((LitterILitterForCatProjection)target)._projector.SetOrder(Convert<Int32>(value));
             public override bool IsModified(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderModified();
             public override bool IsInitial(object target) => ((LitterILitterForCatProjection)target)._projector.IsOrderInitial();
             public override void CancelChange(object target) => ((LitterILitterForCatProjection)target)._projector.OrderCancelChange();
@@ -530,7 +530,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsSet(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateSet();
             public override object? Get(object target) => ((LitterILitterForDateProjection)target).Date;
             public override void Touch(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date = true;
-            public override void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.SetDate((DateOnly)value!);
+            public override void Set(object target, object? value) => ((LitterILitterForDateProjection)target)._projector.SetDate(Convert<DateOnly>(value));
             public override bool IsModified(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateModified();
             public override bool IsInitial(object target) => ((LitterILitterForDateProjection)target)._projector.IsDateInitial();
             public override void CancelChange(object target) => ((LitterILitterForDateProjection)target)._projector.DateCancelChange();
@@ -790,7 +790,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsSet(object target) => ((LitterPoco)target).IsDateSet();
         public override object? Get(object target) => ((LitterPoco)target).Date;
         public override void Touch(object target) => ((LitterPoco)target)._is_set_date = true;
-        public override void Set(object target, object? value) => ((LitterPoco)target).SetDate((DateOnly)value!);
+        public override void Set(object target, object? value) => ((LitterPoco)target).SetDate(Convert<DateOnly>(value));
         public override bool IsModified(object target) => ((LitterPoco)target).IsDateModified();
         public override bool IsInitial(object target) => ((LitterPoco)target).IsDateInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).DateCancelChange();
@@ -812,7 +812,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsSet(object target) => ((LitterPoco)target).IsOrderSet();
         public override object? Get(object target) => ((LitterPoco)target).Order;
         public override void Touch(object target) => ((LitterPoco)target)._is_set_order = true;
-        public override void Set(object target, object? value) => ((LitterPoco)target).SetOrder((Int32)value!);
+        public override void Set(object target, object? value) => ((LitterPoco)target).SetOrder(Convert<Int32>(value));
         public override bool IsModified(object target) => ((LitterPoco)target).IsOrderModified();
         public override bool IsInitial(object target) => ((LitterPoco)target).IsOrderInitial();
         public override void CancelChange(object target) => ((LitterPoco)target).OrderCancelChange();

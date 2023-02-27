@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -41,7 +41,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
             public override object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex((String)value!);
+            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex(Convert<String>(value));
             public override bool IsModified(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.IsSearchRegexModified();
             public override bool IsInitial(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.IsSearchRegexInitial();
             public override void CancelChange(object target) => ((BreedFilterIBreedFilterProjection)target)._projector.SearchRegexCancelChange();
@@ -140,7 +140,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public override object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex((String)value!);
+        public override void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex(Convert<String>(value));
         public override bool IsModified(object target) => ((BreedFilterPoco)target).IsSearchRegexModified();
         public override bool IsInitial(object target) => ((BreedFilterPoco)target).IsSearchRegexInitial();
         public override void CancelChange(object target) => ((BreedFilterPoco)target).SearchRegexCancelChange();

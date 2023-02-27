@@ -34,7 +34,12 @@ public class AddNewPocoPropertyCommand : ICommand
     {
         if (parameter is PropertyValueHolder pvh)
         {
-            pvh.Current = _services.GetRequiredService(pvh.Type);
+            object newValue = _services.GetRequiredService(pvh.Type);
+            if (newValue is IEntity entity) 
+            {
+                entity.Create();
+            }
+            pvh.Current = newValue;
         }
     }
 }

@@ -23,6 +23,22 @@ public class Program
                 services.AddSingleton<MainWindow>();
                 services.AddTransient<ViewCat>();
 
+                services.AddTransient<FindCatsCommand>();
+                services.AddTransient<GetCatCommand>();
+                services.AddTransient<FindBreedsCommand>();
+                services.AddTransient<FindCatteriesCommand>();
+                services.AddTransient<ViewCatCommand>();
+                services.AddTransient<StopGetCatsCommand>();
+                services.AddTransient<FindSiblingsCatsCommand>();
+                services.AddTransient<AddLitterCommand>();
+                services.AddTransient<AddCatCommand>();
+                services.AddTransient<CancelChangesCommand>();
+
+                services.AddScoped<CopyEntitiesReferencesCommand>();
+                services.AddScoped<PasteParentCommand>();
+
+                services.AddTransient<SiblingCatsConverter>();
+
                 services.AddScoped<CatsConnector>();
 
                 services.AddPocota(
@@ -50,22 +66,6 @@ public class Program
                             .AddJsonConverter<EnumJsonConverter<Gender>>();
                     }
                 );
-
-                services.AddTransient<FindCatsCommand>();
-                services.AddTransient<GetCatCommand>();
-                services.AddTransient<FindBreedsCommand>();
-                services.AddTransient<FindCatteriesCommand>();
-                services.AddTransient<ViewCatCommand>();
-                services.AddTransient<StopGetCatsCommand>();
-                services.AddTransient<FindSiblingsCatsCommand>();
-                services.AddTransient<AddLitterCommand>();
-                services.AddTransient<AddCatCommand>();
-                services.AddTransient<CancelChangesCommand>();
-
-                services.AddScoped<CopyEntitiesReferencesCommand>();
-                services.AddScoped<PasteParentCommand>();
-
-                services.AddTransient<SiblingCatsConverter>();
 
             });
         IHost host = hostBuilder.Build();

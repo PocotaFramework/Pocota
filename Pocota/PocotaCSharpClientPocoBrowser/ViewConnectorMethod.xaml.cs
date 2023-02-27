@@ -62,7 +62,7 @@ namespace Net.Leksi.Pocota.Client
             if(sender is MethodParameterHolder mph && nameof(mph.Value).Equals(e.PropertyName))
             {
                 ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views
-                    .Where(v => v is ViewTracedPoco viewTracedPoco && viewTracedPoco._source.TryGetTarget(out PocoBase? target) && target == mph.Value)
+                    .Where(v => v is ViewTracedPoco viewTracedPoco && viewTracedPoco.SourceReference.TryGetTarget(out PocoBase? target) && target == mph.Value)
                     .Select(v => v as ViewTracedPoco).FirstOrDefault();
                 if (tmp is { })
                 {

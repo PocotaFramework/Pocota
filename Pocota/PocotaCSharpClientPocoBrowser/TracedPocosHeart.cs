@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace Net.Leksi.Pocota.Client;
 
@@ -26,10 +27,17 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
     {
         _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
         {
-            TracedPocos.Clear();
             foreach (var item in _pocoContext.TracedPocos)
             {
-                TracedPocos.Add(new PocosCounts(item.Key, item.Value));
+                if(TracedPocos.FirstOrDefault(it => it.Type == item.Key) is PocosCounts counts)
+                {
+                    counts.Count = item.Value;
+                    counts.Touch();
+                }
+                else
+                {
+                    TracedPocos.Add(new PocosCounts(item.Key) { Count = item.Value });
+                }
             }
         });
     }

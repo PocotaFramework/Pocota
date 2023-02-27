@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-11T12:23:45                                  //
+// at 2023-02-27T16:24:13                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -40,7 +40,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsCodeSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Code;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetCode((String)value!);
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetCode(Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsCodeModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsCodeInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.CodeCancelChange();
@@ -62,7 +62,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsGroupSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).Group;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetGroup((String)value!);
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetGroup(Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsGroupModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsGroupInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.GroupCancelChange();
@@ -84,7 +84,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng((String)value!);
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameEngCancelChange();
@@ -106,7 +106,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat((String)value!);
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameNatCancelChange();
@@ -237,7 +237,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsCodeSet();
         public override object? Get(object target) => ((BreedPoco)target).Code;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetCode((String)value!);
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetCode(Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsCodeModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsCodeInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).CodeCancelChange();
@@ -259,7 +259,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsGroupSet();
         public override object? Get(object target) => ((BreedPoco)target).Group;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetGroup((String)value!);
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetGroup(Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsGroupModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsGroupInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).GroupCancelChange();
@@ -281,7 +281,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((BreedPoco)target).NameEng;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng((String)value!);
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameEngCancelChange();
@@ -303,7 +303,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((BreedPoco)target).NameNat;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat((String)value!);
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameNatCancelChange();

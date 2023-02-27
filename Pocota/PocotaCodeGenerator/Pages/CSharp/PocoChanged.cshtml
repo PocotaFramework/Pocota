@@ -150,7 +150,22 @@
     {
         @if(pm.IsList)
         {
+            <text>        for(int i = @Html.Raw($"_initial{fieldName}.Count") - 1; i >= 0; --i)
+        {
+            if(!@Html.Raw($"{fieldName}.Contains({fieldName}[i])"))
+            {
+                @Html.Raw($"_initial{fieldName}.RemoveAt(i)");
+            }
+        }
+        foreach(var item in @Html.Raw($"{fieldName}"))
+        {
+            if(!@Html.Raw($"_initial{fieldName}.Contains(item)"))
+            {
+                @Html.Raw($"_initial{fieldName}.Add(item)");
+            }
+        }
 
+</text>
         }
         else 
         {
