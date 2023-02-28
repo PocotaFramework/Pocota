@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Net.Leksi.Pocota.Client;
 
@@ -34,6 +36,8 @@ public class PocosCounts: INotifyPropertyChanged
             }
         }
     }
+
+    public ObservableCollection<object> Items { get; init; } = new();
 
     public PocosCounts(Type type)
     {

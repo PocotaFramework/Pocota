@@ -45,7 +45,7 @@ internal class PocoContext : IPocoContext
 
     public IDictionary<Type, int> TracedPocos => _tracedPocos.ToDictionary(e => e.Key, e => e.Value.Count());
 
-    public List<WeakReference<IPoco>> ModifiedPocos => _changedPocos.Select(e => new WeakReference<IPoco>(e.Key)).ToList();
+    public List<IPoco> ModifiedPocos => _changedPocos.Select(e => e.Key).ToList();
 
     public PocoContext(IServiceProvider services)
     {
@@ -74,11 +74,11 @@ internal class PocoContext : IPocoContext
         return options;
     }
 
-    public List<WeakReference<IPoco>>? ListTracedPocos(Type type)
+    public List<IPoco>? ListTracedPocos(Type type)
     {
         if (_tracePocos && _tracedPocos.TryGetValue(type, out ConditionalWeakTable<IPoco, string>? table))
         {
-            return table.Where(it => it.Key is { }).Select(it => new WeakReference<IPoco>(it.Key)).ToList();
+            return table.Select(it => it.Key).ToList();
         }
         return null;
     }

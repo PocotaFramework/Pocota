@@ -47,11 +47,11 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
         _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
         {
             ModifiedPocos.Clear();
-            foreach (WeakReference<IPoco> wr in _pocoContext.ModifiedPocos)
+            foreach (IPoco item in _pocoContext.ModifiedPocos)
             {
-                if(wr.TryGetTarget(out var item) && item.PocoState is not PocoState.Finalized)
+                if(item.PocoState is not PocoState.Finalized)
                 {
-                    ModifiedPocos.Add(new PocoInfo(item.GetType(), _util.GetPocoLabel(item), item.PocoState, wr));
+                    ModifiedPocos.Add(new PocoInfo(item.GetType(), _util.GetPocoLabel(item), item.PocoState, new WeakReference<IPoco>(item)));
                 }
             }
         });

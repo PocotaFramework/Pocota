@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -12,6 +13,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -25,7 +27,7 @@ namespace Net.Leksi.Pocota.Client
         private readonly ConditionalWeakTable<Window, WeakReference<WindowInfo>> _tracedWindows = new();
         private readonly ConditionalWeakTable<PropertyInfo, string> _tracedProperties = new();
         private readonly ConditionalWeakTable<object, string> _tracedTargets = new();
-        private Connector? _connector  = null;
+        private Connector? _connector = null;
         private ObservableCollection<Tuple<string, MethodInfo?>> _connectorMethods = new();
 
         internal readonly List<Window> _views = new();
@@ -52,13 +54,13 @@ namespace Net.Leksi.Pocota.Client
             get => _connector;
             set
             {
-                if(_connector != value)
+                if (_connector != value)
                 {
                     _connector = value;
                     _connectorMethods.Clear();
-                    if(_connector is { })
+                    if (_connector is { })
                     {
-                        foreach(MethodInfo method in _connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
+                        foreach (MethodInfo method in _connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
                         {
                             _connectorMethods.Add(new Tuple<string, MethodInfo?>(method.Name, method));
                         }
@@ -203,11 +205,12 @@ namespace Net.Leksi.Pocota.Client
                             LastActiveWindow = window;
                         }
                         added = true;
-                        WindowInfo windowInfo = new() { 
+                        WindowInfo windowInfo = new()
+                        {
                             PropertyChangedEventHandler = (s, e) =>
                             {
-                                if(
-                                    _tracedWindows.TryGetValue((Window)window, out WeakReference<WindowInfo>? wrwi) 
+                                if (
+                                    _tracedWindows.TryGetValue((Window)window, out WeakReference<WindowInfo>? wrwi)
                                     && wrwi.TryGetTarget(out WindowInfo? wi)
                                 )
                                 {
@@ -230,10 +233,10 @@ namespace Net.Leksi.Pocota.Client
 
         private void SubscribeAndUnsubscribePropertyChanged(object? target, EventHandler<PropertyChangedEventArgs> eh, bool subscribe)
         {
-            if(target is { } && !_tracedTargets.TryGetValue(target, out string _))
+            if (target is { } && !_tracedTargets.TryGetValue(target, out string _))
             {
                 _tracedTargets.Add(target, string.Empty);
-                if (target is INotifyPropertyChanged notify) 
+                if (target is INotifyPropertyChanged notify)
                 {
                     if (subscribe)
                     {
@@ -322,7 +325,7 @@ namespace Net.Leksi.Pocota.Client
                     LastActiveWindow = null;
                 }
                 _windows.Remove(window);
-                if(_tracedWindows.TryGetValue(window, out WeakReference<WindowInfo>? wreh) 
+                if (_tracedWindows.TryGetValue(window, out WeakReference<WindowInfo>? wreh)
                     && wreh.TryGetTarget(out WindowInfo? wi))
                 {
                     SubscribeAndUnsubscribePropertyChanged(window, wi.PropertyChangedEventHandler!, false);
@@ -348,12 +351,18 @@ namespace Net.Leksi.Pocota.Client
             }
         }
 
+
+
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if((sender as Button)!.DataContext is PocosCounts counts && !counts.IsShowing)
+            if ((sender as Button)!.DataContext is PocosCounts counts && !counts.IsShowing)
             {
+                Cursor = Cursors.Wait;
+                new TracedPocosConverter().Convert(counts, typeof(IEnumerable), string.Empty, CultureInfo.CurrentUICulture);
                 counts.IsShowing = true;
+                Cursor = Cursors.Arrow;
             }
         }
+
     }
 }

@@ -9,7 +9,7 @@ public interface IPocoContext
 
     bool TracePocos { get; set; }
     IDictionary<Type, int> TracedPocos { get; }
-    List<WeakReference<IPoco>> ModifiedPocos { get; }
+    List<IPoco> ModifiedPocos { get; }
 
     JsonSerializerOptions BindJsonSerializerOptions(
         JsonSerializerOptions? options = null, 
@@ -22,5 +22,5 @@ public interface IPocoContext
 
     bool TryGetSource(Type type, object[] primaryKey, out object? value);
 
-    List<WeakReference<IPoco>>? ListTracedPocos(Type type);
+    List<IPoco>? ListTracedPocos(Type type);
 }

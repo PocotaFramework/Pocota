@@ -4,9 +4,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Xaml;
@@ -20,7 +23,7 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
         object?[] parameters = parameter is object?[]? (parameter as object?[])! : new object?[] { parameter };
         object? result = null;
 
-        if(targetType == typeof(Visibility)) 
+        if (targetType == typeof(Visibility))
         {
             if (parameters.Contains("VisibleIfIsEntity") && value is IEntity)
             {
@@ -54,26 +57,37 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
                 result = Visibility.Visible;
             }
         }
-        else if(targetType == typeof(GridLength))
+        else if (targetType == typeof(GridLength))
         {
             if (parameters.Contains("Connector"))
             {
                 result = value is Connector ? new GridLength(1, GridUnitType.Auto) : new GridLength(0); ;
             }
         }
-        else if (value is Type type &&  typeof(IEnumerable).IsAssignableFrom(targetType))
+        else if (value is PocosCounts pocosCounts && typeof(IEnumerable).IsAssignableFrom(targetType))
         {
-            List<WeakReference<IPoco>>? list1 = TracedPocos.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(type);
-            int count = list1?.Count ?? 0;
-            result = new object[count + 1];
-            ((object[])result)[0] = $"Количество: {count}";
-            if(list1 is { })
+            List<IPoco> list = TracedPocos.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(pocosCounts.Type)!;
+            if(pocosCounts.Items.Count < 1)
             {
-                for (int i = 0; i < list1.Count; ++i)
+                pocosCounts.Items.Add(null!);
+            }
+            pocosCounts.Items[0] = ($"Количество: {list.Count}");
+            for (int i = 0; i < list.Count; ++i)
+            {
+                if(i + 1 < pocosCounts.Items.Count)
                 {
-                    ((object[])result)[i + 1] = list1[i];
+                    ((WeakReference<IPoco>)pocosCounts.Items[i + 1]).SetTarget(list[i]);
+                }
+                else
+                {
+                    pocosCounts.Items.Add(new WeakReference<IPoco>(list[i]));
                 }
             }
+            while(pocosCounts.Items.Count > list.Count + 1)
+            {
+                pocosCounts.Items.RemoveAt(list.Count + 1);
+            }
+            return true;
         }
         else
         {

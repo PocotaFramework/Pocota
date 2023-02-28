@@ -45,7 +45,7 @@
                 </Grid.RowDefinitions>
                 <DockPanel LastChildFill="True" Grid.Row="0">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <TextBlock Margin="10,10,10,10" FontSize="18">Количество объектов по типам</TextBlock>
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Все объекты</TextBlock>
                         <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
                     </StackPanel>
                     <DataGrid x:Name="PocosByTypes" ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
@@ -69,24 +69,24 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsShowing}" Value="False">
                                         <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Setter Property="ItemsSource" Value="{x:Null}"/>
                                         <Setter Property="IsDropDownOpen" Value="False"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsShowing}" Value="True">
-                                        <Setter Property="ItemsSource" Value="{Binding Type, Converter={local:TracedPocosConverter}}"/>
                                         <Setter Property="IsDropDownOpen" Value="True"/>
                                         <Setter Property="SelectedIndex" Value="0"/>
-                                        <Setter Property="ItemTemplate" 
-                                                Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
-                                                    Replaces={StaticResource Replaces}}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
+                                <Setter Property="ItemTemplate" 
+                                        Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
+                                            Replaces={StaticResource Replaces}}"/>
                             </Style>
                             <DataTemplate x:Key="CountDataTemplate">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Count}"/>
                                     <ComboBox Style="{StaticResource ComboBoxStyle}" 
-                                            DropDownClosed="ComboBox_DropDownClosed">
+                                            ItemsSource="{Binding Items}"
+                                            DropDownClosed="ComboBox_DropDownClosed"
+                                            >
                                     </ComboBox>
                                 </StackPanel>
                             </DataTemplate>
