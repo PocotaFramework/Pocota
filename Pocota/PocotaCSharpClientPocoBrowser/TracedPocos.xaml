@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
         xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowState="Maximized">
     <Window.Resources>
@@ -57,6 +58,14 @@
                                 </Style.Triggers>
                             </Style>
                             <Style TargetType="ComboBox" x:Key="ComboBoxStyle">
+                                <Style.Resources>
+                                    <x:Array Type="sys:String" x:Key="Replaces">
+                                        <sys:String>$path:Type</sys:String>
+                                        <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                        <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
+                                        <sys:String>$test:IsPoco</sys:String>
+                                    </x:Array>
+                                </Style.Resources>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsShowing}" Value="False">
                                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -67,9 +76,9 @@
                                         <Setter Property="ItemsSource" Value="{Binding Type, Converter={local:TracedPocosConverter}}"/>
                                         <Setter Property="IsDropDownOpen" Value="True"/>
                                         <Setter Property="SelectedIndex" Value="0"/>
-                                        <Setter Property="ItemTemplate" Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
-                                                Replaces=$path:Type|$converter:ViewTracedPocoConverter|$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy,
-                                                Verbose=1, Strict=False}"/>
+                                        <Setter Property="ItemTemplate" 
+                                                Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
+                                                    Replaces={StaticResource Replaces}}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

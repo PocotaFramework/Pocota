@@ -13,7 +13,7 @@ namespace Net.Leksi.Pocota.Client;
 
 public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiValueConverter
 {
- 
+
     public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
     {
         object?[] parameters = SplitParameter(parameter);
@@ -64,7 +64,9 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
 
         if (parameters.Contains("IsPoco"))
         {
-            return value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco;
+            //Console.WriteLine($"IsPoco {value}, {targetType}, [{string.Join(',', parameters)}]");
+            return (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out _))
+                || (value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco);
         }
 
         if (parameters.Contains("IsNotEntity"))
@@ -88,9 +90,16 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return result;
         }
 
-        if (targetType == typeof(string) && value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2)
+        if (targetType == typeof(string))
         {
-            return $"{value.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco2)}";
+            IPoco? poco;
+            if(
+                (value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2 && (poco = poco2) == poco)
+                || (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (poco = poco3) == poco)
+            )
+            {
+                return $"{poco.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
+            }
         }
 
         if (

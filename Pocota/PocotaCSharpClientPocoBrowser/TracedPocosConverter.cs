@@ -63,7 +63,6 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
         }
         else if (value is Type type &&  typeof(IEnumerable).IsAssignableFrom(targetType))
         {
-            Console.WriteLine("here");
             List<WeakReference<IPoco>>? list1 = TracedPocos.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(type);
             int count = list1?.Count ?? 0;
             result = new object[count + 1];

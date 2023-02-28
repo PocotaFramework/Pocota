@@ -22,8 +22,9 @@ public class ParameterizedResourceExtension : MarkupExtension
     private static readonly Stack<ParameterizedResourceExtension> s_callStacks = new();
     private string _indention = string.Empty;
     private string _prompt = string.Empty;
-    private readonly HashSet<object> _seenObjects = new(ReferenceEqualityComparer.Instance);
+    private HashSet<object>? _seenObjects;
     private IServiceProvider _services = null!;
+    private ParameterizedResourceExtension? _root = null;
 
     public object? Replaces
     {
@@ -52,7 +53,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                             .Where(entry => entry is { } && entry.Length == 2)
                     )
                     {
-                        if(ent is { })
+                        if (ent is { })
                         {
                             _replacements.TryAdd(ent[0], ent[1]);
                         }
@@ -156,11 +157,14 @@ public class ParameterizedResourceExtension : MarkupExtension
                     }
                 }
                 _services = resource._services;
+                _root = resource;
             }
         }
         else
         {
             _services = serviceProvider;
+            _root = this;
+            _seenObjects = new(ReferenceEqualityComparer.Instance);
         }
 
 
@@ -224,7 +228,7 @@ public class ParameterizedResourceExtension : MarkupExtension
                 }
                 return result;
             }
-            catch(XamlParseException ex)
+            catch (XamlParseException ex)
             {
                 Console.WriteLine(ex);
                 throw;
@@ -237,117 +241,122 @@ public class ParameterizedResourceExtension : MarkupExtension
 
     private void WalkMarkup(MarkupObject mo, List<string> route)
     {
-        if (_seenObjects.Add(mo.Instance))
+        if (!_root!._seenObjects!.Add(mo.Instance))
         {
-            if (mo.Instance is DependencyObject dependencyObject)
-            {
-                foreach (
-                    PropertyDescriptor pd in TypeDescriptor.GetProperties(
-                        dependencyObject, new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }
-                    )
+            return;
+        }
+        if (mo.Instance is DependencyObject dependencyObject)
+        {
+            foreach (
+                PropertyDescriptor pd in TypeDescriptor.GetProperties(
+                    dependencyObject, new Attribute[] { new PropertyFilterAttribute(PropertyFilterOptions.All) }
                 )
+            )
+            {
+                bool isBinding = false;
+
+                if (pd.GetValue(dependencyObject) is object value)
                 {
-                    bool isBinding = false;
-
-                    if (pd.GetValue(dependencyObject) is object value)
+                    if (pd.PropertyType == typeof(BindingBase))
                     {
-                        if (pd.PropertyType == typeof(BindingBase))
+                        isBinding = true;
+                        if (value is Binding binding)
                         {
-                            isBinding = true;
-                            if (value is Binding binding)
-                            {
-                                OnBinding(binding, route);
-                            }
-                            else if (value is MultiBinding multiBinding)
-                            {
-                                OnBinding(multiBinding, route);
-                            }
+                            OnBinding(binding, route);
                         }
-                    }
-                    if (!isBinding)
-                    {
-                        DependencyPropertyDescriptor dpd =
-                            DependencyPropertyDescriptor.FromProperty(pd);
-
-                        if (dpd is { })
+                        else if (value is MultiBinding multiBinding)
                         {
-                            if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding1)
-                            {
-                                route.Add(pd.Name);
-                                OnBinding(binding1, route);
-                                route.RemoveAt(route.Count - 1);
-                            }
-                            else if (BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
-                            {
-                                route.Add(pd.Name);
-                                OnBinding(multiBinding, route);
-                                route.RemoveAt(route.Count - 1);
-                            }
+                            OnBinding(multiBinding, route);
                         }
                     }
                 }
-                if (dependencyObject is Visual visual)
+                if (!isBinding)
                 {
-                    int childrenCount = VisualTreeHelper.GetChildrenCount(visual);
-                    if (childrenCount > 0)
+                    DependencyPropertyDescriptor dpd =
+                        DependencyPropertyDescriptor.FromProperty(pd);
+
+                    if (dpd is { })
                     {
-                        for (int i = 0; i < childrenCount; ++i)
+                        if (BindingOperations.GetBinding(dependencyObject, dpd.DependencyProperty) is Binding binding1)
                         {
-                            DependencyObject child = VisualTreeHelper.GetChild(visual, i);
-                            route.Add(child.GetType().ToString());
-                            WalkMarkup(MarkupWriter.GetMarkupObjectFor(child), route);
+                            route.Add(pd.Name);
+                            OnBinding(binding1, route);
+                            route.RemoveAt(route.Count - 1);
+                        }
+                        else if (BindingOperations.GetMultiBinding(dependencyObject, dpd.DependencyProperty) is MultiBinding multiBinding)
+                        {
+                            route.Add(pd.Name);
+                            OnBinding(multiBinding, route);
                             route.RemoveAt(route.Count - 1);
                         }
                     }
                 }
             }
-            foreach (var prop in mo.Properties)
+            if (dependencyObject is Visual visual)
             {
-                if (prop.Value is BindingBase)
+                int childrenCount = VisualTreeHelper.GetChildrenCount(visual);
+                if (childrenCount > 0)
                 {
-                    OnBinding((BindingBase)prop.Value, route);
+                    for (int i = 0; i < childrenCount; ++i)
+                    {
+                        DependencyObject child = VisualTreeHelper.GetChild(visual, i);
+                        route.Add(child.GetType().ToString());
+                        WalkMarkup(MarkupWriter.GetMarkupObjectFor(child), route);
+                        route.RemoveAt(route.Count - 1);
+                    }
                 }
-                else
+            }
+        }
+        foreach (var prop in mo.Properties)
+        {
+            if (prop.Value is BindingBase)
+            {
+                OnBinding((BindingBase)prop.Value, route);
+            }
+            else
+            {
+                route.Add(prop.Name);
+                if (Verbose > 1)
                 {
-                    route.Add(prop.Name);
-                    if (Verbose > 1)
-                    {
-                        Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)}");
-                    }
-                    if (prop.DependencyProperty is { })
-                    {
-                        if (BindingOperations.GetBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is Binding binding)
-                        {
-                            OnBinding(binding, route);
-                        }
-                        else if (BindingOperations.GetMultiBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is MultiBinding multiBinding)
-                        {
-                            OnBinding(multiBinding, route);
-                        }
-                    }
-                    try
-                    {
-                        if (prop.IsComposite)
-                        {
-                            route[route.Count - 1] += "[]";
-                            foreach (var item in prop.Items)
-                            {
-                                WalkMarkup(item, route);
-                            }
-                        }
-                    }
-                    catch (NullReferenceException)
-                    {
-                        //Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)} NullReferenceException");
-                    }
-                    route.RemoveAt(route.Count - 1);
+                    Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)}");
                 }
+                if (prop.DependencyProperty is { })
+                {
+                    if (BindingOperations.GetBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is Binding binding)
+                    {
+                        OnBinding(binding, route);
+                    }
+                    else if (BindingOperations.GetMultiBinding((DependencyObject)mo.Instance, prop.DependencyProperty) is MultiBinding multiBinding)
+                    {
+                        OnBinding(multiBinding, route);
+                    }
+                }
+                try
+                {
+                    if (prop.IsComposite)
+                    {
+                        route[route.Count - 1] += "[]";
+                        foreach (var item in prop.Items)
+                        {
+                            WalkMarkup(item, route);
+                        }
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    //Console.WriteLine($"{_prompt} {prop.PropertyType} {string.Join('/', route)} NullReferenceException");
+                }
+                route.RemoveAt(route.Count - 1);
             }
         }
     }
 
     private void OnBinding(BindingBase bindingBase, List<string> route)
     {
+        if (!_root!._seenObjects!.Add(bindingBase))
+        {
+            return;
+        }
         if (bindingBase is Binding binding)
         {
             if (binding.ConverterParameter is string converterParameter && converterParameter.Contains('$'))
@@ -366,7 +375,18 @@ public class ParameterizedResourceExtension : MarkupExtension
                     newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
                 }
                 binding.ConverterParameter = newConverterParameter;
-                if (Verbose > 0)
+                if (newConverterParameter.Contains('$'))
+                {
+                    if (Strict)
+                    {
+                        throw new XamlParseException($"ConverterParameter parameter is not provided: {newConverterParameter} at {_value.ResourceKey}");
+                    }
+                    else if (Verbose > 0)
+                    {
+                        Console.WriteLine($" - is not provided! >");
+                    }
+                }
+                else if (Verbose > 0)
                 {
                     Console.WriteLine($" -> {binding.ConverterParameter} >");
                 }
@@ -483,7 +503,18 @@ public class ParameterizedResourceExtension : MarkupExtension
                     newConverterParameter = newConverterParameter.Replace(key, _defaults[key]);
                 }
                 multiBinding.ConverterParameter = newConverterParameter;
-                if (Verbose > 0)
+                if (newConverterParameter.Contains('$'))
+                {
+                    if (Strict)
+                    {
+                        throw new XamlParseException($"ConverterParameter parameter is not provided: {newConverterParameter} at {_value.ResourceKey}");
+                    }
+                    else if (Verbose > 0)
+                    {
+                        Console.WriteLine($" - is not provided! >");
+                    }
+                }
+                else if (Verbose > 0)
                 {
                     Console.WriteLine($" -> {multiBinding.ConverterParameter} >");
                 }
