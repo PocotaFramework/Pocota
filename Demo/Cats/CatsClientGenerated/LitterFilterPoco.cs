@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -31,7 +31,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
 
 #region Init Properties
 
-        public class FemaleProperty: Property
+        public class FemaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Female";
             public override bool IsReadOnly => false;
@@ -54,7 +54,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterILitterFilterProjection)target)._projector._initial_female : default!;
         }
 
-        public class MaleProperty: Property
+        public class MaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Male";
             public override bool IsReadOnly => false;
@@ -77,7 +77,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterILitterFilterProjection)target)._projector._initial_male : default!;
         }
 
-        public class StringsProperty: Property
+        public class StringsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Strings";
             public override bool IsReadOnly => false;
@@ -194,7 +194,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
     
 #region Init Properties
 
-    public class FemaleProperty: Property
+    public class FemaleProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Female";
         public override bool IsReadOnly => false;
@@ -217,7 +217,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterPoco)target)._initial_female : default!;
     }
 
-    public class MaleProperty: Property
+    public class MaleProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Male";
         public override bool IsReadOnly => false;
@@ -240,7 +240,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterFilterPoco)target)._initial_male : default!;
     }
 
-    public class StringsProperty: Property
+    public class StringsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Strings";
         public override bool IsReadOnly => false;

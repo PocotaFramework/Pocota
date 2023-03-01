@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -26,7 +26,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
 #region Init Properties
 
-        public class CodeProperty: Property
+        public class CodeProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Code";
             public override bool IsReadOnly => false;
@@ -48,7 +48,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override object? GetInitial(object target) => IsSet(target) ? ((BreedIBreedProjection)target)._projector._initial_code : default!;
         }
 
-        public class GroupProperty: Property
+        public class GroupProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Group";
             public override bool IsReadOnly => false;
@@ -70,7 +70,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override object? GetInitial(object target) => IsSet(target) ? ((BreedIBreedProjection)target)._projector._initial_group : default!;
         }
 
-        public class NameEngProperty: Property
+        public class NameEngProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "NameEng";
             public override bool IsReadOnly => false;
@@ -92,7 +92,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override object? GetInitial(object target) => IsSet(target) ? ((BreedIBreedProjection)target)._projector._initial_nameEng : default!;
         }
 
-        public class NameNatProperty: Property
+        public class NameNatProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "NameNat";
             public override bool IsReadOnly => false;
@@ -223,7 +223,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Init Properties
 
-    public class CodeProperty: Property
+    public class CodeProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Code";
         public override bool IsReadOnly => false;
@@ -245,7 +245,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override object? GetInitial(object target) => IsSet(target) ? ((BreedPoco)target)._initial_code : default!;
     }
 
-    public class GroupProperty: Property
+    public class GroupProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Group";
         public override bool IsReadOnly => false;
@@ -267,7 +267,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override object? GetInitial(object target) => IsSet(target) ? ((BreedPoco)target)._initial_group : default!;
     }
 
-    public class NameEngProperty: Property
+    public class NameEngProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "NameEng";
         public override bool IsReadOnly => false;
@@ -289,7 +289,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override object? GetInitial(object target) => IsSet(target) ? ((BreedPoco)target)._initial_nameEng : default!;
     }
 
-    public class NameNatProperty: Property
+    public class NameNatProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "NameNat";
         public override bool IsReadOnly => false;

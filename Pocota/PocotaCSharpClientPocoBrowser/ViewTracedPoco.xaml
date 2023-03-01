@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
-        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp" 
+        xmlns:l="clr-namespace:Net.Leksi.WpfMarkup;assembly=Net.Leksi.WpfMarkupExtension"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="{Binding Heart.Title}" 
         Height="450" Width="800"  DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -14,12 +14,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Dictionary1.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding ViewTracedPocoCommand}"/>
-            <local1:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Value="{Binding ClearPocoPropertyCommand}"/>
-            <local1:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
+            <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding ViewTracedPocoCommand}"/>
+            <l:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Value="{Binding ClearPocoPropertyCommand}"/>
+            <l:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
             <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
-                   BasedOn="{local1:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
+                   BasedOn="{l:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
                 <EventSetter Event="SelectionChanged" Handler="ComboBox_SelectionChanged"/>
             </Style>
             <Style TargetType="TextBlock" x:Key="ModifiedPropertyStyle" x:Shared="False">
@@ -49,10 +49,12 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10"/>
             <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
-                     Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}">Принять изменения</Button>
+                     Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}">
+                Принять изменения
+            </Button>
             <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}">Отменить изменения</Button>
         </StackPanel>
-        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{local1:ParameterizedResource PrimaryKeyStyle}">
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{l:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Ключ" Binding="{Binding Item1}"/>
@@ -65,37 +67,50 @@
                 <DataTemplate x:Key="Name">
                     <TextBlock Text="{Binding Name}" Style="{StaticResource ModifiedPropertyStyle}"/>
                 </DataTemplate>
-                <x:Array Type="sys:String" x:Key="ViewTracedPocoDataTemplateSelectorInitialReplaces">
-                    <sys:String>$path:Initial</sys:String>
-                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
-                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
-                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
-                </x:Array>
-                <x:Array Type="sys:String" x:Key="ViewTracedPocoDataTemplateSelectorCurrentReplaces">
-                    <sys:String>$path:Current</sys:String>
-                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
-                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
-                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
-                </x:Array>
-                <x:Array Type="sys:String" x:Key="EditTracedPocoDataTemplateSelectorReplaces">
-                    <sys:String>$path:Current</sys:String>
-                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
-                    <sys:String>$AddNewPocoPropertyCommandProxy:AddNewPocoPropertyCommandProxy</sys:String>
-                    <sys:String>$ClearPocoPropertyCommandProxy:ClearPocoPropertyCommandProxy</sys:String>
-                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
-                </x:Array>
             </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Свойство" CellTemplate="{StaticResource Name}"/>
-                <DataGridTemplateColumn Header="Исходное значение" 
-                    CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, 
-                        Replaces={StaticResource ViewTracedPocoDataTemplateSelectorInitialReplaces}}"/>
-                <DataGridTemplateColumn Header="Текущее значение" 
-                    CellTemplateSelector="{local1:ParameterizedResource ViewTracedPocoDataTemplateSelector, 
-                        Replaces={StaticResource ViewTracedPocoDataTemplateSelectorCurrentReplaces}}" 
-                    CellEditingTemplateSelector="{local1:ParameterizedResource EditTracedPocoDataTemplateSelector, 
-                        Replaces={StaticResource EditTracedPocoDataTemplateSelectorReplaces}}"
-                />
+                <DataGridTemplateColumn Header="Исходное значение">
+                    <DataGridTemplateColumn.CellTemplateSelector>
+                        <l:ParameterizedResource ResourceKey="ViewTracedPocoDataTemplateSelector">
+                            <l:ParameterizedResource.Replaces>
+                                <x:Array Type="sys:String">
+                                    <sys:String>$path:Initial</sys:String>
+                                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
+                                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
+                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                </x:Array>
+                            </l:ParameterizedResource.Replaces>
+                        </l:ParameterizedResource>
+                    </DataGridTemplateColumn.CellTemplateSelector>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Текущее значение">
+                    <DataGridTemplateColumn.CellTemplateSelector>
+                        <l:ParameterizedResource ResourceKey="ViewTracedPocoDataTemplateSelector">
+                            <l:ParameterizedResource.Replaces>
+                                <x:Array Type="sys:String">
+                                    <sys:String>$path:Current</sys:String>
+                                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
+                                    <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
+                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                </x:Array>
+                            </l:ParameterizedResource.Replaces>
+                        </l:ParameterizedResource>
+                    </DataGridTemplateColumn.CellTemplateSelector>
+                    <DataGridTemplateColumn.CellEditingTemplateSelector>
+                        <l:ParameterizedResource ResourceKey="EditTracedPocoDataTemplateSelector">
+                            <l:ParameterizedResource.Replaces>
+                                <x:Array Type="sys:String">
+                                    <sys:String>$path:Current</sys:String>
+                                    <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
+                                    <sys:String>$AddNewPocoPropertyCommandProxy:AddNewPocoPropertyCommandProxy</sys:String>
+                                    <sys:String>$ClearPocoPropertyCommandProxy:ClearPocoPropertyCommandProxy</sys:String>
+                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                </x:Array>
+                            </l:ParameterizedResource.Replaces>
+                        </l:ParameterizedResource>
+                    </DataGridTemplateColumn.CellEditingTemplateSelector>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

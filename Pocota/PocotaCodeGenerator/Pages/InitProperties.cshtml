@@ -11,18 +11,18 @@
 @foreach (PropertyModel pm in Model.Properties)
 {
     string fieldName = $"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}";
-    <text>    @Html.Raw(indent)public class @Html.Raw($"{pm.Name}Property"): @if(!Model.IsClient){<text>I</text>}Property
+    <text>    @Html.Raw(indent)public class @Html.Raw($"{pm.Name}Property"): Net.Leksi.Pocota.@if(Model.IsClient){<text>Client</text>}else{<text>Common</text>}.Property
     @Html.Raw(indent){
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}string Name => "@pm.Name";
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsReadOnly => @Html.Raw(pm.IsReadOnly ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsNullable => @Html.Raw(pm.IsNullable ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsPoco =>  @Html.Raw(pm.IsPoco && !pm.IsList ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsEntity => @Html.Raw(pm.IsEntity && !pm.IsList ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsKeyPart => @Html.Raw(pm.IsKeyPart ? "true" : "false");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}Type Type => typeof(@Html.Raw(pm.Type));
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}bool IsSet(object target) => @if(Model.IsEntity)
+        @Html.Raw(indent)public override string Name => "@pm.Name";
+        @Html.Raw(indent)public override bool IsReadOnly => @Html.Raw(pm.IsReadOnly ? "true" : "false");
+        @Html.Raw(indent)public override bool IsNullable => @Html.Raw(pm.IsNullable ? "true" : "false");
+        @Html.Raw(indent)public override bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public override bool IsPoco =>  @Html.Raw(pm.IsPoco && !pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public override bool IsEntity => @Html.Raw(pm.IsEntity && !pm.IsList ? "true" : "false");
+        @Html.Raw(indent)public override bool IsKeyPart => @Html.Raw(pm.IsKeyPart ? "true" : "false");
+        @Html.Raw(indent)public override Type Type => typeof(@Html.Raw(pm.Type));
+        @Html.Raw(indent)public override Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
+        @Html.Raw(indent)public override bool IsSet(object target) => @if(Model.IsEntity)
         {
             <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.{(Model.IsClient ? $"Is{pm.Name}Set()" : $"_is_set{fieldName}")}")</text>
         }
@@ -30,8 +30,8 @@
         {
             <text>true</text>
         };
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}object? Get(object target) => @Html.Raw($"(({Model.ClassName})target).{pm.Name}");
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Touch(object target) @if(Model.IsEntity)
+        @Html.Raw(indent)public override object? Get(object target) => @Html.Raw($"(({Model.ClassName})target).{pm.Name}");
+        @Html.Raw(indent)public override void Touch(object target) @if(Model.IsEntity)
         {
             <text>=> @Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}._is_set{fieldName} = true");
 </text>
@@ -42,7 +42,7 @@
         @Html.Raw(indent){ }
 </text>
         }
-        @Html.Raw(indent)public @if(Model.IsClient){<text>override </text>}void Set(object target, object? value) => @if(!pm.IsList)
+        @Html.Raw(indent)public override void Set(object target, object? value) => @if(!pm.IsList)
             {
                 if(pm.IsReadOnly)
                 {

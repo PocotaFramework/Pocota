@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-02-27T16:24:13                                          //
+// at 2023-03-01T16:13:01                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -32,7 +32,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
 
 #region Init Properties
 
-        public class AllBreedsProperty: Property
+        public class AllBreedsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "AllBreeds";
             public override bool IsReadOnly => true;
@@ -55,7 +55,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_allBreeds : default!;
         }
 
-        public class AllBreedsCountProperty: Property
+        public class AllBreedsCountProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "AllBreedsCount";
             public override bool IsReadOnly => true;
@@ -78,7 +78,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_allBreedsCount : default!;
         }
 
-        public class AllCatteriesProperty: Property
+        public class AllCatteriesProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "AllCatteries";
             public override bool IsReadOnly => true;
@@ -101,7 +101,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_allCatteries : default!;
         }
 
-        public class AllCatteriesCountProperty: Property
+        public class AllCatteriesCountProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "AllCatteriesCount";
             public override bool IsReadOnly => true;
@@ -124,7 +124,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_allCatteriesCount : default!;
         }
 
-        public class BreedsCountProperty: Property
+        public class BreedsCountProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "BreedsCount";
             public override bool IsReadOnly => true;
@@ -147,7 +147,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_breedsCount : default!;
         }
 
-        public class CatteriesCountProperty: Property
+        public class CatteriesCountProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "CatteriesCount";
             public override bool IsReadOnly => true;
@@ -170,7 +170,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_catteriesCount : default!;
         }
 
-        public class GetCatsTimeSpentProperty: Property
+        public class GetCatsTimeSpentProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "GetCatsTimeSpent";
             public override bool IsReadOnly => false;
@@ -193,7 +193,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_getCatsTimeSpent : default!;
         }
 
-        public class IsCatSelectedProperty: Property
+        public class IsCatSelectedProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "IsCatSelected";
             public override bool IsReadOnly => false;
@@ -216,7 +216,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_isCatSelected : default!;
         }
 
-        public class RenderingCatsTimeSpentProperty: Property
+        public class RenderingCatsTimeSpentProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "RenderingCatsTimeSpent";
             public override bool IsReadOnly => false;
@@ -239,7 +239,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_renderingCatsTimeSpent : default!;
         }
 
-        public class CatFilterProperty: Property
+        public class CatFilterProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "CatFilter";
             public override bool IsReadOnly => true;
@@ -262,7 +262,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_catFilter : default!;
         }
 
-        public class SelectedCatProperty: Property
+        public class SelectedCatProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "SelectedCat";
             public override bool IsReadOnly => false;
@@ -285,7 +285,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_selectedCat : default!;
         }
 
-        public class BreedsProperty: Property
+        public class BreedsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Breeds";
             public override bool IsReadOnly => true;
@@ -308,7 +308,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_breeds : default!;
         }
 
-        public class CatsProperty: Property
+        public class CatsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Cats";
             public override bool IsReadOnly => true;
@@ -331,7 +331,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_cats : default!;
         }
 
-        public class CatteriesProperty: Property
+        public class CatteriesProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Catteries";
             public override bool IsReadOnly => true;
@@ -354,7 +354,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartIMainWindowHeartProjection)target)._projector._initial_catteries : default!;
         }
 
-        public class SelectedCatsProperty: Property
+        public class SelectedCatsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "SelectedCats";
             public override bool IsReadOnly => false;
@@ -605,7 +605,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
     
 #region Init Properties
 
-    public class AllBreedsProperty: Property
+    public class AllBreedsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "AllBreeds";
         public override bool IsReadOnly => false;
@@ -628,7 +628,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_allBreeds : default!;
     }
 
-    public class AllBreedsCountProperty: Property
+    public class AllBreedsCountProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "AllBreedsCount";
         public override bool IsReadOnly => false;
@@ -651,7 +651,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_allBreedsCount : default!;
     }
 
-    public class AllCatteriesProperty: Property
+    public class AllCatteriesProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "AllCatteries";
         public override bool IsReadOnly => false;
@@ -674,7 +674,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_allCatteries : default!;
     }
 
-    public class AllCatteriesCountProperty: Property
+    public class AllCatteriesCountProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "AllCatteriesCount";
         public override bool IsReadOnly => false;
@@ -697,7 +697,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_allCatteriesCount : default!;
     }
 
-    public class BreedsCountProperty: Property
+    public class BreedsCountProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "BreedsCount";
         public override bool IsReadOnly => false;
@@ -720,7 +720,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_breedsCount : default!;
     }
 
-    public class CatteriesCountProperty: Property
+    public class CatteriesCountProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "CatteriesCount";
         public override bool IsReadOnly => false;
@@ -743,7 +743,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_catteriesCount : default!;
     }
 
-    public class GetCatsTimeSpentProperty: Property
+    public class GetCatsTimeSpentProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "GetCatsTimeSpent";
         public override bool IsReadOnly => false;
@@ -766,7 +766,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_getCatsTimeSpent : default!;
     }
 
-    public class IsCatSelectedProperty: Property
+    public class IsCatSelectedProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "IsCatSelected";
         public override bool IsReadOnly => false;
@@ -789,7 +789,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_isCatSelected : default!;
     }
 
-    public class RenderingCatsTimeSpentProperty: Property
+    public class RenderingCatsTimeSpentProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "RenderingCatsTimeSpent";
         public override bool IsReadOnly => false;
@@ -812,7 +812,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_renderingCatsTimeSpent : default!;
     }
 
-    public class CatFilterProperty: Property
+    public class CatFilterProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "CatFilter";
         public override bool IsReadOnly => false;
@@ -835,7 +835,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_catFilter : default!;
     }
 
-    public class SelectedCatProperty: Property
+    public class SelectedCatProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "SelectedCat";
         public override bool IsReadOnly => false;
@@ -858,7 +858,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_selectedCat : default!;
     }
 
-    public class BreedsProperty: Property
+    public class BreedsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Breeds";
         public override bool IsReadOnly => false;
@@ -881,7 +881,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_breeds : default!;
     }
 
-    public class CatsProperty: Property
+    public class CatsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Cats";
         public override bool IsReadOnly => false;
@@ -904,7 +904,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_cats : default!;
     }
 
-    public class CatteriesProperty: Property
+    public class CatteriesProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Catteries";
         public override bool IsReadOnly => false;
@@ -927,7 +927,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
         public override object? GetInitial(object target) => IsSet(target) ? ((MainWindowHeartPoco)target)._initial_catteries : default!;
     }
 
-    public class SelectedCatsProperty: Property
+    public class SelectedCatsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "SelectedCats";
         public override bool IsReadOnly => false;

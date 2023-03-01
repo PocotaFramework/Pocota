@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -26,7 +26,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
 
 #region Init Properties
 
-        public class SearchRegexProperty: Property
+        public class SearchRegexProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "SearchRegex";
             public override bool IsReadOnly => false;
@@ -125,7 +125,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
     
 #region Init Properties
 
-    public class SearchRegexProperty: Property
+    public class SearchRegexProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "SearchRegex";
         public override bool IsReadOnly => false;

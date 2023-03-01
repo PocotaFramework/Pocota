@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
-        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
+        xmlns:l="clr-namespace:Net.Leksi.WpfMarkup;assembly=Net.Leksi.WpfMarkupExtension"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="Обозреватель POCO" Height="450" Width="800" DataContext="{Binding RelativeSource={RelativeSource Self}}" WindowState="Maximized">
@@ -15,8 +15,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!--<local1:BindingProxy x:Key="CancelChangesCommandProxy" Value="{Binding Path=CancelChangesCommand}"/>-->
-            <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand}"/>
-            <local1:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand}"/>
+            <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand}"/>
+            <l:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand}"/>
             <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
         </ResourceDictionary>
     </Window.Resources>
@@ -77,7 +77,7 @@
                                     </DataTrigger>
                                 </Style.Triggers>
                                 <Setter Property="ItemTemplate" 
-                                        Value="{local1:ParameterizedResource ViewCollectionItemTemplate, 
+                                        Value="{l:ParameterizedResource ViewCollectionItemTemplate, 
                                             Replaces={StaticResource Replaces}}"/>
                             </Style>
                             <DataTemplate x:Key="CountDataTemplate">
@@ -85,17 +85,13 @@
                                     <TextBlock Style="{StaticResource TextBlockStyle}" Text="{Binding Count}"/>
                                     <ComboBox Style="{StaticResource ComboBoxStyle}" 
                                             ItemsSource="{Binding Items}"
-                                            DropDownClosed="ComboBox_DropDownClosed"
-                                            >
+                                            DropDownClosed="ComboBox_DropDownClosed">
                                     </ComboBox>
                                 </StackPanel>
                             </DataTemplate>
                             <DataTemplate x:Key="ActionsDataTemplate">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Click="Button_Click_1">
-                                        <Button.Content>👁</Button.Content>
-                                        <Button.ToolTip>Посмотреть</Button.ToolTip>
-                                    </Button>
+                                    <Button Click="Button_Click_1" Style="{StaticResource ViewVisualButtonStyle}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGrid.Resources>
@@ -122,8 +118,8 @@
                                     Visibility="{Binding Item, Converter={local:TracedPocosConverter}, ConverterParameter=VisibleIfIsEntity}">
                                         <Button.Content>Отменить изменения</Button.Content>
                                     </Button>
-                                    <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}">
-                                        <Button.Content>👁</Button.Content>
+                                    <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}"
+                                            Style="{StaticResource ViewVisualButtonStyle}">
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
@@ -163,8 +159,8 @@
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}">
-                                        <Button.Content>👁</Button.Content>
+                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}"
+                                            Style="{StaticResource ViewVisualButtonStyle}">
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>

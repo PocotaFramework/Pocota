@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -29,274 +29,274 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
 
 #region Init Properties
 
-        public class BornAfterProperty: IProperty
+        public class BornAfterProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "BornAfter";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).BornAfter;
-            public void Touch(object target) 
+            public override string Name => "BornAfter";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornAfter;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter(Convert<DateOnly>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter(Convert<DateOnly>(value));
         }
 
-        public class BornBeforeProperty: IProperty
+        public class BornBeforeProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "BornBefore";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(DateOnly);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).BornBefore;
-            public void Touch(object target) 
+            public override string Name => "BornBefore";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(DateOnly);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornBefore;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore(Convert<DateOnly>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore(Convert<DateOnly>(value));
         }
 
-        public class ExteriorRegexProperty: IProperty
+        public class ExteriorRegexProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "ExteriorRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).ExteriorRegex;
-            public void Touch(object target) 
+            public override string Name => "ExteriorRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).ExteriorRegex;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex(Convert<String>(value));
         }
 
-        public class GenderProperty: IProperty
+        public class GenderProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Gender";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(Gender);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Gender;
-            public void Touch(object target) 
+            public override string Name => "Gender";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(Gender);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Gender;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender(Convert<Gender>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender(Convert<Gender>(value));
         }
 
-        public class NameRegexProperty: IProperty
+        public class NameRegexProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "NameRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).NameRegex;
-            public void Touch(object target) 
+            public override string Name => "NameRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).NameRegex;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex(Convert<String>(value));
         }
 
-        public class TitleRegexProperty: IProperty
+        public class TitleRegexProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "TitleRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).TitleRegex;
-            public void Touch(object target) 
+            public override string Name => "TitleRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).TitleRegex;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex(Convert<String>(value));
         }
 
-        public class AncestorProperty: IProperty
+        public class AncestorProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Ancestor";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Ancestor;
-            public void Touch(object target) 
+            public override string Name => "Ancestor";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Ancestor;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetAncestor(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetAncestor(((IProjection?)value)?.As<ICat>()!);
         }
 
-        public class BreedProperty: IProperty
+        public class BreedProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Breed";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(IBreed);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Breed;
-            public void Touch(object target) 
+            public override string Name => "Breed";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(IBreed);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Breed;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBreed(((IProjection?)value)?.As<IBreed>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBreed(((IProjection?)value)?.As<IBreed>()!);
         }
 
-        public class CatteryProperty: IProperty
+        public class CatteryProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Cattery";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICattery);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Cattery;
-            public void Touch(object target) 
+            public override string Name => "Cattery";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICattery);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Cattery;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetCattery(((IProjection?)value)?.As<ICattery>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetCattery(((IProjection?)value)?.As<ICattery>()!);
         }
 
-        public class ChildProperty: IProperty
+        public class ChildProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Child";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Child;
-            public void Touch(object target) 
+            public override string Name => "Child";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Child;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetChild(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetChild(((IProjection?)value)?.As<ICat>()!);
         }
 
-        public class DescendantProperty: IProperty
+        public class DescendantProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Descendant";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Descendant;
-            public void Touch(object target) 
+            public override string Name => "Descendant";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Descendant;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetDescendant(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetDescendant(((IProjection?)value)?.As<ICat>()!);
         }
 
-        public class FatherProperty: IProperty
+        public class FatherProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Father";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Father;
-            public void Touch(object target) 
+            public override string Name => "Father";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Father;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetFather(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetFather(((IProjection?)value)?.As<ICat>()!);
         }
 
-        public class LitterProperty: IProperty
+        public class LitterProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Litter";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ILitter);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Litter;
-            public void Touch(object target) 
+            public override string Name => "Litter";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ILitter);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Litter;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetLitter(((IProjection?)value)?.As<ILitter>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetLitter(((IProjection?)value)?.As<ILitter>()!);
         }
 
-        public class MotherProperty: IProperty
+        public class MotherProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Mother";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Mother;
-            public void Touch(object target) 
+            public override string Name => "Mother";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Mother;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetMother(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetMother(((IProjection?)value)?.As<ICat>()!);
         }
 
-        public class SelfProperty: IProperty
+        public class SelfProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Self";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  true;
-            public bool IsEntity => true;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(ICat);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((CatFilterICatFilterProjection)target).Self;
-            public void Touch(object target) 
+            public override string Name => "Self";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  true;
+            public override bool IsEntity => true;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(ICat);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Self;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetSelf(((IProjection?)value)?.As<ICat>()!);
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetSelf(((IProjection?)value)?.As<ICat>()!);
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -510,274 +510,274 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
     
 #region Init Properties
 
-    public class BornAfterProperty: IProperty
+    public class BornAfterProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "BornAfter";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(DateOnly);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).BornAfter;
-        public void Touch(object target) 
+        public override string Name => "BornAfter";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(DateOnly);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).BornAfter;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter(Convert<DateOnly>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter(Convert<DateOnly>(value));
     }
 
-    public class BornBeforeProperty: IProperty
+    public class BornBeforeProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "BornBefore";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(DateOnly);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).BornBefore;
-        public void Touch(object target) 
+        public override string Name => "BornBefore";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(DateOnly);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).BornBefore;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore(Convert<DateOnly>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore(Convert<DateOnly>(value));
     }
 
-    public class ExteriorRegexProperty: IProperty
+    public class ExteriorRegexProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "ExteriorRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
-        public void Touch(object target) 
+        public override string Name => "ExteriorRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex(Convert<String>(value));
     }
 
-    public class GenderProperty: IProperty
+    public class GenderProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Gender";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(Gender);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Gender;
-        public void Touch(object target) 
+        public override string Name => "Gender";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(Gender);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Gender;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetGender(Convert<Gender>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetGender(Convert<Gender>(value));
     }
 
-    public class NameRegexProperty: IProperty
+    public class NameRegexProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "NameRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).NameRegex;
-        public void Touch(object target) 
+        public override string Name => "NameRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).NameRegex;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex(Convert<String>(value));
     }
 
-    public class TitleRegexProperty: IProperty
+    public class TitleRegexProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "TitleRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
-        public void Touch(object target) 
+        public override string Name => "TitleRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex(Convert<String>(value));
     }
 
-    public class AncestorProperty: IProperty
+    public class AncestorProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Ancestor";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Ancestor;
-        public void Touch(object target) 
+        public override string Name => "Ancestor";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Ancestor;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetAncestor(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetAncestor(((IProjection?)value)?.As<CatPoco>()!);
     }
 
-    public class BreedProperty: IProperty
+    public class BreedProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Breed";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(BreedPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Breed;
-        public void Touch(object target) 
+        public override string Name => "Breed";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(BreedPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Breed;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBreed(((IProjection?)value)?.As<BreedPoco>()!);
     }
 
-    public class CatteryProperty: IProperty
+    public class CatteryProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Cattery";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatteryPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Cattery;
-        public void Touch(object target) 
+        public override string Name => "Cattery";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatteryPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Cattery;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetCattery(((IProjection?)value)?.As<CatteryPoco>()!);
     }
 
-    public class ChildProperty: IProperty
+    public class ChildProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Child";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Child;
-        public void Touch(object target) 
+        public override string Name => "Child";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Child;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetChild(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetChild(((IProjection?)value)?.As<CatPoco>()!);
     }
 
-    public class DescendantProperty: IProperty
+    public class DescendantProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Descendant";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Descendant;
-        public void Touch(object target) 
+        public override string Name => "Descendant";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Descendant;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetDescendant(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetDescendant(((IProjection?)value)?.As<CatPoco>()!);
     }
 
-    public class FatherProperty: IProperty
+    public class FatherProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Father";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Father;
-        public void Touch(object target) 
+        public override string Name => "Father";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Father;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetFather(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetFather(((IProjection?)value)?.As<CatPoco>()!);
     }
 
-    public class LitterProperty: IProperty
+    public class LitterProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Litter";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(LitterPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Litter;
-        public void Touch(object target) 
+        public override string Name => "Litter";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(LitterPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Litter;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetLitter(((IProjection?)value)?.As<LitterPoco>()!);
     }
 
-    public class MotherProperty: IProperty
+    public class MotherProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Mother";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Mother;
-        public void Touch(object target) 
+        public override string Name => "Mother";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Mother;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetMother(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetMother(((IProjection?)value)?.As<CatPoco>()!);
     }
 
-    public class SelfProperty: IProperty
+    public class SelfProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Self";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  true;
-        public bool IsEntity => true;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(CatPoco);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((CatFilterPoco)target).Self;
-        public void Touch(object target) 
+        public override string Name => "Self";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  true;
+        public override bool IsEntity => true;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(CatPoco);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((CatFilterPoco)target).Self;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((CatFilterPoco)target).SetSelf(((IProjection?)value)?.As<CatPoco>()!);
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetSelf(((IProjection?)value)?.As<CatPoco>()!);
     }
 
     public static void InitProperties(List<IProperty> properties)

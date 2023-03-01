@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -28,7 +28,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
 
 #region Init Properties
 
-        public class BornAfterProperty: Property
+        public class BornAfterProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "BornAfter";
             public override bool IsReadOnly => false;
@@ -51,7 +51,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_bornAfter : default!;
         }
 
-        public class BornBeforeProperty: Property
+        public class BornBeforeProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "BornBefore";
             public override bool IsReadOnly => false;
@@ -74,7 +74,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_bornBefore : default!;
         }
 
-        public class ExteriorRegexProperty: Property
+        public class ExteriorRegexProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "ExteriorRegex";
             public override bool IsReadOnly => false;
@@ -97,7 +97,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_exteriorRegex : default!;
         }
 
-        public class GenderProperty: Property
+        public class GenderProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Gender";
             public override bool IsReadOnly => false;
@@ -120,7 +120,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_gender : default!;
         }
 
-        public class NameRegexProperty: Property
+        public class NameRegexProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "NameRegex";
             public override bool IsReadOnly => false;
@@ -143,7 +143,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_nameRegex : default!;
         }
 
-        public class TitleRegexProperty: Property
+        public class TitleRegexProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "TitleRegex";
             public override bool IsReadOnly => false;
@@ -166,7 +166,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_titleRegex : default!;
         }
 
-        public class AncestorProperty: Property
+        public class AncestorProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Ancestor";
             public override bool IsReadOnly => false;
@@ -189,7 +189,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_ancestor : default!;
         }
 
-        public class BreedProperty: Property
+        public class BreedProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Breed";
             public override bool IsReadOnly => false;
@@ -212,7 +212,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_breed : default!;
         }
 
-        public class CatteryProperty: Property
+        public class CatteryProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Cattery";
             public override bool IsReadOnly => false;
@@ -235,7 +235,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_cattery : default!;
         }
 
-        public class ChildProperty: Property
+        public class ChildProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Child";
             public override bool IsReadOnly => false;
@@ -258,7 +258,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_child : default!;
         }
 
-        public class DescendantProperty: Property
+        public class DescendantProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Descendant";
             public override bool IsReadOnly => false;
@@ -281,7 +281,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_descendant : default!;
         }
 
-        public class FatherProperty: Property
+        public class FatherProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Father";
             public override bool IsReadOnly => false;
@@ -304,7 +304,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_father : default!;
         }
 
-        public class LitterProperty: Property
+        public class LitterProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Litter";
             public override bool IsReadOnly => false;
@@ -327,7 +327,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_litter : default!;
         }
 
-        public class MotherProperty: Property
+        public class MotherProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Mother";
             public override bool IsReadOnly => false;
@@ -350,7 +350,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterICatFilterProjection)target)._projector._initial_mother : default!;
         }
 
-        public class SelfProperty: Property
+        public class SelfProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Self";
             public override bool IsReadOnly => false;
@@ -603,7 +603,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
     
 #region Init Properties
 
-    public class BornAfterProperty: Property
+    public class BornAfterProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "BornAfter";
         public override bool IsReadOnly => false;
@@ -626,7 +626,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_bornAfter : default!;
     }
 
-    public class BornBeforeProperty: Property
+    public class BornBeforeProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "BornBefore";
         public override bool IsReadOnly => false;
@@ -649,7 +649,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_bornBefore : default!;
     }
 
-    public class ExteriorRegexProperty: Property
+    public class ExteriorRegexProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "ExteriorRegex";
         public override bool IsReadOnly => false;
@@ -672,7 +672,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_exteriorRegex : default!;
     }
 
-    public class GenderProperty: Property
+    public class GenderProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Gender";
         public override bool IsReadOnly => false;
@@ -695,7 +695,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_gender : default!;
     }
 
-    public class NameRegexProperty: Property
+    public class NameRegexProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "NameRegex";
         public override bool IsReadOnly => false;
@@ -718,7 +718,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_nameRegex : default!;
     }
 
-    public class TitleRegexProperty: Property
+    public class TitleRegexProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "TitleRegex";
         public override bool IsReadOnly => false;
@@ -741,7 +741,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_titleRegex : default!;
     }
 
-    public class AncestorProperty: Property
+    public class AncestorProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Ancestor";
         public override bool IsReadOnly => false;
@@ -764,7 +764,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_ancestor : default!;
     }
 
-    public class BreedProperty: Property
+    public class BreedProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Breed";
         public override bool IsReadOnly => false;
@@ -787,7 +787,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_breed : default!;
     }
 
-    public class CatteryProperty: Property
+    public class CatteryProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Cattery";
         public override bool IsReadOnly => false;
@@ -810,7 +810,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_cattery : default!;
     }
 
-    public class ChildProperty: Property
+    public class ChildProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Child";
         public override bool IsReadOnly => false;
@@ -833,7 +833,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_child : default!;
     }
 
-    public class DescendantProperty: Property
+    public class DescendantProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Descendant";
         public override bool IsReadOnly => false;
@@ -856,7 +856,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_descendant : default!;
     }
 
-    public class FatherProperty: Property
+    public class FatherProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Father";
         public override bool IsReadOnly => false;
@@ -879,7 +879,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_father : default!;
     }
 
-    public class LitterProperty: Property
+    public class LitterProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Litter";
         public override bool IsReadOnly => false;
@@ -902,7 +902,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_litter : default!;
     }
 
-    public class MotherProperty: Property
+    public class MotherProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Mother";
         public override bool IsReadOnly => false;
@@ -925,7 +925,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override object? GetInitial(object target) => IsSet(target) ? ((CatFilterPoco)target)._initial_mother : default!;
     }
 
-    public class SelfProperty: Property
+    public class SelfProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Self";
         public override bool IsReadOnly => false;

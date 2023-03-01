@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -28,38 +28,38 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
 #region Init Properties
 
-        public class NameEngProperty: IProperty
+        public class NameEngProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "NameEng";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
-            public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng(Convert<String>(value));
+            public override string Name => "NameEng";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
+            public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng(Convert<String>(value));
         }
 
-        public class NameNatProperty: IProperty
+        public class NameNatProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "NameNat";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
-            public void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat(Convert<String>(value));
+            public override string Name => "NameNat";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat;
+            public override object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
+            public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat(Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -130,38 +130,38 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Init Properties
 
-    public class NameEngProperty: IProperty
+    public class NameEngProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "NameEng";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
-        public object? Get(object target) => ((CatteryPoco)target).NameEng;
-        public void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng(Convert<String>(value));
+        public override string Name => "NameEng";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameEng;
+        public override object? Get(object target) => ((CatteryPoco)target).NameEng;
+        public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng(Convert<String>(value));
     }
 
-    public class NameNatProperty: IProperty
+    public class NameNatProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "NameNat";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
-        public object? Get(object target) => ((CatteryPoco)target).NameNat;
-        public void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat(Convert<String>(value));
+        public override string Name => "NameNat";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((CatteryPoco)target)._is_set_nameNat;
+        public override object? Get(object target) => ((CatteryPoco)target).NameNat;
+        public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat(Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

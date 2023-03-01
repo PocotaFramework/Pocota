@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -26,7 +26,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
 
 #region Init Properties
 
-        public class NameEngProperty: Property
+        public class NameEngProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "NameEng";
             public override bool IsReadOnly => false;
@@ -48,7 +48,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override object? GetInitial(object target) => IsSet(target) ? ((CatteryICatteryProjection)target)._projector._initial_nameEng : default!;
         }
 
-        public class NameNatProperty: Property
+        public class NameNatProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "NameNat";
             public override bool IsReadOnly => false;
@@ -157,7 +157,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Init Properties
 
-    public class NameEngProperty: Property
+    public class NameEngProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "NameEng";
         public override bool IsReadOnly => false;
@@ -179,7 +179,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override object? GetInitial(object target) => IsSet(target) ? ((CatteryPoco)target)._initial_nameEng : default!;
     }
 
-    public class NameNatProperty: Property
+    public class NameNatProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "NameNat";
         public override bool IsReadOnly => false;

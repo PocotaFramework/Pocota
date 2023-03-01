@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -30,7 +30,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: Property
+        public class DateProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Date";
             public override bool IsReadOnly => false;
@@ -52,7 +52,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterProjection)target)._projector._initial_date : default!;
         }
 
-        public class OrderProperty: Property
+        public class OrderProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Order";
             public override bool IsReadOnly => false;
@@ -74,7 +74,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterProjection)target)._projector._initial_order : default!;
         }
 
-        public class FemaleProperty: Property
+        public class FemaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Female";
             public override bool IsReadOnly => false;
@@ -96,7 +96,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterProjection)target)._projector._initial_female : default!;
         }
 
-        public class MaleProperty: Property
+        public class MaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Male";
             public override bool IsReadOnly => false;
@@ -118,7 +118,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterProjection)target)._projector._initial_male : default!;
         }
 
-        public class StringsProperty: Property
+        public class StringsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Strings";
             public override bool IsReadOnly => true;
@@ -140,7 +140,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterProjection)target)._projector._initial_strings : default!;
         }
 
-        public class CatsProperty: Property
+        public class CatsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Cats";
             public override bool IsReadOnly => true;
@@ -289,7 +289,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: Property
+        public class DateProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Date";
             public override bool IsReadOnly => true;
@@ -311,7 +311,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterForCatProjection)target)._projector._initial_date : default!;
         }
 
-        public class OrderProperty: Property
+        public class OrderProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Order";
             public override bool IsReadOnly => true;
@@ -333,7 +333,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterForCatProjection)target)._projector._initial_order : default!;
         }
 
-        public class FemaleProperty: Property
+        public class FemaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Female";
             public override bool IsReadOnly => true;
@@ -355,7 +355,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterForCatProjection)target)._projector._initial_female : default!;
         }
 
-        public class MaleProperty: Property
+        public class MaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Male";
             public override bool IsReadOnly => true;
@@ -377,7 +377,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterForCatProjection)target)._projector._initial_male : default!;
         }
 
-        public class CatsProperty: Property
+        public class CatsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Cats";
             public override bool IsReadOnly => true;
@@ -516,7 +516,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class DateProperty: Property
+        public class DateProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Date";
             public override bool IsReadOnly => true;
@@ -615,7 +615,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
 
 #region Init Properties
 
-        public class FemaleProperty: Property
+        public class FemaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Female";
             public override bool IsReadOnly => true;
@@ -637,7 +637,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterWithCatsProjection)target)._projector._initial_female : default!;
         }
 
-        public class MaleProperty: Property
+        public class MaleProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Male";
             public override bool IsReadOnly => true;
@@ -659,7 +659,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override object? GetInitial(object target) => IsSet(target) ? ((LitterILitterWithCatsProjection)target)._projector._initial_male : default!;
         }
 
-        public class CatsProperty: Property
+        public class CatsProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "Cats";
             public override bool IsReadOnly => true;
@@ -776,7 +776,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     
 #region Init Properties
 
-    public class DateProperty: Property
+    public class DateProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Date";
         public override bool IsReadOnly => false;
@@ -798,7 +798,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterPoco)target)._initial_date : default!;
     }
 
-    public class OrderProperty: Property
+    public class OrderProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Order";
         public override bool IsReadOnly => false;
@@ -820,7 +820,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterPoco)target)._initial_order : default!;
     }
 
-    public class FemaleProperty: Property
+    public class FemaleProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Female";
         public override bool IsReadOnly => false;
@@ -842,7 +842,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterPoco)target)._initial_female : default!;
     }
 
-    public class MaleProperty: Property
+    public class MaleProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Male";
         public override bool IsReadOnly => false;
@@ -864,7 +864,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterPoco)target)._initial_male : default!;
     }
 
-    public class StringsProperty: Property
+    public class StringsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Strings";
         public override bool IsReadOnly => false;
@@ -886,7 +886,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override object? GetInitial(object target) => IsSet(target) ? ((LitterPoco)target)._initial_strings : default!;
     }
 
-    public class CatsProperty: Property
+    public class CatsProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "Cats";
         public override bool IsReadOnly => false;

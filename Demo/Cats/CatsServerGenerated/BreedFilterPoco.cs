@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -27,22 +27,22 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
 
 #region Init Properties
 
-        public class SearchRegexProperty: IProperty
+        public class SearchRegexProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "SearchRegex";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => true;
-            public object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
-            public void Touch(object target) 
+            public override string Name => "SearchRegex";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => true;
+            public override object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
+            public override void Touch(object target) 
             { }
-            public void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex(Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -102,22 +102,22 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
     
 #region Init Properties
 
-    public class SearchRegexProperty: IProperty
+    public class SearchRegexProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "SearchRegex";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => true;
-        public object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
-        public void Touch(object target) 
+        public override string Name => "SearchRegex";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => true;
+        public override object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
+        public override void Touch(object target) 
         { }
-        public void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex(Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

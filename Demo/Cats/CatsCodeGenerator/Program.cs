@@ -2,11 +2,14 @@
 using CatsContract;
 using Net.Leksi.Pocota.Common;
 
+string baseDirectory = @"F:\leksi\C#\Pocota\Demo\Cats";
+
+
 CodeGenerator generator = new();
 generator.AddContract<ICatsContract>();
 generator.AddContract<ICatsFormHeartsContract>();
-generator.ServerGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsServerGenerated";
+generator.ServerGeneratedDirectory = Path.Combine(baseDirectory, "CatsServerGenerated");
 await generator.Generate();
 generator.ServerGeneratedDirectory = null;
-generator.ClientGeneratedDirectory = @"F:\leksi\C#\Pocota4\Demo\Cats\CatsClientGenerated";
+generator.ClientGeneratedDirectory = Path.Combine(baseDirectory, "CatsClientGenerated");
 await generator.Generate();

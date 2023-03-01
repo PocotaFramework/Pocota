@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Wpf\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj" />
     <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
     <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
     <ProjectReference Include="..\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientPocoBrowserCodeGenDebug.csproj" />

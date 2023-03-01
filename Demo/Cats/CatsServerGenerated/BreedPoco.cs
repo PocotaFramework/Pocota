@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-02-27T16:24:13                                  //
+// at 2023-03-01T16:13:01                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -28,72 +28,72 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
 
 #region Init Properties
 
-        public class CodeProperty: IProperty
+        public class CodeProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Code";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => true;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_code;
-            public object? Get(object target) => ((BreedIBreedProjection)target).Code;
-            public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target).SetCode(Convert<String>(value));
+            public override string Name => "Code";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => true;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_code;
+            public override object? Get(object target) => ((BreedIBreedProjection)target).Code;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_code = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetCode(Convert<String>(value));
         }
 
-        public class GroupProperty: IProperty
+        public class GroupProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "Group";
-            public bool IsReadOnly => false;
-            public bool IsNullable => false;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => true;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_group;
-            public object? Get(object target) => ((BreedIBreedProjection)target).Group;
-            public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target).SetGroup(Convert<String>(value));
+            public override string Name => "Group";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => false;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => true;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_group;
+            public override object? Get(object target) => ((BreedIBreedProjection)target).Group;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_group = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetGroup(Convert<String>(value));
         }
 
-        public class NameEngProperty: IProperty
+        public class NameEngProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "NameEng";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
-            public object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
-            public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(Convert<String>(value));
+            public override string Name => "NameEng";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
+            public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(Convert<String>(value));
         }
 
-        public class NameNatProperty: IProperty
+        public class NameNatProperty: Net.Leksi.Pocota.Common.Property
         {
-            public string Name => "NameNat";
-            public bool IsReadOnly => false;
-            public bool IsNullable => true;
-            public bool IsCollection =>  false;
-            public bool IsPoco =>  false;
-            public bool IsEntity => false;
-            public bool IsKeyPart => false;
-            public Type Type => typeof(String);
-            public Type? ItemType => null;
-            public bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
-            public object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
-            public void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(Convert<String>(value));
+            public override string Name => "NameNat";
+            public override bool IsReadOnly => false;
+            public override bool IsNullable => true;
+            public override bool IsCollection =>  false;
+            public override bool IsPoco =>  false;
+            public override bool IsEntity => false;
+            public override bool IsKeyPart => false;
+            public override Type Type => typeof(String);
+            public override Type? ItemType => null;
+            public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
+            public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
+            public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -186,72 +186,72 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Init Properties
 
-    public class CodeProperty: IProperty
+    public class CodeProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Code";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => true;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((BreedPoco)target)._is_set_code;
-        public object? Get(object target) => ((BreedPoco)target).Code;
-        public void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
-        public void Set(object target, object? value) => ((BreedPoco)target).SetCode(Convert<String>(value));
+        public override string Name => "Code";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => true;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_code;
+        public override object? Get(object target) => ((BreedPoco)target).Code;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_code = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetCode(Convert<String>(value));
     }
 
-    public class GroupProperty: IProperty
+    public class GroupProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "Group";
-        public bool IsReadOnly => false;
-        public bool IsNullable => false;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => true;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((BreedPoco)target)._is_set_group;
-        public object? Get(object target) => ((BreedPoco)target).Group;
-        public void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
-        public void Set(object target, object? value) => ((BreedPoco)target).SetGroup(Convert<String>(value));
+        public override string Name => "Group";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => false;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => true;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_group;
+        public override object? Get(object target) => ((BreedPoco)target).Group;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_group = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetGroup(Convert<String>(value));
     }
 
-    public class NameEngProperty: IProperty
+    public class NameEngProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "NameEng";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
-        public object? Get(object target) => ((BreedPoco)target).NameEng;
-        public void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(Convert<String>(value));
+        public override string Name => "NameEng";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
+        public override object? Get(object target) => ((BreedPoco)target).NameEng;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(Convert<String>(value));
     }
 
-    public class NameNatProperty: IProperty
+    public class NameNatProperty: Net.Leksi.Pocota.Common.Property
     {
-        public string Name => "NameNat";
-        public bool IsReadOnly => false;
-        public bool IsNullable => true;
-        public bool IsCollection =>  false;
-        public bool IsPoco =>  false;
-        public bool IsEntity => false;
-        public bool IsKeyPart => false;
-        public Type Type => typeof(String);
-        public Type? ItemType => null;
-        public bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;
-        public object? Get(object target) => ((BreedPoco)target).NameNat;
-        public void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(Convert<String>(value));
+        public override string Name => "NameNat";
+        public override bool IsReadOnly => false;
+        public override bool IsNullable => true;
+        public override bool IsCollection =>  false;
+        public override bool IsPoco =>  false;
+        public override bool IsEntity => false;
+        public override bool IsKeyPart => false;
+        public override Type Type => typeof(String);
+        public override Type? ItemType => null;
+        public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;
+        public override object? Get(object target) => ((BreedPoco)target).NameNat;
+        public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

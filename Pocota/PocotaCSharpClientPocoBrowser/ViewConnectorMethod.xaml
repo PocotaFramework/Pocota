@@ -4,13 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
-        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
+        xmlns:l="clr-namespace:Net.Leksi.WpfMarkup;assembly=Net.Leksi.WpfMarkupExtension"
         mc:Ignorable="d"
         Title="{Binding TitleText}" Height="450" Width="800"  DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
-        <local1:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
-        <local1:BindingProxy x:Key="SetFilterCommandProxy" Value="{Binding Path=SetFilterCommand, Mode=OneWay}"/>
-        <local1:BindingProxy x:Key="UnsetFilterCommandProxy" Value="{Binding Path=UnsetFilterCommand, Mode=OneWay}"/>
+        <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
+        <l:BindingProxy x:Key="SetFilterCommandProxy" Value="{Binding Path=SetFilterCommand, Mode=OneWay}"/>
+        <l:BindingProxy x:Key="UnsetFilterCommandProxy" Value="{Binding Path=UnsetFilterCommand, Mode=OneWay}"/>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
