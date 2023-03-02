@@ -51,7 +51,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{B5D3AA3C-1F6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMarkupExtensionDebug", "..\WPF\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj", "{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfMarkupExtensionDemo", "..\WPF\WpfMarkupExtensionDemo\WpfMarkupExtensionDemo.csproj", "{FF535930-0069-475A-9BB9-0481E45E1A9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMarkupExtensionDemoDebug", "..\WPF\WpfMarkupExtensionDemo\WpfMarkupExtensionDemoDebug.csproj", "{FF535930-0069-475A-9BB9-0481E45E1A9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
