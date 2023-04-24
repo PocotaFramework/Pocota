@@ -93,13 +93,18 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         if (targetType == typeof(string))
         {
             IPoco? poco;
-            if(
+            if (
                 (value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2 && (poco = poco2) == poco)
                 || (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (poco = poco3) == poco)
             )
             {
                 return $"{poco.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
             }
+        }
+
+        if (value is null)
+        {
+            return null;
         }
 
         if (
@@ -117,12 +122,20 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return new bool[] { true, false };
         }
 
+        if (parameters.Contains("DateOnly"))
+        {
+            if (value.GetType() == typeof(DateOnly) && (targetType == typeof(DateTime) || targetType == typeof(Nullable<DateTime>)))
+            {
+                return DateTime.Parse(value.ToString());
+            }
+        }
+
         if (targetType == typeof(string))
         {
             return value!.ToString();
         }
 
-        Console.WriteLine($"ConvertSingle {value}, {targetType}, [{string.Join(',', parameters)}]");
+        Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
 
         return value;
     }
@@ -165,13 +178,13 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             else if (
                 (values.Length > 0 && values[0] is PropertyValueHolder property3 && (property = property3) == property)
                 || (values.Length > 1 && values[1] is PropertyValueHolder property4 && (property = property4) == property)
-            ) 
+            )
             {
                 return Convert(value, targetType, parameter, culture);
             }
         }
 
-        Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
+        //Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
 
         return null;
     }
@@ -180,7 +193,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     {
         object?[] parameters = SplitParameter(parameter);
 
-        if(value is null)
+        if (value is null)
         {
             return null;
         }
@@ -191,7 +204,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             {
                 return TimeSpan.Parse(value.ToString()!);
             }
-            catch (Exception){}
+            catch (Exception) { }
         }
 
         if (parameters.Contains("DateTime"))
@@ -204,12 +217,15 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         }
         if (parameters.Contains("DateOnly"))
         {
-
-            try
+            if (value.GetType() == typeof(DateTime))
             {
-                return DateOnly.Parse(value.ToString()!);
+                if (value is null)
+                {
+                    return null;
+                }
+                return DateOnly.FromDateTime((DateTime)value);
             }
-            catch (Exception) { }
+
         }
         if (parameters.Contains("TimeOnly"))
         {
@@ -247,8 +263,8 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             };
         }
 
-        Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
-        
+        //Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
+
         return null;
     }
 

@@ -4,9 +4,9 @@ using System.Windows;
 
 namespace Net.Leksi.Pocota.Client;
 
-public static class PocotaClientPocoBrowserExtensions
+public static class PocotaClientBrowserExtensions
 {
-    public static IServiceCollection AddPocotaClientProfiler<T>(this IServiceCollection services) where T:Application
+    public static IServiceCollection AddPocotaClientBrowser<T>(this IServiceCollection services) where T:Application
     {
         services.AddSingleton<Util>();
         services.AddSingleton(serv => 

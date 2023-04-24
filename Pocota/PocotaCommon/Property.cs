@@ -23,7 +23,7 @@ public abstract class Property : IProperty
     {
         if (value is null)
         {
-            return default;
+            return default(T);
         }
         if (value is T)
         {

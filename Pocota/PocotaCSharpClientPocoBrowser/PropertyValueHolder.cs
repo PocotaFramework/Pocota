@@ -96,6 +96,8 @@ internal class PropertyValueHolder: INotifyPropertyChanged
 
     public bool IsCollection => _property.IsCollection;
 
+    public bool IsNullable => _property.IsNullable;
+
     public Type Type => _property.Type;
 
     public PropertyValueHolder(Property property, PocoBase target)

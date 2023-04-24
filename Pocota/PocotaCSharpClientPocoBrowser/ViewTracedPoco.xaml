@@ -49,10 +49,8 @@
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10"/>
             <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
-                     Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}">
-                Принять изменения
-            </Button>
-            <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}">Отменить изменения</Button>
+                     Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}" Content="✓" ToolTip="Принять изменения"/>
+            <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}" Content="⎌" ToolTip="Отменить изменения"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{l:ParameterizedResource PrimaryKeyStyle}">
             <DataGrid ItemsSource="{Binding KeysViewSource.View}" AutoGenerateColumns="False"  Margin="10,10,10,10" IsReadOnly="True">

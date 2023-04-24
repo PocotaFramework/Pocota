@@ -33,7 +33,14 @@ public class ClearPocoPropertyCommand: ICommand
     {
         if(parameter is PropertyValueHolder pvh)
         {
-            pvh.Current = default;
+            if(pvh.IsNullable)
+            {
+                pvh.Current = null;
+            }
+            else
+            {
+                pvh.Current = default;
+            }
         }
     }
 }

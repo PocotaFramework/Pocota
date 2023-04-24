@@ -46,7 +46,7 @@
                 <DockPanel LastChildFill="True" Grid.Row="0">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <TextBlock Margin="10,10,10,10" FontSize="18">Все объекты</TextBlock>
-                        <Button Click="Button_Click" Margin="10,10,10,10">Собрать мусор</Button>
+                        <Button Click="Button_Click" Margin="10,10,10,10" Content="&#x1f9f9;" ToolTip="Собрать мусор"/>
                     </StackPanel>
                     <DataGrid x:Name="PocosByTypes" ItemsSource="{Binding Heart.TracedPocos}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
                         <DataGrid.Resources>

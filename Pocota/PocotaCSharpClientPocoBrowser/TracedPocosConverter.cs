@@ -4,15 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Windows.Media;
-using System.Xaml;
 
 namespace Net.Leksi.Pocota.Client;
 
@@ -91,7 +86,7 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
         }
         else
         {
-            Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
+            //Console.WriteLine($"{value}, {targetType}, [{string.Join(',', parameters)}]");
         }
         return result;
     }

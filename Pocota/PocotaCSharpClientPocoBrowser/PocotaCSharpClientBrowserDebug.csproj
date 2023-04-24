@@ -9,10 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Wpf\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj" />
+    <PackageReference Include="Net.Leksi.WpfMarkupExtension" Version="1.0.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
     <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
-    <ProjectReference Include="..\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientPocoBrowserCodeGenDebug.csproj" />
+    <ProjectReference Include="..\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientBrowserCodeGenDebug.csproj" />
   </ItemGroup>
 
   <ItemGroup>

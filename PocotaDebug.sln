@@ -43,15 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsClientDebug", "Demo\Cat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaClientCSharpDebug", "Pocota\PocotaClientCSharp\PocotaClientCSharpDebug.csproj", "{3593B182-64FE-46C0-8AE1-B85B08D9B396}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCSharpClientPocoBrowserDebug", "Pocota\PocotaCSharpClientPocoBrowser\PocotaCSharpClientPocoBrowserDebug.csproj", "{D13E6B2B-2762-4A14-A9CE-B2B1F403CFB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCSharpClientBrowserDebug", "Pocota\PocotaCSharpClientPocoBrowser\PocotaCSharpClientBrowserDebug.csproj", "{D13E6B2B-2762-4A14-A9CE-B2B1F403CFB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCSharpClientPocoBrowserCodeGenDebug", "Pocota\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientPocoBrowserCodeGenDebug.csproj", "{41AD39FD-D0FD-4D31-8552-F26651076015}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{B5D3AA3C-1F66-406D-9EE7-F3CA90D6F2AE}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMarkupExtensionDebug", "..\WPF\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj", "{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMarkupExtensionDemoDebug", "..\WPF\WpfMarkupExtensionDemo\WpfMarkupExtensionDemoDebug.csproj", "{FF535930-0069-475A-9BB9-0481E45E1A9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaCSharpClientBrowserCodeGenDebug", "Pocota\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientBrowserCodeGenDebug.csproj", "{41AD39FD-D0FD-4D31-8552-F26651076015}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,14 +125,6 @@ Global
 		{41AD39FD-D0FD-4D31-8552-F26651076015}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{41AD39FD-D0FD-4D31-8552-F26651076015}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{41AD39FD-D0FD-4D31-8552-F26651076015}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FF535930-0069-475A-9BB9-0481E45E1A9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF535930-0069-475A-9BB9-0481E45E1A9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF535930-0069-475A-9BB9-0481E45E1A9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF535930-0069-475A-9BB9-0481E45E1A9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -163,8 +149,6 @@ Global
 		{3593B182-64FE-46C0-8AE1-B85B08D9B396} = {394DFADD-F29C-419F-9405-BE3182FF4B0E}
 		{D13E6B2B-2762-4A14-A9CE-B2B1F403CFB9} = {394DFADD-F29C-419F-9405-BE3182FF4B0E}
 		{41AD39FD-D0FD-4D31-8552-F26651076015} = {394DFADD-F29C-419F-9405-BE3182FF4B0E}
-		{ECD6FCC3-F5A3-46E1-8005-AD3B97C32C9B} = {B5D3AA3C-1F66-406D-9EE7-F3CA90D6F2AE}
-		{FF535930-0069-475A-9BB9-0481E45E1A9A} = {B5D3AA3C-1F66-406D-9EE7-F3CA90D6F2AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA791647-B939-4CAF-B462-B8812FB92EFA}

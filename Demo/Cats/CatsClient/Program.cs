@@ -44,7 +44,7 @@ public class Program
                 services.AddPocota(
                     configurePocos: serv =>
                     {
-                        serv.AddPocotaClientProfiler<App>();
+                        serv.AddPocotaClientBrowser<App>();
 
                         serv.AddTransient<Cat>();
                         serv.AddTransient<Litter>();

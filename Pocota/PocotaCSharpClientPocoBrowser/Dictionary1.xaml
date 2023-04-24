@@ -6,9 +6,6 @@
         mc:Ignorable="d"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style TargetType="Button" x:Key="RedButtonStyle" x:Shared="False" >
-        <Setter Property="Background" Value="Red"/>
-    </Style>
     <Style TargetType="Button" x:Key="ViewVisualButtonStyle" x:Shared="False" >
         <Setter Property="Content" Value="👁"/>
         <Setter Property="ToolTip" Value="Посмотреть"/>
@@ -21,7 +18,7 @@
         <Setter Property="Content" Value="➖"/>
         <Setter Property="ToolTip" Value="Удалить"/>
     </Style>
-    <Style TargetType="Button" x:Key="ButtonStyle" x:Shared="False" BasedOn="{StaticResource RedButtonStyle}">
+    <Style TargetType="Button" x:Key="ButtonStyle" x:Shared="False">
         <Style.Triggers>
             <DataTrigger Value="False">
                 <DataTrigger.Binding>
@@ -38,13 +35,6 @@
     <l:StyleCombiner  x:Key="ViewPocoButtonStyle" TargetType="Button" x:Shared="False">
         <StaticResource ResourceKey="ViewVisualButtonStyle"/>
         <l:ParameterizedResource ResourceKey="ButtonStyle"/>
-        <Style TargetType="Button">
-            <Setter Property="Background" Value="Yellow"/>
-        </Style>
-        <Style TargetType="Button">
-            <Setter Property="Content" Value="Смотреть"/>
-            <Setter Property="FontStyle" Value="Italic"/>
-        </Style>
     </l:StyleCombiner>
     <l:StyleCombiner  x:Key="AddPocoButtonStyle" TargetType="Button" x:Shared="False">
         <l:ParameterizedResource ResourceKey="ButtonStyle"/>
@@ -106,6 +96,19 @@
     <DataTemplate x:Key="EditValueDataTemplate" x:Shared="False">
         <TextBox Style="{l:ParameterizedResource EditValueTextBoxStyle}" />
     </DataTemplate>
+    <Style x:Key="EditDateStyle" x:Shared="False" TargetType="DatePicker">
+        <Setter Property="SelectedDate" Value="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|100, UpdateSourceTrigger=PropertyChanged}"/>
+    </Style>
+    <DataTemplate x:Key="EditDateDataTemplate" x:Shared="False">
+        <DockPanel LastChildFill="True">
+            <Button DockPanel.Dock="Right" Style="{l:ParameterizedResource RemovePocoButtonStyle, Replaces=$test:IsNotNullAndWritable}" 
+                    Command="{Binding Value, Source={l:ParameterizedResource $ClearPocoPropertyCommandProxy}}" 
+                    CommandParameter="{Binding}"
+                    Margin="10,0,0,0">
+            </Button>
+            <DatePicker Style="{l:ParameterizedResource EditDateStyle}" />
+        </DockPanel>
+    </DataTemplate>
     <Style  x:Key="EditEnumComboBoxStyle" x:Shared="False" TargetType="ComboBox">
         <Setter Property="ItemsSource" Value="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|85}"/>
         <Setter Property="SelectedItem" Value="{Binding $path, UpdateSourceTrigger=PropertyChanged}"/>
@@ -140,7 +143,7 @@
             Poco="{l:ParameterizedResource EditPocoDataTemplate}"
             TimeSpan="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:TimeSpan}"
             DateTime="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:DateTime}"
-            DateOnly="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:DateOnly}"
+            DateOnly="{l:ParameterizedResource EditDateDataTemplate, Replaces=$type:DateOnly}"
             TimeOnly="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:TimeOnly}"
             Value="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:Object}"
             Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool}"
