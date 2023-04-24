@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -84,7 +84,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(value is null ? null : Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameEngCancelChange();
@@ -106,7 +106,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(value is null ? null : Convert<String>(value));
             public override bool IsModified(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((BreedIBreedProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((BreedIBreedProjection)target)._projector.NameNatCancelChange();
@@ -281,7 +281,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((BreedPoco)target).NameEng;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(value is null ? null : Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameEngCancelChange();
@@ -303,7 +303,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((BreedPoco)target).NameNat;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(value is null ? null : Convert<String>(value));
         public override bool IsModified(object target) => ((BreedPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((BreedPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((BreedPoco)target).NameNatCancelChange();
@@ -382,7 +382,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             {
                 if(_code != value  && (IsBeingPopulated || IsCodeSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsCodeInitial())
                     {
                         _code = value!;
@@ -417,7 +417,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             {
                 if(_group != value  && (IsBeingPopulated || IsGroupSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsGroupInitial())
                     {
                         _group = value!;
@@ -452,7 +452,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             {
                 if(_nameEng != value  && (IsBeingPopulated || IsNameEngSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsNameEngInitial())
                     {
                         _nameEng = value;
@@ -487,7 +487,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             {
                 if(_nameNat != value  && (IsBeingPopulated || IsNameNatSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsNameNatInitial())
                     {
                         _nameNat = value;

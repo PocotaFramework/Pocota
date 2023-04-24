@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -76,7 +76,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameEng;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -93,7 +93,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((BreedIBreedProjection)target).NameNat;
             public override void Touch(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedIBreedProjection)target).SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -234,7 +234,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
         public override object? Get(object target) => ((BreedPoco)target).NameEng;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameEng(value is null ? null : Convert<String>(value));
     }
 
     public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -251,7 +251,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;
         public override object? Get(object target) => ((BreedPoco)target).NameNat;
         public override void Touch(object target) => ((BreedPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedPoco)target).SetNameNat(value is null ? null : Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

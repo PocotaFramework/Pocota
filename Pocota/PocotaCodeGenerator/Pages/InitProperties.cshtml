@@ -52,7 +52,7 @@
                     }
                     else
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Set{pm.Name}(Convert<{pm.Type}>(value))")</text>
+                        <text>@Html.Raw($"(({Model.ClassName})target){(hasProjector ? "._projector" : string.Empty)}.Set{pm.Name}({(pm.IsNullable ? "value is null ? null : " : "")}Convert<{pm.Type}>(value))")</text>
                     }
                 }
                 else
@@ -63,7 +63,7 @@
                     }
                     else
                     {
-                        <text>@Html.Raw($"(({Model.ClassName})target).Set{pm.Name}(Convert<{pm.Type}>(value))")</text>
+                        <text>@Html.Raw($"(({Model.ClassName})target).Set{pm.Name}({(pm.IsNullable ? "value is null ? null : " : "")}Convert<{pm.Type}>(value))")</text>
                     }
                 }
             }

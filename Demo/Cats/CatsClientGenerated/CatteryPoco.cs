@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -40,7 +40,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameEng;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameEng(value is null ? null : Convert<String>(value));
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameEngCancelChange();
@@ -62,7 +62,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatSet();
             public override object? Get(object target) => ((CatteryICatteryProjection)target).NameNat;
             public override void Touch(object target) => ((CatteryICatteryProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatteryICatteryProjection)target).SetNameNat(value is null ? null : Convert<String>(value));
             public override bool IsModified(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatModified();
             public override bool IsInitial(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatInitial();
             public override void CancelChange(object target) => ((CatteryICatteryProjection)target)._projector.NameNatCancelChange();
@@ -171,7 +171,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameEngSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameEng;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameEng(value is null ? null : Convert<String>(value));
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameEngModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameEngInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameEngCancelChange();
@@ -193,7 +193,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameNatSet();
         public override object? Get(object target) => ((CatteryPoco)target).NameNat;
         public override void Touch(object target) => ((CatteryPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatteryPoco)target).SetNameNat(value is null ? null : Convert<String>(value));
         public override bool IsModified(object target) => ((CatteryPoco)target).IsNameNatModified();
         public override bool IsInitial(object target) => ((CatteryPoco)target).IsNameNatInitial();
         public override void CancelChange(object target) => ((CatteryPoco)target).NameNatCancelChange();
@@ -260,7 +260,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             {
                 if(_nameEng != value  && (IsBeingPopulated || IsNameEngSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsNameEngInitial())
                     {
                         _nameEng = value;
@@ -295,7 +295,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             {
                 if(_nameNat != value  && (IsBeingPopulated || IsNameNatSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsNameNatInitial())
                     {
                         _nameNat = value;

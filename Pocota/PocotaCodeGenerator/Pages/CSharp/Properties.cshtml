@@ -31,7 +31,7 @@
             {
                 if(@fieldName != value @if(Model.IsEntity){<text> && (IsBeingPopulated || @Html.Raw($"Is{pm.Name}Set()"))</text>})
                 {
-                    int selector = 0;
+                    int selector;
                     @if(pm.IsPoco)
                     {
                         if(pm.IsEntity)
@@ -59,7 +59,7 @@
                     }
                     else 
                     {
-                            <text>                        @Html.Raw($"{fieldName} = value{(!pm.IsNullable ? "!" : string.Empty)}");
+                            <text>                    @Html.Raw($"{fieldName} = value{(!pm.IsNullable ? "!" : string.Empty)}");
 </text>
                     }
                     if ((IsBeingPopulated && (selector = 1) == selector) @if(Model.IsEntity){<text> || (((IEntity)this).PocoState is PocoState.Created && (selector = 2) == selector)</text>})

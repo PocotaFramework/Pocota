@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.MainWindowHeartPoco                                  //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-03-01T16:13:01                                          //
+// at 2023-04-24T21:55:14                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -1070,8 +1070,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_allBreeds != value )
                 {
-                    int selector = 0;
-                        _allBreeds = value!;
+                    int selector;
+                    _allBreeds = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1101,8 +1101,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_allBreedsCount != value )
                 {
-                    int selector = 0;
-                        _allBreedsCount = value!;
+                    int selector;
+                    _allBreedsCount = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1132,8 +1132,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_allCatteries != value )
                 {
-                    int selector = 0;
-                        _allCatteries = value!;
+                    int selector;
+                    _allCatteries = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1163,8 +1163,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_allCatteriesCount != value )
                 {
-                    int selector = 0;
-                        _allCatteriesCount = value!;
+                    int selector;
+                    _allCatteriesCount = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1194,8 +1194,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_breedsCount != value )
                 {
-                    int selector = 0;
-                        _breedsCount = value!;
+                    int selector;
+                    _breedsCount = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1225,8 +1225,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_catteriesCount != value )
                 {
-                    int selector = 0;
-                        _catteriesCount = value!;
+                    int selector;
+                    _catteriesCount = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1256,8 +1256,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_getCatsTimeSpent != value )
                 {
-                    int selector = 0;
-                        _getCatsTimeSpent = value!;
+                    int selector;
+                    _getCatsTimeSpent = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1287,8 +1287,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_isCatSelected != value )
                 {
-                    int selector = 0;
-                        _isCatSelected = value!;
+                    int selector;
+                    _isCatSelected = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1318,8 +1318,8 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_renderingCatsTimeSpent != value )
                 {
-                    int selector = 0;
-                        _renderingCatsTimeSpent = value!;
+                    int selector;
+                    _renderingCatsTimeSpent = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1349,13 +1349,13 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_catFilter != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(_catFilter is {})
                     {
                         _catFilter.PocoChanged -= CatFilterPocoChanged;
                         _catFilter.DeletionRequested -= CatFilterDeletionRequested;
                     }
-                        _catFilter = value!;
+                    _catFilter = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -1390,7 +1390,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
             {
                 if(_selectedCat != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -1400,7 +1400,7 @@ public abstract class MainWindowHeartPoco: EnvelopeBase, IProjection<EnvelopeBas
                         _selectedCat.PocoChanged -= SelectedCatPocoChanged;
                         _selectedCat.DeletionRequested -= SelectedCatDeletionRequested;
                     }
-                        _selectedCat = value;
+                    _selectedCat = value;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)

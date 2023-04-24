@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -42,7 +42,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
             public override object? Get(object target) => ((BreedFilterIBreedFilterProjection)target).SearchRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((BreedFilterIBreedFilterProjection)target).SetSearchRegex(value is null ? null : Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -117,7 +117,7 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IP
         public override object? Get(object target) => ((BreedFilterPoco)target).SearchRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((BreedFilterPoco)target).SetSearchRegex(value is null ? null : Convert<String>(value));
     }
 
     public static void InitProperties(List<IProperty> properties)

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-03-01T16:13:01                                          //
+// at 2023-04-24T21:55:14                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -714,8 +714,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_editKind != value )
                 {
-                    int selector = 0;
-                        _editKind = value!;
+                    int selector;
+                    _editKind = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -745,8 +745,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_filterChildren != value )
                 {
-                    int selector = 0;
-                        _filterChildren = value!;
+                    int selector;
+                    _filterChildren = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -776,8 +776,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_isChildSelected != value )
                 {
-                    int selector = 0;
-                        _isChildSelected = value!;
+                    int selector;
+                    _isChildSelected = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -807,8 +807,8 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_isSameLitterCatSelected != value )
                 {
-                    int selector = 0;
-                        _isSameLitterCatSelected = value!;
+                    int selector;
+                    _isSameLitterCatSelected = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -838,7 +838,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_cat != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -848,7 +848,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _cat.PocoChanged -= CatPocoChanged;
                         _cat.DeletionRequested -= CatDeletionRequested;
                     }
-                        _cat = value!;
+                    _cat = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -883,7 +883,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_selectedChild != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -893,7 +893,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _selectedChild.PocoChanged -= SelectedChildPocoChanged;
                         _selectedChild.DeletionRequested -= SelectedChildDeletionRequested;
                     }
-                        _selectedChild = value;
+                    _selectedChild = value;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -928,7 +928,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             {
                 if(_selectedSameLitterCat != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -938,7 +938,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
                         _selectedSameLitterCat.PocoChanged -= SelectedSameLitterCatPocoChanged;
                         _selectedSameLitterCat.DeletionRequested -= SelectedSameLitterCatDeletionRequested;
                     }
-                        _selectedSameLitterCat = value;
+                    _selectedSameLitterCat = value;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)

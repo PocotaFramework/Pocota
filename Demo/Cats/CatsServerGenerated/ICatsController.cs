@@ -2,7 +2,7 @@
 // Controller Interface                                    //
 // CatsContract.ICatsController                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:00                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 

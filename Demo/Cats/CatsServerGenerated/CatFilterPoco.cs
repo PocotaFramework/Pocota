@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornAfter;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter(Convert<DateOnly>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornAfter(value is null ? null : Convert<DateOnly>(value));
         }
 
         public class BornBeforeProperty: Net.Leksi.Pocota.Common.Property
@@ -62,7 +62,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).BornBefore;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore(Convert<DateOnly>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetBornBefore(value is null ? null : Convert<DateOnly>(value));
         }
 
         public class ExteriorRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -80,7 +80,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).ExteriorRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetExteriorRegex(value is null ? null : Convert<String>(value));
         }
 
         public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -98,7 +98,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).Gender;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender(Convert<Gender>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetGender(value is null ? null : Convert<Gender>(value));
         }
 
         public class NameRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -116,7 +116,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).NameRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetNameRegex(value is null ? null : Convert<String>(value));
         }
 
         public class TitleRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -134,7 +134,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
             public override object? Get(object target) => ((CatFilterICatFilterProjection)target).TitleRegex;
             public override void Touch(object target) 
             { }
-            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatFilterICatFilterProjection)target).SetTitleRegex(value is null ? null : Convert<String>(value));
         }
 
         public class AncestorProperty: Net.Leksi.Pocota.Common.Property
@@ -525,7 +525,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).BornAfter;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter(Convert<DateOnly>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornAfter(value is null ? null : Convert<DateOnly>(value));
     }
 
     public class BornBeforeProperty: Net.Leksi.Pocota.Common.Property
@@ -543,7 +543,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).BornBefore;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore(Convert<DateOnly>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetBornBefore(value is null ? null : Convert<DateOnly>(value));
     }
 
     public class ExteriorRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -561,7 +561,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).ExteriorRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetExteriorRegex(value is null ? null : Convert<String>(value));
     }
 
     public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -579,7 +579,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).Gender;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetGender(Convert<Gender>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetGender(value is null ? null : Convert<Gender>(value));
     }
 
     public class NameRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -597,7 +597,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).NameRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetNameRegex(value is null ? null : Convert<String>(value));
     }
 
     public class TitleRegexProperty: Net.Leksi.Pocota.Common.Property
@@ -615,7 +615,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, IPro
         public override object? Get(object target) => ((CatFilterPoco)target).TitleRegex;
         public override void Touch(object target) 
         { }
-        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatFilterPoco)target).SetTitleRegex(value is null ? null : Convert<String>(value));
     }
 
     public class AncestorProperty: Net.Leksi.Pocota.Common.Property

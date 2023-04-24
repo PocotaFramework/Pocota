@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -1027,7 +1027,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 if(_date != value  && (IsBeingPopulated || IsDateSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsDateInitial())
                     {
                         _date = value!;
@@ -1062,7 +1062,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 if(_order != value  && (IsBeingPopulated || IsOrderSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if (!IsBeingPopulated || IsOrderInitial())
                     {
                         _order = value!;
@@ -1097,7 +1097,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 if(_female != value  && (IsBeingPopulated || IsFemaleSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -1146,7 +1146,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             {
                 if(_male != value  && (IsBeingPopulated || IsMaleSet()))
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");

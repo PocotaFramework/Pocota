@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -323,7 +323,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_female != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -333,7 +333,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                         _female.PocoChanged -= FemalePocoChanged;
                         _female.DeletionRequested -= FemaleDeletionRequested;
                     }
-                        _female = value!;
+                    _female = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)
@@ -368,7 +368,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
             {
                 if(_male != value )
                 {
-                    int selector = 0;
+                    int selector;
                     if(value is {} && !IsBeingPopulated && (((IPoco)value).PocoState is PocoState.Uncertain || ((IPoco)value).PocoState is PocoState.Deleted))
                     {
                         throw new InvalidOperationException($"{((IPoco)value).PocoState} entity cannot be assigned!");
@@ -378,7 +378,7 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProject
                         _male.PocoChanged -= MalePocoChanged;
                         _male.DeletionRequested -= MaleDeletionRequested;
                     }
-                        _male = value!;
+                    _male = value!;
                     if ((IsBeingPopulated && (selector = 1) == selector) )
                     {
                         if(selector == 1)

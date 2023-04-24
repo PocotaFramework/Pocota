@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-03-01T16:13:01                                  //
+// at 2023-04-24T21:55:14                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -44,7 +44,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_description;
             public override object? Get(object target) => ((CatICatProjection)target).Description;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).SetDescription(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetDescription(value is null ? null : Convert<String>(value));
         }
 
         public class ExteriorProperty: Net.Leksi.Pocota.Common.Property
@@ -61,7 +61,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_exterior;
             public override object? Get(object target) => ((CatICatProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).SetExterior(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetExterior(value is null ? null : Convert<String>(value));
         }
 
         public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -95,7 +95,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((CatICatProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -112,7 +112,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((CatICatProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public class TitleProperty: Net.Leksi.Pocota.Common.Property
@@ -129,7 +129,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_title;
             public override object? Get(object target) => ((CatICatProjection)target).Title;
             public override void Touch(object target) => ((CatICatProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatProjection)target).SetTitle(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatProjection)target).SetTitle(value is null ? null : Convert<String>(value));
         }
 
         public class BreedProperty: Net.Leksi.Pocota.Common.Property
@@ -370,7 +370,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_description;
             public override object? Get(object target) => ((CatICatForListingProjection)target).Description;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetDescription(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetDescription(value is null ? null : Convert<String>(value));
         }
 
         public class ExteriorProperty: Net.Leksi.Pocota.Common.Property
@@ -387,7 +387,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_exterior;
             public override object? Get(object target) => ((CatICatForListingProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetExterior(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetExterior(value is null ? null : Convert<String>(value));
         }
 
         public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -421,7 +421,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((CatICatForListingProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -438,7 +438,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((CatICatForListingProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public class TitleProperty: Net.Leksi.Pocota.Common.Property
@@ -455,7 +455,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_title;
             public override object? Get(object target) => ((CatICatForListingProjection)target).Title;
             public override void Touch(object target) => ((CatICatForListingProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetTitle(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForListingProjection)target)._projector.SetTitle(value is null ? null : Convert<String>(value));
         }
 
         public class BreedProperty: Net.Leksi.Pocota.Common.Property
@@ -661,7 +661,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_exterior;
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetExterior(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetExterior(value is null ? null : Convert<String>(value));
         }
 
         public class NameEngProperty: Net.Leksi.Pocota.Common.Property
@@ -678,7 +678,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((CatICatAsParentProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -695,7 +695,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((CatICatAsParentProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public class TitleProperty: Net.Leksi.Pocota.Common.Property
@@ -712,7 +712,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_title;
             public override object? Get(object target) => ((CatICatAsParentProjection)target).Title;
             public override void Touch(object target) => ((CatICatAsParentProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetTitle(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsParentProjection)target)._projector.SetTitle(value is null ? null : Convert<String>(value));
         }
 
         public class BreedProperty: Net.Leksi.Pocota.Common.Property
@@ -898,7 +898,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_description;
             public override object? Get(object target) => ((CatICatForViewProjection)target).Description;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_description = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetDescription(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetDescription(value is null ? null : Convert<String>(value));
         }
 
         public class ExteriorProperty: Net.Leksi.Pocota.Common.Property
@@ -915,7 +915,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_exterior;
             public override object? Get(object target) => ((CatICatForViewProjection)target).Exterior;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_exterior = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetExterior(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetExterior(value is null ? null : Convert<String>(value));
         }
 
         public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -949,7 +949,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((CatICatForViewProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -966,7 +966,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((CatICatForViewProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public class TitleProperty: Net.Leksi.Pocota.Common.Property
@@ -983,7 +983,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_title;
             public override object? Get(object target) => ((CatICatForViewProjection)target).Title;
             public override void Touch(object target) => ((CatICatForViewProjection)target)._projector._is_set_title = true;
-            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetTitle(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatForViewProjection)target)._projector.SetTitle(value is null ? null : Convert<String>(value));
         }
 
         public class BreedProperty: Net.Leksi.Pocota.Common.Property
@@ -1290,7 +1290,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameEng;
             public override object? Get(object target) => ((CatICatAsSiblingProjection)target).NameEng;
             public override void Touch(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameEng = true;
-            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameEng(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameEng(value is null ? null : Convert<String>(value));
         }
 
         public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -1307,7 +1307,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameNat;
             public override object? Get(object target) => ((CatICatAsSiblingProjection)target).NameNat;
             public override void Touch(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameNat = true;
-            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameNat(Convert<String>(value));
+            public override void Set(object target, object? value) => ((CatICatAsSiblingProjection)target)._projector.SetNameNat(value is null ? null : Convert<String>(value));
         }
 
         public static void InitProperties(List<IProperty> properties)
@@ -1390,7 +1390,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_description;
         public override object? Get(object target) => ((CatPoco)target).Description;
         public override void Touch(object target) => ((CatPoco)target)._is_set_description = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).SetDescription(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatPoco)target).SetDescription(value is null ? null : Convert<String>(value));
     }
 
     public class ExteriorProperty: Net.Leksi.Pocota.Common.Property
@@ -1407,7 +1407,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_exterior;
         public override object? Get(object target) => ((CatPoco)target).Exterior;
         public override void Touch(object target) => ((CatPoco)target)._is_set_exterior = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).SetExterior(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatPoco)target).SetExterior(value is null ? null : Convert<String>(value));
     }
 
     public class GenderProperty: Net.Leksi.Pocota.Common.Property
@@ -1441,7 +1441,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_nameEng;
         public override object? Get(object target) => ((CatPoco)target).NameEng;
         public override void Touch(object target) => ((CatPoco)target)._is_set_nameEng = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).SetNameEng(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatPoco)target).SetNameEng(value is null ? null : Convert<String>(value));
     }
 
     public class NameNatProperty: Net.Leksi.Pocota.Common.Property
@@ -1458,7 +1458,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_nameNat;
         public override object? Get(object target) => ((CatPoco)target).NameNat;
         public override void Touch(object target) => ((CatPoco)target)._is_set_nameNat = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).SetNameNat(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatPoco)target).SetNameNat(value is null ? null : Convert<String>(value));
     }
 
     public class TitleProperty: Net.Leksi.Pocota.Common.Property
@@ -1475,7 +1475,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_title;
         public override object? Get(object target) => ((CatPoco)target).Title;
         public override void Touch(object target) => ((CatPoco)target)._is_set_title = true;
-        public override void Set(object target, object? value) => ((CatPoco)target).SetTitle(Convert<String>(value));
+        public override void Set(object target, object? value) => ((CatPoco)target).SetTitle(value is null ? null : Convert<String>(value));
     }
 
     public class BreedProperty: Net.Leksi.Pocota.Common.Property

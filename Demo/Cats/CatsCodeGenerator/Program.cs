@@ -2,7 +2,7 @@
 using CatsContract;
 using Net.Leksi.Pocota.Common;
 
-string baseDirectory = @"F:\leksi\C#\Pocota\Demo\Cats";
+string baseDirectory = @"..\..\..\..";
 
 
 CodeGenerator generator = new();
