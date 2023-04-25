@@ -6,6 +6,7 @@ namespace CatsServerEngine;
 
 public interface IStorage
 {
+    void CheckDatabase();
     DbDataReader GetBreeds(IBreedFilter? filter);
     DbDataReader GetCatteries(ICatteryFilter? filter);
     DbDataReader GetCats(ICatFilter? filter);

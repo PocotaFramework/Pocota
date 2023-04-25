@@ -17,4 +17,10 @@
     <ProjectReference Include="..\CatsServerGenerated\CatsServerGeneratedDebug.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Database\Felisita.bak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

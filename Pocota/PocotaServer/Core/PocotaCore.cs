@@ -33,7 +33,11 @@ public class PocotaCore : PocotaCoreBase
             if (core.GetActualType(item.ServiceType) is Type actualType && typeof(IEntity).IsAssignableFrom(actualType))
             {
                 Type primaryKeyType = (Type)actualType.GetField("PrimaryKeyType")!.GetValue(null)!;
-                primaryKeysDescriptors.Add(new ServiceDescriptor(typeof(IPrimaryKey<>).MakeGenericType(item.ServiceType), primaryKeyType, ServiceLifetime.Transient));
+                Type serviceType = typeof(IPrimaryKey<>).MakeGenericType(item.ServiceType);
+                if (serviceType.IsAssignableFrom(primaryKeyType))
+                {
+                    primaryKeysDescriptors.Add(new ServiceDescriptor(typeof(IPrimaryKey<>).MakeGenericType(item.ServiceType), primaryKeyType, ServiceLifetime.Transient));
+                }
             }
         }
         foreach (ServiceDescriptor item in primaryKeysDescriptors)

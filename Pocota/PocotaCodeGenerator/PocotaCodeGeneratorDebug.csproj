@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Leksi.DocsRazorator" Version="1.0.0" />
+    <PackageReference Include="Net.Leksi.TextGenerator" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>

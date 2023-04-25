@@ -1,27 +1,29 @@
 ﻿using CatsCommon;
 using CatsCommon.Filters;
-using CatsCommon.Model;
-using Net.Leksi.Pocota;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
+using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CatsServerEngine;
 
-internal class Storage: IStorage
+internal class Storage : IStorage
 {
     private readonly string _connectionString;
     private readonly IServiceProvider _services;
     private readonly IPocoContext _pocoContext;
+    private readonly ILogger? _logger;
 
     public Storage(IServiceProvider services, string connectionString)
     {
         _connectionString = connectionString;
         _services = services;
         _pocoContext = services.GetRequiredService<IPocoContext>();
+        _logger = _services.GetService<ILoggerFactory>()?.CreateLogger(GetType().Name);
     }
 
     public DbDataReader GetBreeds(IBreedFilter? filterObject)
@@ -43,7 +45,7 @@ internal class Storage: IStorage
 
         return sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
     }
- 
+
     public DbDataReader GetCats(ICatFilter? filter)
     {
         SqlConnection conn = new(_connectionString);
@@ -357,5 +359,46 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
             sb.Append(" WHERE ").Append(sbWhere);
         }
 
+    }
+
+    public void CheckDatabase()
+    {
+        Match m = Regex.Match(_connectionString, "Database=([^;]+)(;|$)");
+        string db = m.Success ? m.Groups[1].Captures[0].Value : string.Empty;
+        _logger?.LogInformation($"Checking Database '{db}' ...");
+        SqlConnection conn = new(_connectionString);
+        try
+        {
+            conn.Open();
+            _logger?.LogInformation("OK");
+        }
+        catch (SqlException ex)
+        {
+            if (!"00000000-0000-0000-0000-000000000000".Equals(ex.ClientConnectionId) && ex.Server is { })
+            {
+                InstallDatabase(db);
+            }
+            else
+            {
+                throw;
+            }
+        }
+    }
+
+    private void InstallDatabase(string db)
+    {
+        SqlConnection conn = new(_connectionString.Replace($"Database={db}", "Database=master"));
+        try
+        {
+            conn.Open();
+            SqlCommand cmd = new SqlCommand($"CREATE DATABASE {db}", conn);
+            cmd.ExecuteNonQuery();
+            cmd.CommandText = $"RESTORE DATABASE {db} FROM DISK 'Database/{db}.bak'";
+            cmd.ExecuteNonQuery();
+        }
+        catch (SqlException ex)
+        {
+            throw;
+        }
     }
 }
