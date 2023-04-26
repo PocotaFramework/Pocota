@@ -41,7 +41,6 @@ public static class CatsServerExtensions
 
     public static WebApplication UseCatsServer(this WebApplication app)
     {
-        app.Services.CreateScope().ServiceProvider.GetRequiredService<IStorage>().CheckDatabase();
 
         app.Use(async (context, next) =>
         {

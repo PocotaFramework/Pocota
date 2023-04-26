@@ -1,11 +1,14 @@
 ﻿using CatsCommon;
 using CatsCommon.Filters;
+using Microsoft.Extensions.Logging;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -380,6 +383,7 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
             }
             else
             {
+                _logger?.LogCritical(ex.Message);
                 throw;
             }
         }
@@ -393,11 +397,32 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
             conn.Open();
             SqlCommand cmd = new SqlCommand($"CREATE DATABASE {db}", conn);
             cmd.ExecuteNonQuery();
-            cmd.CommandText = $"RESTORE DATABASE {db} FROM DISK 'Database/{db}.bak'";
-            cmd.ExecuteNonQuery();
+            cmd.CommandText = $"SET LANGUAGE English; RESTORE DATABASE {db} FROM DISK = '{db}.bak';";
+            for (int i = 0; i < 2; ++i)
+            {
+                try
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    string pattern = @$"Cannot open backup device '(.+?{Regex.Escape(new string(Path.DirectorySeparatorChar, 1))}{db}.bak)'\.";
+                    Match m = Regex.Match(ex.Message, pattern);
+                    if (i == 0 && m.Success)
+                    {
+                        File.Copy($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}Database{Path.DirectorySeparatorChar}{db}.bak", m.Groups[1].Captures[0].Value);
+                    }
+                    else
+                    {
+                        _logger?.LogCritical(ex.Message);
+                        throw;
+                    }
+                }
+            }
         }
         catch (SqlException ex)
         {
+            _logger?.LogCritical(ex.Message);
             throw;
         }
     }

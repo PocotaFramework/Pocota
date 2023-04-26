@@ -6,6 +6,13 @@ builder.Services.AddCatsServer(builder.Configuration.GetConnectionString("Defaul
 
 var app = builder.Build();
 
+app.Services.CreateScope().ServiceProvider.GetRequiredService<IStorage>().CheckDatabase();
+
+if (args.Contains("--CheckDatabase"))
+{
+    Environment.Exit(0);
+}
+
 app.UseCatsServer();
 
 
