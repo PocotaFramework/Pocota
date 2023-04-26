@@ -13,6 +13,7 @@ namespace CatsClient;
 
 public class Program
 {
+    //TODO при просмотре редактируется
     [STAThread]
     public static void Main()
      {

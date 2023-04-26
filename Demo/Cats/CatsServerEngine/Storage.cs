@@ -394,9 +394,6 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
         {
             conn.Open();
             SqlCommand cmd = new SqlCommand($"SET LANGUAGE English; RESTORE DATABASE {db} FROM DISK = 'Felisita1.bak' WITH MOVE 'Felisita' TO '{dataDir}{db}.mdf', MOVE 'Felisita_Log' TO '{dataDir}{db}_log.mdf';", conn);
-            
-            _logger?.LogInformation(cmd.CommandText);
-           
             for (int i = 0; i < 2; ++i)
             {
                 try
