@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Cats.Common</RootNamespace>
-    <AssemblyName>Cats.Common</AssemblyName>
+    <AssemblyName>CatsCommon</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

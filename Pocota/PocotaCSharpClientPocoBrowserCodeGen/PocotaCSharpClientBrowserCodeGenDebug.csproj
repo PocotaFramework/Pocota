@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <RootNamespace>Net.Leksi.Pocota.Client</RootNamespace>
+    <AssemblyName>PocotaCSharpClientBrowserCodeGen</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

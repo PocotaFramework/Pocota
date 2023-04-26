@@ -5,6 +5,8 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
+    <AssemblyName>CatsServerEngine</AssemblyName>
+    <RootNamespace />
   </PropertyGroup>
 
   <ItemGroup>
