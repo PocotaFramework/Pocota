@@ -1,8 +1,4 @@
-#ifdef RELEASE
 #define AppName "CatsServer"
-#else
-#define AppName "CatsServerDebug"
-#endif
 #define GroupName "Pocota Demo"
 #define AppVersion "1.0.0"
 [Setup]
