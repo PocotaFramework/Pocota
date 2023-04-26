@@ -22,5 +22,5 @@ Source: "..\bin\Debug\net6.0\*"; DestDir: "{app}"; Flags: recursesubdirs;
 #endif
 
 [Run]
-Filename: "{cmd}"; Parameters: "/k ""{app}\{#AppName}.EXE"" --CheckDatabase > {tmp}\check_result.txt"; Flags: waituntilterminated;
-Filename: "{tmp}\check_result.txt"; Verb: open; Flags: shellexec;
+Filename: "{cmd}"; WorkingDir: "{app}"; Parameters: "/k ""{app}\{#AppName}.EXE"" --CheckDatabase > {tmp}\check_result.txt"; Flags: waituntilterminated;
+Filename: "{tmp}\check_result.txt"; Verb: open; Flags: shellexec waituntilterminated;

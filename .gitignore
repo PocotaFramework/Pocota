@@ -2,5 +2,5 @@ bin
 obj
 .vs
 *.user
-**/Felisita.bak
+*.bak
 **/Installer/Output

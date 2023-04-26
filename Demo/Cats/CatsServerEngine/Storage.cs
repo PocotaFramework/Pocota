@@ -1,13 +1,10 @@
 ﻿using CatsCommon;
 using CatsCommon.Filters;
-using Microsoft.Extensions.Logging;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
-using System.ComponentModel;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -392,12 +389,14 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
     private void InstallDatabase(string db)
     {
         SqlConnection conn = new(_connectionString.Replace($"Database={db}", "Database=master"));
+        string dataDir = string.Empty;
         try
         {
             conn.Open();
-            SqlCommand cmd = new SqlCommand($"CREATE DATABASE {db}", conn);
-            cmd.ExecuteNonQuery();
-            cmd.CommandText = $"SET LANGUAGE English; RESTORE DATABASE {db} FROM DISK = '{db}.bak';";
+            SqlCommand cmd = new SqlCommand($"SET LANGUAGE English; RESTORE DATABASE {db} FROM DISK = 'Felisita1.bak' WITH MOVE 'Felisita' TO '{dataDir}{db}.mdf', MOVE 'Felisita_Log' TO '{dataDir}{db}_log.mdf';", conn);
+            
+            _logger?.LogInformation(cmd.CommandText);
+           
             for (int i = 0; i < 2; ++i)
             {
                 try
@@ -406,11 +405,14 @@ SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Ca
                 }
                 catch (SqlException ex)
                 {
-                    string pattern = @$"Cannot open backup device '(.+?{Regex.Escape(new string(Path.DirectorySeparatorChar, 1))}{db}.bak)'\.";
+                    string pattern = @$"Cannot open backup device '(.+?{Regex.Escape(new string(Path.DirectorySeparatorChar, 1))})Felisita1.bak'\.";
                     Match m = Regex.Match(ex.Message, pattern);
                     if (i == 0 && m.Success)
                     {
-                        File.Copy($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}Database{Path.DirectorySeparatorChar}{db}.bak", m.Groups[1].Captures[0].Value);
+                        dataDir = m.Groups[1].Captures[0].Value;
+                        File.Copy($"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}{Path.DirectorySeparatorChar}Database{Path.DirectorySeparatorChar}Felisita.bak", $"{dataDir}Felisita1.bak");
+                        dataDir = dataDir.Replace("Backup", "DATA");
+                        cmd.CommandText = $"SET LANGUAGE English; RESTORE DATABASE {db} FROM DISK = 'Felisita1.bak' WITH MOVE 'Felisita' TO '{dataDir}{db}.mdf', MOVE 'Felisita_Log' TO '{dataDir}{db}_log.mdf';";
                     }
                     else
                     {
