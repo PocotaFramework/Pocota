@@ -36,18 +36,21 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="Button" x:Key="AcceptChangesStyle" x:Shared="False">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsEntity}" Value="True">
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
+            <l:StyleCombiner TargetType="Button" x:Key="AcceptChangesStyle" x:Shared="False">
+                <Style TargetType="Button">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsEntity}" Value="True">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+                <StaticResource ResourceKey="MaterialDesignRaisedButton"/>
+            </l:StyleCombiner>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10"/>
+            <TextBlock Text="{Binding PocoState,  Converter={local:ViewTracedPocoConverter}, ConverterParameter=27}" Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>
             <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
                      Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}" Content="✓" ToolTip="Принять изменения"/>
             <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}" Content="⎌" ToolTip="Отменить изменения"/>

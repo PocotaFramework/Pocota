@@ -5,44 +5,69 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <Style TargetType="Button" x:Key="ViewVisualButtonStyle" x:Shared="False" >
-        <Setter Property="Content" Value="👁"/>
-        <Setter Property="ToolTip" Value="Посмотреть"/>
-    </Style>
-    <Style TargetType="Button" x:Key="AddVisualButtonStyle" x:Shared="False" >
-        <Setter Property="Content" Value="➕"/>
-        <Setter Property="ToolTip" Value="Добавить"/>
-    </Style>
-    <Style TargetType="Button" x:Key="RemoveVisualButtonStyle" x:Shared="False" >
-        <Setter Property="Content" Value="➖"/>
-        <Setter Property="ToolTip" Value="Удалить"/>
-    </Style>
-    <Style TargetType="Button" x:Key="ButtonStyle" x:Shared="False">
-        <Style.Triggers>
-            <DataTrigger Value="False">
-                <DataTrigger.Binding>
-                    <MultiBinding Converter="{l:ParameterizedResource $converter}" ConverterParameter="$test|12">
-                        <Binding Path="."/>
-                        <Binding Path="$path"/>
-                    </MultiBinding>
-                </DataTrigger.Binding>
-                <Setter Property="Visibility" Value="Collapsed"/>
-            </DataTrigger>
-        </Style.Triggers>
-        <Setter Property="ToolTip" Value="А так?"/>
-    </Style>
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DatePicker.xaml"/>
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ComboBox.xaml"/>
+        <materialDesign:CustomColorTheme BaseTheme="Light" PrimaryColor="Aqua" SecondaryColor="DarkGreen" />
+    </ResourceDictionary.MergedDictionaries>
+    <l:StyleCombiner TargetType="Button" x:Key="ActionButtonStyle" x:Shared="False" >
+        <StaticResource ResourceKey="MaterialDesignFloatingActionMiniLightButton"/>
+        <Style TargetType="Button">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+        </Style>
+    </l:StyleCombiner>
+    <l:StyleCombiner TargetType="Button" x:Key="ViewVisualButtonStyle" x:Shared="False" >
+        <Style TargetType="Button">
+            <Setter Property="Content" Value="👁"/>
+            <Setter Property="ToolTip" Value="Посмотреть"/>
+        </Style>
+        <StaticResource ResourceKey="ActionButtonStyle"/>
+    </l:StyleCombiner>
+    <l:StyleCombiner TargetType="Button" x:Key="AddVisualButtonStyle" x:Shared="False" >
+        <Style TargetType="Button">
+            <Setter Property="Content" Value="➕"/>
+            <Setter Property="ToolTip" Value="Добавить"/>
+        </Style>
+        <StaticResource ResourceKey="ActionButtonStyle"/>
+    </l:StyleCombiner>
+    <l:StyleCombiner TargetType="Button" x:Key="RemoveVisualButtonStyle" x:Shared="False" >
+        <Style TargetType="Button">
+            <Setter Property="Content" Value="➖"/>
+            <Setter Property="ToolTip" Value="Удалить"/>
+        </Style>
+        <StaticResource ResourceKey="ActionButtonStyle"/>
+    </l:StyleCombiner>
+    <l:StyleCombiner TargetType="Button" x:Key="ButtonStyle" x:Shared="False">
+        <Style TargetType="Button" >
+            <Style.Triggers>
+                <DataTrigger Value="False">
+                    <DataTrigger.Binding>
+                        <MultiBinding Converter="{l:ParameterizedResource $converter}" ConverterParameter="$test|12">
+                            <Binding Path="."/>
+                            <Binding Path="$path"/>
+                        </MultiBinding>
+                    </DataTrigger.Binding>
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+            <Setter Property="ToolTip" Value="А так?"/>
+        </Style>
+    </l:StyleCombiner>
     <l:StyleCombiner  x:Key="ViewPocoButtonStyle" TargetType="Button" x:Shared="False">
         <StaticResource ResourceKey="ViewVisualButtonStyle"/>
         <l:ParameterizedResource ResourceKey="ButtonStyle"/>
     </l:StyleCombiner>
     <l:StyleCombiner  x:Key="AddPocoButtonStyle" TargetType="Button" x:Shared="False">
-        <l:ParameterizedResource ResourceKey="ButtonStyle"/>
         <StaticResource ResourceKey="AddVisualButtonStyle"/>
+        <l:ParameterizedResource ResourceKey="ButtonStyle"/>
     </l:StyleCombiner>
     <l:StyleCombiner  x:Key="RemovePocoButtonStyle" TargetType="Button" x:Shared="False">
-        <l:ParameterizedResource ResourceKey="ButtonStyle"/>
         <StaticResource ResourceKey="RemoveVisualButtonStyle"/>
+        <l:ParameterizedResource ResourceKey="ButtonStyle"/>
     </l:StyleCombiner>
     <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyle" x:Shared="False">
         <Style.Triggers>
@@ -68,11 +93,14 @@
             <TextBlock Text="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=57}"/>
         </DockPanel>
     </DataTemplate>
+    <l:StyleCombiner TargetType="ComboBox" x:Key="CollectionComboBoxStyle" x:Shared="False">
+        <l:ParameterizedResource ResourceKey="$ViewCollectionComboBoxStyle" Defaults="$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyle"/>
+        <StaticResource ResourceKey="MaterialDesignComboBox"/>
+    </l:StyleCombiner>
     <DataTemplate x:Key="ViewCollectionDataTemplate" x:Shared="False">
         <StackPanel>
             <ComboBox SelectedIndex="0" 
-                      Style="{l:ParameterizedResource $ViewCollectionComboBoxStyle, 
-                            Defaults=$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyle}"
+                      Style="{l:ParameterizedResource CollectionComboBoxStyle}"
                       ItemTemplate="{l:ParameterizedResource ViewCollectionItemTemplate, Replaces=$path:.|$test:IsPoco}">
             </ComboBox>
         </StackPanel>
@@ -96,9 +124,12 @@
     <DataTemplate x:Key="EditValueDataTemplate" x:Shared="False">
         <TextBox Style="{l:ParameterizedResource EditValueTextBoxStyle}" />
     </DataTemplate>
-    <Style x:Key="EditDateStyle" x:Shared="False" TargetType="DatePicker">
-        <Setter Property="SelectedDate" Value="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|100, UpdateSourceTrigger=PropertyChanged}"/>
-    </Style>
+    <l:StyleCombiner x:Key="EditDateStyle" x:Shared="False" TargetType="DatePicker">
+        <Style TargetType="DatePicker">
+            <Setter Property="SelectedDate" Value="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|108, UpdateSourceTrigger=PropertyChanged}"/>
+        </Style>
+        <StaticResource ResourceKey="MaterialDesignFloatingHintDatePicker"/>
+    </l:StyleCombiner>
     <DataTemplate x:Key="EditDateDataTemplate" x:Shared="False">
         <DockPanel LastChildFill="True">
             <Button DockPanel.Dock="Right" Style="{l:ParameterizedResource RemovePocoButtonStyle, Replaces=$test:IsNotNullAndWritable}" 
@@ -109,10 +140,15 @@
             <DatePicker Style="{l:ParameterizedResource EditDateStyle}" />
         </DockPanel>
     </DataTemplate>
-    <Style  x:Key="EditEnumComboBoxStyle" x:Shared="False" TargetType="ComboBox">
-        <Setter Property="ItemsSource" Value="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|85}"/>
-        <Setter Property="SelectedItem" Value="{Binding $path, UpdateSourceTrigger=PropertyChanged}"/>
-    </Style>
+    <l:StyleCombiner x:Key="EditEnumComboBoxStyle" x:Shared="False" TargetType="ComboBox">
+        <StaticResource ResourceKey="MaterialDesignComboBox"/>
+        <Style TargetType="ComboBox">
+            <Setter Property="ItemsSource" Value="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|85}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="SelectedItem" Value="{Binding $path, UpdateSourceTrigger=PropertyChanged}"/>
+        </Style>
+    </l:StyleCombiner>
     <DataTemplate x:Key="EditEnumDataTemplate" x:Shared="False">
         <ComboBox Style="{l:ParameterizedResource EditEnumComboBoxStyle}"/>
     </DataTemplate>
@@ -146,7 +182,7 @@
             DateOnly="{l:ParameterizedResource EditDateDataTemplate, Replaces=$type:DateOnly}"
             TimeOnly="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:TimeOnly}"
             Value="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:Object}"
-            Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool}"
+            Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool, Verbose=1}"
             Enum="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Enum}"
                     />
 </ResourceDictionary>

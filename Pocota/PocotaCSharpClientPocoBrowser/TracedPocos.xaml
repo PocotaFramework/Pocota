@@ -91,7 +91,14 @@
                             </DataTemplate>
                             <DataTemplate x:Key="ActionsDataTemplate">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Click="Button_Click_1" Style="{StaticResource ViewVisualButtonStyle}"/>
+                                    <Button Click="Button_Click_1">
+                                        <Button.Style>
+                                            <l:StyleCombiner TargetType="Button">
+                                                <StaticResource ResourceKey="MaterialDesignFloatingActionMiniLightButton"/>
+                                                <StaticResource ResourceKey="ViewVisualButtonStyle"/>
+                                            </l:StyleCombiner>
+                                        </Button.Style>
+                                    </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGrid.Resources>

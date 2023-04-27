@@ -184,7 +184,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
         }
 
-        //Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
+        Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
 
         return null;
     }
@@ -263,7 +263,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             };
         }
 
-        //Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
+        Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
 
         return null;
     }
