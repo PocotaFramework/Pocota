@@ -141,13 +141,13 @@
         </DockPanel>
     </DataTemplate>
     <l:StyleCombiner x:Key="EditEnumComboBoxStyle" x:Shared="False" TargetType="ComboBox">
+        <Style TargetType="ComboBox">
+            <Style.Setters>
+                <Setter Property="ItemsSource" Value="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|85}"/>
+                <Setter Property="SelectedItem" Value="{Binding $path, UpdateSourceTrigger=PropertyChanged}"/>
+            </Style.Setters>
+        </Style>
         <StaticResource ResourceKey="MaterialDesignComboBox"/>
-        <Style TargetType="ComboBox">
-            <Setter Property="ItemsSource" Value="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|85}"/>
-        </Style>
-        <Style TargetType="ComboBox">
-            <Setter Property="SelectedItem" Value="{Binding $path, UpdateSourceTrigger=PropertyChanged}"/>
-        </Style>
     </l:StyleCombiner>
     <DataTemplate x:Key="EditEnumDataTemplate" x:Shared="False">
         <ComboBox Style="{l:ParameterizedResource EditEnumComboBoxStyle}"/>
