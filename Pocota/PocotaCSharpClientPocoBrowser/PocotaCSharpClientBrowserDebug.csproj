@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ChangedMaterial\**" />
+    <EmbeddedResource Remove="ChangedMaterial\**" />
+    <None Remove="ChangedMaterial\**" />
+    <Page Remove="ChangedMaterial\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\MaterialDesignInXamlToolkit\MaterialDesignThemes.Wpf\MaterialDesignThemes.Wpf.csproj" />
     <ProjectReference Include="..\..\..\WPF\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj" />
     <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
