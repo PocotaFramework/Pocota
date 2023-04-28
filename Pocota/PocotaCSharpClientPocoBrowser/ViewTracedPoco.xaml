@@ -25,7 +25,7 @@
             <Style TargetType="TextBlock" x:Key="ModifiedPropertyStyle" x:Shared="False">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsModified}" Value="True">
-                        <Setter Property="Background" Value="#EADDCA"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-04-25T15:07:06                                          //
+// at 2023-04-28T13:28:30                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -39,7 +39,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(EditKind);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -62,7 +62,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Boolean);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -85,7 +85,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Boolean);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -108,7 +108,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Boolean);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -131,7 +131,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -154,7 +154,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -177,7 +177,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -200,7 +200,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ICatForListing>);
             public override Type? ItemType => typeof(ICatForListing);
             public override bool IsSet(object target) => true;
@@ -223,7 +223,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ILitter>);
             public override Type? ItemType => typeof(ILitter);
             public override bool IsSet(object target) => true;
@@ -425,7 +425,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(EditKind);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -448,7 +448,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(Boolean);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -471,7 +471,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(Boolean);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -494,7 +494,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(Boolean);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -517,7 +517,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -540,7 +540,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -563,7 +563,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -586,7 +586,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(ObservableCollection<CatPoco>);
         public override Type? ItemType => typeof(CatPoco);
         public override bool IsSet(object target) => true;
@@ -609,7 +609,7 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(ObservableCollection<LitterPoco>);
         public override Type? ItemType => typeof(LitterPoco);
         public override bool IsSet(object target) => true;

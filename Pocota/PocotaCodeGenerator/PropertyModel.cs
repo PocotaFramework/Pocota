@@ -9,7 +9,7 @@ public class PropertyModel: IComparable<PropertyModel>
     public bool IsList { get; internal set; } = false;
     public bool IsPoco { get; internal set; } = false;
     public bool IsEntity { get; internal set; } = false;
-    public bool IsKeyPart { get; internal set; } = false;
+    public string? KeyPart { get; internal set; } = null;
     public string? ItemType { get; internal set; } = null;
     public string? Class { get; internal set; } = null;
     public Dictionary<string, string> Interfaces { get; init; } = new();

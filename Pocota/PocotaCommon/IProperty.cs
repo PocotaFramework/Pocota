@@ -8,7 +8,7 @@ public interface IProperty
     bool IsCollection { get; }
     bool IsPoco { get; }
     bool IsEntity { get; }
-    bool IsKeyPart { get; }
+    string? KeyPart { get; }
     Type Type { get; }
     Type? ItemType { get; }
     bool IsSet(object target);

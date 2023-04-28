@@ -10,7 +10,7 @@ public abstract class Property : IProperty
     public abstract bool IsCollection { get; }
     public abstract bool IsPoco { get; }
     public abstract bool IsEntity { get; }
-    public abstract bool IsKeyPart { get; }
+    public abstract string? KeyPart { get; }
     public abstract Type Type { get; }
     public abstract Type? ItemType { get; }
 

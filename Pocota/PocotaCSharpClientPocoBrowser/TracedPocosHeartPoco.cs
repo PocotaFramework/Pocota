@@ -2,7 +2,7 @@
 // Client Poco Implementation                                                         //
 // Net.Leksi.Pocota.Client.TracedPocosHeartPoco                                       //
 // Generated automatically from Net.Leksi.Pocota.Client.IPocotaClientProfilerContract //
-// at 2023-02-08T18:15:00                                                             //
+// at 2023-04-28T13:34:42                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -29,7 +29,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
 #region Init Properties
 
-        public class ModifiedPocosProperty: Property
+        public class ModifiedPocosProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "ModifiedPocos";
             public override bool IsReadOnly => true;
@@ -37,7 +37,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<PocoInfo>);
             public override Type? ItemType => typeof(PocoInfo);
             public override bool IsSet(object target) => true;
@@ -52,7 +52,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartITracedPocosHeartProjection)target)._projector._initial_modifiedPocos : default!;
         }
 
-        public class TracedPocosProperty: Property
+        public class TracedPocosProperty: Net.Leksi.Pocota.Client.Property
         {
             public override string Name => "TracedPocos";
             public override bool IsReadOnly => true;
@@ -60,7 +60,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<PocosCounts>);
             public override Type? ItemType => typeof(PocosCounts);
             public override bool IsSet(object target) => true;
@@ -156,7 +156,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     
 #region Init Properties
 
-    public class ModifiedPocosProperty: Property
+    public class ModifiedPocosProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "ModifiedPocos";
         public override bool IsReadOnly => false;
@@ -164,7 +164,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(ObservableCollection<PocoInfo>);
         public override Type? ItemType => typeof(PocoInfo);
         public override bool IsSet(object target) => true;
@@ -179,7 +179,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override object? GetInitial(object target) => IsSet(target) ? ((TracedPocosHeartPoco)target)._initial_modifiedPocos : default!;
     }
 
-    public class TracedPocosProperty: Property
+    public class TracedPocosProperty: Net.Leksi.Pocota.Client.Property
     {
         public override string Name => "TracedPocos";
         public override bool IsReadOnly => false;
@@ -187,7 +187,7 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(ObservableCollection<PocosCounts>);
         public override Type? ItemType => typeof(PocosCounts);
         public override bool IsSet(object target) => true;
@@ -395,6 +395,21 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     private void ModifiedPocosAcceptChange()
     {
+        for(int i = _initial_modifiedPocos.Count - 1; i >= 0; --i)
+        {
+            if(!_modifiedPocos.Contains(_modifiedPocos[i]))
+            {
+                _initial_modifiedPocos.RemoveAt(i);
+            }
+        }
+        foreach(var item in _modifiedPocos)
+        {
+            if(!_initial_modifiedPocos.Contains(item))
+            {
+                _initial_modifiedPocos.Add(item);
+            }
+        }
+
     }
 
 
@@ -463,6 +478,21 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
 
     private void TracedPocosAcceptChange()
     {
+        for(int i = _initial_tracedPocos.Count - 1; i >= 0; --i)
+        {
+            if(!_tracedPocos.Contains(_tracedPocos[i]))
+            {
+                _initial_tracedPocos.RemoveAt(i);
+            }
+        }
+        foreach(var item in _tracedPocos)
+        {
+            if(!_initial_tracedPocos.Contains(item))
+            {
+                _initial_tracedPocos.Add(item);
+            }
+        }
+
     }
 
 

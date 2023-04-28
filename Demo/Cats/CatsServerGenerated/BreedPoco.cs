@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-25T15:07:06                                  //
+// at 2023-04-28T13:28:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,7 +36,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => true;
+            public override string? KeyPart => "IdBreed";
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_code;
@@ -53,7 +53,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => true;
+            public override string? KeyPart => "IdGroup";
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_group;
@@ -70,7 +70,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameEng;
@@ -87,7 +87,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((BreedIBreedProjection)target)._projector._is_set_nameNat;
@@ -194,7 +194,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => true;
+        public override string? KeyPart => "IdBreed";
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_code;
@@ -211,7 +211,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => true;
+        public override string? KeyPart => "IdGroup";
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_group;
@@ -228,7 +228,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameEng;
@@ -245,7 +245,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((BreedPoco)target)._is_set_nameNat;

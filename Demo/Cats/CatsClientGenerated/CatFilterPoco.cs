@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.CatFilterPoco                        //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-25T15:07:06                                  //
+// at 2023-04-28T13:28:30                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -36,7 +36,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -59,7 +59,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -82,7 +82,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -105,7 +105,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Gender);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -128,7 +128,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -151,7 +151,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -174,7 +174,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -197,7 +197,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -220,7 +220,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -243,7 +243,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -266,7 +266,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -289,7 +289,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -312,7 +312,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitter);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -335,7 +335,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -358,7 +358,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => true;
@@ -611,7 +611,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(DateOnly);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -634,7 +634,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(DateOnly);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -657,7 +657,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -680,7 +680,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(Gender);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -703,7 +703,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -726,7 +726,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -749,7 +749,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -772,7 +772,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(BreedPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -795,7 +795,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatteryPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -818,7 +818,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -841,7 +841,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -864,7 +864,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -887,7 +887,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(LitterPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -910,7 +910,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;
@@ -933,7 +933,7 @@ public class CatFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjection
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => true;

@@ -284,7 +284,7 @@ internal class PocoBuildingJsonConverter<T> : JsonConverter<T> where T : class
                     Type typeForSerialization = propertyType;
                     bool isSkipped = false;
 
-                    if (!isCollectionReentering && (property.IsCollection || !isPropertySet || property.IsKeyPart))
+                    if (!isCollectionReentering && (property.IsCollection || !isPropertySet || property.KeyPart is { }))
                     {
                         if(property.IsCollection || !isPropertySet)
                         {

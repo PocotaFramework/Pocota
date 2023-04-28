@@ -54,7 +54,6 @@
                     <Setter Property="Visibility" Value="Collapsed"/>
                 </DataTrigger>
             </Style.Triggers>
-            <Setter Property="ToolTip" Value="А так?"/>
         </Style>
     </l:StyleCombiner>
     <l:StyleCombiner  x:Key="ViewPocoButtonStyle" TargetType="Button" x:Shared="False">
@@ -182,7 +181,7 @@
             DateOnly="{l:ParameterizedResource EditDateDataTemplate, Replaces=$type:DateOnly}"
             TimeOnly="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:TimeOnly}"
             Value="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:Object}"
-            Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool, Verbose=1}"
+            Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool}"
             Enum="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Enum}"
                     />
 </ResourceDictionary>

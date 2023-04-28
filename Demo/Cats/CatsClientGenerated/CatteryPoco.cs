@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-25T15:07:06                                  //
+// at 2023-04-28T13:28:30                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -34,7 +34,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameEngSet();
@@ -56,7 +56,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatteryICatteryProjection)target)._projector.IsNameNatSet();
@@ -165,7 +165,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameEngSet();
@@ -187,7 +187,7 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatteryPoco)target).IsNameNatSet();

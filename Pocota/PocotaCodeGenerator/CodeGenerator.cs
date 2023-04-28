@@ -917,7 +917,7 @@ public class CodeGenerator : IModelBuilder
                     Name = pi.Name,
                     IsNullable = new NullabilityInfoContext().Create(pi).ReadState is NullabilityState.Nullable,
                     IsReadOnly = false,
-                    IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property == pi && v.KeyReference is null)
+                    KeyPart = projector.KeysDefinitions.Values.Where(v => v.Property == pi && v.KeyReference is null).Select(v => v.Name).FirstOrDefault()
                 };
                 if (_projectorsByProjections.TryGetValue(pi.PropertyType, out ProjectorHolder? ph))
                 {
@@ -1023,7 +1023,7 @@ public class CodeGenerator : IModelBuilder
                             AddUsings(model, typeof(Server.ProjectionList<,>));
                         }
                     }
-                    pm.IsKeyPart = projector.KeysDefinitions.Values.Any(v => v.Property is { } && v.KeyReference is null && v.Property.Name.Equals(pi.Name));
+                    pm.KeyPart = projector.KeysDefinitions.Values.Where(v => v.Property == pi && v.KeyReference is null).Select(v => v.Name).FirstOrDefault();
                 }
 
                 projectionModel.Properties.Sort();

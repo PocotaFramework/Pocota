@@ -19,7 +19,7 @@
         @Html.Raw(indent)public override bool IsCollection =>  @Html.Raw(pm.IsList ? "true" : "false");
         @Html.Raw(indent)public override bool IsPoco =>  @Html.Raw(pm.IsPoco && !pm.IsList ? "true" : "false");
         @Html.Raw(indent)public override bool IsEntity => @Html.Raw(pm.IsEntity && !pm.IsList ? "true" : "false");
-        @Html.Raw(indent)public override bool IsKeyPart => @Html.Raw(pm.IsKeyPart ? "true" : "false");
+        @Html.Raw(indent)public override string? KeyPart => @Html.Raw(pm.KeyPart is {} ? $"\"{pm.KeyPart}\"" : "null");
         @Html.Raw(indent)public override Type Type => typeof(@Html.Raw(pm.Type));
         @Html.Raw(indent)public override Type? ItemType => @Html.Raw(pm.ItemType is {} ? $"typeof({pm.ItemType})" : "null");
         @Html.Raw(indent)public override bool IsSet(object target) => @if(Model.IsEntity)

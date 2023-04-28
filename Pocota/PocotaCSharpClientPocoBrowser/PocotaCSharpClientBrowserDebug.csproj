@@ -16,8 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Net.Leksi.WpfMarkupExtension" Version="1.0.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\MaterialDesignInXamlToolkit\MaterialDesignThemes.Wpf\MaterialDesignThemes.Wpf.csproj" />
-    <ProjectReference Include="..\..\..\WPF\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj" />
     <ProjectReference Include="..\PocotaClientCSharp\PocotaClientCSharpDebug.csproj" />
     <ProjectReference Include="..\PocotaClient\PocotaClientDebug.csproj" />
     <ProjectReference Include="..\PocotaCSharpClientPocoBrowserCodeGen\PocotaCSharpClientBrowserCodeGenDebug.csproj" />

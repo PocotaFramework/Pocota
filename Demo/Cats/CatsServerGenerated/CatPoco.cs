@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-25T15:07:06                                  //
+// at 2023-04-28T13:28:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -38,7 +38,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_description;
@@ -55,7 +55,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_exterior;
@@ -72,7 +72,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Gender);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_gender;
@@ -89,7 +89,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_nameEng;
@@ -106,7 +106,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_nameNat;
@@ -123,7 +123,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_title;
@@ -140,7 +140,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_breed;
@@ -157,7 +157,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_cattery;
@@ -174,7 +174,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitter);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_litter;
@@ -191,7 +191,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ILitter>);
             public override Type? ItemType => typeof(ILitter);
             public override bool IsSet(object target) => ((CatICatProjection)target)._projector._is_set_litters;
@@ -364,7 +364,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_description;
@@ -381,7 +381,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_exterior;
@@ -398,7 +398,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Gender);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_gender;
@@ -415,7 +415,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameEng;
@@ -432,7 +432,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_nameNat;
@@ -449,7 +449,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_title;
@@ -466,7 +466,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_breed;
@@ -483,7 +483,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_cattery;
@@ -500,7 +500,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitterForCat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForListingProjection)target)._projector._is_set_litter;
@@ -655,7 +655,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_exterior;
@@ -672,7 +672,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameEng;
@@ -689,7 +689,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_nameNat;
@@ -706,7 +706,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_title;
@@ -723,7 +723,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_breed;
@@ -740,7 +740,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_cattery;
@@ -757,7 +757,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitterForDate);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsParentProjection)target)._projector._is_set_litter;
@@ -892,7 +892,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_description;
@@ -909,7 +909,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_exterior;
@@ -926,7 +926,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Gender);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_gender;
@@ -943,7 +943,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameEng;
@@ -960,7 +960,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_nameNat;
@@ -977,7 +977,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_title;
@@ -994,7 +994,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IBreed);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_breed;
@@ -1011,7 +1011,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICattery);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_cattery;
@@ -1028,7 +1028,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitterForCat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_litter;
@@ -1045,7 +1045,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ILitterForCat>);
             public override Type? ItemType => typeof(ILitterForCat);
             public override bool IsSet(object target) => ((CatICatForViewProjection)target)._projector._is_set_litters;
@@ -1208,7 +1208,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ILitterWithCats);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatWithSiblingsProjection)target)._projector._is_set_litter;
@@ -1284,7 +1284,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameEng;
@@ -1301,7 +1301,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(String);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((CatICatAsSiblingProjection)target)._projector._is_set_nameNat;
@@ -1384,7 +1384,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_description;
@@ -1401,7 +1401,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_exterior;
@@ -1418,7 +1418,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(Gender);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_gender;
@@ -1435,7 +1435,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_nameEng;
@@ -1452,7 +1452,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_nameNat;
@@ -1469,7 +1469,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(String);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_title;
@@ -1486,7 +1486,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(BreedPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_breed;
@@ -1503,7 +1503,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatteryPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_cattery;
@@ -1520,7 +1520,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(LitterPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_litter;
@@ -1537,7 +1537,7 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(List<LitterPoco>);
         public override Type? ItemType => typeof(LitterPoco);
         public override bool IsSet(object target) => ((CatPoco)target)._is_set_litters;

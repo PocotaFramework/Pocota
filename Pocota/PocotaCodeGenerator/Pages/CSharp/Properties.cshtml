@@ -25,7 +25,15 @@
         }
         else
         {
-        <text>        if(@fieldName != value)
+            @if(pm.KeyPart is {})
+            {
+                  <text>        if(((IEntity)this).PocoState is not PocoState.Created && !IsBeingPopulated)
+        {
+            return;
+        }
+</text>
+            }
+            <text>        if(@fieldName != value)
         {
             lock(_lock)
             {

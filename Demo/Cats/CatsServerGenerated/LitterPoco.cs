@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-25T15:07:06                                  //
+// at 2023-04-28T13:28:29                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -37,7 +37,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_date;
@@ -54,7 +54,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => true;
+            public override string? KeyPart => "IdLitter";
             public override Type Type => typeof(Int32);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_order;
@@ -71,7 +71,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_female;
@@ -88,7 +88,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICat);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_male;
@@ -105,7 +105,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<String>);
             public override Type? ItemType => typeof(String);
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_strings;
@@ -122,7 +122,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ICat>);
             public override Type? ItemType => typeof(ICat);
             public override bool IsSet(object target) => ((LitterILitterProjection)target)._projector._is_set_cats;
@@ -245,7 +245,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_date;
@@ -262,7 +262,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => true;
+            public override string? KeyPart => null;
             public override Type Type => typeof(Int32);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_order;
@@ -279,7 +279,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICatAsParent);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_female;
@@ -296,7 +296,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICatAsParent);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_male;
@@ -313,7 +313,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ICatAsSibling>);
             public override Type? ItemType => typeof(ICatAsSibling);
             public override bool IsSet(object target) => ((LitterILitterForCatProjection)target)._projector._is_set_cats;
@@ -426,7 +426,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(DateOnly);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterForDateProjection)target)._projector._is_set_date;
@@ -501,7 +501,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICatAsParent);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_female;
@@ -518,7 +518,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  false;
             public override bool IsPoco =>  true;
             public override bool IsEntity => true;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(ICatAsParent);
             public override Type? ItemType => null;
             public override bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_male;
@@ -535,7 +535,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             public override bool IsCollection =>  true;
             public override bool IsPoco =>  false;
             public override bool IsEntity => false;
-            public override bool IsKeyPart => false;
+            public override string? KeyPart => null;
             public override Type Type => typeof(IList<ICatAsSibling>);
             public override Type? ItemType => typeof(ICatAsSibling);
             public override bool IsSet(object target) => ((LitterILitterWithCatsProjection)target)._projector._is_set_cats;
@@ -626,7 +626,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(DateOnly);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_date;
@@ -643,7 +643,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => true;
+        public override string? KeyPart => "IdLitter";
         public override Type Type => typeof(Int32);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_order;
@@ -660,7 +660,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_female;
@@ -677,7 +677,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  false;
         public override bool IsPoco =>  true;
         public override bool IsEntity => true;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(CatPoco);
         public override Type? ItemType => null;
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_male;
@@ -694,7 +694,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(List<String>);
         public override Type? ItemType => typeof(String);
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_strings;
@@ -711,7 +711,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override bool IsCollection =>  true;
         public override bool IsPoco =>  false;
         public override bool IsEntity => false;
-        public override bool IsKeyPart => false;
+        public override string? KeyPart => null;
         public override Type Type => typeof(List<CatPoco>);
         public override Type? ItemType => typeof(CatPoco);
         public override bool IsSet(object target) => ((LitterPoco)target)._is_set_cats;
