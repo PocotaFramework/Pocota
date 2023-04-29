@@ -9,7 +9,7 @@ fp.close();
 os.system('git diff --name-only > {}'.format(fp.name))
 f = open(fp.name)
 for line in f:
-    command = 'xcopy /s /-i /y {0} {1}\Pocota\PocotaCSharpClientPocoBrowser\ChangedMaterial\{0}'.format(line.strip().replace('/', '\\'), directory)
+    command = 'xcopy /s /y {0} {1}\Pocota\PocotaCSharpClientPocoBrowser\ChangedMaterial\{0}'.format(line.strip().replace('/', '\\'), directory)
     os.system(command)
 f.close()
 
