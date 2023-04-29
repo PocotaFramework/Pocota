@@ -31,7 +31,7 @@ f.close()
 
 os.system('git commit --allow-empty-message -m="" -a')
 
-os.system('rev-parse --abbrev-ref HEAD > {}'.format(fp.name))
+os.system('git rev-parse --abbrev-ref HEAD > {}'.format(fp.name))
 f = open(fp.name)
 
 for line in f:
