@@ -2,8 +2,8 @@ import os
 import tempfile
 import sys
 
-directory = os.getcwd()
-os.chdir('..\MaterialDesignInXamlToolkit')
+directory = os.path.dirname(os.path.realpath(__file__))
+os.chdir('{}\..\MaterialDesignInXamlToolkit'.format(directory))
 fp = tempfile.NamedTemporaryFile()
 fp.close();
 os.system('git diff --name-only > {}'.format(fp.name))
