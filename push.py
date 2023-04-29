@@ -27,17 +27,20 @@ if len(untracked) > 0:
         print('    {}'.format(line));
     sys.exit(0)
 
+f.close()
+
 os.system('git commit --allow-empty-message -m="" -a')
 
-f.close()
 os.system('rev-parse --abbrev-ref HEAD > {}'.format(fp.name))
 f = open(fp.name)
 
-branch = [line for line in f][0]
+for line in f:
+    branch = line.strip()
+    break
+f.close()
 
 print(branch)
 
-f.close()
 os.system('git remote > {}'.format(fp.name))
 f = open(fp.name)
 
