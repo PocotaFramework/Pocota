@@ -98,7 +98,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 || (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (poco = poco3) == poco)
             )
             {
-                return $"{poco.GetType()}: {TracedPocos.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
+                return $"{poco.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
             }
         }
 
@@ -135,7 +135,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return value!.ToString();
         }
 
-        Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
+        //Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
 
         return value;
     }
@@ -184,7 +184,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
         }
 
-        Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
+        //Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
 
         return null;
     }
@@ -236,7 +236,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             catch (Exception) { }
         }
 
-        Console.WriteLine($"ConvertBack {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
+        //Console.WriteLine($"ConvertBack {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
 
         return value;
 
@@ -263,7 +263,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             };
         }
 
-        Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
+        //Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
 
         return null;
     }

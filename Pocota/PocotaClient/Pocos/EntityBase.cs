@@ -9,13 +9,11 @@ public abstract class EntityBase : PocoBase, IEntity
 {
     private bool _isDeleting = false;
 
-    internal object[]? PrimaryKey { get; set; } = null;
+    protected internal object[]? PrimaryKey { get; set; } = null;
 
     internal override bool IsEnvelope => false;
 
-    protected abstract IEnumerable<string> KeyNames { get; }
-
-    IEnumerable<string> IEntity.KeyNames => KeyNames;
+    public abstract ImmutableArray<string> KeyNames { get; }
 
     ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray();
 
@@ -42,6 +40,7 @@ public abstract class EntityBase : PocoBase, IEntity
             _pocoState = PocoState.Created;
             PocoState newPocoState = ((IPoco)this).PocoState;
             OnPocoStateChanged(new PocoStateChangedEventArgs(oldPocoState, newPocoState));
+            PrimaryKey = new string[KeyNames.Count()];
         }
     }
 

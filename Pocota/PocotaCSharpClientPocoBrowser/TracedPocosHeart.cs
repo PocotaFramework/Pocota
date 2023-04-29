@@ -25,7 +25,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
 
     private void _pocoContext_TracedPocosChanged(object? sender, EventArgs e)
     {
-        _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
+        _services.GetRequiredService<PocotaClientBrowser>().Dispatcher.Invoke(() =>
         {
             foreach (var item in _pocoContext.TracedPocos)
             {
@@ -44,7 +44,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
 
     private void _pocoContext_ModifiedPocosChanged(object? sender, EventArgs e)
     {
-        _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
+        _services.GetRequiredService<PocotaClientBrowser>().Dispatcher.Invoke(() =>
         {
             ModifiedPocos.Clear();
             foreach (IPoco item in _pocoContext.ModifiedPocos)

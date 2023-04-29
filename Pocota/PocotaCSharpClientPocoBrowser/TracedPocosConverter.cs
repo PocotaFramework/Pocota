@@ -33,7 +33,7 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
         {
             if (
                 parameters.Where(v => v is string s && s.Contains("LastActiveWindow")).FirstOrDefault() is string s
-                && value == TracedPocos.Instance.Services.GetRequiredService<TracedPocos>().LastActiveWindow
+                && value == PocotaClientBrowser.Instance.Services.GetRequiredService<PocotaClientBrowser>().LastActiveWindow
             )
             {
                 string[] parts = s.Split('|');
@@ -61,7 +61,7 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
         }
         else if (value is PocosCounts pocosCounts && typeof(IEnumerable).IsAssignableFrom(targetType))
         {
-            List<IPoco> list = TracedPocos.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(pocosCounts.Type)!;
+            List<IPoco> list = PocotaClientBrowser.Instance.Services.GetRequiredService<IPocoContext>().ListTracedPocos(pocosCounts.Type)!;
             if(pocosCounts.Items.Count < 1)
             {
                 pocosCounts.Items.Add(null!);

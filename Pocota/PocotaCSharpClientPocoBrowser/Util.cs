@@ -13,6 +13,9 @@ public class Util
 
     public string GetPocoLabel(IPoco? poco)
     {
+        if(poco is IEntity entity)
+        {
+        }
         return poco?.GetHashCode().ToString() ?? "null";
     }
 }

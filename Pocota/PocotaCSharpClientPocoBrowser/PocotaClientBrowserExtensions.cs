@@ -11,16 +11,16 @@ public static class PocotaClientBrowserExtensions
         services.AddSingleton<Util>();
         services.AddSingleton(serv => 
         {
-            TracedPocos.Instance = new(serv);
+            PocotaClientBrowser.Instance = new(serv);
             serv.GetRequiredService<IPocoContext>().TracePocos = true;
             T app = serv.GetRequiredService<T>();
             app.MainWindow.Closed += (s, e) =>
             {
-                TracedPocos.Instance.CanClose = true;
-                TracedPocos.Instance.Close();
+                PocotaClientBrowser.Instance.CanClose = true;
+                PocotaClientBrowser.Instance.Close();
             };
-            TracedPocos.Instance.Show();
-            return TracedPocos.Instance;
+            PocotaClientBrowser.Instance.Show();
+            return PocotaClientBrowser.Instance;
         });
         
         services.AddTransient<ViewTracedPoco>();

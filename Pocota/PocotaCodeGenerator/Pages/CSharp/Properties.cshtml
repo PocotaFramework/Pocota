@@ -5,7 +5,8 @@
 
 @if (Model.IsEntity)
 {
-    <text>    @Html.Raw("protected override IEnumerable<string> KeyNames => new string[] {")  @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\"")))};
+    <text>    @Html.Raw("private static readonly string[] _keyNames = new string[] {")  @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\"")))};
+    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
 
 </text>
 }
@@ -90,6 +91,11 @@
                         @Html.Raw($"{fieldName}.DeletionRequested += {pm.Name}DeletionRequested");
                     }
 </text>   
+                    }
+                    @if(pm.KeyPart is {})
+                    {
+                        <text>                    @Html.Raw($"PrimaryKey![KeyNames.IndexOf(\"{pm.KeyPart}\")] = value");
+</text>
                     }
                     OnPocoChanged(@Html.Raw($"{pm.Name}Prop"));
                     OnPropertyChanged(@Html.Raw($"nameof({pm.Name})"));

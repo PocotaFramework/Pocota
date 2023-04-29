@@ -122,7 +122,7 @@ public class ViewInBrowserCommand : ICommand
         {
             try
             {
-                _services.GetRequiredService<TracedPocos>().Dispatcher.Invoke(() =>
+                _services.GetRequiredService<PocotaClientBrowser>().Dispatcher.Invoke(() =>
                 {
                     ViewTracedPoco? tmp = null;
                     //ViewTracedPoco? tmp = _services.GetRequiredService<TracedPocos>()._views
@@ -131,7 +131,7 @@ public class ViewInBrowserCommand : ICommand
                     ViewTracedPoco view = tmp is { } ? tmp : _services.GetRequiredService<ViewTracedPoco>();
                     if(tmp is null)
                     {
-                        _services.GetRequiredService<TracedPocos>().AddView(view);
+                        _services.GetRequiredService<PocotaClientBrowser>().AddView(view);
                         view.Source = (PocoBase)poco;
                         view.Show();
                     }

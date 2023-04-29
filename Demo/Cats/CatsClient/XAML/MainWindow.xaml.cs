@@ -69,7 +69,7 @@ public partial class MainWindow : Window
         Connector = services.GetRequiredService<CatsConnector>();
         Connector.BaseAddress = new Uri("https://localhost:5001");
 
-        if(services.GetService<TracedPocos>() is TracedPocos tracedPocos)
+        if(services.GetService<PocotaClientBrowser>() is PocotaClientBrowser tracedPocos)
         {
             tracedPocos.Connector = Connector;
         } 

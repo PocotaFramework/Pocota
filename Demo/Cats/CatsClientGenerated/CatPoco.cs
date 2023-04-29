@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-28T13:28:30                                  //
+// at 2023-04-29T14:11:12                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -13,6 +13,7 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -2067,7 +2068,8 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     
 #region Properties
 
-    protected override IEnumerable<string> KeyNames => new string[] {  "IdCat", "IdCattery"};
+    private static readonly string[] _keyNames = new string[] {  "IdCat", "IdCattery"};
+    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
 
     private void SetDescription(String? value)
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Net.Leksi.WpfMarkup;
+using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,68 +17,82 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
     public DataTemplate? DateTime { get; set; }
     public DataTemplate? DateOnly { get; set; }
     public DataTemplate? TimeOnly { get; set; }
+    public DataTemplate? ReadOnlyValue { get; set; }
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
         if(item is PropertyValueHolder pvh)
         {
-            if (typeof(IList).IsAssignableFrom(pvh.Type))
+            if(pvh.KeyPart is { } && container is ContentPresenter cp && cp.FindResource("PocoState") is BindingProxy bp && bp.Value is not PocoState.Created)
             {
-                if(Collection is { })
+                if (ReadOnlyValue is { })
                 {
-                    return Collection;
+                    return ReadOnlyValue;
                 }
             }
-            if(pvh.IsPoco)
+            else
             {
-                if(Poco is { })
+                if (typeof(IList).IsAssignableFrom(pvh.Type))
                 {
-                    return Poco;
+                    if (Collection is { })
+                    {
+                        return Collection;
+                    }
+                }
+                if (pvh.IsPoco)
+                {
+                    if (Poco is { })
+                    {
+                        return Poco;
+                    }
+                }
+                if (pvh.Type == typeof(bool))
+                {
+                    if (Bool is { })
+                    {
+                        return Bool;
+                    }
+                }
+                if (pvh.Type.IsEnum)
+                {
+                    if (Enum is { })
+                    {
+                        return Enum;
+                    }
+                }
+                if (typeof(TimeSpan).IsAssignableFrom(pvh.Type))
+                {
+                    if (TimeSpan is { })
+                    {
+                        return TimeSpan;
+                    }
+                }
+                if (typeof(DateTime).IsAssignableFrom(pvh.Type))
+                {
+                    if (DateTime is { })
+                    {
+                        return DateTime;
+                    }
+                }
+                if (typeof(DateOnly).IsAssignableFrom(pvh.Type))
+                {
+                    if (DateOnly is { })
+                    {
+                        return DateOnly;
+                    }
+                }
+                if (typeof(TimeOnly).IsAssignableFrom(pvh.Type))
+                {
+                    if (TimeOnly is { })
+                    {
+                        return TimeOnly;
+                    }
+                }
+                if (Value is { })
+                {
+                    return Value;
                 }
             }
-            if (pvh.Type == typeof(bool))
-            {
-                if (Bool is { })
-                {
-                    return Bool;
-                }
-            }
-            if (pvh.Type.IsEnum)
-            {
-                if (Enum is { })
-                {
-                    return Enum;
-                }
-            }
-            if (typeof(TimeSpan).IsAssignableFrom(pvh.Type))
-            {
-                if (TimeSpan is { })
-                {
-                    return TimeSpan;
-                }
-            }
-            if (typeof(DateTime).IsAssignableFrom(pvh.Type))
-            {
-                if (DateTime is { })
-                {
-                    return DateTime;
-                }
-            }
-            if (typeof(DateOnly).IsAssignableFrom(pvh.Type))
-            {
-                if (DateOnly is { })
-                {
-                    return DateOnly;
-                }
-            }
-            if (typeof(TimeOnly).IsAssignableFrom(pvh.Type))
-            {
-                if (TimeOnly is { })
-                {
-                    return TimeOnly;
-                }
-            }
-            return Value;
         }
         return base.SelectTemplate(item, container);
     }

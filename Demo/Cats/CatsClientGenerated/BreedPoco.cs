@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.BreedPoco                              //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-28T13:28:30                                  //
+// at 2023-04-29T14:11:12                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,6 +10,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 
@@ -372,7 +373,8 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
     
 #region Properties
 
-    protected override IEnumerable<string> KeyNames => new string[] {  "IdBreed", "IdGroup"};
+    private static readonly string[] _keyNames = new string[] {  "IdBreed", "IdGroup"};
+    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
 
     private void SetCode(String value)
     {
@@ -399,6 +401,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         }
                         _is_set_code = true;
                     }
+                    PrimaryKey![KeyNames.IndexOf("IdBreed")] = value;
                     OnPocoChanged(CodeProp);
                     OnPropertyChanged(nameof(Code));
                 }
@@ -438,6 +441,7 @@ public class BreedPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase
                         }
                         _is_set_group = true;
                     }
+                    PrimaryKey![KeyNames.IndexOf("IdGroup")] = value;
                     OnPocoChanged(GroupProp);
                     OnPropertyChanged(nameof(Group));
                 }

@@ -19,7 +19,7 @@ using System.Windows.Threading;
 
 namespace Net.Leksi.Pocota.Client
 {
-    public partial class TracedPocos : Window, INotifyPropertyChanged
+    public partial class PocotaClientBrowser : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -36,7 +36,7 @@ namespace Net.Leksi.Pocota.Client
 
         public IServiceProvider Services { get; private set; }
 
-        public static TracedPocos Instance { get; internal set; } = null!;
+        public static PocotaClientBrowser Instance { get; internal set; } = null!;
 
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
@@ -71,7 +71,7 @@ namespace Net.Leksi.Pocota.Client
         }
 
 
-        internal TracedPocos(IServiceProvider services)
+        internal PocotaClientBrowser(IServiceProvider services)
         {
             Services = services;
             Heart = services.GetRequiredService<ITracedPocosHeart>();

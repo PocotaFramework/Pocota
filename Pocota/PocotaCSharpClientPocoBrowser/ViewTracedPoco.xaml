@@ -17,6 +17,7 @@
             <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding ViewTracedPocoCommand}"/>
             <l:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Value="{Binding ClearPocoPropertyCommand}"/>
             <l:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
+            <l:BindingProxy x:Key="PocoState" Value="{Binding PocoState}"/>
             <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{l:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">

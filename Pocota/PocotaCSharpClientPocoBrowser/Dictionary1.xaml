@@ -172,7 +172,9 @@
     <local:ViewTracedPocoDataTemplateSelector x:Key="ViewTracedPocoDataTemplateSelector" x:Shared="False" 
             Collection="{l:ParameterizedResource ViewCollectionDataTemplate}"
             Poco="{l:ParameterizedResource ViewPocoDataTemplate}"
-            Value="{l:ParameterizedResource ViewValueDataTemplate}"/>
+            Value="{l:ParameterizedResource ViewValueDataTemplate}"
+            ReadOnlyValue="{l:ParameterizedResource ViewValueDataTemplate}"
+    />
     <local:ViewTracedPocoDataTemplateSelector x:Key="EditTracedPocoDataTemplateSelector" x:Shared="False" 
             Collection="{l:ParameterizedResource ViewCollectionDataTemplate}"
             Poco="{l:ParameterizedResource EditPocoDataTemplate}"
@@ -183,5 +185,6 @@
             Value="{l:ParameterizedResource EditValueDataTemplate, Replaces=$type:Object}"
             Bool="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Bool}"
             Enum="{l:ParameterizedResource EditEnumDataTemplate, Replaces=$type:Enum}"
-                    />
+            ReadOnlyValue="{l:ParameterizedResource ViewValueDataTemplate}"
+    />
 </ResourceDictionary>

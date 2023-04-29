@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-28T13:28:30                                  //
+// at 2023-04-29T14:11:12                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -10,6 +10,7 @@ using Net.Leksi.Pocota.Client;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 
@@ -250,7 +251,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Properties
 
-    protected override IEnumerable<string> KeyNames => new string[] {  "IdCattery"};
+    private static readonly string[] _keyNames = new string[] {  "IdCattery"};
+    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
 
     private void SetNameEng(String? value)
     {

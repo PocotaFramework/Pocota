@@ -8,6 +8,7 @@ using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -838,6 +839,7 @@ public class CodeGenerator : IModelBuilder
                     AddUsings(model, typeof(Client.EntityBase));
                     model.Interfaces.Add(MakeTypeName(typeof(Client.EntityBase)));
                     AddUsings(model, typeof(Client.IEntity));
+                    AddUsings(model, typeof(ImmutableArray<>));
                     model.Interfaces.Add(MakeIProjectionName(typeof(Client.IEntity)));
                     model.Interfaces.Add(MakeIProjectionName(typeof(Client.EntityBase)));
                 }

@@ -7,13 +7,14 @@ internal class PropertyValueHolder: INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private readonly string _name = null!;
     private readonly Property _property = null!;
     private readonly WeakReference<PocoBase> _targetRererence = new(null!);
     private object? _lastInitial = null;
     private object? _lastCurrent = null;
     private bool _lastIsModified = true;
 
-    public string Name => _property.Name;
+    public string Name => _name;
 
     public bool IsReadOnly => _property.IsReadOnly;
     
@@ -100,8 +101,11 @@ internal class PropertyValueHolder: INotifyPropertyChanged
 
     public Type Type => _property.Type;
 
+    public string? KeyPart => _property.KeyPart;
+
     public PropertyValueHolder(Property property, PocoBase target)
     {
+        _name = property.Name + (property.KeyPart is { } ? $" ({property.KeyPart})" : string.Empty);
         _property = property;
         _targetRererence.SetTarget(target);
     }

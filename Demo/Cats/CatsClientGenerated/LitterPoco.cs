@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-04-28T13:28:30                                  //
+// at 2023-04-29T14:11:12                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -12,6 +12,7 @@ using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -1017,7 +1018,8 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     
 #region Properties
 
-    protected override IEnumerable<string> KeyNames => new string[] {  "IdFemale", "IdFemaleCattery", "IdLitter"};
+    private static readonly string[] _keyNames = new string[] {  "IdFemale", "IdFemaleCattery", "IdLitter"};
+    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
 
     private void SetDate(DateOnly value)
     {
@@ -1079,6 +1081,7 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
                         }
                         _is_set_order = true;
                     }
+                    PrimaryKey![KeyNames.IndexOf("IdLitter")] = value;
                     OnPocoChanged(OrderProp);
                     OnPropertyChanged(nameof(Order));
                 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -39,7 +40,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
 
-     public PocoState PocoState
+    public PocoState PocoState
     {
         get
         {
@@ -83,7 +84,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                             ++i;
                         }
                     }
-                    Title = $"Просмотр {poco.GetType()}: {_services.GetRequiredService<Util>().GetPocoLabel(poco)}";
+                    UpdateTitle(poco);
                     _properties = _core.GetPropertiesList(value.GetType());
                     FillProperties(true, string.Empty);
                 }
@@ -113,7 +114,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     protected override void OnClosed(EventArgs e)
     {
-        _services.GetRequiredService<TracedPocos>().RemoveView(this);
+        _services.GetRequiredService<PocotaClientBrowser>().RemoveView(this);
         if (_properties is { } && SourceReference.TryGetTarget(out PocoBase? target) && target is { })
         {
             target.PropertyChanged -= Target_PropertyChanged;
@@ -161,7 +162,22 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     private void Target_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if(
+            IsEntity && SourceReference.TryGetTarget(out PocoBase? poco) && poco is IEntity entity 
+            && _properties.Where(p => p.Name.Equals(e.PropertyName)).FirstOrDefault() is Property property
+            && property.KeyPart is { }
+        )
+        {
+            _keys[entity.KeyNames.IndexOf(property.KeyPart)] = new Tuple<string, object?>(property.KeyPart, property.Get(poco));
+            UpdateTitle(poco);
+        }
+
         FillProperties(false, e?.PropertyName ?? string.Empty);
+    }
+
+    private void UpdateTitle(PocoBase poco)
+    {
+        Title = $"Просмотр {poco.GetType()}: {_services.GetRequiredService<Util>().GetPocoLabel(poco)}";
     }
 
     private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

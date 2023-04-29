@@ -37,7 +37,7 @@ public class ViewConnectorMethodCommand : ICommand
         {
             ViewConnectorMethod view = _services.GetRequiredService<ViewConnectorMethod>();
             view.Method = method;
-            _services.GetRequiredService<TracedPocos>().AddView(view);
+            _services.GetRequiredService<PocotaClientBrowser>().AddView(view);
             view.Show();
         }
     }
