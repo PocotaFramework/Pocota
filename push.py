@@ -1,9 +1,31 @@
 import os
 import tempfile
+import sys
 
-os.chdir('../MaterialDesignInXamlToolkit')
+directory = os.getcwd()
+os.chdir('..\MaterialDesignInXamlToolkit')
 fp = tempfile.NamedTemporaryFile()
 fp.close();
 os.system('git diff --name-only > {}'.format(fp.name))
 f = open(fp.name)
-print(f.read())
+for line in f:
+    command = 'xcopy /s /-i /y {0} {1}\Pocota\PocotaCSharpClientPocoBrowser\ChangedMaterial\{0}'.format(line.strip().replace('/', '\\'), directory)
+    os.system(command)
+f.close()
+
+os.chdir(directory)
+os.system('git status --porcelain > {}'.format(fp.name))
+f.close()
+f = open(fp.name)
+untracked = []
+for line in f:
+    if ord(line[0]) == 63 and ord(line[1]) == 63:
+        untracked.append(line[2:].strip())
+if len(untracked) > 0:
+    print('Manage untracked files and run again:')
+    for line in untracked:
+        print('    {}'.format(line));
+    sys.exit(0)
+
+os.system('git commit --allow-empty-message -m="" -a')
+
