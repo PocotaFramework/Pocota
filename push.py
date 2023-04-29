@@ -28,4 +28,5 @@ if len(untracked) > 0:
     sys.exit(0)
 
 os.system('git commit --allow-empty-message -m="" -a')
-
+for line in os.system('git remote'):
+    print(line);
