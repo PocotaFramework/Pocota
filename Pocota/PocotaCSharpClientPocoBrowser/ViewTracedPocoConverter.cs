@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 using IValueConverter = System.Windows.Data.IValueConverter;
@@ -100,6 +101,20 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             {
                 return $"{poco.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
             }
+        }
+
+        if(targetType == typeof(Visibility))
+        {
+            Console.WriteLine(value);
+            if (parameters.Contains("ButtonView") || parameters.Contains("ButtonRemove"))
+            {
+                return value is ApiCallContext || value is null ? Visibility.Collapsed : Visibility.Visible;
+            }
+            if (parameters.Contains("ButtonAdd"))
+            {
+                return value is not ApiCallContext && value is null ? Visibility.Collapsed : Visibility.Visible;
+            }
+            return Visibility.Visible;
         }
 
         if (value is null)

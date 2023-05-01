@@ -40,8 +40,6 @@
                     <RowDefinition/>
                     <RowDefinition Height="10"/>
                     <RowDefinition/>
-                    <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
-                    <RowDefinition Height="{Binding Connector, Converter={local:TracedPocosConverter}, ConverterParameter=Connector}"/>
                 </Grid.RowDefinitions>
                 <DockPanel LastChildFill="True" Grid.Row="0">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -122,7 +120,7 @@
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
                                     <Button d:Command="{Binding Value, Source={StaticResource CancelChangesCommandProxy}}" d:CommandParameter="{Binding Item}" 
-                                    Visibility="{Binding Item, Converter={local:TracedPocosConverter}, ConverterParameter=VisibleIfIsEntity}">
+                                    Visibility="{Binding Item, Converter={local:BrowserConverter}, ConverterParameter=VisibleIfIsEntity}">
                                         <Button.Content>Отменить изменения</Button.Content>
                                     </Button>
                                     <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}"
@@ -147,7 +145,7 @@
                     <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows" Margin="10,10,10,10">
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Title">
-                                <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:TracedPocosConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
+                                <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:BrowserConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
                             </DataTemplate>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
@@ -157,12 +155,33 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-                <GridSplitter Grid.Row="5" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
-                <DockPanel LastChildFill="True" Grid.Row="6">
+            </Grid>
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="Auto"/>
+                    <!--<RowDefinition Height="{Binding Connectors, Converter={local:BrowserConverter}, ConverterParameter=Connectors}"/>-->
+                </Grid.RowDefinitions>
+                <DockPanel LastChildFill="True" Grid.Row="0">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock Margin="10,10,10,10" FontSize="18">Коннекторы</TextBlock>
+                    </StackPanel>
+                    <DataGrid ItemsSource="{Binding ConnectorsViewSource.View}" AutoGenerateColumns="False" 
+                              IsReadOnly="True"  Margin="10,10,10,10">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Тип" Binding="{Binding Connector}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+                <GridSplitter Grid.Row="1" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+                <DockPanel LastChildFill="True" Grid.Row="2">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <TextBlock Margin="10,10,10,10" FontSize="18">Методы коннектора</TextBlock>
                     </StackPanel>
-                    <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  Margin="10,10,10,10">
+                    <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="False" 
+                              IsReadOnly="True"  Margin="10,10,10,10" >
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
@@ -179,10 +198,7 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </DockPanel>
-            </Grid>
-            <GridSplitter Grid.Column="1" ResizeDirection="Columns" Width="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Left" VerticalAlignment="Stretch"/>
-            <Grid Grid.Column="2">
-
+                <!--<GridSplitter Grid.Row="3" ResizeDirection="Rows" Height="10" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>-->
             </Grid>
         </Grid>
     </DockPanel>

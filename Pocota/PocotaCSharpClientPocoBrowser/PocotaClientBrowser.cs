@@ -27,8 +27,6 @@ namespace Net.Leksi.Pocota.Client
         private readonly ConditionalWeakTable<Window, WeakReference<WindowInfo>> _tracedWindows = new();
         private readonly ConditionalWeakTable<PropertyInfo, string> _tracedProperties = new();
         private readonly ConditionalWeakTable<object, string> _tracedTargets = new();
-        private Connector? _connector = null;
-        private ObservableCollection<Tuple<string, MethodInfo?>> _connectorMethods = new();
 
         internal readonly List<Window> _views = new();
 
@@ -38,6 +36,7 @@ namespace Net.Leksi.Pocota.Client
 
         public static PocotaClientBrowser Instance { get; internal set; } = null!;
 
+        public ObservableCollection<ConnectorHolder> Connectors { get; init; } = new();
         public ITracedPocosHeart Heart { get; init; }
         public bool CanClose { get; set; } = false;
         public CancelChangesCommand CancelChangesCommand { get; init; } = new();
@@ -47,29 +46,22 @@ namespace Net.Leksi.Pocota.Client
         public CloseAllWindowsCommand CloseAllWindowsCommand { get; init; } = new();
         public CollectionViewSource WindowsViewSource { get; init; } = new();
         public CollectionViewSource ConnectorViewSource { get; init; } = new();
+        public CollectionViewSource ConnectorsViewSource { get; init; } = new();
         public ViewConnectorMethodCommand ViewConnectorMethodCommand { get; init; }
 
-        public Connector? Connector
+        public void AddConnector(Connector connector)
         {
-            get => _connector;
-            set
+            ConnectorHolder holder = new() { Connector = connector };
+            foreach (MethodInfo method in connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
             {
-                if (_connector != value)
-                {
-                    _connector = value;
-                    _connectorMethods.Clear();
-                    if (_connector is { })
-                    {
-                        foreach (MethodInfo method in _connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
-                        {
-                            _connectorMethods.Add(new Tuple<string, MethodInfo?>(method.Name, method));
-                        }
-                    }
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Connector)));
-                }
+                holder.Methods.Add(new Tuple<string, MethodInfo?>(method.Name, method));
+            }
+            Connectors.Add(holder);
+            if (Connectors.Count == 1)
+            {
+                ConnectorsViewSource.View.MoveCurrentTo(holder);
             }
         }
-
 
         internal PocotaClientBrowser(IServiceProvider services)
         {
@@ -81,7 +73,12 @@ namespace Net.Leksi.Pocota.Client
             ModifiedPocosViewSource.Source = Heart.ModifiedPocos;
             ModifiedPocosViewSource.Filter += ModifiedPocosViewSource_Filter;
             WindowsViewSource.Source = _windows;
-            ConnectorViewSource.Source = _connectorMethods;
+            ConnectorsViewSource.Source = Connectors;
+            ConnectorsViewSource.View.CurrentChanged += ConnectorsView_CurrentChanged;
+            if(Connectors.Count > 0)
+            {
+                ConnectorsViewSource.View.MoveCurrentTo(Connectors.First());
+            }
 
             InitializeComponent();
 
@@ -90,6 +87,11 @@ namespace Net.Leksi.Pocota.Client
             Timer refreshWindowsListTimer = new Timer(1000);
             refreshWindowsListTimer.Elapsed += RefreshWindowsListTimer_Elapsed;
             refreshWindowsListTimer.Start();
+        }
+
+        private void ConnectorsView_CurrentChanged(object? sender, EventArgs e)
+        {
+            ConnectorViewSource.Source = ((ConnectorHolder)ConnectorsViewSource.View.CurrentItem).Methods;
         }
 
         private void DgWindows_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -351,14 +353,12 @@ namespace Net.Leksi.Pocota.Client
             }
         }
 
-
-
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)!.DataContext is PocosCounts counts && !counts.IsShowing)
             {
                 Cursor = Cursors.Wait;
-                new TracedPocosConverter().Convert(counts, typeof(IEnumerable), string.Empty, CultureInfo.CurrentUICulture);
+                new BrowserConverter().Convert(counts, typeof(IEnumerable), string.Empty, CultureInfo.CurrentUICulture);
                 counts.IsShowing = true;
                 Cursor = Cursors.Arrow;
             }

@@ -11,7 +11,7 @@ using System.Windows.Media;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValueConverter
+public class BrowserConverter : MarkupExtension, IValueConverter, IMultiValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -50,13 +50,6 @@ public class TracedPocosConverter : MarkupExtension, IValueConverter, IMultiValu
             if ("LastActiveWindow".Equals(parameter) && value is IEntity)
             {
                 result = Visibility.Visible;
-            }
-        }
-        else if (targetType == typeof(GridLength))
-        {
-            if (parameters.Contains("Connector"))
-            {
-                result = value is Connector ? new GridLength(1, GridUnitType.Auto) : new GridLength(0); ;
             }
         }
         else if (value is PocosCounts pocosCounts && typeof(IEnumerable).IsAssignableFrom(targetType))
