@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Net.Leksi.Pocota.Client"
+        xmlns:local1="clr-namespace:Net.Leksi.Pocota.Client;assembly=Net.Leksi.Pocota.Client.CSharp"
         xmlns:l="clr-namespace:Net.Leksi.WpfMarkup;assembly=Net.Leksi.WpfMarkupExtension"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
@@ -185,15 +186,21 @@
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" CommandParameter="{Binding Item2}"
+                                    <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" d:CommandParameter="{Binding Item2}"
                                             Style="{StaticResource ViewVisualButtonStyle}">
+                                        <Button.CommandParameter>
+                                            <MultiBinding Converter="{local1:MultiValueToArrayConverter}">
+                                                <Binding Path="Method"/>
+                                                <Binding Path="Connector"/>
+                                            </MultiBinding>
+                                        </Button.CommandParameter>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding Item1}"/>
-                            <DataGridTextColumn Header="Метрика" Binding="{Binding Item2}"/>
+                            <DataGridTextColumn Header="Имя" Binding="{Binding Method.Name}"/>
+                            <DataGridTextColumn Header="Метрика" Binding="{Binding Method}"/>
                             <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
                         </DataGrid.Columns>
                     </DataGrid>

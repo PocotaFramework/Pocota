@@ -7,5 +7,5 @@ namespace Net.Leksi.Pocota.Client;
 public class ConnectorHolder
 {
     public Connector Connector { get; set; } = null!;
-    public ObservableCollection<Tuple<string, MethodInfo?>> Methods { get; init; } = new();
+    public ObservableCollection<MethodHolder> Methods { get; init; } = new();
 }

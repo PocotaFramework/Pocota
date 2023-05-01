@@ -54,7 +54,7 @@ namespace Net.Leksi.Pocota.Client
             ConnectorHolder holder = new() { Connector = connector };
             foreach (MethodInfo method in connector.GetType().GetMethods().Where(m => m.ReturnType == typeof(Task)))
             {
-                holder.Methods.Add(new Tuple<string, MethodInfo?>(method.Name, method));
+                holder.Methods.Add(new MethodHolder { Connector = connector, Method = method});
             }
             Connectors.Add(holder);
             if (Connectors.Count == 1)

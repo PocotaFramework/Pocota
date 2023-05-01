@@ -28,15 +28,24 @@ public class ViewConnectorMethodCommand : ICommand
 
     public bool CanExecute(object? parameter)
     {
-        return parameter is MethodInfo method && typeof(Connector).IsAssignableFrom(method.DeclaringType);
+        return parameter is object[] parameters 
+            && parameters.Length > 1
+            && parameters[0] is MethodInfo method 
+            && typeof(Connector).IsAssignableFrom(method.DeclaringType) 
+            && parameters[1] is Connector;
     }
 
     public void Execute(object? parameter)
     {
-        if(parameter is MethodInfo method && typeof(Connector).IsAssignableFrom(method.DeclaringType))
+        if (parameter is object[] parameters
+            && parameters.Length > 1
+            && parameters[0] is MethodInfo method
+            && typeof(Connector).IsAssignableFrom(method.DeclaringType)
+            && parameters[1] is Connector connector)
         {
             ViewConnectorMethod view = _services.GetRequiredService<ViewConnectorMethod>();
             view.Method = method;
+            view.Connector = connector;
             _services.GetRequiredService<PocotaClientBrowser>().AddView(view);
             view.Show();
         }

@@ -24,6 +24,8 @@ namespace Net.Leksi.Pocota.Client
         public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
         public SetFilterCommand SetFilterCommand { get; init; }
         public UnsetFilterCommand UnsetFilterCommand { get; init; }
+
+        public Connector Connector { get; internal set; }
         
         public MethodInfo Method
         {
@@ -87,6 +89,11 @@ namespace Net.Leksi.Pocota.Client
         {
             _services.GetRequiredService<PocotaClientBrowser>().RemoveView(this);
             base.OnClosed(e);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Method?.Invoke(Connector, _parameters.Select(p => p.Value).ToArray());
         }
     }
 }

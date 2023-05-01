@@ -112,7 +112,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
             if (parameters.Contains("ButtonAdd"))
             {
-                return value is not ApiCallContext && value is null ? Visibility.Collapsed : Visibility.Visible;
+                return value is { } ? Visibility.Collapsed : Visibility.Visible;
             }
             return Visibility.Visible;
         }

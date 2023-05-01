@@ -21,9 +21,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="{Binding Method.Name}" Margin="10,10,10,10" FontSize="24" FontWeight="Bold" Grid.Row="0"/>
-        <DataGrid ItemsSource="{Binding ParametersViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="1">
+        <TextBlock Text="{Binding Method}" Margin="10,10,10,10" FontSize="12" Grid.Row="1"/>
+        <DataGrid ItemsSource="{Binding ParametersViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="2">
             <DataGrid.Resources>
                 <DataTemplate x:Key="Value">
                     <DockPanel LastChildFill="True">
@@ -56,11 +59,12 @@
                 </DataTemplate>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Положение" Binding="{Binding Position}"/>
-                <DataGridTextColumn Header="Имя" Binding="{Binding Name}"/>
+                <!--<DataGridTextColumn Header="Положение" Binding="{Binding Position}"/>-->
+                <DataGridTextColumn Header="Параметр" Binding="{Binding Name}"/>
                 <DataGridTextColumn Header="Тип" Binding="{Binding Type}"/>
                 <DataGridTemplateColumn Header="Значение" CellTemplate="{StaticResource Value}"/>
             </DataGrid.Columns>
         </DataGrid>
+        <Button Content="Вызвать" Grid.Row="3" HorizontalAlignment="Center" Margin="10,10,10,10" Click="Button_Click"/>
     </Grid>
 </Window>
