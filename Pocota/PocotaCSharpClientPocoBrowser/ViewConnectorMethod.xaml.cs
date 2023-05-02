@@ -2,6 +2,7 @@
 using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -18,12 +19,15 @@ namespace Net.Leksi.Pocota.Client
         private MethodInfo _method = null!;
         private readonly IServiceProvider _services;
         private readonly ObservableCollection<MethodParameterHolder> _parameters = new();
+        private readonly ObservableCollection<object> _result = new();
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public CollectionViewSource ParametersViewSource { get; init; } = new();
         public ViewInBrowserCommand ViewTracedPocoCommand { get; init; }
         public SetFilterCommand SetFilterCommand { get; init; }
         public UnsetFilterCommand UnsetFilterCommand { get; init; }
+
+        public CollectionViewSource ResultViewSource { get; init; } = new();
 
         public Connector Connector { get; internal set; }
         
@@ -46,7 +50,15 @@ namespace Net.Leksi.Pocota.Client
                     {
                         if(mph.Type == typeof(ApiCallContext))
                         {
-                            mph.Value = new ApiCallContext();
+                            mph.Value = new ApiCallContext {
+                                DispatcherWrapper = action =>
+                                {
+                                    Dispatcher.Invoke(action);
+                                },
+                                OnItem = OnItem,
+                                OnDone = OnDone,
+                                OnException = OnException
+                            };
                         }
                         else
                         {
@@ -57,6 +69,16 @@ namespace Net.Leksi.Pocota.Client
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
                 }
             }
+        }
+
+        private void OnException(Exception exception, ApiCallContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnDone(object? result, ApiCallContext? context)
+        {
+            throw new NotImplementedException();
         }
 
         private void MethodParameterHolderPropertyChanging(object? sender, PropertyChangingEventArgs e)
@@ -82,7 +104,14 @@ namespace Net.Leksi.Pocota.Client
             UnsetFilterCommand = services.GetRequiredService<UnsetFilterCommand>();
             _services = services;
             ParametersViewSource.Source = _parameters;
+            ResultViewSource.Source = _result;
+            _result.CollectionChanged += _result_CollectionChanged;
             InitializeComponent();
+        }
+
+        private void _result_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ResultViewSource)));
         }
 
         protected override void OnClosed(EventArgs e)
@@ -93,7 +122,17 @@ namespace Net.Leksi.Pocota.Client
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine(sender);
+            Dispatcher.Invoke(() => _result.Clear());
             Method?.Invoke(Connector, _parameters.Select(p => p.Value).ToArray());
+        }
+
+        private void OnItem(object? o)
+        {
+            if(o is { })
+            {
+                _result.Add(o);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -105,7 +106,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
 
         if(targetType == typeof(Visibility))
         {
-            Console.WriteLine(value);
             if (parameters.Contains("ButtonView") || parameters.Contains("ButtonRemove"))
             {
                 return value is ApiCallContext || value is null ? Visibility.Collapsed : Visibility.Visible;
@@ -150,7 +150,12 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return value!.ToString();
         }
 
-        //Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
+        if(value is ObservableCollection<object> collection && parameters.Contains("Count"))
+        {
+            return collection.Count;
+        }
+
+        Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
 
         return value;
     }
