@@ -20,6 +20,21 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
     {
         object?[] parameters = SplitParameter(parameter);
 
+        if (targetType == typeof(string))
+        {
+            object? obj;
+            int selector = 0;
+            if (
+                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj && (selector = 1) == selector)
+                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj && (selector = 2) == selector)
+                || (value is IProjection<IPoco> && (obj = value) == obj && (selector = 3) == selector)
+            )
+            {
+                Console.WriteLine($"phv.Current(convert): {obj}, {parameter}, {selector}, {(obj is { } ? ((IProjection)obj).HashCode() : "")}, {value.GetHashCode()}");
+                return $"{obj.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(obj)}";
+            }
+        }
+
         if (value is WeakReference wr)
         {
             value = wr.Target;
@@ -96,21 +111,6 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 ((object[])result)[i + 1] = new WeakReference(list1[i]);
             }
             return result;
-        }
-
-        if (targetType == typeof(string))
-        {
-            object? obj;
-            int selector = 0;
-            if (
-                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj && (selector = 1) == selector)
-                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj && (selector = 2) == selector)
-                || (value is IProjection<IPoco> && (obj = value) == obj && (selector = 3) == selector)
-            )
-            {
-                Console.WriteLine($"phv.Current(convert): {obj}, {parameter}, {selector}, {(obj is { } ? ((IProjection)obj).HashCode() : "")}, {value.GetHashCode()}");
-                return $"{obj.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(obj)}";
-            }
         }
 
         if(targetType == typeof(Visibility))

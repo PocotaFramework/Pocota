@@ -45,6 +45,6 @@ os.system('git remote > {}'.format(fp.name))
 f = open(fp.name)
 
 for line in f:
-    os.system('git push {} {}'.format(line, branch))
+    os.system('git push {} {}'.format(line.strip(), branch))
 
 f.close()
