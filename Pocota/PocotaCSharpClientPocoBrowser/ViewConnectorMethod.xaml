@@ -60,12 +60,14 @@
                 <DataGridTemplateColumn Header="Значение" CellTemplate="{StaticResource Value}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button Content="Вызвать" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="10,10,10,10" Click="Button_Click"/>
+        <Button x:Name="RunButton" Content="Вызвать" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="10,10,10,10" Click="Button_Click"/>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem Content="{Binding ResultViewSource.Source, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=Count}"/>
         </StatusBar>
-        <DataGrid ItemsSource="{Binding ResultViewSource.View}" AutoGenerateColumns="True">
-            
+        <DataGrid ItemsSource="{Binding ResultViewSource.View}" AutoGenerateColumns="True" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Тип" Binding="{Binding Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=Type}"/>
+            </DataGrid.Columns>
         </DataGrid>
     </DockPanel>
 </Window>

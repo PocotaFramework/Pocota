@@ -2,7 +2,7 @@
 // Server Poco Primary Key                                 //
 // CatsCommon.Model.LitterPrimaryKey                       //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 

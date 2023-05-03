@@ -110,12 +110,13 @@
                     Command="{Binding Value, Source={l:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
                     CommandParameter="{Binding $path}">
             </Button>
-            <TextBlock Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=71}" />
+            <TextBlock Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=71, Mode=OneWay}" />
+            <!--<TextBlock Text="{Binding $path}" />-->
         </DockPanel>
     </DataTemplate>
     <DataTemplate x:Key="ViewValueDataTemplate" x:Shared="False">
-        <TextBlock Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=75}" >
-        </TextBlock>
+        <TextBlock Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=75, Mode=OneWay}"/>
+        <!--<TextBlock Text="{Binding $path}" ToolTip="{l:ParameterizedResource $path, AsValueOfType={x:Type sys:String}}"/>-->
     </DataTemplate>
     <Style  x:Key="EditValueTextBoxStyle" x:Shared="False" TargetType="TextBox">
         <Setter Property="Text" Value="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=$type|79, UpdateSourceTrigger=PropertyChanged}"/>

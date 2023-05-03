@@ -2,7 +2,7 @@
 // Client Poco Implementation                                                         //
 // Net.Leksi.Pocota.Client.TracedPocosHeartPoco                                       //
 // Generated automatically from Net.Leksi.Pocota.Client.IPocotaClientProfilerContract //
-// at 2023-04-28T13:34:42                                                             //
+// at 2023-05-03T18:48:53                                                             //
 ////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -148,6 +148,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -317,6 +322,11 @@ public abstract class TracedPocosHeartPoco: EnvelopeBase, IProjection<EnvelopeBa
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

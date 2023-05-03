@@ -9,16 +9,17 @@ public abstract class EntityBase : PocoBase, IEntity
 {
     private bool _isDeleting = false;
 
-    protected internal object[]? PrimaryKey { get; set; } = null;
+    protected internal object?[]? PrimaryKey { get; set; } = null;
 
     internal override bool IsEnvelope => false;
 
     public abstract ImmutableArray<string> KeyNames { get; }
 
-    ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray();
+    ImmutableArray<object>? IEntity.PrimaryKey => PrimaryKey?.ToImmutableArray()!;
 
     public EntityBase(IServiceProvider services) : base(services) 
     {
+        PrimaryKey = new object[KeyNames.Length];
         _pocoState = PocoState.Uncertain;
     }
 
@@ -137,9 +138,18 @@ public abstract class EntityBase : PocoBase, IEntity
         }
     }
 
+    void IEntity.SetPrimaryKeyPart(string name, object? value)
+    {
+        if(((IPoco)this).PocoState is PocoState.Uncertain && PrimaryKey is { })
+        {
+            PrimaryKey[KeyNames.IndexOf(name)] = value;
+        }
+    }
+
     protected virtual void Deleting() { }
 
     protected virtual void Undeleting() { }
 
     protected virtual void DebugAccess(string selector) { }
+
 }

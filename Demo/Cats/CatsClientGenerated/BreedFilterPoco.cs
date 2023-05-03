@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Filters.BreedFilterPoco                      //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -117,6 +117,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -271,6 +276,11 @@ public class BreedFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IProjecti
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

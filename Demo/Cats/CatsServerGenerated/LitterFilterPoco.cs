@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Filters.LitterFilterPoco                     //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -150,6 +150,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -339,6 +344,11 @@ public class LitterFilterPoco: EnvelopeBase, IProjection<EnvelopeBase>, IPoco, I
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

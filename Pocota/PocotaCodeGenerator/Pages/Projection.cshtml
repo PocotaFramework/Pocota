@@ -154,4 +154,9 @@
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }

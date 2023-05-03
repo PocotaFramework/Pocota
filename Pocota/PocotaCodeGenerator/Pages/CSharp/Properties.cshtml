@@ -5,8 +5,8 @@
 
 @if (Model.IsEntity)
 {
-    <text>    @Html.Raw("private static readonly string[] _keyNames = new string[] {")  @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\"")))};
-    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
+    <text>    @Html.Raw("private static readonly ImmutableArray<string> _keyNames = new string[] {")  @Html.Raw(string.Join(", ", Model.PrimaryKeys.Select(k => $"\"{k.Name}\"")))}.ToImmutableArray();
+    public override ImmutableArray<string> KeyNames => _keyNames;
 
 </text>
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections.ObjectModel;
@@ -73,12 +74,12 @@ namespace Net.Leksi.Pocota.Client
 
         private void OnException(Exception exception, ApiCallContext context)
         {
-            throw new NotImplementedException();
+            RunButton.IsEnabled = true;
         }
 
         private void OnDone(object? result, ApiCallContext? context)
         {
-            throw new NotImplementedException();
+            RunButton.IsEnabled = true;
         }
 
         private void MethodParameterHolderPropertyChanging(object? sender, PropertyChangingEventArgs e)
@@ -116,15 +117,23 @@ namespace Net.Leksi.Pocota.Client
 
         protected override void OnClosed(EventArgs e)
         {
+            _parameters.Clear();
+            _result.Clear();
             _services.GetRequiredService<PocotaClientBrowser>().RemoveView(this);
             base.OnClosed(e);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(sender);
+            RunButton.IsEnabled = false;
             Dispatcher.Invoke(() => _result.Clear());
-            Method?.Invoke(Connector, _parameters.Select(p => p.Value).ToArray());
+            Method?.Invoke(Connector, _parameters.Select(p => { 
+                if(p.Value is IProjection projection)
+                {
+                    return projection.As(p.Parameter.ParameterType);
+                }
+                return p.Value; 
+            }).ToArray());
         }
 
         private void OnItem(object? o)

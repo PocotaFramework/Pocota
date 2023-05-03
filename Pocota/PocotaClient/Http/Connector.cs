@@ -128,11 +128,13 @@ public class Connector
 
             context!.OnReceived?.Invoke(context);
 
-            context.OnItem?.Invoke(await JsonSerializer.DeserializeAsync<T>(
+            object? result = await JsonSerializer.DeserializeAsync<T>(
                 stream,
                 jsonSerializerOptions,
                 context?.CancellationToken ?? CancellationToken.None
-            ));
+            );
+            context!.OnItem?.Invoke(result);
+            context.OnDone?.Invoke(result, context);
         }
         catch (Exception ex)
         {
@@ -158,7 +160,7 @@ public class Connector
         option.Converters.Add(exceptionJsonConverter);
         Console.WriteLine(stream.ExceptionData.Replace("\\r\\n", "\n"));
         JsonSerializer.Deserialize<Exception>(stream.ExceptionData, option);
-        throw exception;
+        return exception;
     }
 
     private async Task<TieStream> GetResponseStreamAsync<T>([DisallowNull] ApiCallContext context)

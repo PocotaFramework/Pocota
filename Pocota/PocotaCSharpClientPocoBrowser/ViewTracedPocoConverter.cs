@@ -47,6 +47,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 return property.IsModified;
 
             }
+
         }
 
         if (parameters.Contains("IsNull"))
@@ -76,6 +77,11 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return value is not IProjection<IEntity> || ((IProjection)value).As<IEntity>() is not IEntity;
         }
 
+        if (parameters.Contains("Type"))
+        {
+            return value.GetType();
+        }
+
         if (targetType == typeof(string) && value is null)
         {
             return string.Empty;
@@ -94,18 +100,34 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
 
         if (targetType == typeof(string))
         {
-            IPoco? poco;
+            object? obj;
+            int selector = 0;
             if (
-                (value is IProjection<IPoco> && ((IProjection)value).As<IPoco>() is IPoco poco2 && (poco = poco2) == poco)
-                || (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (poco = poco3) == poco)
+                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj && (selector = 1) == selector)
+                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj && (selector = 2) == selector)
+                || (value is IProjection<IPoco> && (obj = value) == obj && (selector = 3) == selector)
             )
             {
-                return $"{poco.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(poco)}";
+                Console.WriteLine($"phv.Current(convert): {obj}, {parameter}, {selector}, {(obj is { } ? ((IProjection)obj).HashCode() : "")}, {value.GetHashCode()}");
+                return $"{obj.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(obj)}";
             }
         }
 
         if(targetType == typeof(Visibility))
         {
+            if(value is PropertyValueHolder property1)
+            {
+                if (parameters.Contains("VisibleIfReadonly"))
+                {
+                    return property1.IsReadOnly ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+                if (parameters.Contains("VisibleIfNotSet"))
+                {
+                    return !property1.IsSet ? Visibility.Visible : Visibility.Collapsed;
+                }
+
+            }
             if (parameters.Contains("ButtonView") || parameters.Contains("ButtonRemove"))
             {
                 return value is ApiCallContext || value is null ? Visibility.Collapsed : Visibility.Visible;
@@ -141,7 +163,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         {
             if (value.GetType() == typeof(DateOnly) && (targetType == typeof(DateTime) || targetType == typeof(Nullable<DateTime>)))
             {
-                return DateTime.Parse(value.ToString());
+                return DateTime.Parse(value.ToString()!);
             }
         }
 
@@ -150,7 +172,7 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return value!.ToString();
         }
 
-        if(value is ObservableCollection<object> collection && parameters.Contains("Count"))
+        if (value is ObservableCollection<object> collection && parameters.Contains("Count"))
         {
             return collection.Count;
         }

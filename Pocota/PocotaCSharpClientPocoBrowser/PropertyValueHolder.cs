@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Net.Leksi.Pocota.Common;
+using System;
 using System.ComponentModel;
 
 namespace Net.Leksi.Pocota.Client;
@@ -8,11 +9,13 @@ internal class PropertyValueHolder: INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private readonly string _name = null!;
-    private readonly Property _property = null!;
+    internal readonly Property _property = null!;
     private readonly WeakReference<PocoBase> _targetRererence = new(null!);
     private object? _lastInitial = null;
     private object? _lastCurrent = null;
     private bool _lastIsModified = true;
+    private bool _lastIsSet = true;
+    private Type? _projectionType = null;
 
     public string Name => _name;
 
@@ -22,15 +25,15 @@ internal class PropertyValueHolder: INotifyPropertyChanged
     {
         get
         {
-            if(_targetRererence.TryGetTarget(out PocoBase? poco))
+            if(_targetRererence.TryGetTarget(out PocoBase? poco) && poco is IProjection projection && projection.As(_projectionType!) is object target)
             {
                 if (_property.Type.IsPrimitive || _property.Type.IsEnum || _property.Type == typeof(string) || _property.Type.IsValueType)
                 {
-                    _lastInitial = _property.GetInitial(poco);
+                    _lastInitial = _property.GetInitial(target);
                 }
                 else
                 {
-                    object? result = _property.GetInitial(poco);
+                    object? result = _property.GetInitial(target);
                     if (result is { })
                     {
                         _lastInitial = new WeakReference(result);
@@ -49,15 +52,15 @@ internal class PropertyValueHolder: INotifyPropertyChanged
     {
         get
         {
-            if (_targetRererence.TryGetTarget(out PocoBase? poco))
+            if (_targetRererence.TryGetTarget(out PocoBase? poco) && poco is IProjection projection && projection.As(_projectionType!) is object target)
             {
                 if (_property.Type.IsPrimitive || _property.Type.IsEnum || _property.Type == typeof(string) || _property.Type.IsValueType)
                 {
-                    _lastCurrent = _property.Get(poco);
+                    _lastCurrent = _property.Get(target);
                 }
                 else
                 {
-                    object? result = _property.Get(poco);
+                    object? result = _property.Get(target);
                     if(result is { })
                     {
                         _lastCurrent = new WeakReference(result);
@@ -68,13 +71,14 @@ internal class PropertyValueHolder: INotifyPropertyChanged
                     }
                 }
             }
+            Console.WriteLine($"phv.Current: {(_lastCurrent is WeakReference wr ? wr.Target : _lastCurrent)}, property: {_property}, {(_lastCurrent is WeakReference wr1 ? ((IProjection)wr1.Target).HashCode() : _lastCurrent.GetHashCode())}, {_lastCurrent.GetHashCode()}");
             return _lastCurrent;
         }
         set
         {
-            if (_targetRererence.TryGetTarget(out PocoBase? poco) && !_property.IsReadOnly)
+            if (_targetRererence.TryGetTarget(out PocoBase? poco) && !_property.IsReadOnly && poco is IProjection projection && projection.As(_projectionType!) is object target)
             {
-                _property.Set(poco, value);
+                _property.Set(target, value);
                 _ = Current;
                 Touch();
             }
@@ -85,11 +89,23 @@ internal class PropertyValueHolder: INotifyPropertyChanged
     {
         get
         {
-            if (_targetRererence.TryGetTarget(out PocoBase? poco))
+            if (_targetRererence.TryGetTarget(out PocoBase? poco) && poco is IProjection projection && projection.As(_projectionType!) is object target)
             {
-                _lastIsModified = _property.IsModified(poco);
+                _lastIsModified = _property.IsModified(target);
             }
             return _lastIsModified;
+        }
+    }
+
+    public bool IsSet
+    {
+        get
+        {
+            if (_targetRererence.TryGetTarget(out PocoBase? poco) && poco is IProjection projection && projection.As(_projectionType!) is object target)
+            {
+                _lastIsSet = _property.IsSet(target);
+            }
+            return _lastIsSet;
         }
     }
 
@@ -103,11 +119,12 @@ internal class PropertyValueHolder: INotifyPropertyChanged
 
     public string? KeyPart => _property.KeyPart;
 
-    public PropertyValueHolder(Property property, PocoBase target)
+    public PropertyValueHolder(Property property, PocoBase target, Type? projectionType)
     {
         _name = property.Name + (property.KeyPart is { } ? $" ({property.KeyPart})" : string.Empty);
         _property = property;
         _targetRererence.SetTarget(target);
+        _projectionType = projectionType;
     }
 
     internal void Touch()

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatteryPoco                            //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -152,6 +152,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
     #endregion Projection classes
     
@@ -251,8 +256,8 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     
 #region Properties
 
-    private static readonly string[] _keyNames = new string[] {  "IdCattery"};
-    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
+    private static readonly ImmutableArray<string> _keyNames = new string[] {  "IdCattery"}.ToImmutableArray();
+    public override ImmutableArray<string> KeyNames => _keyNames;
 
     private void SetNameEng(String? value)
     {
@@ -378,6 +383,11 @@ public class CatteryPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBa
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

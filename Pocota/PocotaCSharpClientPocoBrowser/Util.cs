@@ -11,11 +11,11 @@ public class Util
         _services = services;
     }
 
-    public string GetPocoLabel(IPoco? poco)
+    public string GetPocoLabel(object? obj)
     {
-        if(poco is IEntity entity)
+        if(obj is IEntity entity)
         {
         }
-        return poco?.GetHashCode().ToString() ?? "null";
+        return obj?.GetHashCode().ToString() ?? "null";
     }
 }

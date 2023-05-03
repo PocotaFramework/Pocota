@@ -2,7 +2,7 @@
 // Client Poco Implementation                                      //
 // CatsClient.ViewCatHeartPoco                                     //
 // Generated automatically from CatsClient.ICatsFormHeartsContract //
-// at 2023-05-01T17:02:05                                          //
+// at 2023-05-03T18:47:57                                          //
 /////////////////////////////////////////////////////////////////////
 
 
@@ -409,6 +409,11 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -1033,6 +1038,11 @@ public abstract class ViewCatHeartPoco: EnvelopeBase, IProjection<EnvelopeBase>,
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

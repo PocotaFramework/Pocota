@@ -67,6 +67,11 @@
         return base.GetHashCode();
     }
 
+    int IProjection.HashCode()
+    {
+        return base.GetHashCode();
+    }
+
     @foreach(MethodModel mm in Model.Methods)
     {
     <text>    public abstract @Html.Raw(mm.ReturnType) @mm.Name@Html.Raw($"({string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}"))})");

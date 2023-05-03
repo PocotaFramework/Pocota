@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -24,10 +25,11 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     private readonly IServiceProvider _services;
     private ImmutableList<IProperty>? _properties = null;
     private readonly PocotaCore _core;
+    private readonly List<Type> _projections = new();
 
     private ObservableCollection<PropertyValueHolder> _values = new();
     private Dictionary<Property, PropertyValueHolder> _valuesByProperty = new();
-    private ObservableCollection<Tuple<string, object?>> _keys = new();
+    private ObservableCollection<PrimaryKeyHolder> _keys = new();
 
     public WeakReference<PocoBase?> SourceReference { get; init; } = new(null);
 
@@ -39,6 +41,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
 
     public CollectionViewSource PropertiesViewSource { get; init; } = new();
     public CollectionViewSource KeysViewSource { get; init; } = new();
+    public CollectionViewSource ProjectionsViewSource { get; init; } = new();
 
     public PocoState PocoState
     {
@@ -80,13 +83,27 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                         int i = 0;
                         foreach(string name in entity.KeyNames)
                         {
-                            _keys.Add(new Tuple<string, object?>(name, entity.PrimaryKey is { } ? entity.PrimaryKey!.Value[i] : null));
+                            _keys.Add(new PrimaryKeyHolder(entity, i));
                             ++i;
                         }
                     }
                     UpdateTitle(poco);
-                    _properties = _core.GetPropertiesList(value.GetType());
-                    FillProperties(true, string.Empty);
+                    _projections.Clear();
+                    _projections.Add(poco.GetType());
+                    foreach(Type intf in poco.GetType().GetInterfaces())
+                    {
+                        if(
+                            intf.IsGenericType && intf.GetGenericTypeDefinition() == typeof(IProjection<>) 
+                            && intf.GetGenericArguments()[0] is Type argType
+                            && argType.IsInterface
+                            && argType != typeof(IPoco)
+                            && argType != typeof(IEntity)
+                            )
+                        {
+                            _projections.Add(argType);
+                        }
+                    }
+                    ProjectionsViewSource.View.MoveCurrentToFirst();
                 }
                 else
                 {
@@ -109,7 +126,17 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         CancelChangesCommand = services.GetRequiredService<CancelChangesCommand>();
         AcceptChangesCommand = services.GetRequiredService<AcceptChangesCommand>();
         KeysViewSource.Source = _keys;
+        ProjectionsViewSource.Source = _projections;
+        ProjectionsViewSource.View.CurrentChanged += View_CurrentChanged;
         InitializeComponent();
+    }
+
+    private void View_CurrentChanged(object? sender, EventArgs e)
+    {
+        _properties = _core.GetPropertiesList((ProjectionsViewSource.View.CurrentItem as Type)!);
+        _values.Clear();
+        _valuesByProperty.Clear();
+        FillProperties(true, string.Empty);
     }
 
     protected override void OnClosed(EventArgs e)
@@ -141,7 +168,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
                 {
                     if (firstTime)
                     {
-                        PropertyValueHolder pvh = new(property, target);
+                        PropertyValueHolder pvh = new(property, target, ProjectionsViewSource.View.CurrentItem as Type);
                         _valuesByProperty.Add(property, pvh);
                         _values.Add(pvh);
                     }
@@ -168,7 +195,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
             && property.KeyPart is { }
         )
         {
-            _keys[entity.KeyNames.IndexOf(property.KeyPart)] = new Tuple<string, object?>(property.KeyPart, property.Get(poco));
+            _keys[entity.KeyNames.IndexOf(property.KeyPart)].Value = property.Get(poco);
             UpdateTitle(poco);
         }
 

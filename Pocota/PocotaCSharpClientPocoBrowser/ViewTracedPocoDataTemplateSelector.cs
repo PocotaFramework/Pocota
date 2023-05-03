@@ -23,7 +23,11 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
     {
         if(item is PropertyValueHolder pvh)
         {
-            if(pvh.KeyPart is { } && container is ContentPresenter cp && cp.FindResource("PocoState") is BindingProxy bp && bp.Value is not PocoState.Created)
+            Console.WriteLine($"SelectTemplate: pvh: {pvh._property}, {pvh.IsPoco}");
+            if(
+                (pvh.KeyPart is { } && container is ContentPresenter cp && cp.FindResource("PocoState") is BindingProxy bp && bp.Value is not PocoState.Created)
+                || pvh.IsReadOnly
+            )
             {
                 if (ReadOnlyValue is { })
                 {

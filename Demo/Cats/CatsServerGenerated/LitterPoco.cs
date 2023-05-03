@@ -2,7 +2,7 @@
 // Server Poco Implementation                              //
 // CatsCommon.Model.LitterPoco                             //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -229,6 +229,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class LitterILitterForCatProjection: ILitterForCat, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
@@ -410,6 +415,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class LitterILitterForDateProjection: ILitterForDate, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<LitterPoco>, IProjection<ILitter>, IProjection<ILitterForCat>, IProjection<ILitterForDate>, IProjection<ILitterWithCats>
@@ -483,6 +493,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -610,6 +625,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -945,6 +965,11 @@ public class LitterPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBas
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }

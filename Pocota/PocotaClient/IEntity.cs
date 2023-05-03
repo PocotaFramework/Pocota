@@ -6,6 +6,7 @@ public interface IEntity: IPoco
 {
     ImmutableArray<string> KeyNames { get; }
     ImmutableArray<object>? PrimaryKey { get; }
+    void SetPrimaryKeyPart(string name, object? value);
     void Create();
     void Delete();
     void Undelete();

@@ -2,7 +2,7 @@
 // Client Poco Implementation                              //
 // CatsCommon.Model.CatPoco                                //
 // Generated automatically from CatsContract.ICatsContract //
-// at 2023-05-01T17:02:05                                  //
+// at 2023-05-03T18:47:57                                  //
 /////////////////////////////////////////////////////////////
 
 
@@ -421,6 +421,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class CatICatForListingProjection: ICatForListing, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>, IProjection<ICatWithSiblings>, IProjection<ICatAsSibling>
@@ -776,6 +781,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class CatICatAsParentProjection: ICatAsParent, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>, IProjection<ICatWithSiblings>, IProjection<ICatAsSibling>
@@ -1065,6 +1075,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -1454,6 +1469,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
             return _projector.GetHashCode();
         }
 
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
+        }
+
     }
 
     public class CatICatWithSiblingsProjection: ICatWithSiblings, INotifyPropertyChanged, IProjection<IEntity>, IProjection<EntityBase>, IProjection<IPoco>, IProjection<PocoBase>, IProjection, IProjection<CatPoco>, IProjection<ICat>, IProjection<ICatForListing>, IProjection<ICatAsParent>, IProjection<ICatForView>, IProjection<ICatWithSiblings>, IProjection<ICatAsSibling>
@@ -1552,6 +1572,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -1683,6 +1708,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
         public override int GetHashCode()
         {
             return _projector.GetHashCode();
+        }
+
+        int IProjection.HashCode()
+        {
+            return base.GetHashCode();
         }
 
     }
@@ -2068,8 +2098,8 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     
 #region Properties
 
-    private static readonly string[] _keyNames = new string[] {  "IdCat", "IdCattery"};
-    public override ImmutableArray<string> KeyNames => _keyNames.ToImmutableArray();
+    private static readonly ImmutableArray<string> _keyNames = new string[] {  "IdCat", "IdCattery"}.ToImmutableArray();
+    public override ImmutableArray<string> KeyNames => _keyNames;
 
     private void SetDescription(String? value)
     {
@@ -2511,6 +2541,11 @@ public class CatPoco: EntityBase, IProjection<IEntity>, IProjection<EntityBase>,
     }
 
     public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    int IProjection.HashCode()
     {
         return base.GetHashCode();
     }
