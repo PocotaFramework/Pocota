@@ -9,6 +9,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Xaml;
 using IValueConverter = System.Windows.Data.IValueConverter;
 
 namespace Net.Leksi.Pocota.Client;
@@ -23,14 +24,12 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
         if (targetType == typeof(string))
         {
             object? obj;
-            int selector = 0;
             if (
-                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj && (selector = 1) == selector)
-                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj && (selector = 2) == selector)
-                || (value is IProjection<IPoco> && (obj = value) == obj && (selector = 3) == selector)
+                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj)
+                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj)
+                || (value is IProjection<IPoco> && (obj = value) == obj)
             )
             {
-                Console.WriteLine($"phv.Current(convert): {obj}, {parameter}, {selector}, {(obj is { } ? ((IProjection)obj).HashCode() : "")}, {value.GetHashCode()}");
                 return $"{obj.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(obj)}";
             }
         }

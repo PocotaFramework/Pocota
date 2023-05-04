@@ -3,7 +3,6 @@ using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
 using System;
 using System.Windows.Input;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Net.Leksi.Pocota.Client;
 

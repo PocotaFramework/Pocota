@@ -59,6 +59,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsCodeGeneratorDebug", "Demo\Cats\CatsCodeGenerator\CatsCodeGeneratorDebug.csproj", "{A54E32D1-D932-4230-96A4-5CD801F735D3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfMarkupExtensionDebug", "..\WPF\WpfMarkupExtension\WpfMarkupExtensionDebug.csproj", "{A843ABC9-E598-4526-9951-EC32F1C9D704}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,10 @@ Global
 		{A54E32D1-D932-4230-96A4-5CD801F735D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54E32D1-D932-4230-96A4-5CD801F735D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54E32D1-D932-4230-96A4-5CD801F735D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A843ABC9-E598-4526-9951-EC32F1C9D704}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A843ABC9-E598-4526-9951-EC32F1C9D704}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A843ABC9-E598-4526-9951-EC32F1C9D704}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A843ABC9-E598-4526-9951-EC32F1C9D704}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +177,7 @@ Global
 		{832A3351-BA8A-4569-ACFA-5E39BF8D36DE} = {D5AD97A8-233A-46B7-9B0F-D284FA4E2F54}
 		{6D95E74C-8E04-4E9A-87E9-EBFE4D76F7E5} = {D5AD97A8-233A-46B7-9B0F-D284FA4E2F54}
 		{A54E32D1-D932-4230-96A4-5CD801F735D3} = {14CF45BD-950F-41D3-B433-B5D32CA2CE61}
+		{A843ABC9-E598-4526-9951-EC32F1C9D704} = {B72FFEBA-BD94-451B-9BE6-A5A7EC6EB3D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FA791647-B939-4CAF-B462-B8812FB92EFA}

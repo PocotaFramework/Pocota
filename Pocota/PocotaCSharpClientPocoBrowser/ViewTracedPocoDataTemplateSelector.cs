@@ -21,9 +21,9 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
 
     public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
+        
         if(item is PropertyValueHolder pvh)
         {
-            Console.WriteLine($"SelectTemplate: pvh: {pvh._property}, {pvh.IsPoco}");
             if(
                 (pvh.KeyPart is { } && container is ContentPresenter cp && cp.FindResource("PocoState") is BindingProxy bp && bp.Value is not PocoState.Created)
                 || pvh.IsReadOnly

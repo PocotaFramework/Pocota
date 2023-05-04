@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Net.Leksi.Pocota.Client.Core;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
+using Net.Leksi.WpfMarkup;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,7 +20,7 @@ namespace Net.Leksi.Pocota.Client;
 /// <summary>
 /// Логика взаимодействия для ViewTracedPoco.xaml
 /// </summary>
-public partial class ViewTracedPoco : Window, INotifyPropertyChanged
+public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversalConverter
 {
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -26,6 +28,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
     private ImmutableList<IProperty>? _properties = null;
     private readonly PocotaCore _core;
     private readonly List<Type> _projections = new();
+    private readonly ILogger<ViewTracedPoco>? _logger;
 
     private ObservableCollection<PropertyValueHolder> _values = new();
     private Dictionary<Property, PropertyValueHolder> _valuesByProperty = new();
@@ -128,7 +131,9 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         KeysViewSource.Source = _keys;
         ProjectionsViewSource.Source = _projections;
         ProjectionsViewSource.View.CurrentChanged += View_CurrentChanged;
+        _logger = services.GetService<ILoggerFactory>()?.CreateLogger<ViewTracedPoco>();
         InitializeComponent();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataContext)));
     }
 
     private void View_CurrentChanged(object? sender, EventArgs e)
@@ -215,4 +220,46 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged
         }
     }
 
+    object IUniversalConverter.Convert(object value, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    {
+        switch (selector)
+        {
+            case "PocoState":
+                _logger?.LogInformation($"{parameters["Flag"]}, {parameters["Flag"]?.GetType()}");
+                return parameters["PocoState"]?.ToString();
+            default:
+                _logger?.LogWarning($"IUniversalConverter.Convert: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                return value;
+        }
+    }
+
+    object IUniversalConverter.ConvertBack(object value, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    {
+        switch (selector)
+        {
+            default:
+                _logger?.LogWarning($"IUniversalConverter.ConvertBack: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                return value;
+        }
+    }
+
+    object IUniversalConverter.ConvertMulti(object[] values, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    {
+        switch (selector)
+        {
+            default:
+                _logger?.LogWarning($"IUniversalConverter.ConvertMulti: {nameof(selector)} is not supported: {selector}, {nameof(values)} are not converted.");
+                return values;
+        }
+    }
+
+    object[] IUniversalConverter.ConvertMultiBack(object value, Type[] targetTypes, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    {
+        switch (selector)
+        {
+            default:
+                _logger?.LogWarning($"IUniversalConverter.ConvertMultiBack: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                return new object[] { value };
+        }
+    }
 }

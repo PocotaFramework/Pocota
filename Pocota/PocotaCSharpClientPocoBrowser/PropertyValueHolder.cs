@@ -71,7 +71,6 @@ internal class PropertyValueHolder: INotifyPropertyChanged
                     }
                 }
             }
-            Console.WriteLine($"phv.Current: {(_lastCurrent is WeakReference wr ? wr.Target : _lastCurrent)}, property: {_property}, {(_lastCurrent is WeakReference wr1 ? ((IProjection)wr1.Target).HashCode() : _lastCurrent.GetHashCode())}, {_lastCurrent.GetHashCode()}");
             return _lastCurrent;
         }
         set

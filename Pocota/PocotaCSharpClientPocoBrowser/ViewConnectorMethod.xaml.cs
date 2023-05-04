@@ -108,6 +108,7 @@ namespace Net.Leksi.Pocota.Client
             ResultViewSource.Source = _result;
             _result.CollectionChanged += _result_CollectionChanged;
             InitializeComponent();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
         }
 
         private void _result_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
