@@ -18,7 +18,8 @@
             <l:BindingProxy x:Key="ClearPocoPropertyCommandProxy" Value="{Binding ClearPocoPropertyCommand}"/>
             <l:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
             <l:BindingProxy x:Key="PocoState" Name="PocoState" Value="{Binding PocoState}"/>
-            <l:BindingMarkup x:Key="This"/>
+            <l:BindingProxy x:Key="This" Value="{Binding}"/>
+            <l:BindingMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
             <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{l:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
@@ -68,7 +69,7 @@
                        Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>-->
             <TextBlock Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
                 <TextBlock.Text>
-                    <Binding Path="PocoState" Converter="{StaticResource This}">
+                    <Binding Path="PocoState" Converter="{StaticResource Converter}">
                         <Binding.ConverterParameter>
                             <x:Array Type="l:BindingProxy">
                                 <l:BindingProxy Value="PocoState"/>
