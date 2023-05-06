@@ -19,7 +19,9 @@
             <l:BindingProxy x:Key="AddNewPocoPropertyCommandProxy" Value="{Binding AddNewPocoPropertyCommand}"/>
             <l:BindingProxy x:Key="PocoState" Name="PocoState" Value="{Binding PocoState}"/>
             <l:BindingProxy x:Key="This" Value="{Binding}"/>
-            <l:BindingMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
+            <l:BindingProxyMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
+            <l:BindingProxy x:Key="ForegroundConverterProxy" Value="{Binding ForegroundConverter}"/>
+            <l:BindingProxyMarkup x:Key="ForegroundConverter" BindingProxy="{StaticResource ForegroundConverterProxy}"/>
             <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{l:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
@@ -64,6 +66,11 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
+        <TextBlock Text="Разные конвертеры">
+            <TextBlock.Foreground>
+                <Binding Path="ForegroundConverter" Converter="{StaticResource ForegroundConverter}"/>
+            </TextBlock.Foreground>
+        </TextBlock>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <!--<TextBlock Text="{Binding PocoState, Converter={StaticResource This}, ConverterParameter=PocoState|68}" 
                        Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>-->
