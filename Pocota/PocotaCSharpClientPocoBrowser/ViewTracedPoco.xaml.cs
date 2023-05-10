@@ -162,6 +162,7 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversal
         ProjectionsViewSource.View.CurrentChanged += View_CurrentChanged;
         _logger = services.GetService<ILoggerFactory>()?.CreateLogger<ViewTracedPoco>();
         InitializeComponent();
+        ((IUniversalConverter)this).Connect(this);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataContext)));
     }
 
@@ -249,45 +250,44 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversal
         }
     }
 
-    object IUniversalConverter.Convert(object value, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    object IUniversalConverter.Convert(object value, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
     {
-        switch (selector)
+        switch (parameter?.Selector)
         {
             case "PocoState":
-                _logger?.LogInformation($"{parameters["Flag"]}, {parameters["Flag"]?.GetType()}");
-                return parameters["PocoState"]?.ToString();
+                return PocoState.ToString();
             default:
-                _logger?.LogWarning($"IUniversalConverter.Convert: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                _logger?.LogWarning($"IUniversalConverter.Convert: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(value)} is not converted.");
                 return value;
         }
     }
 
-    object IUniversalConverter.ConvertBack(object value, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    object IUniversalConverter.ConvertBack(object value, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
     {
-        switch (selector)
+        switch (parameter?.Selector)
         {
             default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertBack: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                _logger?.LogWarning($"IUniversalConverter.ConvertBack: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(value)} is not converted.");
                 return value;
         }
     }
 
-    object IUniversalConverter.ConvertMulti(object[] values, Type targetType, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    object IUniversalConverter.ConvertMulti(object[] values, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
     {
-        switch (selector)
+        switch (parameter?.Selector)
         {
             default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertMulti: {nameof(selector)} is not supported: {selector}, {nameof(values)} are not converted.");
+                _logger?.LogWarning($"IUniversalConverter.ConvertMulti: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(values)} are not converted.");
                 return values;
         }
     }
 
-    object[] IUniversalConverter.ConvertMultiBack(object value, Type[] targetTypes, object selector, Dictionary<string, object?> parameters, CultureInfo culture)
+    object[] IUniversalConverter.ConvertMultiBack(object value, Type[] targetTypes, UniversalConverterParameter? parameter, CultureInfo culture)
     {
-        switch (selector)
+        switch (parameter?.Selector)
         {
             default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertMultiBack: {nameof(selector)} is not supported: {selector}, {nameof(value)} is not converted.");
+                _logger?.LogWarning($"IUniversalConverter.ConvertMultiBack: {nameof(parameter.Selector)} is not supported:  {parameter?.Selector}, {nameof(value)} is not converted.");
                 return new object[] { value };
         }
     }
