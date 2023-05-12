@@ -47,34 +47,6 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversal
     public CollectionViewSource KeysViewSource { get; init; } = new();
     public CollectionViewSource ProjectionsViewSource { get; init; } = new();
 
-    public IValueConverter ForegroundConverter { get; set; } = new RedConverter();
-
-    internal class RedConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return new SolidColorBrush(Colors.Red);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    internal class BlueConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return new SolidColorBrush(Colors.Blue);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public PocoState PocoState
     {
         get
@@ -162,7 +134,6 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversal
         ProjectionsViewSource.View.CurrentChanged += View_CurrentChanged;
         _logger = services.GetService<ILoggerFactory>()?.CreateLogger<ViewTracedPoco>();
         InitializeComponent();
-        ((IUniversalConverter)this).Connect(this);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataContext)));
     }
 
@@ -250,45 +221,28 @@ public partial class ViewTracedPoco : Window, INotifyPropertyChanged, IUniversal
         }
     }
 
-    object IUniversalConverter.Convert(object value, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        switch (parameter?.Selector)
-        {
-            case "PocoState":
-                return PocoState.ToString();
-            default:
-                _logger?.LogWarning($"IUniversalConverter.Convert: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(value)} is not converted.");
-                return value;
-        }
+        _logger?.LogInformation($"Convert: {value}, {targetType}, {parameter}");
+        return value;
     }
 
-    object IUniversalConverter.ConvertBack(object value, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        switch (parameter?.Selector)
-        {
-            default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertBack: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(value)} is not converted.");
-                return value;
-        }
+        _logger?.LogInformation($"ConvertBack: {value}, {targetType}, {parameter}");
+        return value;
     }
 
-    object IUniversalConverter.ConvertMulti(object[] values, Type targetType, UniversalConverterParameter? parameter, CultureInfo culture)
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        switch (parameter?.Selector)
-        {
-            default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertMulti: {nameof(parameter.Selector)} is not supported: {parameter?.Selector}, {nameof(values)} are not converted.");
-                return values;
-        }
+        _logger?.LogInformation($"ConvertMulti: {values.Length}, {targetType}, {parameter}");
+        return values.FirstOrDefault();
     }
 
-    object[] IUniversalConverter.ConvertMultiBack(object value, Type[] targetTypes, UniversalConverterParameter? parameter, CultureInfo culture)
+    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
     {
-        switch (parameter?.Selector)
-        {
-            default:
-                _logger?.LogWarning($"IUniversalConverter.ConvertMultiBack: {nameof(parameter.Selector)} is not supported:  {parameter?.Selector}, {nameof(value)} is not converted.");
-                return new object[] { value };
-        }
+        _logger?.LogInformation($"ConvertBackMulti: {value}, {targetTypes.Length}, {parameter}");
+        return new object[] { value };
     }
+
 }

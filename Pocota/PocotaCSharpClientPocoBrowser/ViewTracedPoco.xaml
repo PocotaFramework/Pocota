@@ -20,9 +20,6 @@
             <l:BindingProxy x:Key="PocoState" Name="PocoState" Value="{Binding PocoState}"/>
             <l:BindingProxy x:Key="This" Value="{Binding}"/>
             <l:BindingProxyMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
-            <l:BindingProxy x:Key="ForegroundConverterProxy" Value="{Binding ForegroundConverter}"/>
-            <l:BindingProxyMarkup x:Key="ForegroundConverter" BindingProxy="{StaticResource ForegroundConverterProxy}"/>
-            <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
             <Style TargetType="ComboBox" x:Key="ViewCollectionComboBoxStyleExt" 
                    BasedOn="{l:ParameterizedResource ViewCollectionComboBoxStyle}" x:Shared="False">
                 <EventSetter Event="SelectionChanged" Handler="ComboBox_SelectionChanged"/>
@@ -66,27 +63,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <TextBlock Text="Разные конвертеры">
-            <TextBlock.Foreground>
-                <Binding Path="ForegroundConverter" Converter="{StaticResource ForegroundConverter}"/>
-            </TextBlock.Foreground>
-        </TextBlock>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-            <!--<TextBlock Text="{Binding PocoState, Converter={StaticResource This}, ConverterParameter=PocoState|68}" 
-                       Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}"/>-->
-            <TextBlock Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}">
-                <TextBlock.Text>
-                    <Binding Path="PocoState" Converter="{StaticResource Converter}">
-                        <Binding.ConverterParameter>
-                            <x:Array Type="l:BindingProxy">
-                                <l:BindingProxy Value="PocoState"/>
-                                <l:BindingProxy Name="PocoState" Value="{Binding Value.PocoState, Source={StaticResource This}}"/>
-                                <l:BindingProxy Name="Flag" Value="False" Type="{x:Type sys:Boolean}"/>
-                            </x:Array>
-                        </Binding.ConverterParameter>
-                    </Binding>
-                </TextBlock.Text>
-            </TextBlock>
+            <TextBlock Margin="10,10,10,10" Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
+                       Text="{Binding PocoState, Converter={StaticResource Converter}}"/>
             <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
                      Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}" Content="✓" ToolTip="Принять изменения"/>
             <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}" Content="⎌" ToolTip="Отменить изменения"/>
@@ -108,9 +87,9 @@
                 <DataTemplate x:Key="Name">
                     <DockPanel LastChildFill="True">
                         <TextBlock Text="🔒" DockPanel.Dock="Right" ToolTip="Только чтение" 
-                                   Visibility="{Binding ., Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=VisibleIfReadonly}"/>
+                                   Visibility="{Binding ., Converter={StaticResource Converter}, ConverterParameter=VisibleIfReadonly}"/>
                         <TextBlock Text="∅" FontSize="18" FontWeight="Bold" DockPanel.Dock="Right" ToolTip="Не присвоено"
-                                   Visibility="{Binding ., Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=VisibleIfNotSet}"/>
+                                   Visibility="{Binding ., Converter={StaticResource Converter}, ConverterParameter=VisibleIfNotSet}"/>
                         <TextBlock Text="{Binding Name}" Style="{StaticResource ModifiedPropertyStyle}"/>
                     </DockPanel>
                 </DataTemplate>
@@ -125,7 +104,7 @@
                                     <sys:String>$path:Initial</sys:String>
                                     <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                                     <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
-                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                    <sys:String>$converter:Converter</sys:String>
                                 </x:Array>
                             </l:ParameterizedResource.Replaces>
                         </l:ParameterizedResource>
@@ -139,7 +118,7 @@
                                     <sys:String>$path:Current</sys:String>
                                     <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                                     <sys:String>$ViewCollectionComboBoxStyle:ViewCollectionComboBoxStyleExt</sys:String>
-                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                    <sys:String>$converter:Converter</sys:String>
                                 </x:Array>
                             </l:ParameterizedResource.Replaces>
                         </l:ParameterizedResource>
@@ -152,7 +131,7 @@
                                     <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                                     <sys:String>$AddNewPocoPropertyCommandProxy:AddNewPocoPropertyCommandProxy</sys:String>
                                     <sys:String>$ClearPocoPropertyCommandProxy:ClearPocoPropertyCommandProxy</sys:String>
-                                    <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                    <sys:String>$converter:Converter</sys:String>
                                 </x:Array>
                             </l:ParameterizedResource.Replaces>
                         </l:ParameterizedResource>
