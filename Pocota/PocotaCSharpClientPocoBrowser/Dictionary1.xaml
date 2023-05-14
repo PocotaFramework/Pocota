@@ -89,7 +89,8 @@
                     Command="{Binding Value, Source={l:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
                     CommandParameter="{Binding}" Margin="10,0,0,0">
             </Button>
-            <TextBlock Text="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=57}"/>
+            <TextBlock Text="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=57}"
+                       ToolTip="{Binding Converter={l:ParameterizedResource $converter}, ConverterParameter=ToolTip|58}"/>
         </DockPanel>
     </DataTemplate>
     <l:StyleCombiner TargetType="ComboBox" x:Key="CollectionComboBoxStyle" x:Shared="False">
@@ -110,7 +111,10 @@
                     Command="{Binding Value, Source={l:ParameterizedResource $ViewTracedPocoCommandProxy}}" 
                     CommandParameter="{Binding $path}">
             </Button>
-            <TextBlock Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=71, Mode=OneWay}" />
+            <TextBlock 
+                Text="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=71}" 
+                ToolTip="{Binding $path, Converter={l:ParameterizedResource $converter}, ConverterParameter=ToolTip|72}"
+                />
             <!--<TextBlock Text="{Binding $path}" />-->
         </DockPanel>
     </DataTemplate>
