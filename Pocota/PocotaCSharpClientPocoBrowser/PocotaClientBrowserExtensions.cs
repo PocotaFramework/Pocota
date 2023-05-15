@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.WpfMarkup;
 using System.Linq;
 using System.Windows;
 
@@ -22,6 +23,7 @@ public static class PocotaClientBrowserExtensions
             PocotaClientBrowser.Instance.Show();
             return PocotaClientBrowser.Instance;
         });
+        services.AddSingleton<IUniversalConverter, CentralConverter>();
         
         services.AddTransient<ViewTracedPoco>();
         services.AddTransient<TracedPocosHeart>();

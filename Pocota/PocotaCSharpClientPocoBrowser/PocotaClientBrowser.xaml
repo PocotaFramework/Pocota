@@ -15,10 +15,10 @@
                 <ResourceDictionary Source="Dictionary1.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--<local1:BindingProxy x:Key="CancelChangesCommandProxy" Value="{Binding Path=CancelChangesCommand}"/>-->
             <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand}"/>
             <l:BindingProxy x:Key="ViewConnectorMethodCommandProxy" Value="{Binding Path=ViewConnectorMethodCommand}"/>
-            <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter" />
+            <l:BindingProxy x:Key="This" Value="{Binding}"/>
+            <l:BindingProxyMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True" >
@@ -60,7 +60,7 @@
                                 <Style.Resources>
                                     <x:Array Type="sys:String" x:Key="Replaces">
                                         <sys:String>$path:Type</sys:String>
-                                        <sys:String>$converter:ViewTracedPocoConverter</sys:String>
+                                        <sys:String>$converter:Converter</sys:String>
                                         <sys:String>$ViewTracedPocoCommandProxy:ViewTracedPocoCommandProxy</sys:String>
                                         <sys:String>$test:IsPoco</sys:String>
                                     </x:Array>
@@ -121,9 +121,7 @@
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
                                     <Button d:Command="{Binding Value, Source={StaticResource CancelChangesCommandProxy}}" d:CommandParameter="{Binding Item}" 
-                                    Visibility="{Binding Item, Converter={local:BrowserConverter}, ConverterParameter=VisibleIfIsEntity}">
-                                        <Button.Content>Отменить изменения</Button.Content>
-                                    </Button>
+                                    Visibility="{Binding Item, Converter={StaticResource Converter}, ConverterParameter=VisibleIfIsEntity}"  Style="{StaticResource CancelChangesStyle}"/>
                                     <Button Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Item}"
                                             Style="{StaticResource ViewVisualButtonStyle}">
                                     </Button>
@@ -146,7 +144,7 @@
                     <DataGrid ItemsSource="{Binding WindowsViewSource.View}" AutoGenerateColumns="False" IsReadOnly="True"  x:Name="dgWindows" Margin="10,10,10,10">
                         <DataGrid.Resources>
                             <DataTemplate x:Key="Title">
-                                <TextBlock Text="{Binding Title}" Background="{Binding Converter={local:BrowserConverter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
+                                <TextBlock Text="{Binding Title}" Background="{Binding Converter={StaticResource Converter}, ConverterParameter=LastActiveWindow|#DEADBEEF}"/>
                             </DataTemplate>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
@@ -163,7 +161,6 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="10"/>
                     <RowDefinition Height="Auto"/>
-                    <!--<RowDefinition Height="{Binding Connectors, Converter={local:BrowserConverter}, ConverterParameter=Connectors}"/>-->
                 </Grid.RowDefinitions>
                 <DockPanel LastChildFill="True" Grid.Row="0">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -184,6 +181,9 @@
                     <DataGrid ItemsSource="{Binding ConnectorViewSource.View}" AutoGenerateColumns="False" 
                               IsReadOnly="True"  Margin="10,10,10,10" >
                         <DataGrid.Resources>
+                            <DataTemplate x:Key="Name">
+                                <TextBlock Text="{Binding Method.Name}" ToolTip="{Binding Method}"/>
+                            </DataTemplate>
                             <DataTemplate x:Key="Actions">
                                 <StackPanel Orientation="Horizontal">
                                     <Button Command="{Binding Value, Source={StaticResource ViewConnectorMethodCommandProxy}}" d:CommandParameter="{Binding Item2}"
@@ -199,8 +199,7 @@
                             </DataTemplate>
                         </DataGrid.Resources>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Имя" Binding="{Binding Method.Name}"/>
-                            <DataGridTextColumn Header="Метрика" Binding="{Binding Method}"/>
+                            <DataGridTemplateColumn Header="Имя" CellTemplate="{StaticResource Name}"/>
                             <DataGridTemplateColumn Header="Действия" CellTemplate="{StaticResource Actions}"/>
                         </DataGrid.Columns>
                     </DataGrid>

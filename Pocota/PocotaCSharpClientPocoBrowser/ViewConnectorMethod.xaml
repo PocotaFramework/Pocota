@@ -15,7 +15,8 @@
             <l:BindingProxy x:Key="ViewTracedPocoCommandProxy" Value="{Binding Path=ViewTracedPocoCommand, Mode=OneWay}"/>
             <l:BindingProxy x:Key="SetFilterCommandProxy" Value="{Binding Path=SetFilterCommand, Mode=OneWay}"/>
             <l:BindingProxy x:Key="UnsetFilterCommandProxy" Value="{Binding Path=UnsetFilterCommand, Mode=OneWay}"/>
-            <local:ViewTracedPocoConverter x:Key="ViewTracedPocoConverter"/>
+            <l:BindingProxy x:Key="This" Value="{Binding}"/>
+            <l:BindingProxyMarkup x:Key="Converter" BindingProxy="{StaticResource This}"/>
         </ResourceDictionary>
     </Window.Resources>
     <DockPanel LastChildFill="True">
@@ -26,7 +27,7 @@
                 <DataTemplate x:Key="Value">
                     <DockPanel LastChildFill="True">
                         <Button DockPanel.Dock="Right" Command="{Binding Value, Source={StaticResource UnsetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=ButtonRemove|35}">
+                                            Visibility="{Binding Value, Converter={StaticResource Converter}, ConverterParameter=ButtonRemove|35}">
                             <Button.Style>
                                 <l:StyleCombiner>
                                     <StaticResource ResourceKey="RemoveVisualButtonStyle"/>
@@ -34,7 +35,7 @@
                             </Button.Style>
                         </Button>
                         <Button DockPanel.Dock="Right" Command="{Binding Value, Source={StaticResource SetFilterCommandProxy}}" CommandParameter="{Binding}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=ButtonAdd|31}">
+                                            Visibility="{Binding Value, Converter={StaticResource Converter}, ConverterParameter=ButtonAdd|31}">
                             <Button.Style>
                                 <l:StyleCombiner>
                                     <StaticResource ResourceKey="AddVisualButtonStyle"/>
@@ -42,14 +43,14 @@
                             </Button.Style>
                         </Button>
                         <Button DockPanel.Dock="Right" Command="{Binding Value, Source={StaticResource ViewTracedPocoCommandProxy}}" CommandParameter="{Binding Value}" Margin="10,0,0,0"
-                                            Visibility="{Binding Value, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=ButtonView|27}">
+                                            Visibility="{Binding Value, Converter={StaticResource Converter}, ConverterParameter=ButtonView|27}">
                             <Button.Style>
                                 <l:StyleCombiner>
                                     <StaticResource ResourceKey="ViewVisualButtonStyle"/>
                                 </l:StyleCombiner>
                             </Button.Style>
                         </Button>
-                        <TextBlock Text="{Binding Value, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=25}"/>
+                        <TextBlock Text="{Binding Value, Converter={StaticResource Converter}, ConverterParameter=25}"/>
                     </DockPanel>
                 </DataTemplate>
             </DataGrid.Resources>
@@ -62,11 +63,11 @@
         </DataGrid>
         <Button x:Name="RunButton" Content="Вызвать" DockPanel.Dock="Top" HorizontalAlignment="Center" Margin="10,10,10,10" Click="Button_Click"/>
         <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem Content="{Binding ResultViewSource.Source, Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=Count}"/>
+            <StatusBarItem Content="{Binding ResultViewSource.Source, Converter={StaticResource Converter}, ConverterParameter=Count}"/>
         </StatusBar>
         <DataGrid ItemsSource="{Binding ResultViewSource.View}" AutoGenerateColumns="True" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Тип" Binding="{Binding Converter={StaticResource ViewTracedPocoConverter}, ConverterParameter=Type}"/>
+                <DataGridTextColumn Header="Тип" Binding="{Binding Converter={StaticResource Converter}, ConverterParameter=Type}"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

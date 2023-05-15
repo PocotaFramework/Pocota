@@ -1,25 +1,36 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
+using Net.Leksi.WpfMarkup;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.Windows.Data;
-using System.Windows.Markup;
-using System.Xaml;
-using IValueConverter = System.Windows.Data.IValueConverter;
 
 namespace Net.Leksi.Pocota.Client;
 
-public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiValueConverter
+public class CentralConverter: IUniversalConverter
 {
+    private readonly IServiceProvider _services;
+    private readonly Util _util;
+    private readonly ILogger<CentralConverter>? _logger;
 
-    public object? Convert(object? value, Type targetType, object parameter, CultureInfo culture)
+    public CentralConverter(IServiceProvider services)
     {
-        object?[] parameters = SplitParameter(parameter);
+        _services = services;
+        _util = _services.GetRequiredService<Util>();
+        _logger = services.GetService<ILoggerFactory>()?.CreateLogger<CentralConverter>();
+    }
+
+    public object? Convert(object? value, Type targetType, object? parameter, CultureInfo? culture)
+    {
+        object?[] parameters = IUniversalConverter.SplitParameter(parameter);
+
+        Type? initialValueType = value?.GetType();
 
         if (targetType == typeof(string))
         {
@@ -30,7 +41,20 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
                 || (value is IProjection<IPoco> && (obj = value) == obj)
             )
             {
-                return $"{obj.GetType()}: {PocotaClientBrowser.Instance.Services.GetRequiredService<Util>().GetPocoLabel(obj)}";
+                return $"{obj.GetType().Name}: {_util.GetPocoLabel(obj)}";
+            }
+        }
+
+        if (parameters.Contains("ToolTip"))
+        {
+            object? obj;
+            if (
+                (value is WeakReference<IPoco> wr1 && wr1.TryGetTarget(out IPoco? poco3) && (obj = poco3) == obj)
+                || (value is WeakReference wr2 && wr2.Target is IProjection<IPoco> poco4 && (obj = poco4) == obj)
+                || (value is IProjection<IPoco> && (obj = value) == obj)
+            )
+            {
+                return obj.GetType().FullName;
             }
         }
 
@@ -112,9 +136,9 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return result;
         }
 
-        if(targetType == typeof(Visibility))
+        if (targetType == typeof(Visibility))
         {
-            if(value is PropertyValueHolder property1)
+            if (value is PropertyValueHolder property1)
             {
                 if (parameters.Contains("VisibleIfReadonly"))
                 {
@@ -134,6 +158,11 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             if (parameters.Contains("ButtonAdd"))
             {
                 return value is { } ? Visibility.Collapsed : Visibility.Visible;
+            }
+            if (parameters.Contains("VisibleIfIsEntity"))
+            {
+                return value is IProjection<IEntity> && ((IProjection)value).As<IEntity>() is IEntity
+                    ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Visible;
         }
@@ -176,15 +205,64 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             return collection.Count;
         }
 
-        Console.WriteLine($"ConvertSingle {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
-
+        _logger?.LogWarning($"Convert: {initialValueType}: {value}, {targetType}, {parameter}");
         return value;
     }
 
-    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo? culture)
     {
-        object?[] parameters = SplitParameter(parameter);
+        if (value is null)
+        {
+            return null;
+        }
 
+        object?[] parameters = IUniversalConverter.SplitParameter(parameter);
+
+        if (parameters.Contains("TimeSpan"))
+        {
+            try
+            {
+                return TimeSpan.Parse(value.ToString()!);
+            }
+            catch (Exception) { }
+        }
+
+        if (parameters.Contains("DateTime"))
+        {
+            try
+            {
+                return DateTime.Parse(value.ToString()!);
+            }
+            catch (Exception) { }
+        }
+        if (parameters.Contains("DateOnly"))
+        {
+            if (value.GetType() == typeof(DateTime))
+            {
+                if (value is null)
+                {
+                    return null;
+                }
+                return DateOnly.FromDateTime((DateTime)value);
+            }
+
+        }
+        if (parameters.Contains("TimeOnly"))
+        {
+            try
+            {
+                return TimeOnly.Parse(value.ToString()!);
+            }
+            catch (Exception) { }
+        }
+
+        _logger?.LogWarning($"ConvertBack: {(value is { } ? value : "null")}, {targetType}, {parameter}");
+        return value;
+    }
+
+    public object? Convert(object?[]? values, Type targetType, object? parameter, CultureInfo? culture)
+    {
+        object?[] parameters = IUniversalConverter.SplitParameter(parameter);
         PropertyValueHolder? property = null;
         if (
             (
@@ -225,101 +303,14 @@ public class ViewTracedPocoConverter : MarkupExtension, IValueConverter, IMultiV
             }
         }
 
-        //Console.WriteLine($"ConvertMulti [{string.Join(',', values)}], {targetType}, [{string.Join(',', parameters)}]");
-
+        _logger?.LogWarning($"ConvertMulti: {(values is { } ? $"[{string.Join(',', values)}]" : "null")}, {targetType}, {parameter}");
         return null;
     }
 
-    public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object?[]? ConvertBack(object? value, Type?[]? targetTypes, object? parameter, CultureInfo? culture)
     {
-        object?[] parameters = SplitParameter(parameter);
-
-        if (value is null)
-        {
-            return null;
-        }
-
-        if (parameters.Contains("TimeSpan"))
-        {
-            try
-            {
-                return TimeSpan.Parse(value.ToString()!);
-            }
-            catch (Exception) { }
-        }
-
-        if (parameters.Contains("DateTime"))
-        {
-            try
-            {
-                return DateTime.Parse(value.ToString()!);
-            }
-            catch (Exception) { }
-        }
-        if (parameters.Contains("DateOnly"))
-        {
-            if (value.GetType() == typeof(DateTime))
-            {
-                if (value is null)
-                {
-                    return null;
-                }
-                return DateOnly.FromDateTime((DateTime)value);
-            }
-
-        }
-        if (parameters.Contains("TimeOnly"))
-        {
-            try
-            {
-                return TimeOnly.Parse(value.ToString()!);
-            }
-            catch (Exception) { }
-        }
-
-        //Console.WriteLine($"ConvertBack {value}, {(value is { } ? value.GetType() : null)}, {targetType}, [{string.Join(',', parameters)}]");
-
-        return value;
-
-    }
-
-    public object[]? ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-    {
-        object?[] parameters = SplitParameter(parameter);
-
-        if (targetTypes[0] == typeof(PropertyValueHolder))
-        {
-            return new object[]
-            {
-                null!,
-                value
-            };
-        }
-        else
-        {
-            return new object[]
-            {
-                value,
-                null!
-            };
-        }
-
-        //Console.WriteLine($"ConvertBackMulti {value}, {(value is { } ? value.GetType() : null)}, [{string.Join(',', targetTypes.Select(t => t.ToString()))}], [{string.Join(',', parameters)}]");
-
-        return null;
-    }
-
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return this;
-    }
-
-    private static object?[] SplitParameter(object parameter)
-    {
-        return parameter is object?[]? (parameter as object?[])!
-                    : (
-                        parameter is string ? parameter.ToString()!.Split('|') : new object?[] { parameter }
-                    );
+        _logger?.LogWarning($"ConvertMulti: {(value is { } ? value : "null")}, {(targetTypes is { } ? $"[{string.Join(',', (IEnumerable<Type?>)targetTypes)}]" : "null")}, {parameter}");
+        return new object[] { value };
     }
 
 }

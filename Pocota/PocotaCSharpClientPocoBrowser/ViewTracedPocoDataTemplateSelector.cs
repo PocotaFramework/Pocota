@@ -1,6 +1,7 @@
 ﻿using Net.Leksi.WpfMarkup;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -25,8 +26,10 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
         if(item is PropertyValueHolder pvh)
         {
             if(
-                (pvh.KeyPart is { } && container is ContentPresenter cp && cp.FindResource("PocoState") is BindingProxy bp && bp.Value is not PocoState.Created)
-                || pvh.IsReadOnly
+                pvh.KeyPart is { } 
+                && container is ContentPresenter cp 
+                && cp.FindResource("PocoState") is BindingProxy bp 
+                && bp.Value is not PocoState.Created
             )
             {
                 if (ReadOnlyValue is { })
@@ -36,7 +39,13 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
             }
             else
             {
-                if (typeof(IList).IsAssignableFrom(pvh.Type))
+                if (
+                    typeof(IList).IsAssignableFrom(pvh.Type) 
+                    || (
+                        pvh.Type.IsGenericType 
+                        && typeof(IList<>).IsAssignableFrom(pvh.Type.GetGenericTypeDefinition())
+                    )
+                )
                 {
                     if (Collection is { })
                     {
@@ -48,6 +57,13 @@ public class ViewTracedPocoDataTemplateSelector: DataTemplateSelector
                     if (Poco is { })
                     {
                         return Poco;
+                    }
+                }
+                if (pvh.IsReadOnly)
+                {
+                    if (ReadOnlyValue is { })
+                    {
+                        return ReadOnlyValue;
                     }
                 }
                 if (pvh.Type == typeof(bool))

@@ -20,7 +20,6 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
     public override void CollectGarbage()
     {
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, true, true);
-        GC.WaitForFullGCComplete();
     }
 
     private void _pocoContext_TracedPocosChanged(object? sender, EventArgs e)
@@ -29,7 +28,7 @@ internal class TracedPocosHeart : TracedPocosHeartPoco
         {
             foreach (var item in _pocoContext.TracedPocos)
             {
-                if(TracedPocos.FirstOrDefault(it => it.Type == item.Key) is PocosCounts counts)
+                if (TracedPocos.FirstOrDefault(it => it.Type == item.Key) is PocosCounts counts)
                 {
                     counts.Count = item.Value;
                     counts.Touch();

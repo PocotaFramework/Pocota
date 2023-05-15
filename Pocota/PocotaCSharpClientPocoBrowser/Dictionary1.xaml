@@ -41,6 +41,13 @@
         </Style>
         <StaticResource ResourceKey="ActionButtonStyle"/>
     </l:StyleCombiner>
+    <l:StyleCombiner TargetType="Button" x:Key="CancelChangesStyle" x:Shared="False" >
+        <Style TargetType="Button">
+            <Setter Property="Content" Value="⎌"/>
+            <Setter Property="ToolTip" Value="Отменить изменения"/>
+        </Style>
+        <StaticResource ResourceKey="ActionButtonStyle"/>
+    </l:StyleCombiner>
     <l:StyleCombiner TargetType="Button" x:Key="ButtonStyle" x:Shared="False">
         <Style TargetType="Button" >
             <Style.Triggers>

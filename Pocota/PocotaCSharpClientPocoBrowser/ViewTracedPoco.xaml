@@ -68,7 +68,7 @@
                        Text="{Binding PocoState}"/>
             <Button Margin="10,10,10,10" Style="{StaticResource AcceptChangesStyle}"
                      Command="{Binding AcceptChangesCommand}" CommandParameter="{Binding SourceReference}" Content="✓" ToolTip="Принять изменения"/>
-            <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}" Content="⎌" ToolTip="Отменить изменения"/>
+            <Button Margin="10,10,10,10" Command="{Binding CancelChangesCommand}" CommandParameter="{Binding SourceReference}" Style="{StaticResource CancelChangesStyle}"/>
             <ComboBox ItemsSource="{Binding ProjectionsViewSource.View}"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Style="{l:ParameterizedResource PrimaryKeyStyle}">
