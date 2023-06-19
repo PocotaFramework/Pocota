@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Net.Leksi.Pocota.Common</RootNamespace>
+    <AssemblyName>Net.Leksi.Pocota.CodeGenerator</AssemblyName>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TextGenerator\Library\TextGeneratorDebug.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Pages\CSharp\" />
+  </ItemGroup>
+
+</Project>
