@@ -3,14 +3,13 @@
 [AttributeUsage(AttributeTargets.Interface, AllowMultiple = true)]
 public class PocoAttribute: Attribute
 {
-    public Type Target { get; init; }
-    public Type[]? MoreInterfaces { get; set; }
+    public Type Interface { get; init; }
+    public Type[]? Projections { get; set; }
     public object[]? PrimaryKey { get; set; }
-    public string? Name { get; set; }
 
-    public PocoAttribute(Type target)
+    public PocoAttribute(Type @interface)
     {
-        Target = target;
+        Interface = @interface;
     }
 
 }

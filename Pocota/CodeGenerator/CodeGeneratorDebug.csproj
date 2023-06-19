@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\TextGenerator\Library\TextGeneratorDebug.csproj" />
+    <ProjectReference Include="..\Contract\ContractDebug.csproj" />
   </ItemGroup>
 
   <ItemGroup>
