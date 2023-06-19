@@ -3,19 +3,11 @@ import tempfile
 import sys
 
 directory = os.path.dirname(os.path.realpath(__file__))
-os.chdir('{}\..\MaterialDesignInXamlToolkit'.format(directory))
 fp = tempfile.NamedTemporaryFile()
 fp.close();
-os.system('git diff --name-only > {}'.format(fp.name))
-f = open(fp.name)
-for line in f:
-    command = 'xcopy /s /y {0} {1}\Pocota\PocotaCSharpClientPocoBrowser\ChangedMaterial\{0}'.format(line.strip().replace('/', '\\'), directory)
-    os.system(command)
-f.close()
 
 os.chdir(directory)
 os.system('git status --porcelain > {}'.format(fp.name))
-f.close()
 f = open(fp.name)
 untracked = []
 for line in f:
