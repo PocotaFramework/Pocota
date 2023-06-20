@@ -1,0 +1,42 @@
+﻿@page
+@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+@Html.Partial("HeaderComment", Model)
+
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+
+namespace @Model.NamespaceValue;
+
+public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
+{
+@foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsProjection))
+{
+    <text>    private @Html.Raw($"{pm.ObjectType}{(pm.IsNullable ? '?' : string.Empty)}") _@pm.Name.Substring(0, 1).ToLower()@pm.Name.Substring(1);
+    private PropertyAccessMode _accessMode@{}@Html.Raw(pm.Name) = PropertyAccessMode.Forbidden;
+</text>    
+}
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public @Html.Raw($"{pm.Type}{(pm.IsNullable ? '?' : string.Empty)}") @pm.Name
+    {
+        get
+        {
+            if(_accessMode@{}@Html.Raw(pm.Name) is PropertyAccessMode.Forbidden)
+            {
+                throw new @nameof(InvalidOperationException)@{}("Forbidden");
+            }
+            return _@pm.Name.Substring(0, 1).ToLower()@pm.Name.Substring(1);
+        }
+        set
+        {
+
+        }
+    }
+</text>    
+}
+}

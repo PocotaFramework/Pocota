@@ -11,6 +11,8 @@ public class ClassModel: PageModel
     internal string? Description { get; set; } = null;
     internal HashSet<string> Usings { get; init; } = new();
     internal List<MethodModel> Methods { get; init; } = new();
+    internal List<PropertyModel> Properties { get; init; } = new();
+    internal List<string> Interfaces { get; init; } = new();
 
     public void OnGet([FromServices] CodeGenerator generator)
     {

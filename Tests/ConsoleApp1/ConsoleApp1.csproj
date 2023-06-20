@@ -1,11 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RootNamespace>Net.Leksi.Pocota.Demo.Cats.Common</RootNamespace>
-    <AssemblyName>Net.Leksi.Pocota.Demo.Cats.Common</AssemblyName>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Pocota\Server\ServerDebug.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Pocota\Common\CommonDebug.csproj" />
+    <ProjectReference Include="..\..\..\Pocota\Server\ServerDebug.csproj" />
+    <ProjectReference Include="..\Common\CommonDebug.csproj" />
+  </ItemGroup>
+
 </Project>
