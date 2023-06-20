@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T19:08:45                                                        //
+// at 2023-06-20T22:04:33                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,18 +16,18 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 public class LitterPoco : Server.PocoBase, ILitter, IEntity
 {
     private Int32 _order;
-    private PropertyAccessMode _accessModeOrder = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _female;
-    private PropertyAccessMode _accessModeFemale = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.Forbidden;
     private DateOnly _date;
-    private PropertyAccessMode _accessModeDate = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _dateAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _male;
-    private PropertyAccessMode _accessModeMale = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
     public Int32 Order
     {
         get
         {
-            if(_accessModeOrder is PropertyAccessMode.Forbidden)
+            if(_orderAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -42,7 +42,7 @@ public class LitterPoco : Server.PocoBase, ILitter, IEntity
     {
         get
         {
-            if(_accessModeFemale is PropertyAccessMode.Forbidden)
+            if(_femaleAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -57,7 +57,7 @@ public class LitterPoco : Server.PocoBase, ILitter, IEntity
     {
         get
         {
-            if(_accessModeDate is PropertyAccessMode.Forbidden)
+            if(_dateAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -72,7 +72,7 @@ public class LitterPoco : Server.PocoBase, ILitter, IEntity
     {
         get
         {
-            if(_accessModeMale is PropertyAccessMode.Forbidden)
+            if(_maleAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }

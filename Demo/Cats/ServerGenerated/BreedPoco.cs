@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T19:08:45                                                        //
+// at 2023-06-20T22:04:33                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,18 +16,18 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 public class BreedPoco : Server.PocoBase, IBreed, IEntity
 {
     private String _code;
-    private PropertyAccessMode _accessModeCode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
     private String _group;
-    private PropertyAccessMode _accessModeGroup = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _groupAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameEng;
-    private PropertyAccessMode _accessModeNameEng = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat;
-    private PropertyAccessMode _accessModeNameNat = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
     public String Code
     {
         get
         {
-            if(_accessModeCode is PropertyAccessMode.Forbidden)
+            if(_codeAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -42,7 +42,7 @@ public class BreedPoco : Server.PocoBase, IBreed, IEntity
     {
         get
         {
-            if(_accessModeGroup is PropertyAccessMode.Forbidden)
+            if(_groupAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -57,7 +57,7 @@ public class BreedPoco : Server.PocoBase, IBreed, IEntity
     {
         get
         {
-            if(_accessModeNameEng is PropertyAccessMode.Forbidden)
+            if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -72,7 +72,7 @@ public class BreedPoco : Server.PocoBase, IBreed, IEntity
     {
         get
         {
-            if(_accessModeNameNat is PropertyAccessMode.Forbidden)
+            if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }

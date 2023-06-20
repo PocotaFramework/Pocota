@@ -14,23 +14,28 @@ namespace @Model.NamespaceValue;
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-@foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsProjection))
+@foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    private @Html.Raw($"{pm.ObjectType}{(pm.IsNullable ? '?' : string.Empty)}") _@pm.Name.Substring(0, 1).ToLower()@pm.Name.Substring(1);
-    private PropertyAccessMode _accessMode@{}@Html.Raw(pm.Name) = PropertyAccessMode.Forbidden;
+    <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName;
+    @if(pm.IsList && pm.IsPoco)
+    {
+        <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.Type)@pm.NullableSuffix @pm.ProxyFieldName;
+</text>
+    }
+    private PropertyAccessMode @pm.AccessModeFieldName = PropertyAccessMode.Forbidden;
 </text>    
 }
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    public @Html.Raw($"{pm.Type}{(pm.IsNullable ? '?' : string.Empty)}") @pm.Name
+    <text>    public @Html.Raw($"{pm.Type}{pm.NullableSuffix}") @pm.Name
     {
         get
         {
-            if(_accessMode@{}@Html.Raw(pm.Name) is PropertyAccessMode.Forbidden)
+            if(@pm.AccessModeFieldName is PropertyAccessMode.Forbidden)
             {
                 throw new @nameof(InvalidOperationException)@{}("Forbidden");
             }
-            return _@pm.Name.Substring(0, 1).ToLower()@pm.Name.Substring(1);
+            return @pm.FieldName;
         }
         set
         {

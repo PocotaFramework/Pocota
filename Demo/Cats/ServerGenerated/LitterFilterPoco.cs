@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T19:08:45                                                        //
+// at 2023-06-20T22:04:33                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -15,14 +15,14 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 public class LitterFilterPoco : Server.PocoBase, ILitterFilter, Server.IPoco
 {
     private CatPoco _female;
-    private PropertyAccessMode _accessModeFemale = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _male;
-    private PropertyAccessMode _accessModeMale = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
     public ICat Female
     {
         get
         {
-            if(_accessModeFemale is PropertyAccessMode.Forbidden)
+            if(_femaleAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -37,7 +37,7 @@ public class LitterFilterPoco : Server.PocoBase, ILitterFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeMale is PropertyAccessMode.Forbidden)
+            if(_maleAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }

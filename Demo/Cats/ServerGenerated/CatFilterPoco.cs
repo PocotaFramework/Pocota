@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T19:08:45                                                        //
+// at 2023-06-20T22:04:33                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,40 +16,40 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 {
     private BreedPoco? _breed;
-    private PropertyAccessMode _accessModeBreed = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
     private CatteryPoco? _cattery;
-    private PropertyAccessMode _accessModeCattery = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
     private DateOnly? _bornAfter;
-    private PropertyAccessMode _accessModeBornAfter = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _bornAfterAccessMode = PropertyAccessMode.Forbidden;
     private DateOnly? _bornBefore;
-    private PropertyAccessMode _accessModeBornBefore = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _bornBeforeAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameRegex;
-    private PropertyAccessMode _accessModeNameRegex = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameRegexAccessMode = PropertyAccessMode.Forbidden;
     private Gender? _gender;
-    private PropertyAccessMode _accessModeGender = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _child;
-    private PropertyAccessMode _accessModeChild = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _childAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _self;
-    private PropertyAccessMode _accessModeSelf = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _selfAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _mother;
-    private PropertyAccessMode _accessModeMother = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _motherAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _father;
-    private PropertyAccessMode _accessModeFather = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _fatherAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _ancestor;
-    private PropertyAccessMode _accessModeAncestor = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _ancestorAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _descendant;
-    private PropertyAccessMode _accessModeDescendant = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _descendantAccessMode = PropertyAccessMode.Forbidden;
     private LitterPoco? _litter;
-    private PropertyAccessMode _accessModeLitter = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
     private String? _exteriorRegex;
-    private PropertyAccessMode _accessModeExteriorRegex = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.Forbidden;
     private String? _titleRegex;
-    private PropertyAccessMode _accessModeTitleRegex = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.Forbidden;
     public IBreed? Breed
     {
         get
         {
-            if(_accessModeBreed is PropertyAccessMode.Forbidden)
+            if(_breedAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -64,7 +64,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeCattery is PropertyAccessMode.Forbidden)
+            if(_catteryAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -79,7 +79,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeBornAfter is PropertyAccessMode.Forbidden)
+            if(_bornAfterAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -94,7 +94,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeBornBefore is PropertyAccessMode.Forbidden)
+            if(_bornBeforeAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -109,7 +109,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeNameRegex is PropertyAccessMode.Forbidden)
+            if(_nameRegexAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -124,7 +124,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeGender is PropertyAccessMode.Forbidden)
+            if(_genderAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -139,7 +139,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeChild is PropertyAccessMode.Forbidden)
+            if(_childAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -154,7 +154,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeSelf is PropertyAccessMode.Forbidden)
+            if(_selfAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -169,7 +169,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeMother is PropertyAccessMode.Forbidden)
+            if(_motherAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -184,7 +184,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeFather is PropertyAccessMode.Forbidden)
+            if(_fatherAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -199,7 +199,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeAncestor is PropertyAccessMode.Forbidden)
+            if(_ancestorAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -214,7 +214,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeDescendant is PropertyAccessMode.Forbidden)
+            if(_descendantAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -229,7 +229,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeLitter is PropertyAccessMode.Forbidden)
+            if(_litterAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -244,7 +244,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeExteriorRegex is PropertyAccessMode.Forbidden)
+            if(_exteriorRegexAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -259,7 +259,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     {
         get
         {
-            if(_accessModeTitleRegex is PropertyAccessMode.Forbidden)
+            if(_titleRegexAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }

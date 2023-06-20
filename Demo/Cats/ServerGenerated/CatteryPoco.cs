@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T19:08:45                                                        //
+// at 2023-06-20T22:04:33                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,14 +16,14 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 public class CatteryPoco : Server.PocoBase, ICattery, IEntity
 {
     private String? _nameEng;
-    private PropertyAccessMode _accessModeNameEng = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat;
-    private PropertyAccessMode _accessModeNameNat = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
     public String? NameEng
     {
         get
         {
-            if(_accessModeNameEng is PropertyAccessMode.Forbidden)
+            if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }
@@ -38,7 +38,7 @@ public class CatteryPoco : Server.PocoBase, ICattery, IEntity
     {
         get
         {
-            if(_accessModeNameNat is PropertyAccessMode.Forbidden)
+            if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
             {
                 throw new InvalidOperationException("Forbidden");
             }

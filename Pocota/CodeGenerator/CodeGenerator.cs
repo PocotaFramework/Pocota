@@ -17,6 +17,7 @@ public class CodeGenerator
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
     private readonly Dictionary<Type, InterfaceHolder> _interfacesByType = new();
+    private readonly HashSet<string> _variables = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
@@ -64,24 +65,6 @@ public class CodeGenerator
                 else
                 {
                     throw new InvalidOperationException($"Interface {attr.Interface} from {contract} is already defined at {@interface.Contract}!");
-                }
-                if (attr.Projections is { })
-                {
-
-                    foreach (Type intrf in attr.Projections)
-                    {
-                        if (intrf.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
-                        {
-                            throw new InvalidOperationException($"Methods are not allowed at the interface {intrf} of {@interface.Interface} from {contract}!");
-                        }
-                        if (!intrf.IsInterface)
-                        {
-                            throw new InvalidOperationException(
-                                $"Only interfaces allowed ({intrf} of {attr.Interface} from {contract})!"
-                            );
-                        }
-                        @interface.Projections.Add(intrf);
-                    }
                 }
                 if (attr.PrimaryKey is { })
                 {
@@ -176,7 +159,6 @@ public class CodeGenerator
             {
                 if (
                     @interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0
-                    && !@interface.GetCustomAttribute<PocoContractAttribute>()!.IsClient
                 )
                 {
                     if (ClientGeneratedDirectory is { })
@@ -247,7 +229,6 @@ public class CodeGenerator
                 }
                 if (
                     ServerGeneratedDirectory is { }
-                    && !target.Contract.GetCustomAttribute<PocoContractAttribute>()!.IsClient
                 )
                 {
                     if (
@@ -358,6 +339,8 @@ public class CodeGenerator
              as GeneratingRequest;
         if (request is { } && _interfacesByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
         {
+            _variables.Clear();
+
             InitClassModel(model, request);
 
             model.ClassName = MakePocoClassName(request.Interface);
@@ -388,6 +371,8 @@ public class CodeGenerator
                     IsReadOnly = pi.CanWrite,
                     IsNullable = nc.Create(pi).WriteState is NullabilityState.Nullable,
                 };
+                pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
+                pm.AccessModeFieldName = GetUniqueVariable($"{pm.FieldName}AccessMode");
                 Type? itemType = null;
                 if (
                     (
@@ -447,9 +432,32 @@ public class CodeGenerator
                     }
 
                 }
+                if (pm.IsList && pm.IsPoco)
+                {
+                    pm.ProxyFieldName = GetUniqueVariable($"{pm.FieldName}Proxy");
+                }
                 model.Properties.Add(pm);
             }
         }
+    }
+
+    private string GetUniqueVariable(string initial)
+    {
+        if (!_variables.Contains(initial))
+        {
+            _variables.Add(initial);
+            return initial;
+        }
+        for (int i = 1; ; ++i)
+        {
+            if (!_variables.Contains(initial + i.ToString()))
+            {
+                initial += i.ToString();
+                _variables.Add(initial);
+                return initial;
+            }
+        }
+
     }
 
     private string MakeTypeName(Type type)

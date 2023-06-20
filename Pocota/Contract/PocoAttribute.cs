@@ -4,7 +4,6 @@
 public class PocoAttribute: Attribute
 {
     public Type Interface { get; init; }
-    public Type[]? Projections { get; set; }
     public object[]? PrimaryKey { get; set; }
 
     public PocoAttribute(Type @interface)
