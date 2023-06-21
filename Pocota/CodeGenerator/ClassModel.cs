@@ -7,6 +7,7 @@ public class ClassModel: PageModel
 {
     internal Type Contract { get; set; } = null!;
     internal string ClassName { get; set; } = null!;
+    internal string Interface { get; set; } = null!;
     internal string NamespaceValue { get; set; } = null!;
     internal string? Description { get; set; } = null;
     internal HashSet<string> Usings { get; init; } = new();

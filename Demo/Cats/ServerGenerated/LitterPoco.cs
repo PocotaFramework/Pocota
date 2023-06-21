@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterPoco : Server.PocoBase, ILitter, IEntity
+public class LitterPoco : Server.PocoBase, IEntity
 {
     private Int32 _order;
     private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
@@ -38,7 +38,7 @@ public class LitterPoco : Server.PocoBase, ILitter, IEntity
 
         }
     }
-    public ICat Female
+    public CatPoco Female
     {
         get
         {
@@ -68,7 +68,7 @@ public class LitterPoco : Server.PocoBase, ILitter, IEntity
 
         }
     }
-    public ICat? Male
+    public CatPoco? Male
     {
         get
         {

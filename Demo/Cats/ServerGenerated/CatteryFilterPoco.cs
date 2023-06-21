@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryFilterPoco                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatteryFilterPoco : Server.PocoBase, ICatteryFilter, Server.IPoco
+public class CatteryFilterPoco : Server.PocoBase, Server.IPoco
 {
     private String? _searchRegex;
     private PropertyAccessMode _searchRegexAccessMode = PropertyAccessMode.Forbidden;

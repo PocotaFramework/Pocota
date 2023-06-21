@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,14 +13,13 @@ using System.Collections.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats, Server.IPoco
+public class LitterWithCatsPoco : Server.PocoBase, Server.IPoco
 {
     private LitterPoco _litter;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
-    private List<CatPoco> _cats;
-    private List<ICat> _catsProxy;
+    private readonly List<CatPoco> _cats;
     private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Forbidden;
-    public ILitter Litter
+    public LitterPoco Litter
     {
         get
         {
@@ -35,7 +34,7 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats, Server.IPoco
 
         }
     }
-    public List<ICat> Cats
+    public List<CatPoco> Cats
     {
         get
         {
@@ -44,10 +43,6 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats, Server.IPoco
                 throw new InvalidOperationException("Forbidden");
             }
             return _cats;
-        }
-        set
-        {
-
         }
     }
 }

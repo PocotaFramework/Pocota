@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class BreedPoco : Server.PocoBase, IBreed, IEntity
+public class BreedPoco : Server.PocoBase, IEntity
 {
     private String _code;
     private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;

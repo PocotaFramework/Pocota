@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatPoco : Server.PocoBase, ICat, IEntity
+public class CatPoco : Server.PocoBase, IEntity
 {
     private CatteryPoco _cattery;
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
@@ -33,7 +33,7 @@ public class CatPoco : Server.PocoBase, ICat, IEntity
     private PropertyAccessMode _titleAccessMode = PropertyAccessMode.Forbidden;
     private String? _description;
     private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.Forbidden;
-    public ICattery Cattery
+    public CatteryPoco Cattery
     {
         get
         {
@@ -93,7 +93,7 @@ public class CatPoco : Server.PocoBase, ICat, IEntity
 
         }
     }
-    public IBreed Breed
+    public BreedPoco Breed
     {
         get
         {
@@ -108,7 +108,7 @@ public class CatPoco : Server.PocoBase, ICat, IEntity
 
         }
     }
-    public ILitter? Litter
+    public LitterPoco? Litter
     {
         get
         {

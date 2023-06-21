@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-20T22:04:33                                                        //
+// at 2023-06-21T22:13:55                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,7 +13,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
+public class CatFilterPoco : Server.PocoBase, Server.IPoco
 {
     private BreedPoco? _breed;
     private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
@@ -45,7 +45,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
     private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.Forbidden;
     private String? _titleRegex;
     private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.Forbidden;
-    public IBreed? Breed
+    public BreedPoco? Breed
     {
         get
         {
@@ -60,7 +60,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICattery? Cattery
+    public CatteryPoco? Cattery
     {
         get
         {
@@ -135,7 +135,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Child
+    public CatPoco? Child
     {
         get
         {
@@ -150,7 +150,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Self
+    public CatPoco? Self
     {
         get
         {
@@ -165,7 +165,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Mother
+    public CatPoco? Mother
     {
         get
         {
@@ -180,7 +180,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Father
+    public CatPoco? Father
     {
         get
         {
@@ -195,7 +195,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Ancestor
+    public CatPoco? Ancestor
     {
         get
         {
@@ -210,7 +210,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ICat? Descendant
+    public CatPoco? Descendant
     {
         get
         {
@@ -225,7 +225,7 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter, Server.IPoco
 
         }
     }
-    public ILitter? Litter
+    public LitterPoco? Litter
     {
         get
         {
