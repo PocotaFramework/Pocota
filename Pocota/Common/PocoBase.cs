@@ -2,5 +2,7 @@
 
 public abstract class PocoBase: IPoco
 {
-    protected abstract bool IsUnderConstruction {  get; }
+    protected const string s_noAccess = "No access";
+
+    protected abstract bool IsUnderConstruction { get; }
 }

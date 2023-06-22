@@ -17,4 +17,5 @@ public class PropertyModel
     internal string FieldName { get; set; } = null!;
     internal string? ProxyFieldName { get; set; } = null;
     internal string AccessModeFieldName { get; set; } = null!;
+    internal bool CanBeNull { get; set; } = false;
 }

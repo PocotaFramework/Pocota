@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-21T22:13:55                                                        //
+// at 2023-06-22T12:27:06                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,29 +13,39 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class BreedPoco : Server.PocoBase, IEntity
+public class BreedPoco : EntityBase
 {
-    private String _code;
+    private String _code = null!;
     private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
-    private String _group;
+    private String _group = null!;
     private PropertyAccessMode _groupAccessMode = PropertyAccessMode.Forbidden;
-    private String? _nameEng;
+    private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
-    private String? _nameNat;
+    private String? _nameNat = null;
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+
+    public BreedPoco()
+    {
+    }
+
     public String Code
     {
         get
         {
             if(_codeAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _code;
         }
         set
         {
-
+            if(!IsUnderConstruction && _codeAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _codeAccessMode = PropertyAccessMode.Full;
+            _code = value;
         }
     }
     public String Group
@@ -44,13 +54,18 @@ public class BreedPoco : Server.PocoBase, IEntity
         {
             if(_groupAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _group;
         }
         set
         {
-
+            if(!IsUnderConstruction && _groupAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _groupAccessMode = PropertyAccessMode.Full;
+            _group = value;
         }
     }
     public String? NameEng
@@ -59,13 +74,18 @@ public class BreedPoco : Server.PocoBase, IEntity
         {
             if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _nameEng;
         }
         set
         {
-
+            if(!IsUnderConstruction && _nameEngAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _nameEngAccessMode = PropertyAccessMode.Full;
+            _nameEng = value;
         }
     }
     public String? NameNat
@@ -74,13 +94,18 @@ public class BreedPoco : Server.PocoBase, IEntity
         {
             if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _nameNat;
         }
         set
         {
-
+            if(!IsUnderConstruction && _nameNatAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _nameNatAccessMode = PropertyAccessMode.Full;
+            _nameNat = value;
         }
     }
 }

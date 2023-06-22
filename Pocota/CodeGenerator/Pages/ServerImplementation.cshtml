@@ -16,10 +16,20 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName;
+    <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(!pm.IsList && pm.CanBeNull){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
     private PropertyAccessMode @pm.AccessModeFieldName = PropertyAccessMode.Forbidden;
 </text>    
 }
+
+    public @Model.ClassName@{}()
+    {
+@foreach (PropertyModel pm in Model.Properties.Where(p => p.IsReadOnly && p.IsList))
+{
+    <text>        @pm.FieldName = new();
+</text>    
+}
+    }
+
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    public @Html.Raw($"{pm.ObjectType}{pm.NullableSuffix}") @pm.Name
@@ -28,18 +38,23 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             if(@pm.AccessModeFieldName is PropertyAccessMode.Forbidden)
             {
-                throw new @nameof(InvalidOperationException)@{}("Forbidden");
+                throw new @nameof(InvalidOperationException)@{}(s_noAccess);
             }
             return @pm.FieldName;
         }
-        @if(!pm.IsReadOnly || !pm.IsList)
+    @if(!pm.IsReadOnly || !pm.IsList)
+    {
+        <text>        set
         {
-            <text>        set
-        {
-
+            if(!IsUnderConstruction && @pm.AccessModeFieldName is not PropertyAccessMode.Full)
+            {
+                throw new @nameof(InvalidOperationException)@{}(s_noAccess);
+            }
+            @pm.AccessModeFieldName = PropertyAccessMode.@{}@if(pm.IsReadOnly){<text>ReadOnly</text>} else {<text>Full</text>};
+            @pm.FieldName = value;
         }
 </text>
-        }
+    }
     }
 </text>    
 }

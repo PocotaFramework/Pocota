@@ -2,13 +2,12 @@
 
 public class PocoBase : Common.PocoBase, IPoco
 {
-    private bool _isUnderConstruction = false;
+    private bool _isUnderConstruction = true;
 
-    internal void SetsUnderConstruction(bool isUnderConstruction)
+    internal void CommitConstruction()
     {
-        _isUnderConstruction = isUnderConstruction;
+        _isUnderConstruction = false;
     }
 
     protected override bool IsUnderConstruction => _isUnderConstruction;
-
 }

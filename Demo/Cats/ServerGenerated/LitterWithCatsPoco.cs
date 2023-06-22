@@ -3,7 +3,7 @@
 // Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-21T22:13:55                                                        //
+// at 2023-06-22T12:27:06                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -13,25 +13,36 @@ using System.Collections.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterWithCatsPoco : Server.PocoBase, Server.IPoco
+public class LitterWithCatsPoco : Server.PocoBase
 {
-    private LitterPoco _litter;
+    private LitterPoco _litter = null!;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
     private readonly List<CatPoco> _cats;
     private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Forbidden;
+
+    public LitterWithCatsPoco()
+    {
+        _cats = new();
+    }
+
     public LitterPoco Litter
     {
         get
         {
             if(_litterAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _litter;
         }
         set
         {
-
+            if(!IsUnderConstruction && _litterAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _litterAccessMode = PropertyAccessMode.ReadOnly;
+            _litter = value;
         }
     }
     public List<CatPoco> Cats
@@ -40,7 +51,7 @@ public class LitterWithCatsPoco : Server.PocoBase, Server.IPoco
         {
             if(_catsAccessMode is PropertyAccessMode.Forbidden)
             {
-                throw new InvalidOperationException("Forbidden");
+                throw new InvalidOperationException(s_noAccess);
             }
             return _cats;
         }

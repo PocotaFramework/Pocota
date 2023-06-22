@@ -347,20 +347,18 @@ public class CodeGenerator
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(PropertyAccessMode));
-            AddUsings(model, typeof(Server.PocoBase));
 
-            model.Interfaces.Add($"{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
             model.Interface = MakeTypeName(request.Interface);
-            //model.Interfaces.Add(model.Interface);
+
             if (_interfacesByType[request.Interface].KeysDefinitions.Count > 0)
             {
-                AddUsings(model, typeof(Server.IEntity));
-                model.Interfaces.Add(MakeTypeName(typeof(Server.IEntity)));
+                AddUsings(model, typeof(Server.EntityBase));
+                model.Interfaces.Add(MakeTypeName(typeof(Server.EntityBase)));
             }
             else
             {
-                AddUsings(model, typeof(Server.IPoco));
-                model.Interfaces.Add($"{nameof(Server)}.{MakeTypeName(typeof(Server.IPoco))}");
+                AddUsings(model, typeof(Server.PocoBase));
+                model.Interfaces.Add($"{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
             }
             NullabilityInfoContext nc = new();
 
@@ -371,8 +369,9 @@ public class CodeGenerator
                     Name = pi.Name,
                     IsReadOnly = !pi.CanWrite,
                     IsNullable = nc.Create(pi).WriteState is NullabilityState.Nullable,
-                    Type = MakeTypeName(pi.PropertyType)
+                    Type = MakeTypeName(pi.PropertyType),
                 };
+                pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
                 pm.AccessModeFieldName = GetUniqueVariable($"{pm.FieldName}AccessMode");
                 Type? itemType = null;
@@ -429,10 +428,6 @@ public class CodeGenerator
                         AddUsings(model, itemType);
                     }
 
-                }
-                if (pm.IsList && pm.IsPoco)
-                {
-                    pm.ProxyFieldName = GetUniqueVariable($"{pm.FieldName}Proxy");
                 }
                 model.Properties.Add(pm);
             }

@@ -1,5 +1,5 @@
 ﻿namespace Net.Leksi.Pocota.Server;
 
-public interface IEntity: IPoco
+public interface IEntity: Common.IEntity, IPoco
 {
 }
