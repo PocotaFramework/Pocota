@@ -1,6 +1,8 @@
-﻿namespace Net.Leksi.Pocota.Common;
+﻿using Microsoft.Extensions.DependencyInjection;
+
+namespace Net.Leksi.Pocota.Common;
 
 public interface IContractConfigurator
 {
-    void Configure();
+    void Configure(IServiceCollection services);
 }

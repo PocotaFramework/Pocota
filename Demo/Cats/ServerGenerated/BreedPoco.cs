@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class BreedPoco : EntityBase
+public class BreedPoco : EntityBase, IBreed
 {
     private String _code = null!;
     private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
@@ -47,6 +47,17 @@ public class BreedPoco : EntityBase
             _code = value;
         }
     }
+    String IBreed.Code
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String Group
     {
         get
@@ -65,6 +76,17 @@ public class BreedPoco : EntityBase
             }
             _groupAccessMode = PropertyAccessMode.Full;
             _group = value;
+        }
+    }
+    String IBreed.Group
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public String? NameEng
@@ -87,6 +109,17 @@ public class BreedPoco : EntityBase
             _nameEng = value;
         }
     }
+    String? IBreed.NameEng
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? NameNat
     {
         get
@@ -105,6 +138,17 @@ public class BreedPoco : EntityBase
             }
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
+        }
+    }
+    String? IBreed.NameNat
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

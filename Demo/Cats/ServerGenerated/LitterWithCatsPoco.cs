@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterWithCatsPoco : Server.PocoBase
+public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats
 {
     private LitterPoco _litter = null!;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
@@ -44,6 +44,17 @@ public class LitterWithCatsPoco : Server.PocoBase
             _litter = value;
         }
     }
+    ILitter ILitterWithCats.Litter
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public List<CatPoco> Cats
     {
         get
@@ -53,6 +64,17 @@ public class LitterWithCatsPoco : Server.PocoBase
                 throw new InvalidOperationException(s_noAccess);
             }
             return _cats;
+        }
+    }
+    IList<ICat> ILitterWithCats.Cats
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

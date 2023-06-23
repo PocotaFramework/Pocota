@@ -7,15 +7,19 @@
 @foreach (string usng in Model.Usings.OrderBy(v => v))
 {
     <text>using @usng;
-    </text>
+</text>
 }
 
 namespace @Model.NamespaceValue;
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-    public void Configure()
+    public void Configure(IServiceCollection services)
     {
-
+@foreach(var service in Model.Services)
+{
+    <text>        services.AddTransient@{}@Html.Raw($"<{service.Key}, {service.Value}>")@{}();
+</text>
+}
     }
 }

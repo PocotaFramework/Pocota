@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterPoco : EntityBase
+public class LitterPoco : EntityBase, ILitter
 {
     private Int32 _order;
     private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
@@ -47,6 +47,17 @@ public class LitterPoco : EntityBase
             _order = value;
         }
     }
+    Int32 ILitter.Order
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco Female
     {
         get
@@ -65,6 +76,17 @@ public class LitterPoco : EntityBase
             }
             _femaleAccessMode = PropertyAccessMode.Full;
             _female = value;
+        }
+    }
+    ICat ILitter.Female
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public DateOnly Date
@@ -87,6 +109,17 @@ public class LitterPoco : EntityBase
             _date = value;
         }
     }
+    DateOnly ILitter.Date
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco? Male
     {
         get
@@ -105,6 +138,17 @@ public class LitterPoco : EntityBase
             }
             _maleAccessMode = PropertyAccessMode.Full;
             _male = value;
+        }
+    }
+    ICat? ILitter.Male
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

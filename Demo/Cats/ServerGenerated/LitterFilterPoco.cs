@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -11,7 +11,7 @@ using Net.Leksi.Pocota.Server;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class LitterFilterPoco : Server.PocoBase
+public class LitterFilterPoco : Server.PocoBase, ILitterFilter
 {
     private CatPoco _female = null!;
     private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.Forbidden;
@@ -42,6 +42,17 @@ public class LitterFilterPoco : Server.PocoBase
             _female = value;
         }
     }
+    ICat ILitterFilter.Female
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco Male
     {
         get
@@ -60,6 +71,17 @@ public class LitterFilterPoco : Server.PocoBase
             }
             _maleAccessMode = PropertyAccessMode.Full;
             _male = value;
+        }
+    }
+    ICat ILitterFilter.Male
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

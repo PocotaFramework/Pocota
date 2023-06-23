@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatteryPoco : EntityBase
+public class CatteryPoco : EntityBase, ICattery
 {
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
@@ -43,6 +43,17 @@ public class CatteryPoco : EntityBase
             _nameEng = value;
         }
     }
+    String? ICattery.NameEng
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? NameNat
     {
         get
@@ -61,6 +72,17 @@ public class CatteryPoco : EntityBase
             }
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
+        }
+    }
+    String? ICattery.NameNat
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

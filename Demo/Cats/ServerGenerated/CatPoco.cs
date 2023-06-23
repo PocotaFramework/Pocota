@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatPoco : EntityBase
+public class CatPoco : EntityBase, ICat
 {
     private CatteryPoco _cattery = null!;
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
@@ -57,6 +57,17 @@ public class CatPoco : EntityBase
             _cattery = value;
         }
     }
+    ICattery ICat.Cattery
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? NameNat
     {
         get
@@ -75,6 +86,17 @@ public class CatPoco : EntityBase
             }
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
+        }
+    }
+    String? ICat.NameNat
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public String? NameEng
@@ -97,6 +119,17 @@ public class CatPoco : EntityBase
             _nameEng = value;
         }
     }
+    String? ICat.NameEng
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public Gender Gender
     {
         get
@@ -115,6 +148,17 @@ public class CatPoco : EntityBase
             }
             _genderAccessMode = PropertyAccessMode.Full;
             _gender = value;
+        }
+    }
+    Gender ICat.Gender
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public BreedPoco Breed
@@ -137,6 +181,17 @@ public class CatPoco : EntityBase
             _breed = value;
         }
     }
+    IBreed ICat.Breed
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public LitterPoco? Litter
     {
         get
@@ -155,6 +210,17 @@ public class CatPoco : EntityBase
             }
             _litterAccessMode = PropertyAccessMode.Full;
             _litter = value;
+        }
+    }
+    ILitter? ICat.Litter
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public String? Exterior
@@ -177,6 +243,17 @@ public class CatPoco : EntityBase
             _exterior = value;
         }
     }
+    String? ICat.Exterior
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? Title
     {
         get
@@ -197,6 +274,17 @@ public class CatPoco : EntityBase
             _title = value;
         }
     }
+    String? ICat.Title
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? Description
     {
         get
@@ -215,6 +303,17 @@ public class CatPoco : EntityBase
             }
             _descriptionAccessMode = PropertyAccessMode.Full;
             _description = value;
+        }
+    }
+    String? ICat.Description
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

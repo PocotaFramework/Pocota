@@ -56,6 +56,17 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
     }
+    @Html.Raw($"{pm.Type}{pm.NullableSuffix}") @Html.Raw(Model.Interfaces[1]).@pm.Name
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
 </text>    
 }
 }

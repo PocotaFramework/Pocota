@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T18:37:26                                                        //
+// at 2023-06-23T22:13:31                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatFilterPoco : Server.PocoBase
+public class CatFilterPoco : Server.PocoBase, ICatFilter
 {
     private BreedPoco? _breed = null;
     private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
@@ -69,6 +69,17 @@ public class CatFilterPoco : Server.PocoBase
             _breed = value;
         }
     }
+    IBreed? ICatFilter.Breed
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatteryPoco? Cattery
     {
         get
@@ -87,6 +98,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _catteryAccessMode = PropertyAccessMode.Full;
             _cattery = value;
+        }
+    }
+    ICattery? ICatFilter.Cattery
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public DateOnly? BornAfter
@@ -109,6 +131,17 @@ public class CatFilterPoco : Server.PocoBase
             _bornAfter = value;
         }
     }
+    DateOnly? ICatFilter.BornAfter
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public DateOnly? BornBefore
     {
         get
@@ -127,6 +160,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _bornBeforeAccessMode = PropertyAccessMode.Full;
             _bornBefore = value;
+        }
+    }
+    DateOnly? ICatFilter.BornBefore
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public String? NameRegex
@@ -149,6 +193,17 @@ public class CatFilterPoco : Server.PocoBase
             _nameRegex = value;
         }
     }
+    String? ICatFilter.NameRegex
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public Gender? Gender
     {
         get
@@ -167,6 +222,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _genderAccessMode = PropertyAccessMode.Full;
             _gender = value;
+        }
+    }
+    Gender? ICatFilter.Gender
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public CatPoco? Child
@@ -189,6 +255,17 @@ public class CatFilterPoco : Server.PocoBase
             _child = value;
         }
     }
+    ICat? ICatFilter.Child
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco? Self
     {
         get
@@ -207,6 +284,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _selfAccessMode = PropertyAccessMode.Full;
             _self = value;
+        }
+    }
+    ICat? ICatFilter.Self
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public CatPoco? Mother
@@ -229,6 +317,17 @@ public class CatFilterPoco : Server.PocoBase
             _mother = value;
         }
     }
+    ICat? ICatFilter.Mother
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco? Father
     {
         get
@@ -247,6 +346,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _fatherAccessMode = PropertyAccessMode.Full;
             _father = value;
+        }
+    }
+    ICat? ICatFilter.Father
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public CatPoco? Ancestor
@@ -269,6 +379,17 @@ public class CatFilterPoco : Server.PocoBase
             _ancestor = value;
         }
     }
+    ICat? ICatFilter.Ancestor
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public CatPoco? Descendant
     {
         get
@@ -287,6 +408,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _descendantAccessMode = PropertyAccessMode.Full;
             _descendant = value;
+        }
+    }
+    ICat? ICatFilter.Descendant
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
     public LitterPoco? Litter
@@ -309,6 +441,17 @@ public class CatFilterPoco : Server.PocoBase
             _litter = value;
         }
     }
+    ILitter? ICatFilter.Litter
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? ExteriorRegex
     {
         get
@@ -329,6 +472,17 @@ public class CatFilterPoco : Server.PocoBase
             _exteriorRegex = value;
         }
     }
+    String? ICatFilter.ExteriorRegex
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
+        }
+    }
     public String? TitleRegex
     {
         get
@@ -347,6 +501,17 @@ public class CatFilterPoco : Server.PocoBase
             }
             _titleRegexAccessMode = PropertyAccessMode.Full;
             _titleRegex = value;
+        }
+    }
+    String? ICatFilter.TitleRegex
+    {
+        get
+        {
+            throw new NotImplementedException();
+        }
+        set
+        {
+            throw new NotImplementedException();
         }
     }
 }

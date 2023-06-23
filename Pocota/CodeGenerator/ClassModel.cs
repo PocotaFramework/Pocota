@@ -13,7 +13,7 @@ public class ClassModel: PageModel
     internal List<MethodModel> Methods { get; init; } = new();
     internal List<PropertyModel> Properties { get; init; } = new();
     internal List<string> Interfaces { get; init; } = new();
-    internal Dictionary<string, string> Services { get; init; } = new();
+    internal Dictionary<string, string?> Services { get; init; } = new();
 
     public void OnGet([FromServices] CodeGenerator generator)
     {

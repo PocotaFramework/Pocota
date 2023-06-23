@@ -369,15 +369,19 @@ public class CodeGenerator
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IContractConfigurator));
+            AddUsings(model, typeof(IPrimaryKey<>));
             model.Usings.Add(s_dependencyInjection);
 
             model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
 
-            foreach(KeyValuePair<Type, InterfaceHolder> item in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract))
+            foreach(Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
             {
-                AddUsings(model, item.Key);
-                AddUsings(model, item.Value.Interface);
-                model.Services.Add(MakeTypeName(item.Key), MakePocoClassName(item.Value.Interface));
+                AddUsings(model, @interface);
+                model.Services.Add(MakeTypeName(@interface), MakePocoClassName(@interface));
+                if (_interfaceHoldersByType[@interface].KeysDefinitions.Any())
+                {
+                    model.Services.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { @interface })), MakePrimaryKeyName(@interface));
+                }
             }
         }
     }
@@ -428,6 +432,8 @@ public class CodeGenerator
                 AddUsings(model, typeof(Server.PocoBase));
                 model.Interfaces.Add($"{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
             }
+            model.Interfaces.Add(MakeTypeName(request.Interface));
+
             NullabilityInfoContext nc = new();
 
             foreach (PropertyInfo pi in @interface.Interface.GetProperties())
