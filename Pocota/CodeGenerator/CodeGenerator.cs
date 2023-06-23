@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting.Server;
+﻿using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
-using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -13,10 +11,13 @@ public class CodeGenerator
 {
     private const string s_void = "void";
     private const string s_poco = "Poco";
+    private const string s_primaryKey = "PrimaryKey";
+    private const string s_configurator = "Configurator";
+    private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
-    private readonly Dictionary<Type, InterfaceHolder> _interfacesByType = new();
+    private readonly Dictionary<Type, InterfaceHolder> _interfaceHoldersByType = new();
     private readonly HashSet<string> _variables = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
@@ -50,7 +51,7 @@ public class CodeGenerator
                 {
                     throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface} from {contract}!");
                 }
-                if (!_interfacesByType.TryGetValue(attr.Interface, out InterfaceHolder? @interface))
+                if (!_interfaceHoldersByType.TryGetValue(attr.Interface, out InterfaceHolder? @interface))
                 {
                     @interface = new() { Interface = attr.Interface, Contract = contract };
                     Match match = _interfaceNameCheck.Match(attr.Interface.Name);
@@ -59,7 +60,7 @@ public class CodeGenerator
                         throw new InvalidOperationException($"Projector {attr.Interface} has not assigned Name and does not meet name condition: I{{Name}}!");
                     }
                     @interface.Name = match.Groups[1].Captures[0].Value;
-                    _interfacesByType.Add(attr.Interface, @interface);
+                    _interfaceHoldersByType.Add(attr.Interface, @interface);
                     _queue.Add(attr.Interface);
                 }
                 else
@@ -176,6 +177,19 @@ public class CodeGenerator
                         {
                             ++fails;
                         }
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/{ClientLanguage}/ContractConfigurator", RequestKind.ClientImplementation, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
                     }
                     if (ServerGeneratedDirectory is { })
                     {
@@ -205,10 +219,23 @@ public class CodeGenerator
                         {
                             ++fails;
                         }
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/ContractConfigurator", RequestKind.ServerImplementation, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
                     }
                 }
             }
-            else if (_interfacesByType.TryGetValue(@interface, out InterfaceHolder? target))
+            else if (_interfaceHoldersByType.TryGetValue(@interface, out InterfaceHolder? target))
             {
                 if (ClientGeneratedDirectory is { })
                 {
@@ -328,16 +355,57 @@ public class CodeGenerator
         throw new NotImplementedException();
     }
 
-    internal void BuildPrimaryKey(ClassModel classModel)
+    internal void BuildContractConfigurator(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+             as GeneratingRequest;
+        if (request is { })
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            model.ClassName = MakeContractConfiguratorName(request.Contract);
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IContractConfigurator));
+            model.Usings.Add(s_dependencyInjection);
+
+            model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
+
+            foreach(KeyValuePair<Type, InterfaceHolder> item in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract))
+            {
+                AddUsings(model, item.Key);
+                AddUsings(model, item.Value.Interface);
+                model.Services.Add(MakeTypeName(item.Key), MakePocoClassName(item.Value.Interface));
+            }
+        }
+    }
+
+    internal void BuildPrimaryKey(ClassModel model)
+    {
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+             as GeneratingRequest;
+        if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            model.ClassName = MakePrimaryKeyName(request.Interface);
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IPrimaryKey<>));
+
+            model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
+        }
     }
 
     internal void BuildServerImplementation(ClassModel model)
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
              as GeneratingRequest;
-        if (request is { } && _interfacesByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
+        if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
         {
             _variables.Clear();
 
@@ -350,7 +418,7 @@ public class CodeGenerator
 
             model.Interface = MakeTypeName(request.Interface);
 
-            if (_interfacesByType[request.Interface].KeysDefinitions.Count > 0)
+            if (_interfaceHoldersByType[request.Interface].KeysDefinitions.Count > 0)
             {
                 AddUsings(model, typeof(Server.EntityBase));
                 model.Interfaces.Add(MakeTypeName(typeof(Server.EntityBase)));
@@ -394,10 +462,10 @@ public class CodeGenerator
                 {
                     itemType = pi.PropertyType;
                 }
-                if(_interfacesByType.TryGetValue(itemType!, out InterfaceHolder? interfaceHolder))
+                if (_interfaceHoldersByType.TryGetValue(itemType!, out InterfaceHolder? interfaceHolder))
                 {
                     pm.IsPoco = true;
-                    if(interfaceHolder.KeysDefinitions.Count > 0)
+                    if (interfaceHolder.KeysDefinitions.Count > 0)
                     {
                         pm.IsEntity = true;
                     }
@@ -415,7 +483,7 @@ public class CodeGenerator
                 }
                 else
                 {
-                    if(pm.IsList)
+                    if (pm.IsList)
                     {
                         pm.ItemType = MakeTypeName(itemType);
                         pm.ObjectType = pm.Type;
@@ -432,6 +500,16 @@ public class CodeGenerator
                 model.Properties.Add(pm);
             }
         }
+    }
+
+    private string MakeContractConfiguratorName(Type contract)
+    {
+        return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value}{s_configurator}";
+    }
+
+    private string MakePrimaryKeyName(Type @interface)
+    {
+        return $"{_interfaceHoldersByType[@interface].Name}{s_primaryKey}";
     }
 
     private string GetUniqueVariable(string initial)
@@ -490,40 +568,33 @@ public class CodeGenerator
 
     private string MakePocoClassName(Type @interface)
     {
-        return $"{_interfacesByType[@interface].Name}{s_poco}";
+        return $"{_interfaceHoldersByType[@interface].Name}{s_poco}";
     }
 
     private void InitClassModel(ClassModel model, GeneratingRequest request)
     {
         model.Contract = request.Contract;
         model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
-
-        FieldInfo fi = request.Kind.GetType().GetField(request.Kind.ToString())!;
-        DescriptionAttribute[]? attributes = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
-        if (attributes is { } && attributes.Any())
-        {
-            model.Description = string.Join('\n', attributes.Select(a => a.Description));
-        }
     }
 
     private void CheckPrimaryKeys()
     {
-        foreach (Type targetType in _interfacesByType.Keys)
+        foreach (Type targetType in _interfaceHoldersByType.Keys)
         {
-            InterfaceHolder projector = _interfacesByType[targetType];
+            InterfaceHolder projector = _interfaceHoldersByType[targetType];
             foreach (PrimaryKeyDefinition key in projector.KeysDefinitions.Values)
             {
                 if (key.KeyReference is { })
                 {
                     if (
-                        !_interfacesByType.TryGetValue(key.Property!.PropertyType, out InterfaceHolder? other)
+                        !_interfaceHoldersByType.TryGetValue(key.Property!.PropertyType, out InterfaceHolder? other)
                         || !other.KeysDefinitions.ContainsKey(key.KeyReference)
                     )
                     {
                         throw new InvalidOperationException($"Key part {key.Property.DeclaringType}.{key.Property.Name}.{key.KeyReference} referenced by keyDefinition['{key.Name}']='{key.Property.Name}.{key.KeyReference}' for {nameof(targetType)}={targetType} is not defined!");
                     }
 
-                    CycleFinder.CheckNoCycle(_interfacesByType, targetType, key);
+                    CycleFinder.CheckNoCycle(_interfaceHoldersByType, targetType, key);
                     SetAbsentTypes(targetType, key);
                 }
             }
@@ -538,7 +609,7 @@ public class CodeGenerator
         {
             PrimaryKeyDefinition? keyDefinition = null;
             if (
-                _interfacesByType.TryGetValue(item.Key, out InterfaceHolder? target)
+                _interfaceHoldersByType.TryGetValue(item.Key, out InterfaceHolder? target)
                 && target.KeysDefinitions.TryGetValue(item.Value, out keyDefinition)
                 && keyDefinition.Type is { }
                 )
@@ -554,12 +625,11 @@ public class CodeGenerator
         }
         if (stack.TryPop(out var item1))
         {
-            Type type = _interfacesByType[item1.Key!].KeysDefinitions[item1.Value].Type;
+            Type type = _interfaceHoldersByType[item1.Key!].KeysDefinitions[item1.Value].Type;
             while (stack.TryPop(out var item2))
             {
-                _interfacesByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
+                _interfaceHoldersByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
             }
         }
     }
-
 }

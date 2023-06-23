@@ -9,11 +9,11 @@ public class ClassModel: PageModel
     internal string ClassName { get; set; } = null!;
     internal string Interface { get; set; } = null!;
     internal string NamespaceValue { get; set; } = null!;
-    internal string? Description { get; set; } = null;
     internal HashSet<string> Usings { get; init; } = new();
     internal List<MethodModel> Methods { get; init; } = new();
     internal List<PropertyModel> Properties { get; init; } = new();
     internal List<string> Interfaces { get; init; } = new();
+    internal Dictionary<string, string> Services { get; init; } = new();
 
     public void OnGet([FromServices] CodeGenerator generator)
     {
@@ -40,6 +40,10 @@ public class ClassModel: PageModel
         else if (HttpContext.Request.Path.Equals("/PrimaryKey"))
         {
             generator.BuildPrimaryKey(this);
+        }
+        else if (HttpContext.Request.Path.Equals("/ContractConfigurator"))
+        {
+            generator.BuildContractConfigurator(this);
         }
 
     }

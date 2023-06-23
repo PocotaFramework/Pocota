@@ -3,7 +3,6 @@
 @{
     string[] lines = new[]
     {
-        Model.Description ?? string.Empty,
         string.Join(".", new string[] { Model.NamespaceValue, Model.ClassName}),
         $"Generated automatically from {Model.Contract}",
         $"at {DateTime.Now.ToString("s")}"
@@ -11,7 +10,7 @@
     int maxLength = lines.Select(l => l.Length).Max();
     <text>//@Html.Raw(string.Format($"{{0,{maxLength + 2}}}", string.Empty).Replace(' ', '/'))//
 </text>
-    foreach(string line in lines)
+    foreach(string line in lines.Where(l => !string.IsNullOrEmpty(l)))
     {
         <text>// @Html.Raw(string.Format($"{{0}}{{1,{maxLength - line.Length}}}", line, string.Empty)) //
 </text>

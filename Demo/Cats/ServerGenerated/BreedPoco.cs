@@ -1,9 +1,8 @@
 
 ///////////////////////////////////////////////////////////////////////////////////
-// Server Poco Implementation                                                    //
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-22T12:27:06                                                        //
+// at 2023-06-23T18:37:26                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 

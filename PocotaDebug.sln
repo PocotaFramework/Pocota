@@ -27,13 +27,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractDebug", "Demo\Cats\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGeneratorDebug", "Demo\Cats\CodeGenerator\CodeGeneratorDebug.csproj", "{C68CBE0B-DB90-4228-ABCD-7123B972038C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerDebug", "Pocota\Server\ServerDebug.csproj", "{EA69043C-85CB-4700-97C2-6D8FDE6AFFAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerDebug", "Pocota\Server\ServerDebug.csproj", "{EA69043C-85CB-4700-97C2-6D8FDE6AFFAE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommonDebug", "Pocota\Common\CommonDebug.csproj", "{5BD1B0DF-3BDD-4DE4-A54A-86E3D8ACC29A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{73D02B9A-3C85-4249-903A-45F843EE57B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Tests\ConsoleApp1\ConsoleApp1.csproj", "{2516407B-C2C0-47B1-A9EA-0A15DAE12692}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "Tests\ConsoleApp1\ConsoleApp1.csproj", "{2516407B-C2C0-47B1-A9EA-0A15DAE12692}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
