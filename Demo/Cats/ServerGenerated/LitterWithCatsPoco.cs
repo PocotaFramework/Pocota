@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -16,12 +16,12 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats
 {
     private LitterPoco _litter = null!;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
-    private readonly List<CatPoco> _cats;
+    private IList<CatPoco> _cats = null!;
+    private IList<ICat> _catsProxy = null!;
     private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Forbidden;
 
     public LitterWithCatsPoco()
     {
-        _cats = new();
     }
 
     public LitterPoco Litter
@@ -40,7 +40,7 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats
             {
                 throw new InvalidOperationException(s_noAccess);
             }
-            _litterAccessMode = PropertyAccessMode.ReadOnly;
+            _litterAccessMode = PropertyAccessMode.Full;
             _litter = value;
         }
     }
@@ -48,14 +48,14 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats
     {
         get
         {
-            throw new NotImplementedException();
+            return Litter;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Litter = (value as LitterPoco)!;
         }
     }
-    public List<CatPoco> Cats
+    public IList<CatPoco> Cats
     {
         get
         {
@@ -65,16 +65,27 @@ public class LitterWithCatsPoco : Server.PocoBase, ILitterWithCats
             }
             return _cats;
         }
+        set
+        {
+            if(!IsUnderConstruction && _catsAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _catsAccessMode = PropertyAccessMode.Full;
+            _cats = value;
+            _catsProxy = new ListProxy<CatPoco, ICat>(_cats);
+        }
     }
     IList<ICat> ILitterWithCats.Cats
     {
         get
         {
-            throw new NotImplementedException();
+            return _catsProxy;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            _catsProxy = value;
+            _cats = new ListProxy<ICat, CatPoco>(_catsProxy);
         }
     }
 }

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -46,11 +46,11 @@ public class LitterFilterPoco : Server.PocoBase, ILitterFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Female;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Female = (value as CatPoco)!;
         }
     }
     public CatPoco Male
@@ -77,11 +77,11 @@ public class LitterFilterPoco : Server.PocoBase, ILitterFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Male;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Male = (value as CatPoco)!;
         }
     }
 }

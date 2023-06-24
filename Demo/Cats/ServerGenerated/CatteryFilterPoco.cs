@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryFilterPoco                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -45,11 +45,11 @@ public class CatteryFilterPoco : Server.PocoBase, ICatteryFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return SearchRegex;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            SearchRegex = value;
         }
     }
 }

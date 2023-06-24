@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -73,11 +73,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Breed;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Breed = (value as BreedPoco)!;
         }
     }
     public CatteryPoco? Cattery
@@ -104,11 +104,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Cattery;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Cattery = (value as CatteryPoco)!;
         }
     }
     public DateOnly? BornAfter
@@ -135,11 +135,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return BornAfter;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            BornAfter = value;
         }
     }
     public DateOnly? BornBefore
@@ -166,11 +166,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return BornBefore;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            BornBefore = value;
         }
     }
     public String? NameRegex
@@ -197,11 +197,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return NameRegex;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            NameRegex = value;
         }
     }
     public Gender? Gender
@@ -228,11 +228,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Gender;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Gender = value;
         }
     }
     public CatPoco? Child
@@ -259,11 +259,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Child;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Child = (value as CatPoco)!;
         }
     }
     public CatPoco? Self
@@ -290,11 +290,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Self;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Self = (value as CatPoco)!;
         }
     }
     public CatPoco? Mother
@@ -321,11 +321,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Mother;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Mother = (value as CatPoco)!;
         }
     }
     public CatPoco? Father
@@ -352,11 +352,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Father;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Father = (value as CatPoco)!;
         }
     }
     public CatPoco? Ancestor
@@ -383,11 +383,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Ancestor;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Ancestor = (value as CatPoco)!;
         }
     }
     public CatPoco? Descendant
@@ -414,11 +414,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Descendant;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Descendant = (value as CatPoco)!;
         }
     }
     public LitterPoco? Litter
@@ -445,11 +445,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return Litter;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Litter = (value as LitterPoco)!;
         }
     }
     public String? ExteriorRegex
@@ -476,11 +476,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return ExteriorRegex;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            ExteriorRegex = value;
         }
     }
     public String? TitleRegex
@@ -507,11 +507,11 @@ public class CatFilterPoco : Server.PocoBase, ICatFilter
     {
         get
         {
-            throw new NotImplementedException();
+            return TitleRegex;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            TitleRegex = value;
         }
     }
 }

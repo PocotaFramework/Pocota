@@ -2,6 +2,6 @@
 
 public interface ILitterWithCats
 {
-    ILitter Litter { get; }
-    IList<ICat> Cats { get; }
+    ILitter Litter { get; set; }
+    IList<ICat> Cats { get; set; }
 }

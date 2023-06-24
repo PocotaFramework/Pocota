@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -51,11 +51,11 @@ public class LitterPoco : EntityBase, ILitter
     {
         get
         {
-            throw new NotImplementedException();
+            return Order;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Order = value;
         }
     }
     public CatPoco Female
@@ -82,11 +82,11 @@ public class LitterPoco : EntityBase, ILitter
     {
         get
         {
-            throw new NotImplementedException();
+            return Female;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Female = (value as CatPoco)!;
         }
     }
     public DateOnly Date
@@ -113,11 +113,11 @@ public class LitterPoco : EntityBase, ILitter
     {
         get
         {
-            throw new NotImplementedException();
+            return Date;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Date = value;
         }
     }
     public CatPoco? Male
@@ -144,11 +144,11 @@ public class LitterPoco : EntityBase, ILitter
     {
         get
         {
-            throw new NotImplementedException();
+            return Male;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Male = (value as CatPoco)!;
         }
     }
 }

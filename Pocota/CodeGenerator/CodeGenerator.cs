@@ -14,6 +14,8 @@ public class CodeGenerator
     private const string s_primaryKey = "PrimaryKey";
     private const string s_configurator = "Configurator";
     private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
+    private const string s_accessMode = "AccessMode";
+    private const string s_proxy= "Proxy";
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
@@ -447,7 +449,8 @@ public class CodeGenerator
                 };
                 pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
-                pm.AccessModeFieldName = GetUniqueVariable($"{pm.FieldName}AccessMode");
+                pm.ProxyFieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}{s_proxy}");
+                pm.AccessModeFieldName = GetUniqueVariable($"{pm.FieldName}{s_accessMode}");
                 Type? itemType = null;
                 if (
                     (
@@ -477,8 +480,9 @@ public class CodeGenerator
                     }
                     if (pm.IsList)
                     {
-                        pm.ItemType = MakePocoClassName(itemType);
-                        pm.ObjectType = $"List<{pm.ItemType}>";
+                        pm.ItemType = MakeTypeName(itemType);
+                        pm.ItemObjectType = MakePocoClassName(itemType);
+                        pm.ObjectType = $"IList<{pm.ItemObjectType}>";
                         AddUsings(model, typeof(List<>));
                         AddUsings(model, itemType);
                     }
@@ -491,7 +495,8 @@ public class CodeGenerator
                 {
                     if (pm.IsList)
                     {
-                        pm.ItemType = MakeTypeName(itemType);
+                        pm.ItemObjectType = MakeTypeName(itemType);
+                        pm.ItemType = pm.ItemObjectType;
                         pm.ObjectType = pm.Type;
                         AddUsings(model, typeof(List<>));
                         AddUsings(model, itemType);

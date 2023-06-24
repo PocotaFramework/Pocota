@@ -16,7 +16,12 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(!pm.IsList && pm.CanBeNull){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
+    <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
+    @if(pm.IsList && pm.IsPoco)
+    {
+        <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.Type)@pm.NullableSuffix @pm.ProxyFieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
+</text>    
+    }
     private PropertyAccessMode @pm.AccessModeFieldName = PropertyAccessMode.Forbidden;
 </text>    
 }
@@ -26,6 +31,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 @foreach (PropertyModel pm in Model.Properties.Where(p => p.IsReadOnly && p.IsList))
 {
     <text>        @pm.FieldName = new();
+    @if(pm.IsPoco)
+    {
+        <text>        @pm.ProxyFieldName = new ListProxy@{}@Html.Raw($"<{pm.ItemObjectType}, {pm.ItemType}>")@{}(@pm.FieldName);
+</text>
+    }
 </text>    
 }
     }
@@ -52,6 +62,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             @pm.AccessModeFieldName = PropertyAccessMode.@{}@if(pm.IsReadOnly){<text>ReadOnly</text>} else {<text>Full</text>};
             @pm.FieldName = value;
+            @if(pm.IsList && pm.IsPoco)
+            {
+                <text>            @pm.ProxyFieldName = new ListProxy@{}@Html.Raw($"<{pm.ItemObjectType}, {pm.ItemType}>")@{}(@pm.FieldName);
+</text>
+            }
         }
 </text>
     }
@@ -60,12 +75,33 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         get
         {
-            throw new NotImplementedException();
+            return @if(pm.IsList && pm.IsPoco){<text>@pm.ProxyFieldName</text>} else {<text>@pm.Name</text>};
         }
-        set
+    @if(!pm.IsReadOnly)
+    {
+        <text>       set
         {
-            throw new NotImplementedException();
+        @if(pm.IsPoco)
+        {
+            @if(pm.IsList)
+            {
+            <text>            @pm.ProxyFieldName = value;
+            @pm.FieldName = new ListProxy@{}@Html.Raw($"<{pm.ItemType}, {pm.ItemObjectType}>")@{}(@pm.ProxyFieldName);
+</text>
+            }
+            else{
+            <text>            @pm.Name = (value as @Html.Raw(pm.ObjectType))!;
+</text>
+            }
         }
+        else
+        {
+            <text>            @pm.Name = value;
+</text>
+        }
+        }
+</text>
+    }
     }
 </text>    
 }

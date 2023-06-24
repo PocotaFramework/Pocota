@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -51,11 +51,11 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            throw new NotImplementedException();
+            return Code;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Code = value;
         }
     }
     public String Group
@@ -82,11 +82,11 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            throw new NotImplementedException();
+            return Group;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Group = value;
         }
     }
     public String? NameEng
@@ -113,11 +113,11 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            throw new NotImplementedException();
+            return NameEng;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            NameEng = value;
         }
     }
     public String? NameNat
@@ -144,11 +144,11 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            throw new NotImplementedException();
+            return NameNat;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            NameNat = value;
         }
     }
 }

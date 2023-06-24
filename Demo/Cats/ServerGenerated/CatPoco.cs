@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-23T22:13:31                                                        //
+// at 2023-06-24T09:51:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 
@@ -61,11 +61,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Cattery;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Cattery = (value as CatteryPoco)!;
         }
     }
     public String? NameNat
@@ -92,11 +92,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return NameNat;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            NameNat = value;
         }
     }
     public String? NameEng
@@ -123,11 +123,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return NameEng;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            NameEng = value;
         }
     }
     public Gender Gender
@@ -154,11 +154,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Gender;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Gender = value;
         }
     }
     public BreedPoco Breed
@@ -185,11 +185,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Breed;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Breed = (value as BreedPoco)!;
         }
     }
     public LitterPoco? Litter
@@ -216,11 +216,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Litter;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Litter = (value as LitterPoco)!;
         }
     }
     public String? Exterior
@@ -247,11 +247,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Exterior;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Exterior = value;
         }
     }
     public String? Title
@@ -278,11 +278,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Title;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Title = value;
         }
     }
     public String? Description
@@ -309,11 +309,11 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            throw new NotImplementedException();
+            return Description;
         }
-        set
+       set
         {
-            throw new NotImplementedException();
+            Description = value;
         }
     }
 }
