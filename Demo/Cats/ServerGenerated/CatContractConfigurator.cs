@@ -2,9 +2,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatContractConfigurator                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-24T09:51:28                                                        //
+// at 2023-06-26T13:27:44                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
-
 
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;

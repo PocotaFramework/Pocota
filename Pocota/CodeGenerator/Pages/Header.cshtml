@@ -18,3 +18,11 @@
     <text>//@Html.Raw(string.Format($"{{0,{maxLength + 2}}}", string.Empty).Replace(' ', '/'))//
 </text>
 }
+
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+
+namespace @Model.NamespaceValue;

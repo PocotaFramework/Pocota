@@ -14,6 +14,7 @@ public class ClassModel: PageModel
     internal List<PropertyModel> Properties { get; init; } = new();
     internal List<string> Interfaces { get; init; } = new();
     internal Dictionary<string, string?> Services { get; init; } = new();
+    internal string ControllerInterface { get; set; } = null!;
 
     public void OnGet([FromServices] CodeGenerator generator)
     {
@@ -41,9 +42,9 @@ public class ClassModel: PageModel
         {
             generator.BuildPrimaryKey(this);
         }
-        else if (HttpContext.Request.Path.Equals("/ContractConfigurator"))
+        else if (HttpContext.Request.Path.Equals("/ServerContractConfigurator"))
         {
-            generator.BuildContractConfigurator(this);
+            generator.BuildServerContractConfigurator(this);
         }
 
     }

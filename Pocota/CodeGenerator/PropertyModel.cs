@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public class PropertyModel
+internal class PropertyModel
 {
     internal string Name { get; set; } = null!;
     internal bool IsNullable { get; set; } = false;

@@ -2,9 +2,8 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-24T09:51:28                                                        //
+// at 2023-06-26T18:05:25                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
-
 
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;

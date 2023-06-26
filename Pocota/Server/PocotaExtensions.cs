@@ -9,7 +9,16 @@ public static class PocotaExtensions
         Action<IServiceCollection>? configureServices
     )
     {
-        Core.Configure(services, configureServices);
+        Core core = new();
+        core.Configure(services, configureServices);
+        return services;
+    }
+
+    public static IServiceCollection UseContract<T> (
+        this IServiceCollection services
+    ) where T : IContractConfigurator, new()
+    {
+        Core.UseContractConfigurator<T>(services);
         return services;
     }
 

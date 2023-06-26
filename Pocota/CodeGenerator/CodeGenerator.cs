@@ -1,9 +1,15 @@
-﻿using Net.Leksi.Pocota.Server.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
-using System.ComponentModel;
 using System.Reflection;
+using System.Text.Json;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
+using Microsoft.AspNetCore.Routing;
+using System;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -16,6 +22,11 @@ public class CodeGenerator
     private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
     private const string s_accessMode = "AccessMode";
     private const string s_proxy= "Proxy";
+    private const string s_controller = "Controller";
+    private const string s_controllerProxy = "ControllerProxy";
+    private const string s_template = "!Template";
+    private const string s_string = "string";
+    private const string s_update = "update";
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
@@ -347,17 +358,177 @@ public class CodeGenerator
         throw new NotImplementedException();
     }
 
-    internal void BuildControllerInterface(ClassModel classModel)
+    internal void BuildControllerInterface(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+             as GeneratingRequest;
+        if (request is { })
+        {
+            InitClassModel(model, request);
+
+            model.ClassName = MakeControllerInterfaceName(request.Interface);
+
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(Task));
+            AddUsings(model, typeof(Server.ExpectedOutputTypeAttribute));
+            AddUsings(model, typeof(Server.IController));
+
+            model.Interfaces.Add(MakeTypeName(typeof(Server.IController)));
+
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                AddUsings(model, method.ReturnType);
+                MethodModel mm = new()
+                {
+                    ReturnType = s_void,
+                    Name = method.Name,
+                    ExpectedOutputType = MakeTypeName(method.ReturnType)
+                };
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    AddUsings(model, parameter.ParameterType);
+                    bool isNullable = new NullabilityInfoContext().Create(parameter).ReadState is NullabilityState.Nullable;
+                    mm.Parameters.Add(new ParameterModel { Name = parameter.Name!, Type = $"{parameter.ParameterType.Name}{(isNullable ? "?" : String.Empty)}" });
+                }
+                model.Methods.Add(mm);
+            }
+
+            model.Usings.Remove(model.NamespaceValue);
+        }
     }
 
-    internal void BuildControllerProxy(ClassModel classModel)
+    internal void BuildControllerProxy(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+            as GeneratingRequest;
+        if (request is { })
+        {
+            InitClassModel(model, request);
+
+            model.ClassName = MakeControllerProxyName(request.Interface);
+
+            request.ResultName = model.ClassName;
+
+            model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
+
+            model.Usings.Add(s_dependencyInjection);
+            model.Usings.Add(model.NamespaceValue);
+
+            AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(Server.IPocoContext));
+            AddUsings(model, typeof(Task));
+            AddUsings(model, typeof(HttpUtility));
+
+            Dictionary<string, string> objectNodeClasses = new();
+
+            string? routePrefix = null;
+            string? version = null;
+            if (model.Contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute ca)
+            {
+                routePrefix = ca.RoutePrefix;
+                version = ca.Version;
+            }
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                AttributeModel route = null!;
+                string routeValue = null;
+                _variables.Clear();
+                AddUsings(model, method.ReturnType);
+                MethodModel mm = new MethodModel
+                {
+                    ReturnType = s_void,
+                    Name = method.Name
+                };
+                Type returnItemType = method.ReturnType;
+                if (
+                    method.ReturnType.IsGenericType
+                    && typeof(IList<>).MakeGenericType(new Type[] { method.ReturnType.GetGenericArguments()[0] }).IsAssignableFrom(method.ReturnType)
+                )
+                {
+                    returnItemType = method.ReturnType.GetGenericArguments()[0];
+                }
+                if (returnItemType != typeof(void) && _interfaceHoldersByType.ContainsKey(returnItemType))
+                {
+                    //todo builder
+                }
+                foreach (var attr in method.GetCustomAttributes())
+                {
+                    AddUsings(model, attr.GetType());
+                    if (attr is RouteAttribute ra)
+                    {
+                        if (ra.Template is { })
+                        {
+                            routeValue = $"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{ra.Template}";
+                        }
+                    }
+                }
+                if (routeValue is null)
+                {
+                    throw new InvalidOperationException($"Method {mm} has no [Route] attribute!");
+                }
+
+                AttributeModel am1 = new() { Name = nameof(RouteAttribute) };
+                am1.Properties.Add(s_template, $"\"/{routeValue}\"");
+                route = am1;
+                mm.Attributes.Add(am1);
+
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    _variables.Add(parameter.Name!);
+
+                    AddUsings(model, parameter.ParameterType);
+
+                    bool isNullable = new NullabilityInfoContext().Create(parameter).WriteState is NullabilityState.Nullable;
+
+                    route.Properties[s_template] =
+                        $"{route.Properties[s_template].Substring(0, route.Properties[s_template].Length - 1)}/{{{parameter.Name!}{(isNullable ? "?" : String.Empty)}}}\"";
+
+                    mm.Parameters.Add(new ParameterModel { Name = parameter.Name!, Type = $"{s_string}{(isNullable ? "?" : String.Empty)}" });
+
+                    if (parameter.ParameterType != typeof(string))
+                    {
+                        FilterModel fm = new FilterModel
+                        {
+                            Name = parameter.Name!,
+                            Type = $"{MakeTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
+                            Variable = GetUniqueVariable(parameter.Name!),
+                            IsNullable = isNullable,
+                            IsConvertible = typeof(IConvertible).IsAssignableFrom(parameter.ParameterType)
+                        };
+                        mm.Filters.Add(fm);
+                        mm.CallParameters.Add(fm.Variable);
+                    }
+                    else
+                    {
+                        mm.CallParameters.Add(parameter.Name!);
+                    }
+                }
+                route.Properties[s_template] = Regex.Replace(route.Properties[s_template], "/+", "/");
+                mm.ControllerVariable = GetUniqueVariable(mm.ControllerVariable);
+                if (mm.Filters.Count > 0)
+                {
+                    AddUsings(model, typeof(JsonSerializerOptions));
+                    AddUsings(model, typeof(JsonSerializer));
+                    mm.JsonSerializerOptionsVariable = GetUniqueVariable(mm.JsonSerializerOptionsVariable);
+                }
+                mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
+                model.Methods.Add(mm);
+            }
+            MethodModel update = new()
+            {
+                Name = "Update",
+                ReturnType = s_void
+            };
+            AttributeModel am2 = new() { Name = nameof(RouteAttribute) };
+            am2.Properties.Add(s_template, $"\"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{MakeContractUpdateSuffix(model.Contract)}\"");
+            am2.Properties[s_template] = Regex.Replace(am2.Properties[s_template], "/+", "/");
+            update.Attributes.Add(am2);
+            model.Methods.Add(update);
+        }
     }
 
-    internal void BuildContractConfigurator(ClassModel model)
+    internal void BuildServerContractConfigurator(ClassModel model)
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
              as GeneratingRequest;
@@ -513,9 +684,19 @@ public class CodeGenerator
         }
     }
 
+    private string MakeControllerProxyName(Type @interface)
+    {
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controllerProxy}";
+    }
+
     private string MakeContractConfiguratorName(Type contract)
     {
         return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value}{s_configurator}";
+    }
+
+    private string MakeContractUpdateSuffix(Type contract)
+    {
+        return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value.ToLower()}/{s_update}";
     }
 
     private string MakePrimaryKeyName(Type @interface)
@@ -540,6 +721,11 @@ public class CodeGenerator
             }
         }
 
+    }
+
+    private string MakeControllerInterfaceName(Type @interface)
+    {
+        return $"I{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
     }
 
     private string MakeTypeName(Type type)

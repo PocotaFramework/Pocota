@@ -2,15 +2,7 @@
 @using Net.Leksi.Pocota.Common;
 @model ClassModel
 
-@Html.Partial("HeaderComment", Model)
-
-@foreach (string usng in Model.Usings.OrderBy(v => v))
-{
-    <text>using @usng;
-</text>
-}
-
-namespace @Model.NamespaceValue;
+@Html.Partial("Header", Model)
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
