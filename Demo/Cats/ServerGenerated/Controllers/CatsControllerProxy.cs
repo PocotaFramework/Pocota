@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-26T18:05:25                                                        //
+// at 2023-06-26T21:54:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +18,8 @@ using System.Web;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public class CatsControllerProxy : Controller
+public class CatsControllerProxy : ControllerProxy
 {
-
     [Route("/api/v1.0/cats/{filter?}")]
     public void FindCats(string? filter) 
     {
@@ -113,11 +112,8 @@ public class CatsControllerProxy : Controller
     }
 
     [Route("/api/v1.0/catcontract/update")]
-    public void Update() 
+    public override void Update()
     {
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.Update();
+        base.Update();
     }
-
 }

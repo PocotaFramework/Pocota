@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.ICatsController                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-26T18:05:25                                                        //
+// at 2023-06-26T21:54:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Demo.Cats.Common;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public interface ICatsController : IController
+public interface ICatsController : IPocotaController
 {
     [ExpectedOutputType(typeof(IList<ICat>))]
     void FindCats(ICatFilter? filter);

@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.AspNetCore.Routing;
 using System;
+using Net.Leksi.Pocota.Server;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -27,6 +28,7 @@ public class CodeGenerator
     private const string s_template = "!Template";
     private const string s_string = "string";
     private const string s_update = "update";
+    private const string s_override = " override";
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
@@ -372,9 +374,9 @@ public class CodeGenerator
 
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(Server.ExpectedOutputTypeAttribute));
-            AddUsings(model, typeof(Server.IController));
+            AddUsings(model, typeof(Server.IPocotaController));
 
-            model.Interfaces.Add(MakeTypeName(typeof(Server.IController)));
+            model.Interfaces.Add(MakeTypeName(typeof(Server.IPocotaController)));
 
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
@@ -415,10 +417,12 @@ public class CodeGenerator
             model.Usings.Add(s_dependencyInjection);
             model.Usings.Add(model.NamespaceValue);
 
-            AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(ControllerProxy));
             AddUsings(model, typeof(Server.IPocoContext));
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(HttpUtility));
+
+            model.Interfaces.Add(MakeTypeName(typeof(ControllerProxy)));
 
             Dictionary<string, string> objectNodeClasses = new();
 
@@ -515,16 +519,14 @@ public class CodeGenerator
                 mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
                 model.Methods.Add(mm);
             }
-            MethodModel update = new()
-            {
-                Name = "Update",
-                ReturnType = s_void
-            };
-            AttributeModel am2 = new() { Name = nameof(RouteAttribute) };
-            am2.Properties.Add(s_template, $"\"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{MakeContractUpdateSuffix(model.Contract)}\"");
-            am2.Properties[s_template] = Regex.Replace(am2.Properties[s_template], "/+", "/");
-            update.Attributes.Add(am2);
-            model.Methods.Add(update);
+            model.UpdateRouteAttribute = new() { Name = nameof(RouteAttribute) };
+            model.UpdateRouteAttribute.Properties
+                .Add(
+                    s_template, 
+                    $"\"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{MakeContractUpdateSuffix(model.Contract)}\""
+                );
+            model.UpdateRouteAttribute.Properties[s_template] = 
+                Regex.Replace(model.UpdateRouteAttribute.Properties[s_template], "/+", "/");
         }
     }
 

@@ -3,9 +3,8 @@
 @model ClassModel
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName : @typeof(Controller).Name
+public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-
 @foreach (MethodModel mm in Model.Methods)
 {
     foreach(AttributeModel am in mm.Attributes)
@@ -46,5 +45,10 @@ public class @Model.ClassName : @typeof(Controller).Name
     }
 
 </text>
+}
+    [@Html.Raw(Model.UpdateRouteAttribute!.ToString())]
+    public override void Update()
+    {
+        base.Update();
     }
 }
