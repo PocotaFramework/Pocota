@@ -1,14 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-26T21:54:53                                                        //
+// at 2023-06-27T20:02:29                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Demo.Cats.Common;
-using Net.Leksi.Pocota.Demo.Cats.Contract;
 using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections.Generic;
@@ -20,7 +18,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
 public class CatsControllerProxy : ControllerProxy
 {
-    [Route("/api/v1.0/cats/{filter?}")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindCats/{filter?}")]
     public void FindCats(string? filter) 
     {
         ICatFilter? filter1 = default!;
@@ -30,12 +28,12 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindCats(filter1);
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindCats(filter1);
     }
 
-    [Route("/api/v1.0/cats/1/{cat}")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/GetCat/{cat}")]
     public void GetCat(string cat) 
     {
         ICat cat1 = default!;
@@ -45,12 +43,12 @@ public class CatsControllerProxy : ControllerProxy
         {
             cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), jsonSerializerOptions)!;
         }
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.GetCat(cat1);
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.GetCat(cat1);
     }
 
-    [Route("/api/v1.0/breeds/{filter?}")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindBreeds/{filter?}")]
     public void FindBreeds(string? filter) 
     {
         IBreedFilter? filter1 = default!;
@@ -60,12 +58,12 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindBreeds(filter1);
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindBreeds(filter1);
     }
 
-    [Route("/api/v1.0/catteries/{filter?}")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindCatteries/{filter?}")]
     public void FindCatteries(string? filter) 
     {
         ICatteryFilter? filter1 = default!;
@@ -75,12 +73,12 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindCatteries(filter1);
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindCatteries(filter1);
     }
 
-    [Route("/api/v1.0/litters/with/cats/{filter?}")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindLittersWithCats/{filter?}")]
     public void FindLittersWithCats(string? filter) 
     {
         ICatFilter? filter1 = default!;
@@ -90,28 +88,28 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
         }
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindLittersWithCats(filter1);
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindLittersWithCats(filter1);
     }
 
-    [Route("/api/v1.0/exteriors")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindExteriors")]
     public void FindExteriors() 
     {
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindExteriors();
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindExteriors();
     }
 
-    [Route("/api/v1.0/titles")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindTitles")]
     public void FindTitles() 
     {
-        ICatsController contra = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        ((Controller)contra).ControllerContext = ControllerContext;
-        contra.FindTitles();
+        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
+        ((Controller)controller).ControllerContext = ControllerContext;
+        controller.FindTitles();
     }
 
-    [Route("/api/v1.0/catcontract/update")]
+    [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/Update")]
     public override void Update()
     {
         base.Update();

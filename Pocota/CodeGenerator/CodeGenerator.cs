@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
 using System.Reflection;
-using System.Text.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
-using Microsoft.AspNetCore.Routing;
-using System;
-using Net.Leksi.Pocota.Server;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -27,7 +24,7 @@ public class CodeGenerator
     private const string s_controllerProxy = "ControllerProxy";
     private const string s_template = "!Template";
     private const string s_string = "string";
-    private const string s_update = "update";
+    private const string s_update = "Update";
     private const string s_override = " override";
 
     private readonly HashSet<Type> _contracts = new();
@@ -396,7 +393,6 @@ public class CodeGenerator
                 model.Methods.Add(mm);
             }
 
-            model.Usings.Remove(model.NamespaceValue);
         }
     }
 
@@ -415,28 +411,20 @@ public class CodeGenerator
             model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
 
             model.Usings.Add(s_dependencyInjection);
-            model.Usings.Add(model.NamespaceValue);
 
             AddUsings(model, typeof(ControllerProxy));
-            AddUsings(model, typeof(Server.IPocoContext));
+            AddUsings(model, typeof(IPocoContext));
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(HttpUtility));
+            AddUsings(model, typeof(RouteAttribute));
+            AddUsings(model, typeof(Controller));
 
             model.Interfaces.Add(MakeTypeName(typeof(ControllerProxy)));
 
             Dictionary<string, string> objectNodeClasses = new();
 
-            string? routePrefix = null;
-            string? version = null;
-            if (model.Contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute ca)
-            {
-                routePrefix = ca.RoutePrefix;
-                version = ca.Version;
-            }
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
-                AttributeModel route = null!;
-                string routeValue = null;
                 _variables.Clear();
                 AddUsings(model, method.ReturnType);
                 MethodModel mm = new MethodModel
@@ -452,30 +440,13 @@ public class CodeGenerator
                 {
                     returnItemType = method.ReturnType.GetGenericArguments()[0];
                 }
-                if (returnItemType != typeof(void) && _interfaceHoldersByType.ContainsKey(returnItemType))
-                {
-                    //todo builder
-                }
-                foreach (var attr in method.GetCustomAttributes())
-                {
-                    AddUsings(model, attr.GetType());
-                    if (attr is RouteAttribute ra)
-                    {
-                        if (ra.Template is { })
-                        {
-                            routeValue = $"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{ra.Template}";
-                        }
-                    }
-                }
-                if (routeValue is null)
-                {
-                    throw new InvalidOperationException($"Method {mm} has no [Route] attribute!");
-                }
 
-                AttributeModel am1 = new() { Name = nameof(RouteAttribute) };
-                am1.Properties.Add(s_template, $"\"/{routeValue}\"");
-                route = am1;
-                mm.Attributes.Add(am1);
+                AttributeModel route = new() { 
+                    Name = nameof(RouteAttribute) 
+                };
+                route.Properties.Add(s_template, $"\"/{MakeRoute(model.Contract, method.Name)}\"");
+
+                mm.Attributes.Add(route);
 
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -522,8 +493,8 @@ public class CodeGenerator
             model.UpdateRouteAttribute = new() { Name = nameof(RouteAttribute) };
             model.UpdateRouteAttribute.Properties
                 .Add(
-                    s_template, 
-                    $"\"{(!string.IsNullOrEmpty(routePrefix) ? $"/{routePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(version) ? $"/{version}" : string.Empty)}/{MakeContractUpdateSuffix(model.Contract)}\""
+                    s_template,
+                    $"\"/{MakeRoute(model.Contract, $"/{s_update}")}\""
                 );
             model.UpdateRouteAttribute.Properties[s_template] = 
                 Regex.Replace(model.UpdateRouteAttribute.Properties[s_template], "/+", "/");
@@ -686,6 +657,34 @@ public class CodeGenerator
         }
     }
 
+    private string MakeRoute(Type contract, string name)
+    {
+        string? routePrefix = null;
+        string? version = null;
+        if (contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute ca)
+        {
+            routePrefix = ca.RoutePrefix;
+            version = ca.Version;
+        }
+
+        StringBuilder routeValue = new();
+        if (!string.IsNullOrEmpty(routePrefix))
+        {
+            routeValue.Append('/').Append(routePrefix);
+        }
+        if (!string.IsNullOrEmpty(version))
+        {
+            routeValue.Append('/').Append(version);
+        }
+        if (!string.IsNullOrEmpty(contract.Namespace))
+        {
+            routeValue.Append('/').Append(contract.Namespace.Replace('.', '/'));
+        }
+        routeValue.Append('/').Append(contract.Name);
+        routeValue.Append('/').Append(name);
+        return routeValue.ToString();
+    }
+
     private string MakeControllerProxyName(Type @interface)
     {
         return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controllerProxy}";
@@ -694,11 +693,6 @@ public class CodeGenerator
     private string MakeContractConfiguratorName(Type contract)
     {
         return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value}{s_configurator}";
-    }
-
-    private string MakeContractUpdateSuffix(Type contract)
-    {
-        return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value.ToLower()}/{s_update}";
     }
 
     private string MakePrimaryKeyName(Type @interface)
