@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Net.Leksi.Pocota.Common;
+﻿using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Demo.Cats.Common;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
@@ -22,25 +21,18 @@ public interface ICatContract
         "Breed.NameEng",
         "Cattery.*"
     })]
-    [Route("/cats")]
     IList<ICat> FindCats(ICatFilter? filter);
 
-    [Route("/cats/1")]
     ICat GetCat(ICat cat);
 
-    [Route("/breeds")]
     IList<IBreed> FindBreeds(IBreedFilter? filter);
 
-    [Route("/catteries")]
     IList<ICattery> FindCatteries(ICatteryFilter? filter);
 
-    [Route("/litters/with/cats")]
     IList<ILitterWithCats> FindLittersWithCats(ICatFilter? filter);
 
-    [Route("/exteriors")]
     IList<string> FindExteriors();
 
-    [Route("/titles")]
     IList<string> FindTitles();
 
 }
