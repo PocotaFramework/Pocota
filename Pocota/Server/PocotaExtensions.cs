@@ -9,16 +9,17 @@ public static class PocotaExtensions
         Action<IServiceCollection>? configureServices
     )
     {
+        services.AddScoped<IPocoContext, PocoContext>();
         Core core = new();
         core.Configure(services, configureServices);
         return services;
     }
 
-    public static IServiceCollection UseContract<T> (
+    public static IServiceCollection UseContract<TConfigurator> (
         this IServiceCollection services
-    ) where T : IContractConfigurator, new()
+    ) where TConfigurator : IContractConfigurator, new()
     {
-        Core.UseContractConfigurator<T>(services);
+        Core.UseContractConfigurator<TConfigurator>(services);
         return services;
     }
 

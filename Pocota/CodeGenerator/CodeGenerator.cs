@@ -4,7 +4,6 @@ using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
 using System.Reflection;
-using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -524,7 +523,7 @@ public class CodeGenerator
             AddUsings(model, typeof(IPrimaryKey<>));
             model.Usings.Add(s_dependencyInjection);
 
-            model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
+            model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Common)}.{MakeTypeName(typeof(IContractConfigurator))}");
 
             foreach(Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
             {

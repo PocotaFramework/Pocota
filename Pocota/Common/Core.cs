@@ -11,7 +11,7 @@ public class Core: IServiceCollection
 
     protected IServiceCollection? _services = null;
 
-    protected bool IsConfiguringContract { get; private set; } = false;
+    protected bool IsConfiguringContract { get; set; } = false;
 
     internal IServiceCollection? Services => _services;
 
@@ -34,7 +34,7 @@ public class Core: IServiceCollection
         }
     }
 
-    public void Configure(
+    public virtual void Configure(
             IServiceCollection services,
             Action<IServiceCollection>? configureServices = null
         )
@@ -44,12 +44,13 @@ public class Core: IServiceCollection
         _services = null;
     }
 
-    public static void UseContractConfigurator<T>(IServiceCollection services) where T : IContractConfigurator, new()
+    public static void UseContractConfigurator<TConfigurator>(IServiceCollection services)
+        where TConfigurator : IContractConfigurator, new()
     {
         if (services is Core core)
         {
             core.IsConfiguringContract = true;
-            new T().Configure(services);
+            new TConfigurator().Configure(services);
             core.IsConfiguringContract = false;
         }
         else

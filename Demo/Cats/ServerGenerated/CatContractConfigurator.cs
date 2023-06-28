@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatContractConfigurator                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-28T13:55:30                                                        //
+// at 2023-06-28T18:37:14                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.Extensions.DependencyInjection;
@@ -12,7 +12,7 @@ using Net.Leksi.Pocota.Server.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public class CatContractConfigurator : IContractConfigurator
+public class CatContractConfigurator : Pocota.Common.IContractConfigurator
 {
     public void Configure(IServiceCollection services)
     {
@@ -43,4 +43,5 @@ public class CatContractConfigurator : IContractConfigurator
         services.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
         services.AddTransient<LitterWithCatsPoco>();
     }
+
 }

@@ -8,15 +8,17 @@ public static class CatsServerExtensions
 {
     public static IServiceCollection AddCatsServer(this IServiceCollection services, string connectionString)
     {
-        services.AddPocota(new CatContractConfigurator().Configure);
+        services.AddPocota(serv =>
+        {
+            serv.UseContract<CatContractConfigurator>();
+        });
 
         services.AddScoped<IStorage>(serviceProvider => new Storage(
             serviceProvider,
             connectionString)
         );
 
-        services.AddScoped<IPocoContext, PocoContext>();
-        services.AddScoped<ICatsController, CatsController>();
+        services.AddTransient<ICatsController, CatsController>();
 
         services.AddControllers();
 
