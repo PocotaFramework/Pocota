@@ -6,6 +6,164 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+@if(Model.PrimaryKey is { })
+{
+    <text>    public class PrimaryKeyClass: @Model.PrimaryKey.Name
+    {
+        private readonly @Model.ClassName _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    {
+        <text>                    case @i:
+                        return _owner.@Model.PrimaryKey!.Parts[i].Reference;
+</text>
+    }
+}
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(index)
+                {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    {
+        <text>                    case @i:
+        @if(Model.PrimaryKey!.Parts[i].IsProperty)
+        {
+            <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if(value is {} && value@{}@i is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.@Model.PrimaryKey!.Parts[i].Reference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+        }
+        else
+        {
+            <text>                        throw new InvalidOperationException();
+</text>
+        }
+</text>
+            }
+}
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch(name)
+                {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    {
+        <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+                        return _owner.@Model.PrimaryKey!.Parts[i].Reference;
+</text>
+    }
+}
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(name)
+                {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    {
+        <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+        @if(Model.PrimaryKey!.Parts[i].IsProperty)
+        {
+            <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if(value is {} && value@{}@i is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.@Model.PrimaryKey!.Parts[i].Reference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+        }
+        else
+        {
+            <text>                        throw new InvalidOperationException();
+</text>
+        }
+</text>
+    }
+}
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+@foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts.Where(p => p.Reference is {}))
+{
+    <text>        public override @Html.Raw(pkpm.Type)? @pkpm.Name 
+        {
+            get => _owner.@pkpm.Reference;
+            set
+            {
+        @if(pkpm.IsProperty)
+        {
+            <text>                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
+                if(value is {} && value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                _owner.@pkpm.Reference = (@pkpm.Type)value1!;
+</text>
+        }
+        else
+        {
+            <text>                throw new InvalidOperationException();
+</text>
+        }
+            }
+        }
+</text>
+}
+        internal PrimaryKeyClass(@Model.ClassName owner)
+        {
+            _owner = owner;
+        }
+    }
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
+</text>
+}
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
@@ -29,6 +187,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
 </text>    
+}
+@if(Model.PrimaryKey is { })
+{
+    <text>        PrimaryKey = new(this);
+</text>
 }
     }
 

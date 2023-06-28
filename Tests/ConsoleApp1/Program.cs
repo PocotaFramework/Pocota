@@ -1,18 +1,15 @@
-﻿using Net.Leksi.Pocota.Server;
+﻿using Net.Leksi.Pocota.Demo.Cats.Common;
+using Net.Leksi.Pocota.Server;
 using System.Collections.Generic;
 
-List<ICat> cats = new() { new Cat(), new Cat(), new Cat(), };
+BreedPrimaryKey pk = new();
 
-ListProxy<ICat, Cat> lp = new(cats);
+Console.WriteLine(string.Join(", ", pk.Names));
 
-Console.WriteLine(string.Join(", ", lp));
+Console.WriteLine(pk.Count);
+Console.WriteLine(pk.IsAssigned);
 
-public interface ICat
-{
-
-}
-
-public class Cat: ICat
-{
-
-}
+pk.IdBreed = "1";
+Console.WriteLine(pk.IsAssigned);
+pk.IdGroup = "2";
+Console.WriteLine(pk.IsAssigned);

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-27T20:02:29                                                        //
+// at 2023-06-28T11:59:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,64 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatteryPoco : EntityBase, ICattery
 {
+    public class PrimaryKeyClass: CatteryPrimaryKey
+    {
+        private readonly CatteryPoco _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(index)
+                {
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch(name)
+                {
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(name)
+                {
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+        internal PrimaryKeyClass(CatteryPoco owner)
+        {
+            _owner = owner;
+        }
+    }
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat = null;
@@ -20,6 +78,7 @@ public class CatteryPoco : EntityBase, ICattery
 
     public CatteryPoco()
     {
+        PrimaryKey = new(this);
     }
 
     public String? NameEng

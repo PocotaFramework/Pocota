@@ -4,6 +4,7 @@ using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -26,6 +27,7 @@ public class CodeGenerator
     private const string s_string = "string";
     private const string s_update = "Update";
     private const string s_override = " override";
+    private const string s_ask = "?";
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
@@ -46,9 +48,13 @@ public class CodeGenerator
 
     public void AddContract(Type contract)
     {
-        if (!(contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute contractAttribute))
+        if (contract.GetCustomAttribute<PocoContractAttribute>() is not PocoContractAttribute contractAttribute)
         {
             throw new InvalidOperationException($"Contract {contract} must be {typeof(PocoContractAttribute)}!");
+        }
+        if(contract.GetMethod(s_update) is { })
+        {
+            throw new InvalidOperationException($"Contract {contract} cannot contain {s_update} method, it is reserved!");
         }
         if (_contracts.Add(contract))
         {
@@ -536,7 +542,7 @@ public class CodeGenerator
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
              as GeneratingRequest;
-        if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
+        if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface) && @interface.KeysDefinitions.Any())
         {
             _variables.Clear();
 
@@ -548,6 +554,8 @@ public class CodeGenerator
             AddUsings(model, typeof(IPrimaryKey<>));
 
             model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
+
+            FillPrimaryKeyModel(model, @interface);
         }
     }
 
@@ -653,6 +661,39 @@ public class CodeGenerator
 
                 }
                 model.Properties.Add(pm);
+            }
+            FillPrimaryKeyModel(model, @interface);
+        }
+    }
+
+    private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)
+    {
+        if(@interface.KeysDefinitions.Any())
+        {
+            model.PrimaryKey = new PrimaryKeyModel
+            {
+                Name = MakePrimaryKeyName(@interface.Interface)
+            };
+
+            foreach (KeyValuePair<string, PrimaryKeyDefinition> partDefinition in @interface.KeysDefinitions)
+            {
+                PrimaryKeyPartModel partModel = new()
+                {
+                    Name = partDefinition.Key,
+                    FieldName = $"_{partDefinition.Key.Substring(0, 1).ToLower()}{partDefinition.Key.Substring(1)}",
+                    Type = MakeTypeName(partDefinition.Value.Type),
+                    AsTypeAsk = partDefinition.Value.Type.IsClass ? string.Empty : s_ask,
+                };
+                if (partDefinition.Value.KeyReference is { })
+                {
+                    partModel.Reference = $"{partDefinition.Value.Property!.Name!}.{s_primaryKey}.{partDefinition.Value.KeyReference!}";
+                }
+                else if (partDefinition.Value.Property is { })
+                {
+                    partModel.IsProperty = true;
+                    partModel.Reference = partDefinition.Value.Property!.Name!;
+                }
+                model.PrimaryKey.Parts.Add(partModel);
             }
         }
     }

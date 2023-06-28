@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-27T20:02:29                                                        //
+// at 2023-06-28T11:59:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,80 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatPoco : EntityBase, ICat
 {
+    public class PrimaryKeyClass: CatPrimaryKey
+    {
+        private readonly CatPoco _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    case 1:
+                        return _owner.Cattery.PrimaryKey.IdCattery;
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(index)
+                {
+                    case 1:
+                        throw new InvalidOperationException();
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch(name)
+                {
+                    case "IdCattery":
+                        return _owner.Cattery.PrimaryKey.IdCattery;
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(name)
+                {
+                    case "IdCattery":
+                        throw new InvalidOperationException();
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+        public override Int32? IdCattery 
+        {
+            get => _owner.Cattery.PrimaryKey.IdCattery;
+            set
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        internal PrimaryKeyClass(CatPoco owner)
+        {
+            _owner = owner;
+        }
+    }
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
     private CatteryPoco _cattery = null!;
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat = null;
@@ -34,6 +108,7 @@ public class CatPoco : EntityBase, ICat
 
     public CatPoco()
     {
+        PrimaryKey = new(this);
     }
 
     public CatteryPoco Cattery

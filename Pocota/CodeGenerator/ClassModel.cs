@@ -16,6 +16,7 @@ public class ClassModel: PageModel
     internal Dictionary<string, string?> Services { get; init; } = new();
     internal string ControllerInterface { get; set; } = null!;
     internal AttributeModel? UpdateRouteAttribute { get; set; } = null;
+    internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
 
     public void OnGet([FromServices] CodeGenerator generator)
     {

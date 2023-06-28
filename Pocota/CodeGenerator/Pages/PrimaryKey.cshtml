@@ -6,4 +6,109 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+@foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
+{
+    <text>    private @Html.Raw(@pkpm.Type)? @pkpm.FieldName = null;
+</text>
+}
+    private readonly IList@{}@Html.Raw("<string>") _names = new List@{}@Html.Raw("<string>")
+    {
+@foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
+{
+    <text>        @Html.Raw($"\"{@pkpm.Name}\""),
+</text>
+}
+    }.AsReadOnly();
+    public virtual object? this[int index]
+    {
+        get
+        {
+            switch(index)
+            {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    <text>                case @i:
+                    return @Model.PrimaryKey!.Parts[i].FieldName;
+</text>
+}
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+        set
+        {
+            switch(index)
+            {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    <text>                case @i:
+                    @Model.PrimaryKey!.Parts[i].FieldName = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                    if(value is {} && @Model.PrimaryKey!.Parts[i].FieldName is null)
+                    {
+                        throw new InvalidCastException();
+                    }
+                    break;
+</text>
+}
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+    }
+    public virtual object? this[string name]
+    {
+        get
+        {
+            switch(name)
+            {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    <text>                case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+                    return @Model.PrimaryKey!.Parts[i].FieldName;
+</text>
+}
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+        set
+        {
+            switch(name)
+            {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    <text>                case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+                    @Model.PrimaryKey!.Parts[i].FieldName = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                    if(value is {} && @Model.PrimaryKey!.Parts[i].FieldName is null)
+                    {
+                        throw new InvalidCastException();
+                    }
+                    break;
+</text>
+}
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+    }
+    public IList@{}@Html.Raw("<string>") Names => _names;
+    public int Count => Names.Count;
+    public bool IsAssigned => Names.Select(n => this[n] is { }).All(e => e);
+
+@foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
+{
+    <text>    public virtual @Html.Raw(pkpm.Type)? @pkpm.Name 
+    {
+        get => @pkpm.FieldName;
+        set
+        {
+            @pkpm.FieldName = value as @pkpm.Type@pkpm.AsTypeAsk;
+            if(value is {} && @pkpm.FieldName is null)
+            {
+                throw new InvalidCastException();
+            }
+        }
+    }
+</text>
+}
 }

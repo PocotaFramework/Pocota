@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-27T20:02:29                                                        //
+// at 2023-06-28T11:59:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,138 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class BreedPoco : EntityBase, IBreed
 {
+    public class PrimaryKeyClass: BreedPrimaryKey
+    {
+        private readonly BreedPoco _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    case 0:
+                        return _owner.Code;
+                    case 1:
+                        return _owner.Group;
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(index)
+                {
+                    case 0:
+                        String value0 = value as String;
+                        if(value is {} && value0 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Code = (String)value0!;
+                        break;
+                    case 1:
+                        String value1 = value as String;
+                        if(value is {} && value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Group = (String)value1!;
+                        break;
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch(name)
+                {
+                    case "IdBreed":
+                        return _owner.Code;
+                    case "IdGroup":
+                        return _owner.Group;
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(name)
+                {
+                    case "IdBreed":
+                        String value0 = value as String;
+                        if(value is {} && value0 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Code = (String)value0!;
+                        break;
+                    case "IdGroup":
+                        String value1 = value as String;
+                        if(value is {} && value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Group = (String)value1!;
+                        break;
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+        public override String? IdBreed 
+        {
+            get => _owner.Code;
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                String value1 = value as String;
+                if(value is {} && value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                _owner.Code = (String)value1!;
+            }
+        }
+        public override String? IdGroup 
+        {
+            get => _owner.Group;
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                String value1 = value as String;
+                if(value is {} && value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                _owner.Group = (String)value1!;
+            }
+        }
+        internal PrimaryKeyClass(BreedPoco owner)
+        {
+            _owner = owner;
+        }
+    }
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
     private String _code = null!;
     private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
     private String _group = null!;
@@ -24,6 +156,7 @@ public class BreedPoco : EntityBase, IBreed
 
     public BreedPoco()
     {
+        PrimaryKey = new(this);
     }
 
     public String Code

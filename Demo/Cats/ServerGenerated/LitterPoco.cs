@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-27T20:02:29                                                        //
+// at 2023-06-28T11:59:53                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,133 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class LitterPoco : EntityBase, ILitter
 {
+    public class PrimaryKeyClass: LitterPrimaryKey
+    {
+        private readonly LitterPoco _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch(index)
+                {
+                    case 0:
+                        return _owner.Female.PrimaryKey.IdCat;
+                    case 1:
+                        return _owner.Female.PrimaryKey.IdCattery;
+                    case 2:
+                        return _owner.Order;
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(index)
+                {
+                    case 0:
+                        throw new InvalidOperationException();
+                    case 1:
+                        throw new InvalidOperationException();
+                    case 2:
+                        Int32? value2 = value as Int32?;
+                        if(value is {} && value2 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Order = (Int32)value2!;
+                        break;
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch(name)
+                {
+                    case "IdFemale":
+                        return _owner.Female.PrimaryKey.IdCat;
+                    case "IdFemaleCattery":
+                        return _owner.Female.PrimaryKey.IdCattery;
+                    case "IdLitter":
+                        return _owner.Order;
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                switch(name)
+                {
+                    case "IdFemale":
+                        throw new InvalidOperationException();
+                    case "IdFemaleCattery":
+                        throw new InvalidOperationException();
+                    case "IdLitter":
+                        Int32? value2 = value as Int32?;
+                        if(value is {} && value2 is null)
+                        {
+                            throw new InvalidCastException();
+                        }   
+                        _owner.Order = (Int32)value2!;
+                        break;
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+        public override Int32? IdFemale 
+        {
+            get => _owner.Female.PrimaryKey.IdCat;
+            set
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        public override Int32? IdFemaleCattery 
+        {
+            get => _owner.Female.PrimaryKey.IdCattery;
+            set
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        public override Int32? IdLitter 
+        {
+            get => _owner.Order;
+            set
+            {
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                Int32? value1 = value as Int32?;
+                if(value is {} && value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                _owner.Order = (Int32)value1!;
+            }
+        }
+        internal PrimaryKeyClass(LitterPoco owner)
+        {
+            _owner = owner;
+        }
+    }
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
     private Int32 _order;
     private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _female = null!;
@@ -24,6 +151,7 @@ public class LitterPoco : EntityBase, ILitter
 
     public LitterPoco()
     {
+        PrimaryKey = new(this);
     }
 
     public Int32 Order
