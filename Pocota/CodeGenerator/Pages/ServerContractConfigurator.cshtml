@@ -11,6 +11,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 @foreach(var service in Model.Services)
 {
     <text>        services.AddTransient@{}@Html.Raw($"<{service.Key}, {service.Value}>")@{}();
+        services.AddTransient@{}@Html.Raw($"<{service.Value}>")@{}();
 </text>
 }
     }

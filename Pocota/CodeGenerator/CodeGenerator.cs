@@ -198,7 +198,7 @@ public class CodeGenerator
                         if (
                             ProcessInterface(
                                 connector, @interface,
-                                $"/{ClientLanguage}/ContractConfigurator", RequestKind.ClientImplementation, @interface
+                                $"/{ClientLanguage}/ClientContractConfigurator", RequestKind.ClientImplementation, @interface
                             )
                         )
                         {
@@ -240,7 +240,7 @@ public class CodeGenerator
                         if (
                             ProcessInterface(
                                 connector, @interface,
-                                $"/ContractConfigurator", RequestKind.ServerImplementation, @interface
+                                $"/ServerContractConfigurator", RequestKind.ServerImplementation, @interface
                             )
                         )
                         {
@@ -584,7 +584,7 @@ public class CodeGenerator
             else
             {
                 AddUsings(model, typeof(Server.PocoBase));
-                model.Interfaces.Add($"{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
+                model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
             }
             model.Interfaces.Add(MakeTypeName(request.Interface));
 

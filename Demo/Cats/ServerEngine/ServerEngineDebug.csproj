@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Net.Leksi.Pocota.Demo.Cats.Server</RootNamespace>
+    <AssemblyName>Net.Leksi.Pocota.Demo.Cats.ServerEngine</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Pocota\Server\ServerDebug.csproj" />
+    <ProjectReference Include="..\ServerGenerated\ServerGeneratedDebug.csproj" />
+  </ItemGroup>
+
+</Project>
