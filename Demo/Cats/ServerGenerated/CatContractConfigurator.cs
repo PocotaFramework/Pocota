@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatContractConfigurator                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T10:49:35                                                        //
+// at 2023-06-29T10:52:36                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +13,7 @@ using Net.Leksi.Pocota.Server.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public class CatContractConfigurator : Pocota.Server.IContractConfigurator
+public class CatContractConfigurator : IContractConfigurator
 {
     public void Configure<TController>(IServiceCollection services) where TController : Controller, IPocotaController
     {

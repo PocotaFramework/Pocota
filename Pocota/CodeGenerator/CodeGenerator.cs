@@ -524,7 +524,7 @@ public class CodeGenerator
             AddUsings(model, typeof(Controller));
             model.Usings.Add(s_dependencyInjection);
 
-            model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{MakeTypeName(typeof(IContractConfigurator))}");
+            model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
             model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
 
             foreach(Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
