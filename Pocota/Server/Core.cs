@@ -6,7 +6,7 @@ public class Core: Common.Core
 {
     public static void UseContractConfigurator<TConfigurator, TController>(IServiceCollection services)
         where TConfigurator : IContractConfigurator, new()
-        where TController : Controller, IPocotaController
+        where TController : IPocotaController
     {
         if (services is Core core)
         {

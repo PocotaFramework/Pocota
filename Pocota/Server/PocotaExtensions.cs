@@ -20,7 +20,7 @@ public static class PocotaExtensions
 
     public static IServiceCollection AddContract<TConfigurator, TController> (this IServiceCollection services) 
         where TConfigurator : IContractConfigurator, new()
-        where TController : Controller, IPocotaController
+        where TController : IPocotaController
     {
         Core.UseContractConfigurator<TConfigurator, TController>(services);
         return services;

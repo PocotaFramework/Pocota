@@ -26,6 +26,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         IPocoContext @mm.PocoContextVariable = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         @mm.PocoContextVariable@{}.PropertyUse = @mm.PropertyUseVariable;
         @mm.PocoContextVariable@{}.ExpectedOutputType = typeof(@Html.Raw(mm.ExpectedOutputType));
+        @mm.PocoContextVariable@{}.ControllerContext = ControllerContext;
     @if(mm.Filters.Count > 0)
     {
         foreach(FilterModel fm in mm.Filters)
@@ -52,7 +53,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
     }
         @Model.ControllerInterface @mm.ControllerVariable = HttpContext.RequestServices.GetRequiredService<@Model.ControllerInterface>();
-        ((Controller)@mm.ControllerVariable).ControllerContext = ControllerContext;
         @mm.ControllerVariable@Html.Raw(".")@mm.Name@Html.Raw($"(")@string.Join(", ", mm.CallParameters));
     }
 

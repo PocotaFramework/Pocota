@@ -6,7 +6,7 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-    public void Configure<TController>(IServiceCollection services) where TController : Controller, IPocotaController
+    public void Configure<TController>(IServiceCollection services) where TController : IPocotaController
     {
         services.StartAddContract@{}@Html.Raw($"<{@Model.ContractName}>")@{}();
 @foreach(var service in Model.Services)

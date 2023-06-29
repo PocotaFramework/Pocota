@@ -5,7 +5,7 @@ using Net.Leksi.Pocota.Server;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Server;
 
-public class CatsController : Controller, ICatsController
+public class CatsController: ICatsController
 {
     public void FindBreeds(IBreedFilter? filter)
     {
