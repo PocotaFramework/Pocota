@@ -19,4 +19,5 @@ public class Core: Common.Core
             throw new InvalidOperationException();
         }
     }
+
 }

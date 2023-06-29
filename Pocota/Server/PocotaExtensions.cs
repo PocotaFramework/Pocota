@@ -26,6 +26,12 @@ public static class PocotaExtensions
         return services;
     }
 
+    public static IServiceCollection StartAddContract<TContract>(this IServiceCollection services)
+    {
+        Core.StartAddContract<TContract>(services);
+        return services;
+    }
+
     public static WebApplication UsePocota(this WebApplication app)
     {
 

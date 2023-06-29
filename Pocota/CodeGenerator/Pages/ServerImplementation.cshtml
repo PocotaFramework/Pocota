@@ -34,7 +34,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 if(!_owner.IsUnderConstruction)
                 {
-                    throw new InvalidOperationException();
+                    throw new @nameof(InvalidOperationException)@{}();
                 }
                 switch(index)
                 {
@@ -56,7 +56,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         else
         {
-            <text>                        throw new InvalidOperationException();
+            <text>                        throw new @nameof(InvalidOperationException)@{}();
 </text>
         }
 </text>
@@ -91,7 +91,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 if(!_owner.IsUnderConstruction)
                 {
-                    throw new InvalidOperationException();
+                    throw new @nameof(InvalidOperationException)@{}();
                 }
                 switch(name)
                 {
@@ -113,7 +113,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         else
         {
-            <text>                        throw new InvalidOperationException();
+            <text>                        throw new @nameof(InvalidOperationException)@{}();
 </text>
         }
 </text>
@@ -148,7 +148,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         else
         {
-            <text>                throw new InvalidOperationException();
+            <text>                throw new @nameof(InvalidOperationException)@{}();
 </text>
         }
             }
@@ -161,10 +161,60 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
     }
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
 </text>
 }
 @foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public class @pm.PropertyClass: IProperty
+    {
+        public string Name => @(!string.IsNullOrEmpty(pm.Name) ? Html.Raw($"\"{pm.Name}\"") : "string.Empty");
+        public Type Type => typeof(@Html.Raw(pm.ObjectType));
+        public bool IsNullable => @pm.IsNullable.ToString().ToLower();
+        public bool IsReadOnly => @pm.IsReadOnly.ToString().ToLower();
+        public bool IsPoco => @pm.IsPoco.ToString().ToLower();
+        public bool IsEntity => @pm.IsEntity.ToString().ToLower();
+        public bool IsList => @pm.IsList.ToString().ToLower();
+        public Type? ItemType => @(pm.ItemObjectType is { } ? Html.Raw($"typeof({pm.ItemObjectType})") : "null");
+        public PropertyAccessMode GetAccess(object obj)
+        {
+    @if(string.IsNullOrEmpty(pm.Name))
+    {
+        <text>            throw new @nameof(InvalidOperationException)@{}();
+</text>
+    }
+    else
+    {
+        <text>            return obj is @Model.ClassName obj1 ? obj1.@pm.AccessModeFieldName : @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Forbidden);
+</text>
+    }
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+    @if(string.IsNullOrEmpty(pm.Name))
+    {
+        <text>            throw new @nameof(InvalidOperationException)@{}();
+</text>
+    }
+    else
+    {
+        <text>            if(obj is @Model.ClassName obj1)
+            {
+                obj1.@pm.AccessModeFieldName  = mode;
+            }
+</text>
+    }
+        }
+    }
+</text>
+}
+
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public static @pm.PropertyClass @pm.PropertyField = new();
+</text>
+}
+
+@foreach(PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
     <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
     @if(pm.IsList && pm.IsPoco)
@@ -176,9 +226,16 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>    
 }
 
+@if(Model.PrimaryKey is { })
+{
+    <text>    public PrimaryKeyClass PrimaryKey { get; init; }
+</text>
+    
+}
+
     public @Model.ClassName@{}()
     {
-@foreach (PropertyModel pm in Model.Properties.Where(p => p.IsReadOnly && p.IsList))
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && p.IsReadOnly && p.IsList))
 {
     <text>        @pm.FieldName = new();
     @if(pm.IsPoco)
@@ -195,7 +252,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 }
     }
 
-@foreach(PropertyModel pm in Model.Properties)
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
     <text>    public @Html.Raw($"{pm.ObjectType}{pm.NullableSuffix}") @pm.Name
     {

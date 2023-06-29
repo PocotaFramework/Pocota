@@ -7,6 +7,15 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 @foreach (MethodModel mm in Model.Methods)
 {
+    if(mm.PropertyUseVariable is {})
+    {
+        <text>    private static readonly PropertyUse @mm.PropertyUseVariable = @Html.Partial("PropertyUse", mm.PropertyUse);
+</text>
+    }
+}
+
+@foreach (MethodModel mm in Model.Methods)
+{
     foreach(AttributeModel am in mm.Attributes)
     {
         <text>    [@Html.Raw(am.ToString())]
@@ -14,14 +23,17 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     <text>    public @mm.ReturnType @mm.Name@{}(@Html.Raw(string.Join(", ", mm.Parameters.Select(v => $"{v.Type} {v.Name}")))) 
     {
-    @if(mm.Filters.Count > 0){
+        IPocoContext @mm.PocoContextVariable = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
+        @mm.PocoContextVariable@{}.PropertyUse = @mm.PropertyUseVariable;
+        @mm.PocoContextVariable@{}.ExpectedOutputType = typeof(@Html.Raw(mm.ExpectedOutputType));
+    @if(mm.Filters.Count > 0)
+    {
         foreach(FilterModel fm in mm.Filters)
         {
             <text>        @fm.Type @fm.Variable = default!;
 </text>
         }
-        <text>        IPocoContext @mm.PocoContextVariable = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
-        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = @mm.PocoContextVariable@{}.CreateJsonSerializerOptions();
+        <text>        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = @mm.PocoContextVariable@{}.CreateJsonSerializerOptions();
 </text>
         foreach(FilterModel fm in mm.Filters.Where(v => !v.IsConvertible))
         {

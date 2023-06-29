@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-internal interface IProperty
+public interface IProperty
 {
     string Name { get; }
     Type Type { get; }
@@ -11,4 +11,5 @@ internal interface IProperty
     bool IsList { get; }
     Type? ItemType { get; }
     PropertyAccessMode GetAccess(object obj);
+    void SetAccess(object obj, PropertyAccessMode mode);
 }

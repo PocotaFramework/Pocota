@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T10:52:36                                                        //
+// at 2023-06-29T16:58:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -12,10 +12,79 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
 {
+    public class PropertyClass: IProperty
+    {
+        public string Name => string.Empty;
+        public Type Type => typeof(LitterFilterPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class FemalePropertyClass: IProperty
+    {
+        public string Name => "Female";
+        public Type Type => typeof(CatPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterFilterPoco obj1 ? obj1._femaleAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterFilterPoco obj1)
+            {
+                obj1._femaleAccessMode  = mode;
+            }
+        }
+    }
+    public class MalePropertyClass: IProperty
+    {
+        public string Name => "Male";
+        public Type Type => typeof(CatPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterFilterPoco obj1 ? obj1._maleAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterFilterPoco obj1)
+            {
+                obj1._maleAccessMode  = mode;
+            }
+        }
+    }
+
+    public static PropertyClass s_Property = new();
+    public static FemalePropertyClass s_FemaleProperty = new();
+    public static MalePropertyClass s_MaleProperty = new();
+
     private CatPoco _female = null!;
     private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _male = null!;
     private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
+
 
     public LitterFilterPoco()
     {

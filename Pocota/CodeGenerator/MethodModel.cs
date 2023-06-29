@@ -12,4 +12,6 @@ internal class MethodModel
     internal string PocoContextVariable { get; set; } = "pocoContext";
     internal string ControllerVariable { get; set; } = "controller";
     internal List<string> CallParameters { get; init; } = new();
+    internal string? PropertyUseVariable { get; set; } = null;
+    internal PropertyUseModel? PropertyUse { get; set; } = null;
 }

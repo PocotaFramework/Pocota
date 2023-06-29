@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
@@ -27,6 +29,11 @@ public class CodeGenerator
     private const string s_update = "Update";
     private const string s_override = " override";
     private const string s_ask = "?";
+    private const string s_property = "Property";
+    private const string s_class = "Class";
+    private const string s_staticPrefix = "s_";
+    private const string s_propertyUse = "PropertyUse";
+
 
     private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
@@ -432,10 +439,14 @@ public class CodeGenerator
             {
                 _variables.Clear();
                 AddUsings(model, method.ReturnType);
+                
+                Type propertyUseType = method.ReturnType;
+
                 MethodModel mm = new MethodModel
                 {
                     ReturnType = s_void,
-                    Name = method.Name
+                    Name = method.Name,
+                    ExpectedOutputType = MakeTypeName(method.ReturnType),
                 };
                 Type returnItemType = method.ReturnType;
                 if (
@@ -444,6 +455,7 @@ public class CodeGenerator
                 )
                 {
                     returnItemType = method.ReturnType.GetGenericArguments()[0];
+                    propertyUseType = returnItemType;
                 }
 
                 AttributeModel route = new() { 
@@ -452,6 +464,20 @@ public class CodeGenerator
                 route.Properties.Add(s_template, $"\"/{MakeRoute(model.Contract, method.Name)}\"");
 
                 mm.Attributes.Add(route);
+
+                if (returnItemType != typeof(void))
+                {
+                    mm.PropertyUseVariable = GetUniqueVariable($"{s_staticPrefix}{mm.Name.Substring(0, 1).ToLower()}{mm.Name.Substring(1)}{s_propertyUse}");
+                    StringBuilder sb = new();
+                    string[]? paths = null;
+                    if (method.GetCustomAttribute<PropertiesAttribute>() is PropertiesAttribute pa)
+                    {
+                        paths = pa.Properties;
+                    }
+                    mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties);
+                }
+
+
 
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -526,8 +552,9 @@ public class CodeGenerator
 
             model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
             model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
+            model.ContractName = MakeTypeName(model.Contract);
 
-            foreach(Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
+            foreach (Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
             {
                 AddUsings(model, @interface);
                 model.Services.Add(MakeTypeName(@interface), MakePocoClassName(@interface));
@@ -591,14 +618,25 @@ public class CodeGenerator
 
             NullabilityInfoContext nc = new();
 
+            PropertyModel pm = new()
+            {
+                ObjectType = MakePocoClassName(request.Interface),
+                IsPoco = true,
+                IsEntity = _interfaceHoldersByType[request.Interface].KeysDefinitions.Any(),
+                PropertyClass = $"{s_property}{s_class}",
+                PropertyField = $"{s_staticPrefix}{s_property}"
+            };
+            model.Properties.Add(pm);
             foreach (PropertyInfo pi in @interface.Interface.GetProperties())
             {
-                PropertyModel pm = new()
+                pm = new()
                 {
                     Name = pi.Name,
                     IsReadOnly = !pi.CanWrite,
                     IsNullable = nc.Create(pi).WriteState is NullabilityState.Nullable,
                     Type = MakeTypeName(pi.PropertyType),
+                    PropertyClass = $"{pi.Name}{s_property}{s_class}",
+                    PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}"
                 };
                 pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
@@ -665,6 +703,140 @@ public class CodeGenerator
             }
             FillPrimaryKeyModel(model, @interface);
         }
+    }
+
+    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"BuildPropertyUseModel: {rootType}");
+        Dictionary<string, PropertyUseModel> cache = new();
+        List<string> queue = new();
+        HashSet<string> used = new();
+
+        string indentation = "        ";
+
+
+        PropertyUseModel result = new()
+        {
+            Type = rootType,
+            Indentation = "    ",
+        };
+        if (_interfaceHoldersByType.TryGetValue(rootType, out InterfaceHolder? ih))
+        {
+            result.PropertyField = $"{MakePocoClassName(ih.Interface)}.{s_staticPrefix}{s_property}";
+            result.TypeName = MakePocoClassName(ih.Interface);
+        }
+        else
+        {
+            result.TypeName = MakeTypeName(rootType);
+        }
+
+        if (paths is null && _interfaceHoldersByType.ContainsKey(rootType))
+        {
+            paths = new string[] { "*" };
+        }
+        if(paths is { })
+        {
+            foreach (string path in paths)
+            {
+                if (!queue.Contains(path))
+                {
+                    queue.Add(path);
+                }
+            }
+        }
+        while (queue.Count > 0)
+        {
+            bool done = false;
+            PropertyUseModel parent = result;
+            string[] parts = queue.First().Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            for (int i = 0; i < parts.Length; ++i)
+            {
+                if ("*".Equals(parts[i]))
+                {
+                    if (i < parts.Length - 1)
+                    {
+                        throw new InvalidOperationException($"Path {queue.First()} is invalid: '*' cannot be not last!");
+                    }
+                    if (parent.Type is null)
+                    {
+                        throw new InvalidOperationException($"Path {queue.First()} is invalid: '*' cannot be present when the {nameof(rootType)} is not supplied!");
+                    }
+                    queue.RemoveAt(0);
+                    int pos = 0;
+                    string path0 = string.Join('.', Enumerable.Range(0, i).Select(e => parts[e]));
+
+                    foreach (PropertyInfo pi in parent.Type!.GetProperties())
+                    {
+                        string path1 = $"{path0}{(parts.Length > 1 ? "." : string.Empty)}{pi.Name}";
+                        if (!queue.Contains(path1))
+                        {
+                            queue.Insert(pos, path1);
+                            ++pos;
+                        }
+                    }
+                    done = true;
+                    break;
+                }
+                string path = string.Join('.', Enumerable.Range(0, i + 1).Select(e => parts[e]));
+                if (!cache.TryGetValue(path, out PropertyUseModel? node))
+                {
+                    Console.WriteLine(path);
+                    Type? nodeType = null;
+                    if (parent.Type is { })
+                    {
+                        if (parent.Type?.GetProperty(parts[i]) is PropertyInfo pi)
+                        {
+                            nodeType = pi.PropertyType;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"Type {parent.Type} does not have the property {parts[i]}!");
+                        }
+                    }
+                    node = new PropertyUseModel { 
+                        PropertyField = $"{parent.TypeName}.{s_staticPrefix}{parts[i]}{s_property}", 
+                        Path = path, 
+                        Type = nodeType, 
+                        Indentation = $"{parent.Indentation}{indentation}",
+                    };
+                    if (nodeType is { })
+                    {
+                        if (_interfaceHoldersByType.TryGetValue(nodeType, out InterfaceHolder? ih1))
+                        {
+                            node.TypeName = MakePocoClassName(ih1.Interface);
+                        }
+                        else
+                        {
+                            node.TypeName = MakeTypeName(nodeType);
+                        }
+                    }
+
+                    cache.Add(path, node);
+                }
+                if(parent.Properties is null)
+                {
+                    parent.Properties = new List<PropertyUseModel>();
+                }
+                if (!parent.Properties?.Contains(node) ?? false)
+                {
+                    parent.Properties!.Add(node);
+                }
+                if (_interfaceHoldersByType.ContainsKey(node.Type!))
+                {
+                    parent = node;
+                }
+                else if(i < parts.Length - 1)
+                {
+                    throw new InvalidOperationException($"Path {node.Path} is a leaf, but {queue.First()} requested!");
+                }
+            }
+            if (!done)
+            {
+                queue.RemoveAt(0);
+            }
+        }
+        return result;
     }
 
     private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)

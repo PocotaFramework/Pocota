@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T10:52:36                                                        //
+// at 2023-06-29T16:58:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -86,17 +86,245 @@ public class CatPoco : EntityBase, ICat
         }
     }
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    public class PropertyClass: IProperty
+    {
+        public string Name => string.Empty;
+        public Type Type => typeof(CatPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class CatteryPropertyClass: IProperty
+    {
+        public string Name => "Cattery";
+        public Type Type => typeof(CatteryPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._catteryAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._catteryAccessMode  = mode;
+            }
+        }
+    }
+    public class NameNatPropertyClass: IProperty
+    {
+        public string Name => "NameNat";
+        public Type Type => typeof(String);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._nameNatAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._nameNatAccessMode  = mode;
+            }
+        }
+    }
+    public class BreedPropertyClass: IProperty
+    {
+        public string Name => "Breed";
+        public Type Type => typeof(BreedPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._breedAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._breedAccessMode  = mode;
+            }
+        }
+    }
+    public class NameEngPropertyClass: IProperty
+    {
+        public string Name => "NameEng";
+        public Type Type => typeof(String);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._nameEngAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._nameEngAccessMode  = mode;
+            }
+        }
+    }
+    public class GenderPropertyClass: IProperty
+    {
+        public string Name => "Gender";
+        public Type Type => typeof(Gender);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._genderAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._genderAccessMode  = mode;
+            }
+        }
+    }
+    public class LitterPropertyClass: IProperty
+    {
+        public string Name => "Litter";
+        public Type Type => typeof(LitterPoco);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._litterAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._litterAccessMode  = mode;
+            }
+        }
+    }
+    public class ExteriorPropertyClass: IProperty
+    {
+        public string Name => "Exterior";
+        public Type Type => typeof(String);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._exteriorAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._exteriorAccessMode  = mode;
+            }
+        }
+    }
+    public class TitlePropertyClass: IProperty
+    {
+        public string Name => "Title";
+        public Type Type => typeof(String);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._titleAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._titleAccessMode  = mode;
+            }
+        }
+    }
+    public class DescriptionPropertyClass: IProperty
+    {
+        public string Name => "Description";
+        public Type Type => typeof(String);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is CatPoco obj1 ? obj1._descriptionAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is CatPoco obj1)
+            {
+                obj1._descriptionAccessMode  = mode;
+            }
+        }
+    }
+
+    public static PropertyClass s_Property = new();
+    public static CatteryPropertyClass s_CatteryProperty = new();
+    public static NameNatPropertyClass s_NameNatProperty = new();
+    public static BreedPropertyClass s_BreedProperty = new();
+    public static NameEngPropertyClass s_NameEngProperty = new();
+    public static GenderPropertyClass s_GenderProperty = new();
+    public static LitterPropertyClass s_LitterProperty = new();
+    public static ExteriorPropertyClass s_ExteriorProperty = new();
+    public static TitlePropertyClass s_TitleProperty = new();
+    public static DescriptionPropertyClass s_DescriptionProperty = new();
+
     private CatteryPoco _cattery = null!;
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat = null;
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+    private BreedPoco _breed = null!;
+    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
     private Gender _gender;
     private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Forbidden;
-    private BreedPoco _breed = null!;
-    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
     private LitterPoco? _litter = null;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
     private String? _exterior = null;
@@ -105,6 +333,8 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _titleAccessMode = PropertyAccessMode.Forbidden;
     private String? _description = null;
     private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.Forbidden;
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
 
     public CatPoco()
     {
@@ -173,6 +403,37 @@ public class CatPoco : EntityBase, ICat
             NameNat = value;
         }
     }
+    public BreedPoco Breed
+    {
+        get
+        {
+            if(_breedAccessMode is PropertyAccessMode.Forbidden)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            return _breed;
+        }
+        set
+        {
+            if(!IsUnderConstruction && _breedAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _breedAccessMode = PropertyAccessMode.Full;
+            _breed = value;
+        }
+    }
+    IBreed ICat.Breed
+    {
+        get
+        {
+            return Breed;
+        }
+       set
+        {
+            Breed = (value as BreedPoco)!;
+        }
+    }
     public String? NameEng
     {
         get
@@ -233,37 +494,6 @@ public class CatPoco : EntityBase, ICat
        set
         {
             Gender = value;
-        }
-    }
-    public BreedPoco Breed
-    {
-        get
-        {
-            if(_breedAccessMode is PropertyAccessMode.Forbidden)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
-            return _breed;
-        }
-        set
-        {
-            if(!IsUnderConstruction && _breedAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
-            _breedAccessMode = PropertyAccessMode.Full;
-            _breed = value;
-        }
-    }
-    IBreed ICat.Breed
-    {
-        get
-        {
-            return Breed;
-        }
-       set
-        {
-            Breed = (value as BreedPoco)!;
         }
     }
     public LitterPoco? Litter

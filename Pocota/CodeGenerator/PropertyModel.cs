@@ -18,4 +18,6 @@ internal class PropertyModel
     internal string? ProxyFieldName { get; set; } = null;
     internal string AccessModeFieldName { get; set; } = null!;
     internal bool CanBeNull { get; set; } = false;
+    internal string PropertyClass { get; set; } = null!;
+    internal string PropertyField { get; set; } = null!;
 }

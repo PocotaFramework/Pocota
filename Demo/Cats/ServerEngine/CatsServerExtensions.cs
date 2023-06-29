@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Demo.Cats.Contract;
 using Net.Leksi.Pocota.Server;
 
@@ -11,6 +11,7 @@ public static class CatsServerExtensions
         services.AddPocota(serv =>
         {
             serv.AddContract<CatContractConfigurator, CatsController>();
+            serv.AddTransient<ICat, Cat>();
         });
 
         services.AddScoped<IStorage>(serviceProvider => new Storage(

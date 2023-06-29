@@ -3,8 +3,8 @@
 public abstract class BindingContext
 {
     public BindingContext? Parent { get; set; } = null;
-    public Property Property { get; set; } = null!;
-    public Dictionary<string, BindingContext> PropertiesContexts { get; init; } = new();
+    public PropertyUse PropertyUse { get; set; } = null!;
+    public Dictionary<string, BindingContext> PropertyUsesContexts { get; init; } = new();
     public abstract void Process(PocoBase poco);
-    public int CurrentProperty { get; set; }
+    public int CurrentPropertyUse { get; set; }
 }

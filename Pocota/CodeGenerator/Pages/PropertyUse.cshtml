@@ -1,0 +1,31 @@
+﻿@using Net.Leksi.Pocota.Common;
+@model PropertyUseModel
+new()
+@Html.Raw(Model.Indentation){
+@if (!string.IsNullOrEmpty(Model.PropertyField))
+{
+    <text>@Html.Raw(Model.Indentation)    Property = @Model.PropertyField,
+</text>
+}
+@if (!string.IsNullOrEmpty(Model.Path))
+{
+    <text>@Html.Raw(Model.Indentation)    Path = "@Html.Raw(Model.Path)",
+</text>
+}
+@*@if (!string.IsNullOrEmpty(Model.TypeName))
+{
+    <text>@Html.Raw(Model.Indentation)    Type = typeof(@Html.Raw(Model.TypeName)),
+</text>
+}*@
+@if(Model.Properties is { } && Model.Properties.Any())
+{
+    <text>@Html.Raw(Model.Indentation)    Properties = new() {
+    @foreach(var item in Model.Properties)
+    {
+        <text>@Html.Raw(Model.Indentation)        @Html.Partial("PropertyUse", item),
+</text>
+    }
+@Html.Raw(Model.Indentation)    }
+</text>
+}
+@Html.Raw(Model.Indentation)}

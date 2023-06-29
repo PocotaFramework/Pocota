@@ -2,10 +2,10 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPrimaryKey                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T10:52:36                                                        //
+// at 2023-06-29T16:58:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
-using Net.Leksi.Pocota.Server.Generic;
+using Net.Leksi.Pocota.Common.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 

@@ -17,6 +17,7 @@ public class ClassModel: PageModel
     internal string ControllerInterface { get; set; } = null!;
     internal AttributeModel? UpdateRouteAttribute { get; set; } = null;
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
+    internal string ContractName { get; set; } = null!;
 
     public void OnGet([FromServices] CodeGenerator generator)
     {

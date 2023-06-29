@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota.Server;
+﻿namespace Net.Leksi.Pocota.Common;
 
 public interface IPrimaryKey
 {

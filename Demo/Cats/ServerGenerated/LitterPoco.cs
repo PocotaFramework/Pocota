@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T10:52:36                                                        //
+// at 2023-06-29T16:58:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -139,7 +139,120 @@ public class LitterPoco : EntityBase, ILitter
         }
     }
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    public class PropertyClass: IProperty
+    {
+        public string Name => string.Empty;
+        public Type Type => typeof(LitterPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class OrderPropertyClass: IProperty
+    {
+        public string Name => "Order";
+        public Type Type => typeof(Int32);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterPoco obj1 ? obj1._orderAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterPoco obj1)
+            {
+                obj1._orderAccessMode  = mode;
+            }
+        }
+    }
+    public class FemalePropertyClass: IProperty
+    {
+        public string Name => "Female";
+        public Type Type => typeof(CatPoco);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterPoco obj1 ? obj1._femaleAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterPoco obj1)
+            {
+                obj1._femaleAccessMode  = mode;
+            }
+        }
+    }
+    public class DatePropertyClass: IProperty
+    {
+        public string Name => "Date";
+        public Type Type => typeof(DateOnly);
+        public bool IsNullable => false;
+        public bool IsReadOnly => false;
+        public bool IsPoco => false;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterPoco obj1 ? obj1._dateAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterPoco obj1)
+            {
+                obj1._dateAccessMode  = mode;
+            }
+        }
+    }
+    public class MalePropertyClass: IProperty
+    {
+        public string Name => "Male";
+        public Type Type => typeof(CatPoco);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => true;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public PropertyAccessMode GetAccess(object obj)
+        {
+            return obj is LitterPoco obj1 ? obj1._maleAccessMode : PropertyAccessMode.Forbidden;
+        }
+        public void SetAccess(object obj, PropertyAccessMode mode)
+        {
+            if(obj is LitterPoco obj1)
+            {
+                obj1._maleAccessMode  = mode;
+            }
+        }
+    }
+
+    public static PropertyClass s_Property = new();
+    public static OrderPropertyClass s_OrderProperty = new();
+    public static FemalePropertyClass s_FemaleProperty = new();
+    public static DatePropertyClass s_DateProperty = new();
+    public static MalePropertyClass s_MaleProperty = new();
+
     private Int32 _order;
     private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _female = null!;
@@ -148,6 +261,8 @@ public class LitterPoco : EntityBase, ILitter
     private PropertyAccessMode _dateAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _male = null;
     private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
+
+    public PrimaryKeyClass PrimaryKey { get; init; }
 
     public LitterPoco()
     {
