@@ -6,7 +6,7 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-    public void Configure(IServiceCollection services)
+    public void Configure<TController>(IServiceCollection services) where TController : Controller, IPocotaController
     {
 @foreach(var service in Model.Services)
 {
@@ -14,5 +14,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         services.AddTransient@{}@Html.Raw($"<{service.Value}>")@{}();
 </text>
 }
+        services.Add(new ServiceDescriptor(typeof(@Model.ControllerInterface), typeof(TController), ServiceLifetime.Transient));
     }
 }
