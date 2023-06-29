@@ -12,4 +12,5 @@ internal class BuildingContext
     internal DbDataReader? DataReader { get; set; }
     internal int EntityLevel { get; set; } = -1;
     internal bool IsSingleQuery { get; set; } = true;
+    internal bool WithDirectOutput { get; set; } = true;
 }

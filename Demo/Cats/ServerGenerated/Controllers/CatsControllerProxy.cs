@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T18:36:47                                                        //
+// at 2023-06-29T21:14:15                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
