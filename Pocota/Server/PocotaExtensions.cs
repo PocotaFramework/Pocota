@@ -1,4 +1,5 @@
-﻿using Net.Leksi.Pocota.Common;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Net.Leksi.Pocota.Server;
 
@@ -12,15 +13,38 @@ public static class PocotaExtensions
         services.AddScoped<IPocoContext, PocoContext>();
         Core core = new();
         core.Configure(services, configureServices);
+        services.AddControllers();
+
         return services;
     }
 
-    public static IServiceCollection UseContract<TConfigurator> (
-        this IServiceCollection services
-    ) where TConfigurator : IContractConfigurator, new()
+    public static IServiceCollection AddContract<TConfigurator, TController> (this IServiceCollection services) 
+        where TConfigurator : IContractConfigurator, new()
+        where TController : Controller, IPocotaController
     {
-        Core.UseContractConfigurator<TConfigurator>(services);
+        Core.UseContractConfigurator<TConfigurator, TController>(services);
         return services;
     }
+
+    public static WebApplication UsePocota(this WebApplication app)
+    {
+
+        app.Use(async (context, next) =>
+        {
+            var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
+            if (syncIOFeature != null)
+            {
+                syncIOFeature.AllowSynchronousIO = true;
+            }
+            await next?.Invoke()!;
+        });
+
+        app.MapControllers();
+        Middleware.UsePocotaExceptionsHandler(app);
+
+        return app;
+    }
+
+
 
 }

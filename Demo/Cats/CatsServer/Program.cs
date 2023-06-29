@@ -13,7 +13,7 @@ if (args.Contains("--CheckDatabase"))
     Environment.Exit(0);
 }
 
-app.UseCatsServer();
+app.UseCatServer();
 
 
 app.Run();

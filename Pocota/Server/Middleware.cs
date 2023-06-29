@@ -3,7 +3,7 @@ using Net.Leksi.Pocota.Common;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Net.Leksi.Pocota.Demo.Cats.Server;
+namespace Net.Leksi.Pocota.Server;
 
 public class Middleware
 {

@@ -6,4 +6,5 @@ public abstract class BindingContext
     public Property Property { get; set; } = null!;
     public Dictionary<string, BindingContext> PropertiesContexts { get; init; } = new();
     public abstract void Process(PocoBase poco);
+    public int CurrentProperty { get; set; }
 }

@@ -5,16 +5,18 @@
 // at 2023-06-28T18:37:14                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Demo.Cats.Common;
+using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public class CatContractConfigurator : Pocota.Common.IContractConfigurator
+public class CatContractConfigurator : Pocota.Server.IContractConfigurator
 {
-    public void Configure(IServiceCollection services)
+    public void Configure<TController>(IServiceCollection services) where TController : Controller, IPocotaController
     {
         services.AddTransient<ICat, CatPoco>();
         services.AddTransient<CatPoco>();
@@ -42,6 +44,7 @@ public class CatContractConfigurator : Pocota.Common.IContractConfigurator
         services.AddTransient<LitterFilterPoco>();
         services.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
         services.AddTransient<LitterWithCatsPoco>();
+        services.Add(new ServiceDescriptor(typeof(ICatsController), typeof(TController), ServiceLifetime.Transient));
     }
 
 }

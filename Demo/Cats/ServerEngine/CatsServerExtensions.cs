@@ -10,7 +10,7 @@ public static class CatsServerExtensions
     {
         services.AddPocota(serv =>
         {
-            serv.UseContract<CatContractConfigurator>();
+            serv.AddContract<CatContractConfigurator, CatsController>();
         });
 
         services.AddScoped<IStorage>(serviceProvider => new Storage(
@@ -18,35 +18,12 @@ public static class CatsServerExtensions
             connectionString)
         );
 
-        services.AddTransient<ICatsController, CatsController>();
-
-        services.AddControllers();
-
         return services;
     }
 
-    public static WebApplication UseCatsServer(this WebApplication app)
+    public static WebApplication UseCatServer(this WebApplication app)
     {
-
-        app.Use(async (context, next) =>
-        {
-            var syncIOFeature = context.Features.Get<IHttpBodyControlFeature>();
-            if (syncIOFeature != null)
-            {
-                syncIOFeature.AllowSynchronousIO = true;
-            }
-            await next?.Invoke()!;
-        });
-
-        app.MapControllers();
-        app.UsePocotaExceptionsHandler();
-
-        return app;
-    }
-
-    public static WebApplication UsePocotaExceptionsHandler(this WebApplication app)
-    {
-        Middleware.UsePocotaExceptionsHandler(app);
+        app.UsePocota();
         return app;
     }
 
