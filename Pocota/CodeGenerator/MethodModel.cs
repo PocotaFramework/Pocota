@@ -8,7 +8,6 @@ internal class MethodModel
     internal List<ParameterModel> Parameters { get; init; } = new();
     internal List<AttributeModel> Attributes { get; init; } = new();
     internal List<FilterModel> Filters { get; init; } = new();
-    internal string JsonSerializerOptionsVariable { get; set; } = "jsonSerializerOptions";
     internal string PocoContextVariable { get; set; } = "pocoContext";
     internal string ControllerVariable { get; set; } = "controller";
     internal List<string> CallParameters { get; init; } = new();

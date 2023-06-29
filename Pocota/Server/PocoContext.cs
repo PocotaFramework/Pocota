@@ -6,13 +6,20 @@ namespace Net.Leksi.Pocota.Server;
 
 public class PocoContext : IPocoContext
 {
+    private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions = new(() =>
+    {
+        return new JsonSerializerOptions();
+    });
+
     public PropertyUse PropertyUse { get; set; } = null!;
 
     public Type ExpectedOutputType { get; set; } = null!;
 
     public ControllerContext ControllerContext { get; set; } = null!;
 
-    public void Build(DbDataReader data)
+    public JsonSerializerOptions JsonSerializerOptions => _jsonSerializerOptions.Value;
+
+    public object? Build(DbDataReader data, bool withDirectOutput)
     {
         if (PropertyUse is null)
         {
@@ -22,10 +29,15 @@ public class PocoContext : IPocoContext
         {
             throw new InvalidOperationException(nameof(ExpectedOutputType));
         }
+        if(ControllerContext is null)
+        {
+            throw new InvalidOperationException(nameof(ControllerContext));
+        }
         if (data is null)
         {
             throw new InvalidOperationException(nameof(data));
         }
+        object? result = null;
         BuildingContext buildingContext = new()
         {
             PropertyUse = this.PropertyUse,
@@ -35,6 +47,8 @@ public class PocoContext : IPocoContext
                             .IsAssignableFrom(ExpectedOutputType)
         };
         buildingContext.DataReaderRoot = buildingContext;
+
+        return result;
     }
 
     public JsonSerializerOptions CreateJsonSerializerOptions()

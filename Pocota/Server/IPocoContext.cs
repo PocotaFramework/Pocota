@@ -9,6 +9,6 @@ public interface IPocoContext
     Type ExpectedOutputType { get; set; }
     PropertyUse PropertyUse { get; set; }
     ControllerContext ControllerContext { get; set; }
-    JsonSerializerOptions CreateJsonSerializerOptions();
-    void Build(DbDataReader data);
+    JsonSerializerOptions JsonSerializerOptions { get; }
+    object? Build(DbDataReader data, bool withDirectOutput);
 }

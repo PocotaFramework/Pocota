@@ -34,13 +34,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             <text>        @fm.Type @fm.Variable = default!;
 </text>
         }
-        <text>        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = @mm.PocoContextVariable@{}.CreateJsonSerializerOptions();
-</text>
         foreach(FilterModel fm in mm.Filters.Where(v => !v.IsConvertible))
         {
             <text>        if (@fm.Name is { })
         {
-            @fm.Variable = JsonSerializer.Deserialize<@fm.Type>(HttpUtility.UrlDecode(@fm.Name), @mm.JsonSerializerOptionsVariable)@if (!fm.IsNullable) {<text>!</text>};
+            @fm.Variable = JsonSerializer.Deserialize<@fm.Type>(HttpUtility.UrlDecode(@fm.Name), @mm.PocoContextVariable@{}.JsonSerializerOptions)@if (!fm.IsNullable) {<text>!</text>};
         }
 </text>
         }

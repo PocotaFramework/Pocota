@@ -520,7 +520,6 @@ public class CodeGenerator
                 {
                     AddUsings(model, typeof(JsonSerializerOptions));
                     AddUsings(model, typeof(JsonSerializer));
-                    mm.JsonSerializerOptionsVariable = GetUniqueVariable(mm.JsonSerializerOptionsVariable);
                 }
                 mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
                 model.Methods.Add(mm);

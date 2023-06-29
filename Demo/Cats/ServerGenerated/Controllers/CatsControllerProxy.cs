@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T18:22:37                                                        //
+// at 2023-06-29T18:36:47                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -187,10 +187,9 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.ExpectedOutputType = typeof(IList<ICat>);
         pocoContext.ControllerContext = ControllerContext;
         ICatFilter? filter1 = default!;
-        JsonSerializerOptions jsonSerializerOptions = pocoContext.CreateJsonSerializerOptions();
         if (filter is { })
         {
-            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
         ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         controller.FindCats(filter1);
@@ -204,10 +203,9 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.ExpectedOutputType = typeof(ICat);
         pocoContext.ControllerContext = ControllerContext;
         ICat cat1 = default!;
-        JsonSerializerOptions jsonSerializerOptions = pocoContext.CreateJsonSerializerOptions();
         if (cat is { })
         {
-            cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), jsonSerializerOptions)!;
+            cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), pocoContext.JsonSerializerOptions)!;
         }
         ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         controller.GetCat(cat1);
@@ -221,10 +219,9 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.ExpectedOutputType = typeof(IList<IBreed>);
         pocoContext.ControllerContext = ControllerContext;
         IBreedFilter? filter1 = default!;
-        JsonSerializerOptions jsonSerializerOptions = pocoContext.CreateJsonSerializerOptions();
         if (filter is { })
         {
-            filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
         ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         controller.FindBreeds(filter1);
@@ -238,10 +235,9 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.ExpectedOutputType = typeof(IList<ICattery>);
         pocoContext.ControllerContext = ControllerContext;
         ICatteryFilter? filter1 = default!;
-        JsonSerializerOptions jsonSerializerOptions = pocoContext.CreateJsonSerializerOptions();
         if (filter is { })
         {
-            filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
         ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         controller.FindCatteries(filter1);
@@ -255,10 +251,9 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.ExpectedOutputType = typeof(IList<ILitterWithCats>);
         pocoContext.ControllerContext = ControllerContext;
         ICatFilter? filter1 = default!;
-        JsonSerializerOptions jsonSerializerOptions = pocoContext.CreateJsonSerializerOptions();
         if (filter is { })
         {
-            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), jsonSerializerOptions);
+            filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
         ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
         controller.FindLittersWithCats(filter1);
