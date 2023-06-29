@@ -12,11 +12,6 @@ new()
     <text>@Html.Raw(Model.Indentation)    Path = "@Html.Raw(Model.Path)",
 </text>
 }
-@*@if (!string.IsNullOrEmpty(Model.TypeName))
-{
-    <text>@Html.Raw(Model.Indentation)    Type = typeof(@Html.Raw(Model.TypeName)),
-</text>
-}*@
 @if(Model.Properties is { } && Model.Properties.Any())
 {
     <text>@Html.Raw(Model.Indentation)    Properties = new() {

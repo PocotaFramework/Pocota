@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T16:58:28                                                        //
+// at 2023-06-29T17:39:46                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +24,23 @@ public class CatsControllerProxy : ControllerProxy
         Properties = new() {
             new()
             {
+                Property = CatPoco.s_CatteryProperty,
+                Path = "Cattery",
+                Properties = new() {
+                    new()
+                    {
+                        Property = CatteryPoco.s_NameEngProperty,
+                        Path = "Cattery.NameEng",
+                    },
+                    new()
+                    {
+                        Property = CatteryPoco.s_NameNatProperty,
+                        Path = "Cattery.NameNat",
+                    },
+                }
+            },
+            new()
+            {
                 Property = CatPoco.s_NameNatProperty,
                 Path = "NameNat",
             },
@@ -41,23 +58,6 @@ public class CatsControllerProxy : ControllerProxy
                     {
                         Property = BreedPoco.s_NameEngProperty,
                         Path = "Breed.NameEng",
-                    },
-                }
-            },
-            new()
-            {
-                Property = CatPoco.s_CatteryProperty,
-                Path = "Cattery",
-                Properties = new() {
-                    new()
-                    {
-                        Property = CatteryPoco.s_NameEngProperty,
-                        Path = "Cattery.NameEng",
-                    },
-                    new()
-                    {
-                        Property = CatteryPoco.s_NameNatProperty,
-                        Path = "Cattery.NameNat",
                     },
                 }
             },

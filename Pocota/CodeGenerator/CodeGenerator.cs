@@ -5,11 +5,14 @@ using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -33,6 +36,7 @@ public class CodeGenerator
     private const string s_class = "Class";
     private const string s_staticPrefix = "s_";
     private const string s_propertyUse = "PropertyUse";
+    private const string s_propertyUseIndentation = "        ";
 
 
     private readonly HashSet<Type> _contracts = new();
@@ -713,9 +717,6 @@ public class CodeGenerator
         List<string> queue = new();
         HashSet<string> used = new();
 
-        string indentation = "        ";
-
-
         PropertyUseModel result = new()
         {
             Type = rootType,
@@ -781,7 +782,6 @@ public class CodeGenerator
                 string path = string.Join('.', Enumerable.Range(0, i + 1).Select(e => parts[e]));
                 if (!cache.TryGetValue(path, out PropertyUseModel? node))
                 {
-                    Console.WriteLine(path);
                     Type? nodeType = null;
                     if (parent.Type is { })
                     {
@@ -794,11 +794,12 @@ public class CodeGenerator
                             throw new InvalidOperationException($"Type {parent.Type} does not have the property {parts[i]}!");
                         }
                     }
-                    node = new PropertyUseModel { 
-                        PropertyField = $"{parent.TypeName}.{s_staticPrefix}{parts[i]}{s_property}", 
-                        Path = path, 
-                        Type = nodeType, 
-                        Indentation = $"{parent.Indentation}{indentation}",
+                    node = new PropertyUseModel {
+                        Name = parts[i],
+                        PropertyField = $"{parent.TypeName}.{s_staticPrefix}{parts[i]}{s_property}",
+                        Path = path,
+                        Type = nodeType,
+                        Indentation = $"{parent.Indentation}{s_propertyUseIndentation}",
                     };
                     if (nodeType is { })
                     {
@@ -836,7 +837,51 @@ public class CodeGenerator
                 queue.RemoveAt(0);
             }
         }
+        EnsurePrimaryKeyPaths(result);
         return result;
+    }
+
+    private void EnsurePrimaryKeyPaths(PropertyUseModel result)
+    {
+        if (result.Type is { } &&  _interfaceHoldersByType.TryGetValue(result.Type, out InterfaceHolder? ih) && ih.KeysDefinitions.Any())
+        {
+            int pos = 0;
+            foreach(KeyValuePair<string, PrimaryKeyDefinition> kd in ih.KeysDefinitions)
+            {
+                if(kd.Value.Property is { })
+                {
+                    if(result.Properties is null)
+                    {
+                        result.Properties = new List<PropertyUseModel>();
+                    }
+                    if(result.Properties.Find(p => p.Name.Equals(kd.Value.Property.Name)) is PropertyUseModel pum)
+                    {
+                        result.Properties.Remove(pum);
+                    }
+                    else
+                    {
+                        pum = new PropertyUseModel
+                        {
+                            Name = kd.Value.Property.Name,
+                            PropertyField = $"{result.TypeName}.{s_staticPrefix}{kd.Value.Property.Name}{s_property}",
+                            Path = $"{result.Path}.{kd.Value.Property.Name}",
+                            Type = kd.Value.Property.PropertyType,
+                            Indentation = $"{result.Indentation}{s_propertyUseIndentation}",
+                        };
+                        if (_interfaceHoldersByType.TryGetValue(pum.Type, out InterfaceHolder? ih1))
+                        {
+                            pum.TypeName = MakePocoClassName(ih1.Interface);
+                        }
+                        else
+                        {
+                            pum.TypeName = MakeTypeName(pum.Type);
+                        }
+                    }
+                    result.Properties!.Insert(pos, pum);
+                    ++pos;
+                }
+            }
+        }
     }
 
     private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)
