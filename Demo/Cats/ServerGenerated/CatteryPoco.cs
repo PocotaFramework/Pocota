@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatteryPoco : EntityBase, ICattery
 {
+    #region PrimaryKey    
     public class PrimaryKeyClass: CatteryPrimaryKey
     {
         private readonly CatteryPoco _owner;
@@ -69,7 +70,9 @@ public class CatteryPoco : EntityBase, ICattery
             _owner = owner;
         }
     }
+    #endregion PrimaryKey  
 
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -133,23 +136,30 @@ public class CatteryPoco : EntityBase, ICattery
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
+    #endregion Property fields
 
+    #region fields
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat = null;
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    private readonly PrimaryKeyClass _primaryKey;
+    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public CatteryPoco()
+    public CatteryPoco(IServiceProvider services) : base(services)
     {
-        PrimaryKey = new(this);
+        _primaryKey = new(this);
     }
 
+    #region properties
     public String? NameEng
     {
         get
@@ -212,4 +222,5 @@ public class CatteryPoco : EntityBase, ICattery
             NameNat = value;
         }
     }
+    #endregion properties
 }

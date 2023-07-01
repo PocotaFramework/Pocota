@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatPoco : EntityBase, ICat
 {
+    #region PrimaryKey    
     public class PrimaryKeyClass: CatPrimaryKey
     {
         private readonly CatPoco _owner;
@@ -23,7 +24,7 @@ public class CatPoco : EntityBase, ICat
                 switch(index)
                 {
                     case 1:
-                        return _owner.Cattery.PrimaryKey.IdCattery;
+                       return ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery;
                     default:
                         return base[index];
                 }
@@ -37,7 +38,8 @@ public class CatPoco : EntityBase, ICat
                 switch(index)
                 {
                     case 1:
-                        throw new InvalidOperationException();
+                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
+                        break;
                     default:
                         base[index] = value;
                         break;
@@ -51,7 +53,7 @@ public class CatPoco : EntityBase, ICat
                 switch(name)
                 {
                     case "IdCattery":
-                        return _owner.Cattery.PrimaryKey.IdCattery;
+                       return ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery;
                     default:
                         return base[name];
                 }
@@ -65,7 +67,8 @@ public class CatPoco : EntityBase, ICat
                 switch(name)
                 {
                     case "IdCattery":
-                        throw new InvalidOperationException();
+                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
+                        break;
                     default:
                         base[name] = value;
                         break;
@@ -74,10 +77,13 @@ public class CatPoco : EntityBase, ICat
         }
         public override Int32? IdCattery 
         {
-            get => _owner.Cattery.PrimaryKey.IdCattery;
+            get
+            {
+                       return ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery;
+            }
             set
             {
-                throw new InvalidOperationException();
+                ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
             }
         }
         internal PrimaryKeyClass(CatPoco owner)
@@ -85,7 +91,9 @@ public class CatPoco : EntityBase, ICat
             _owner = owner;
         }
     }
+    #endregion PrimaryKey  
 
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -303,7 +311,9 @@ public class CatPoco : EntityBase, ICat
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static CatteryPropertyClass s_CatteryProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
@@ -314,7 +324,9 @@ public class CatPoco : EntityBase, ICat
     public static ExteriorPropertyClass s_ExteriorProperty = new();
     public static TitlePropertyClass s_TitleProperty = new();
     public static DescriptionPropertyClass s_DescriptionProperty = new();
+    #endregion Property fields
 
+    #region fields
     private CatteryPoco _cattery = null!;
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameNat = null;
@@ -333,14 +345,17 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _titleAccessMode = PropertyAccessMode.Forbidden;
     private String? _description = null;
     private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    private readonly PrimaryKeyClass _primaryKey;
+    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public CatPoco()
+    public CatPoco(IServiceProvider services) : base(services)
     {
-        PrimaryKey = new(this);
+        _primaryKey = new(this);
     }
 
+    #region properties
     public CatteryPoco Cattery
     {
         get
@@ -620,4 +635,5 @@ public class CatPoco : EntityBase, ICat
             Description = value;
         }
     }
+    #endregion properties
 }

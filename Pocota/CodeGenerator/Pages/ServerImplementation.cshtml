@@ -8,7 +8,8 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 @if(Model.PrimaryKey is { })
 {
-    <text>    public class PrimaryKeyClass: @Model.PrimaryKey.Name
+    <text>    #region PrimaryKey    
+    public class PrimaryKeyClass: @Model.PrimaryKey.Name
     {
         private readonly @Model.ClassName _owner;
         public override object? this[int index]
@@ -17,15 +18,24 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 switch(index)
                 {
-@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
-{
-    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
-        <text>                    case @i:
-                        return _owner.@Model.PrimaryKey!.Parts[i].Reference;
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @i:
+            @if(!Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                 <text>                       return ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference;
 </text>
+            }
+            else
+            {
+                 <text>                       return _owner.@Model.PrimaryKey!.Parts[i].Property;
+</text>
+            }
+</text>
+        }
     }
-}
                     default:
                         return base[index];
                 }
@@ -38,30 +48,32 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
                 }
                 switch(index)
                 {
-@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
-{
-    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
-        <text>                    case @i:
-        @if(Model.PrimaryKey!.Parts[i].IsProperty)
+        if(Model.PrimaryKey!.Parts[i].Property is {})
         {
-            <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+            <text>                    case @i:
+            @if(Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
                         if(value is {} && value@{}@i is null)
                         {
                             throw new InvalidCastException();
-                        }   
-                        _owner.@Model.PrimaryKey!.Parts[i].Reference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        }
+                            _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{
+                            }@i!;
                         break;
 </text>
-        }
-        else
-        {
-            <text>                        throw new @nameof(InvalidOperationException)@{}();
-</text>
-        }
+            }
+            else
+            {
+                <text>                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        break;
 </text>
             }
-}
+</text>
+        }
+    }
                     default:
                         base[index] = value;
                         break;
@@ -74,15 +86,24 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 switch(name)
                 {
-@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
-{
-    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
-        <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
-                        return _owner.@Model.PrimaryKey!.Parts[i].Reference;
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+            @if(!Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                 <text>                       return ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference;
 </text>
+            }
+            else
+            {
+                 <text>                       return _owner.@Model.PrimaryKey!.Parts[i].Property;
+</text>
+            }
+</text>
+        }
     }
-}
                     default:
                         return base[name];
                 }
@@ -95,41 +116,54 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
                 }
                 switch(name)
                 {
-@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
-{
-    if(Model.PrimaryKey!.Parts[i].Reference is {})
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
-        <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
-        @if(Model.PrimaryKey!.Parts[i].IsProperty)
+        if(Model.PrimaryKey!.Parts[i].Property is {})
         {
-            <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+            <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+            @if(Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
                         if(value is {} && value@{}@i is null)
                         {
                             throw new InvalidCastException();
                         }   
-                        _owner.@Model.PrimaryKey!.Parts[i].Reference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
 </text>
-        }
-        else
-        {
-            <text>                        throw new @nameof(InvalidOperationException)@{}();
+            }
+            else
+            {
+                <text>                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        break;
+</text>
+            }
 </text>
         }
-</text>
     }
-}
                     default:
                         base[name] = value;
                         break;
                 }
             }
         }
-@foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts.Where(p => p.Reference is {}))
-{
-    <text>        public override @Html.Raw(pkpm.Type)? @pkpm.Name 
+    @foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts.Where(p => p.KeyReference is {}))
+    {
+        <text>        public override @Html.Raw(pkpm.Type)? @pkpm.Name 
         {
-            get => _owner.@pkpm.Reference;
+            get
+            {
+        @if(!@pkpm.IsProperty)
+        {
+             <text>                       return ((@pkpm.PrimaryKeyClassName)_owner.@pkpm.Property).@pkpm.KeyReference;
+</text>
+        }
+        else
+        {
+            <text>                       return _owner.@pkpm.Property;
+</text>
+        }
+            }
             set
             {
         @if(pkpm.IsProperty)
@@ -143,26 +177,28 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
                 {
                     throw new InvalidCastException();
                 }
-                _owner.@pkpm.Reference = (@pkpm.Type)value1!;
+                _owner.@pkpm.Property = (@pkpm.Type)value1!;
 </text>
         }
         else
         {
-            <text>                throw new @nameof(InvalidOperationException)@{}();
+            <text>                ((@pkpm.PrimaryKeyClassName)_owner.@pkpm.Property).@pkpm.KeyReference = value as @pkpm.Type@pkpm.AsTypeAsk;
 </text>
         }
             }
         }
 </text>
-}
+    }
         internal PrimaryKeyClass(@Model.ClassName owner)
         {
             _owner = owner;
         }
     }
-
+    #endregion PrimaryKey  
 </text>
 }
+
+    #region Property classes
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    public class @pm.PropertyClass: IProperty
@@ -207,14 +243,18 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
 </text>
 }
+    #endregion Property classes
 
-@foreach(PropertyModel pm in Model.Properties)
+    #region Property fields
+@foreach (PropertyModel pm in Model.Properties)
 {
     <text>    public static @pm.PropertyClass @pm.PropertyField = new();
 </text>
 }
+    #endregion Property fields
 
-@foreach(PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
+    #region fields
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
     <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
     @if(pm.IsList && pm.IsPoco)
@@ -225,15 +265,17 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     private PropertyAccessMode @pm.AccessModeFieldName = PropertyAccessMode.Forbidden;
 </text>    
 }
+    #endregion fields
 
 @if(Model.PrimaryKey is { })
 {
-    <text>    public PrimaryKeyClass PrimaryKey { get; init; }
+    <text>    private readonly PrimaryKeyClass _primaryKey;
+    public override IPrimaryKey PrimaryKey => _primaryKey;
 </text>
     
 }
 
-    public @Model.ClassName@{}()
+    public @Model.ClassName@{}(IServiceProvider services) : base(services)
     {
 @foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && p.IsReadOnly && p.IsList))
 {
@@ -247,14 +289,15 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 }
 @if(Model.PrimaryKey is { })
 {
-    <text>        PrimaryKey = new(this);
+    <text>        _primaryKey = new(this);
 </text>
 }
     }
 
+    #region properties
 @foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
-    <text>    public @Html.Raw($"{pm.ObjectType}{pm.NullableSuffix}") @pm.Name
+    <text>    public @Html.Raw(pm.ObjectType)@{}@pm.NullableSuffix @pm.Name
     {
         get
         {
@@ -317,4 +360,5 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
 </text>    
 }
+    #endregion properties
 }

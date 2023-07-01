@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class BreedPoco : EntityBase, IBreed
 {
+    #region PrimaryKey    
     public class PrimaryKeyClass: BreedPrimaryKey
     {
         private readonly BreedPoco _owner;
@@ -23,9 +24,9 @@ public class BreedPoco : EntityBase, IBreed
                 switch(index)
                 {
                     case 0:
-                        return _owner.Code;
+                       return _owner.Code;
                     case 1:
-                        return _owner.Group;
+                       return _owner.Group;
                     default:
                         return base[index];
                 }
@@ -43,16 +44,16 @@ public class BreedPoco : EntityBase, IBreed
                         if(value is {} && value0 is null)
                         {
                             throw new InvalidCastException();
-                        }   
-                        _owner.Code = (String)value0!;
+                        }
+                            _owner.Code = (String)value0!;
                         break;
                     case 1:
                         String value1 = value as String;
                         if(value is {} && value1 is null)
                         {
                             throw new InvalidCastException();
-                        }   
-                        _owner.Group = (String)value1!;
+                        }
+                            _owner.Group = (String)value1!;
                         break;
                     default:
                         base[index] = value;
@@ -67,9 +68,9 @@ public class BreedPoco : EntityBase, IBreed
                 switch(name)
                 {
                     case "IdBreed":
-                        return _owner.Code;
+                       return _owner.Code;
                     case "IdGroup":
-                        return _owner.Group;
+                       return _owner.Group;
                     default:
                         return base[name];
                 }
@@ -104,46 +105,14 @@ public class BreedPoco : EntityBase, IBreed
                 }
             }
         }
-        public override String? IdBreed 
-        {
-            get => _owner.Code;
-            set
-            {
-                if(!_owner.IsUnderConstruction)
-                {
-                    throw new InvalidOperationException();
-                }
-                String value1 = value as String;
-                if(value is {} && value1 is null)
-                {
-                    throw new InvalidCastException();
-                }
-                _owner.Code = (String)value1!;
-            }
-        }
-        public override String? IdGroup 
-        {
-            get => _owner.Group;
-            set
-            {
-                if(!_owner.IsUnderConstruction)
-                {
-                    throw new InvalidOperationException();
-                }
-                String value1 = value as String;
-                if(value is {} && value1 is null)
-                {
-                    throw new InvalidCastException();
-                }
-                _owner.Group = (String)value1!;
-            }
-        }
         internal PrimaryKeyClass(BreedPoco owner)
         {
             _owner = owner;
         }
     }
+    #endregion PrimaryKey  
 
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -251,13 +220,17 @@ public class BreedPoco : EntityBase, IBreed
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static CodePropertyClass s_CodeProperty = new();
     public static GroupPropertyClass s_GroupProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
+    #endregion Property fields
 
+    #region fields
     private String _code = null!;
     private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
     private String _group = null!;
@@ -266,14 +239,17 @@ public class BreedPoco : EntityBase, IBreed
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    private readonly PrimaryKeyClass _primaryKey;
+    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public BreedPoco()
+    public BreedPoco(IServiceProvider services) : base(services)
     {
-        PrimaryKey = new(this);
+        _primaryKey = new(this);
     }
 
+    #region properties
     public String Code
     {
         get
@@ -398,4 +374,5 @@ public class BreedPoco : EntityBase, IBreed
             NameEng = value;
         }
     }
+    #endregion properties
 }

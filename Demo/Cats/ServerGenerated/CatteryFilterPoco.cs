@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryFilterPoco                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,8 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
 {
+
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -54,18 +56,24 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static SearchRegexPropertyClass s_SearchRegexProperty = new();
+    #endregion Property fields
 
+    #region fields
     private String? _searchRegex = null;
     private PropertyAccessMode _searchRegexAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
 
-    public CatteryFilterPoco()
+    public CatteryFilterPoco(IServiceProvider services) : base(services)
     {
     }
 
+    #region properties
     public String? SearchRegex
     {
         get
@@ -97,4 +105,5 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
             SearchRegex = value;
         }
     }
+    #endregion properties
 }

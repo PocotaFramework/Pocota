@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class LitterPoco : EntityBase, ILitter
 {
+    #region PrimaryKey    
     public class PrimaryKeyClass: LitterPrimaryKey
     {
         private readonly LitterPoco _owner;
@@ -23,11 +24,11 @@ public class LitterPoco : EntityBase, ILitter
                 switch(index)
                 {
                     case 0:
-                        return _owner.Female.PrimaryKey.IdCat;
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat;
                     case 1:
-                        return _owner.Female.PrimaryKey.IdCattery;
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery;
                     case 2:
-                        return _owner.Order;
+                       return _owner.Order;
                     default:
                         return base[index];
                 }
@@ -41,16 +42,18 @@ public class LitterPoco : EntityBase, ILitter
                 switch(index)
                 {
                     case 0:
-                        throw new InvalidOperationException();
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
+                        break;
                     case 1:
-                        throw new InvalidOperationException();
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
+                        break;
                     case 2:
                         Int32? value2 = value as Int32?;
                         if(value is {} && value2 is null)
                         {
                             throw new InvalidCastException();
-                        }   
-                        _owner.Order = (Int32)value2!;
+                        }
+                            _owner.Order = (Int32)value2!;
                         break;
                     default:
                         base[index] = value;
@@ -65,11 +68,11 @@ public class LitterPoco : EntityBase, ILitter
                 switch(name)
                 {
                     case "IdFemale":
-                        return _owner.Female.PrimaryKey.IdCat;
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat;
                     case "IdFemaleCattery":
-                        return _owner.Female.PrimaryKey.IdCattery;
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery;
                     case "IdLitter":
-                        return _owner.Order;
+                       return _owner.Order;
                     default:
                         return base[name];
                 }
@@ -83,9 +86,11 @@ public class LitterPoco : EntityBase, ILitter
                 switch(name)
                 {
                     case "IdFemale":
-                        throw new InvalidOperationException();
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
+                        break;
                     case "IdFemaleCattery":
-                        throw new InvalidOperationException();
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
+                        break;
                     case "IdLitter":
                         Int32? value2 = value as Int32?;
                         if(value is {} && value2 is null)
@@ -102,35 +107,24 @@ public class LitterPoco : EntityBase, ILitter
         }
         public override Int32? IdFemale 
         {
-            get => _owner.Female.PrimaryKey.IdCat;
+            get
+            {
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat;
+            }
             set
             {
-                throw new InvalidOperationException();
+                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
             }
         }
         public override Int32? IdFemaleCattery 
         {
-            get => _owner.Female.PrimaryKey.IdCattery;
-            set
+            get
             {
-                throw new InvalidOperationException();
+                       return ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery;
             }
-        }
-        public override Int32? IdLitter 
-        {
-            get => _owner.Order;
             set
             {
-                if(!_owner.IsUnderConstruction)
-                {
-                    throw new InvalidOperationException();
-                }
-                Int32? value1 = value as Int32?;
-                if(value is {} && value1 is null)
-                {
-                    throw new InvalidCastException();
-                }
-                _owner.Order = (Int32)value1!;
+                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
             }
         }
         internal PrimaryKeyClass(LitterPoco owner)
@@ -138,7 +132,9 @@ public class LitterPoco : EntityBase, ILitter
             _owner = owner;
         }
     }
+    #endregion PrimaryKey  
 
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -246,13 +242,17 @@ public class LitterPoco : EntityBase, ILitter
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static OrderPropertyClass s_OrderProperty = new();
     public static FemalePropertyClass s_FemaleProperty = new();
     public static DatePropertyClass s_DateProperty = new();
     public static MalePropertyClass s_MaleProperty = new();
+    #endregion Property fields
 
+    #region fields
     private Int32 _order;
     private PropertyAccessMode _orderAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _female = null!;
@@ -261,14 +261,17 @@ public class LitterPoco : EntityBase, ILitter
     private PropertyAccessMode _dateAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco? _male = null;
     private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
-    public PrimaryKeyClass PrimaryKey { get; init; }
+    private readonly PrimaryKeyClass _primaryKey;
+    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public LitterPoco()
+    public LitterPoco(IServiceProvider services) : base(services)
     {
-        PrimaryKey = new(this);
+        _primaryKey = new(this);
     }
 
+    #region properties
     public Int32 Order
     {
         get
@@ -393,4 +396,5 @@ public class LitterPoco : EntityBase, ILitter
             Male = (value as CatPoco)!;
         }
     }
+    #endregion properties
 }

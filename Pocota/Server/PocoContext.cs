@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Net.Leksi.Pocota.Common;
 using System.Data.Common;
 using System.Text.Json;
 
@@ -11,6 +12,7 @@ public class PocoContext : IPocoContext
         return new JsonSerializerOptions();
     });
     private readonly IServiceProvider _services;
+    private readonly Core _core;
 
     public PropertyUse PropertyUse { get; set; } = null!;
 
@@ -23,9 +25,15 @@ public class PocoContext : IPocoContext
     public PocoContext(IServiceProvider services)
     {
         _services = services;
+        _core = _services.GetRequiredService<Core>();
     }
 
-    public object? Build(DbDataReader data, bool withDirectOutput)
+    public IPrimaryKey CreatePrimaryKey(Type targetType)
+    {
+        return (IPrimaryKey)_services.GetRequiredService(_core.GetPrimaryKeyType(targetType));
+    }
+
+    public object? Build(DataProvider data, bool withDirectOutput)
     {
         if (PropertyUse is null)
         {
@@ -46,7 +54,7 @@ public class PocoContext : IPocoContext
         BuildingContext buildingContext = new()
         {
             PropertyUse = this.PropertyUse,
-            DataReader = data,
+            DataProvider = data,
             IsSingleQuery = !ExpectedOutputType.IsGenericType
                 || !typeof(IList<>).MakeGenericType(new Type[] { ExpectedOutputType.GetGenericArguments()[0] })
                         .IsAssignableFrom(ExpectedOutputType)
@@ -62,16 +70,38 @@ public class PocoContext : IPocoContext
     {
         int count = 0;
         object? result = null;
-        while (buildingContext.DataReaderRoot.DataReader!.Read())
+        while (buildingContext.DataReaderRoot.DataProvider!.Read())
         {
             object? item = null;
             if(buildingContext.PropertyUse.Property is { })
             {
-                item = _services.GetRequiredService(buildingContext.PropertyUse.Property.Type);
+                if(typeof(IEntity).IsAssignableFrom(buildingContext.PropertyUse.Property.Type))
+                {
+                    IPrimaryKey pk = CreatePrimaryKey(buildingContext.PropertyUse.Property.Type);
+                    foreach(string name in pk.Names)
+                    {
+                        string path = string.Intern(
+                            string.IsNullOrEmpty(buildingContext.PropertyUse.Path) 
+                            ? name
+                            : $"{buildingContext.PropertyUse.Path}.{name}"
+                        );
+                        pk[name] = 
+                            buildingContext.DataReaderRoot
+                                .DataProvider[path];
+                    }
+                    if (!pk.IsAssigned)
+                    {
+                        throw new InvalidOperationException();
+                    }
+                }
+                else
+                {
+
+                }
             }
             else 
             {
-                item = buildingContext.DataReaderRoot.DataReader[buildingContext.PropertyUse.Path];
+                item = buildingContext.DataReaderRoot.DataProvider[buildingContext.PropertyUse.Path];
                 if(item == DBNull.Value)
                 {
                     item = null;
@@ -86,5 +116,4 @@ public class PocoContext : IPocoContext
         }
         return buildingContext.WithDirectOutput ? null : result;
     }
-
 }

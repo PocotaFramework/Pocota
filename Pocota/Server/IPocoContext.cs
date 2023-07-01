@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Net.Leksi.Pocota.Common;
 using System.Data.Common;
 using System.Text.Json;
 
@@ -10,5 +11,6 @@ public interface IPocoContext
     PropertyUse PropertyUse { get; set; }
     ControllerContext ControllerContext { get; set; }
     JsonSerializerOptions JsonSerializerOptions { get; }
-    object? Build(DbDataReader data, bool withDirectOutput);
+    object? Build(DataProvider data, bool withDirectOutput);
+    IPrimaryKey CreatePrimaryKey(Type targetType);
 }

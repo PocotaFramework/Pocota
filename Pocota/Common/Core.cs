@@ -12,13 +12,14 @@ public class Core: IServiceCollection
     private readonly Dictionary<Type, Type> _actualTypes = new();
     private readonly Dictionary<Type, HashSet<Type>> _typesByContract = new();
     private readonly Dictionary<Type, Type> _contractsByType = new();
+    private readonly Dictionary<Type, Type> _primaryKeyTypesByType = new();
 
     private Type? _currentContract = null;
     private bool _isConfiguringContract = false;
 
-    private bool IsCommitted => _services is null;
+    private bool IsCommitted => _serviceCollection is null;
 
-    protected IServiceCollection? _services = null;
+    protected IServiceCollection? _serviceCollection = null;
 
     protected bool IsConfiguringContract
     {
@@ -30,7 +31,16 @@ public class Core: IServiceCollection
         }
     }
 
-    internal IServiceCollection? Services => _services;
+    internal IServiceCollection? Services => _serviceCollection;
+
+    public Type GetPrimaryKeyType(Type targetType)
+    {
+        if(_primaryKeyTypesByType.TryGetValue(targetType, out var primaryKeyType))
+        {
+            return primaryKeyType;
+        }
+        throw new ArgumentException(nameof(targetType));
+    }
 
     public int Count => throw new NotImplementedException();
 
@@ -47,7 +57,7 @@ public class Core: IServiceCollection
         ServiceDescriptor? sd = AddServiceDescriptor(item);
         if(sd is { })
         {
-            _services!.Add(sd);
+            _serviceCollection!.Add(sd);
         }
     }
 
@@ -56,9 +66,9 @@ public class Core: IServiceCollection
             Action<IServiceCollection>? configureServices = null
         )
     {
-        _services = services;
+        _serviceCollection = services;
         configureServices?.Invoke(this);
-        _services = null;
+        _serviceCollection = null;
     }
 
     public static void StartAddContract<TContract>(IServiceCollection services)
@@ -160,6 +170,11 @@ public class Core: IServiceCollection
                     {
                         throw new InvalidOperationException("Out of contract PrimaryKey");
                     }
+                    _primaryKeyTypesByType.Add(type, item.ImplementationType!);
+                    if(_actualTypes.TryGetValue(type, out Type? actualType) && type != actualType)
+                    {
+                        _primaryKeyTypesByType.Add(actualType, item.ImplementationType!);
+                    }
                 }
             }
             else
@@ -188,16 +203,19 @@ public class Core: IServiceCollection
                     {
                         throw new InvalidOperationException("Out of contract");
                     }
-                    _services!.RemoveAll(_actualTypes[item.ServiceType]);
+                    _serviceCollection!.RemoveAll(_actualTypes[item.ServiceType]);
+                    _serviceCollection!.AddTransient(_actualTypes[item.ServiceType], item.ImplementationType!);
                     _typesByContract[_contractsByType[item.ServiceType]].Remove(_actualTypes[item.ServiceType]);
                     _contractsByType.Remove(_actualTypes[item.ServiceType]);
+                    _primaryKeyTypesByType.Add(item.ImplementationType!, _primaryKeyTypesByType[_actualTypes[item.ServiceType]]);
+                    _actualTypes[_actualTypes[item.ServiceType]] = item.ImplementationType!;
                     _actualTypes[item.ServiceType] = item.ImplementationType!;
                     _typesByContract[_contractsByType[item.ServiceType]].Add(item.ImplementationType!);
                     _contractsByType.Add(item.ImplementationType!, _contractsByType[item.ServiceType]);
-                    _services!.RemoveAll(item.ServiceType);
+                    _serviceCollection!.RemoveAll(item.ServiceType);
                 }
             }
-            _services!.AddTransient(item.ImplementationType!);
+            _serviceCollection!.AddTransient(item.ImplementationType!);
 
         }
         return item;

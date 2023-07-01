@@ -12,6 +12,7 @@ public static class PocotaExtensions
     {
         services.AddScoped<IPocoContext, PocoContext>();
         Core core = new();
+        services.AddSingleton(core);
         core.Configure(services, configureServices);
         services.AddControllers();
 

@@ -1,5 +1,10 @@
-﻿namespace Net.Leksi.Pocota.Server;
+﻿using Net.Leksi.Pocota.Common;
 
-public class EntityBase: PocoBase, IEntity
+namespace Net.Leksi.Pocota.Server;
+
+public abstract class EntityBase : PocoBase, IEntity
 {
+    public abstract IPrimaryKey PrimaryKey { get; }
+
+    public EntityBase(IServiceProvider services): base(services) { }
 }

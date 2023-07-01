@@ -9,7 +9,7 @@ internal class BuildingContext
     internal Dictionary<string, BuildingContext> PropertyUsesContexts { get; init; } = new();
     internal int CurrentPropertyUse { get; set; } = 0;
     internal BuildingContext DataReaderRoot { get; set; } = null!;
-    internal DbDataReader? DataReader { get; set; }
+    internal DataProvider? DataProvider { get; set; }
     internal int EntityLevel { get; set; } = -1;
     internal bool IsSingleQuery { get; set; } = true;
     internal bool WithDirectOutput { get; set; } = true;

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -12,6 +12,8 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
 {
+
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -75,21 +77,27 @@ public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static FemalePropertyClass s_FemaleProperty = new();
     public static MalePropertyClass s_MaleProperty = new();
+    #endregion Property fields
 
+    #region fields
     private CatPoco _female = null!;
     private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.Forbidden;
     private CatPoco _male = null!;
     private PropertyAccessMode _maleAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
 
-    public LitterFilterPoco()
+    public LitterFilterPoco(IServiceProvider services) : base(services)
     {
     }
 
+    #region properties
     public CatPoco Female
     {
         get
@@ -152,4 +160,5 @@ public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
             Male = (value as CatPoco)!;
         }
     }
+    #endregion properties
 }

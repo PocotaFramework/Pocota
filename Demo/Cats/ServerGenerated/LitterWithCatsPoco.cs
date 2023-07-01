@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,8 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
 {
+
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -76,22 +78,28 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static LitterPropertyClass s_LitterProperty = new();
     public static CatsPropertyClass s_CatsProperty = new();
+    #endregion Property fields
 
+    #region fields
     private LitterPoco _litter = null!;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
     private IList<CatPoco> _cats = null!;
     private IList<ICat> _catsProxy = null!;
     private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
 
-    public LitterWithCatsPoco()
+    public LitterWithCatsPoco(IServiceProvider services) : base(services)
     {
     }
 
+    #region properties
     public LitterPoco Litter
     {
         get
@@ -156,4 +164,5 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             _cats = new ListProxy<ICat, CatPoco>(_catsProxy);
         }
     }
+    #endregion properties
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Net.Leksi.Pocota.Demo.Cats.Common;
+﻿using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Demo.Cats.Contract;
 using Net.Leksi.Pocota.Server;
 
@@ -7,6 +6,13 @@ namespace Net.Leksi.Pocota.Demo.Cats.Server;
 
 public class CatsController: ICatsController
 {
+    private readonly IServiceProvider _services;
+
+    public CatsController(IServiceProvider services)
+    {
+        _services = services;
+    }
+
     public void FindBreeds(IBreedFilter? filter)
     {
         throw new NotImplementedException();
@@ -14,7 +20,7 @@ public class CatsController: ICatsController
 
     public void FindCats(ICatFilter? filter)
     {
-        throw new NotImplementedException();
+        _services.GetRequiredService<IPocoContext>().Build(new DataProvider(), true);
     }
 
     public void FindCatteries(ICatteryFilter? filter)

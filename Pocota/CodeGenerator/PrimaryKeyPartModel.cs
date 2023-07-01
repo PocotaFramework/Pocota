@@ -6,6 +6,8 @@ internal class PrimaryKeyPartModel
     internal string FieldName = null!;
     internal string Type = null!;
     internal string AsTypeAsk = string.Empty;
-    internal string? Reference = null;
+    internal string? Property = null;
+    internal string? PrimaryKeyClassName = null;
+    internal string? KeyReference = null;
     internal bool IsProperty = false;
 }

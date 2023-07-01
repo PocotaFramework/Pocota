@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-06-29T21:14:15                                                        //
+// at 2023-07-01T13:56:28                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -13,6 +13,8 @@ namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
 public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
 {
+
+    #region Property classes
     public class PropertyClass: IProperty
     {
         public string Name => string.Empty;
@@ -362,7 +364,9 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
             }
         }
     }
+    #endregion Property classes
 
+    #region Property fields
     public static PropertyClass s_Property = new();
     public static BreedPropertyClass s_BreedProperty = new();
     public static CatteryPropertyClass s_CatteryProperty = new();
@@ -379,7 +383,9 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     public static LitterPropertyClass s_LitterProperty = new();
     public static ExteriorRegexPropertyClass s_ExteriorRegexProperty = new();
     public static TitleRegexPropertyClass s_TitleRegexProperty = new();
+    #endregion Property fields
 
+    #region fields
     private BreedPoco? _breed = null;
     private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
     private CatteryPoco? _cattery = null;
@@ -410,12 +416,14 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.Forbidden;
     private String? _titleRegex = null;
     private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.Forbidden;
+    #endregion fields
 
 
-    public CatFilterPoco()
+    public CatFilterPoco(IServiceProvider services) : base(services)
     {
     }
 
+    #region properties
     public BreedPoco? Breed
     {
         get
@@ -881,4 +889,5 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
             TitleRegex = value;
         }
     }
+    #endregion properties
 }

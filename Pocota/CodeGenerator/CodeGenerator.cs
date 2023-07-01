@@ -903,12 +903,14 @@ public class CodeGenerator
                 };
                 if (partDefinition.Value.KeyReference is { })
                 {
-                    partModel.Reference = $"{partDefinition.Value.Property!.Name!}.{s_primaryKey}.{partDefinition.Value.KeyReference!}";
+                    partModel.Property = $"{partDefinition.Value.Property!.Name!}.{s_primaryKey}";
+                    partModel.KeyReference = partDefinition.Value.KeyReference!;
+                    partModel.PrimaryKeyClassName = MakePrimaryKeyName(partDefinition.Value.Property.PropertyType);
                 }
                 else if (partDefinition.Value.Property is { })
                 {
                     partModel.IsProperty = true;
-                    partModel.Reference = partDefinition.Value.Property!.Name!;
+                    partModel.Property = partDefinition.Value.Property!.Name!;
                 }
                 model.PrimaryKey.Parts.Add(partModel);
             }
