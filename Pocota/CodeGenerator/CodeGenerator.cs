@@ -583,6 +583,7 @@ public class CodeGenerator
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IPrimaryKey<>));
+            AddUsings(model, typeof(KeyDefinition));
 
             model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
 
@@ -710,8 +711,6 @@ public class CodeGenerator
 
     private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths)
     {
-        Console.WriteLine();
-        Console.WriteLine($"BuildPropertyUseModel: {rootType}");
         Dictionary<string, PropertyUseModel> cache = new();
         List<string> queue = new();
         HashSet<string> used = new();
@@ -903,14 +902,16 @@ public class CodeGenerator
                 };
                 if (partDefinition.Value.KeyReference is { })
                 {
-                    partModel.Property = $"{partDefinition.Value.Property!.Name!}.{s_primaryKey}";
+                    partModel.PropertyName = partDefinition.Value.Property!.Name!;
+                    partModel.Property = $"{partModel.PropertyName}.{s_primaryKey}";
                     partModel.KeyReference = partDefinition.Value.KeyReference!;
                     partModel.PrimaryKeyClassName = MakePrimaryKeyName(partDefinition.Value.Property.PropertyType);
                 }
                 else if (partDefinition.Value.Property is { })
                 {
                     partModel.IsProperty = true;
-                    partModel.Property = partDefinition.Value.Property!.Name!;
+                    partModel.PropertyName = partDefinition.Value.Property!.Name!;
+                    partModel.Property = partModel.PropertyName;
                 }
                 model.PrimaryKey.Parts.Add(partModel);
             }

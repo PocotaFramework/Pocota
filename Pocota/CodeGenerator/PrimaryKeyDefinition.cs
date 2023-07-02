@@ -8,5 +8,4 @@ internal class PrimaryKeyDefinition
     internal Type Type { get; set; } = null!;
     internal PropertyInfo? Property { get; set; }
     internal string? KeyReference { get; set; }
-
 }

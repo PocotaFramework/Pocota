@@ -2,9 +2,10 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPrimaryKey                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-01T13:56:28                                                        //
+// at 2023-07-02T16:37:21                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
@@ -14,12 +15,13 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
     private Int32? _idFemale = null;
     private Int32? _idFemaleCattery = null;
     private Int32? _idLitter = null;
-    private readonly IList<string> _names = new List<string>
+    private static readonly IList<KeyDefinition> _definitions = new List<KeyDefinition>()
     {
-        "IdFemale",
-        "IdFemaleCattery",
-        "IdLitter",
+        new() {Name = "IdFemale", Type = typeof(Int32), Property = "Female", KeyReference = "IdCat"},
+        new() {Name = "IdFemaleCattery", Type = typeof(Int32), Property = "Female", KeyReference = "IdCattery"},
+        new() {Name = "IdLitter", Type = typeof(Int32), Property = "Order", KeyReference = null},
     }.AsReadOnly();
+
     public virtual object? this[int index]
     {
         get
@@ -112,9 +114,9 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
             }
         }
     }
-    public IList<string> Names => _names;
-    public int Count => Names.Count;
-    public bool IsAssigned => Names.Select(n => this[n] is { }).All(e => e);
+    public IList<KeyDefinition> Definitions => _definitions;
+    public int Count => _definitions.Count;
+    public bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
 
     public virtual Int32? IdFemale 
     {
@@ -151,5 +153,14 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
                 throw new InvalidCastException();
             }
         }
+    }
+    public object?[] ToArray()
+    {
+        return new object?[] 
+        {
+            this[0],
+            this[1],
+            this[2],
+        };
     }
 }

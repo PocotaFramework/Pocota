@@ -11,14 +11,18 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     <text>    private @Html.Raw(@pkpm.Type)? @pkpm.FieldName = null;
 </text>
 }
-    private readonly IList@{}@Html.Raw("<string>") _names = new List@{}@Html.Raw("<string>")
+    private static readonly IList@{}@Html.Raw("<KeyDefinition>") _definitions = new List@{}@Html.Raw("<KeyDefinition>")@{}()
     {
 @foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
 {
-    <text>        @Html.Raw($"\"{@pkpm.Name}\""),
+    <text>        new() {Name = @Html.Raw($"\"{@pkpm.Name}\""), Type = typeof(@Html.Raw(pkpm.Type)), Property = @if (pkpm.PropertyName is { }) {
+        <text>@Html.Raw($"\"{@pkpm.PropertyName}\"")</text>
+    } else {<text>null</text>}, KeyReference = @if (pkpm.KeyReference is { }) {
+        <text>@Html.Raw($"\"{@pkpm.KeyReference}\"")</text>} else {<text>null</text>}},
 </text>
 }
     }.AsReadOnly();
+
     public virtual object? this[int index]
     {
         get
@@ -91,9 +95,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
         }
     }
-    public IList@{}@Html.Raw("<string>") Names => _names;
-    public int Count => Names.Count;
-    public bool IsAssigned => Names.Select(n => this[n] is { }).All(e => e);
+    public IList@{}@Html.Raw("<KeyDefinition>") Definitions => _definitions;
+    public int Count => _definitions.Count;
+    public bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
 
 @foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
 {
@@ -111,4 +115,15 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
 </text>
 }
+    public object?[] ToArray()
+    {
+        return new object?[] 
+        {
+@for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+{
+    <text>            this[@i],
+</text>
+}
+        };
+    }
 }

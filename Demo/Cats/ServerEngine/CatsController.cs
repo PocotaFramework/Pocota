@@ -20,7 +20,7 @@ public class CatsController: ICatsController
 
     public void FindCats(ICatFilter? filter)
     {
-        _services.GetRequiredService<IPocoContext>().Build(new DataProvider(), true);
+        _services.GetRequiredService<IPocoContext>().Build(new DataProvider(), true, null);
     }
 
     public void FindCatteries(ICatteryFilter? filter)

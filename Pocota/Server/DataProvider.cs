@@ -4,6 +4,8 @@ public class DataProvider
 {
     private int count = 5;
 
+    public DataProviderRequest Request { get; set; } = DataProviderRequest.None;
+
     public bool Read()
     {
         if(count == 0)
@@ -19,7 +21,12 @@ public class DataProvider
         get
         {
             Console.WriteLine(path);
-            return null;
+            if (Request is DataProviderRequest.None)
+            {
+                throw new InvalidOperationException("Unspecified request");
+            }
+            return count;
+            //return null;
         }
     }
 
