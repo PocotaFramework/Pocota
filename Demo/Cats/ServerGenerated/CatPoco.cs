@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -38,7 +38,12 @@ public class CatPoco : EntityBase, ICat
                 switch(index)
                 {
                     case 1:
-                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
+                        Int32? value1 = value as Int32?;
+                        if(value is null || value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = (Int32)value1!;
                         break;
                     default:
                         base[index] = value;
@@ -67,7 +72,12 @@ public class CatPoco : EntityBase, ICat
                 switch(name)
                 {
                     case "IdCattery":
-                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
+                        Int32? value1 = value as Int32?;
+                        if(value is null || value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = (Int32)value1!;
                         break;
                     default:
                         base[name] = value;
@@ -83,7 +93,16 @@ public class CatPoco : EntityBase, ICat
             }
             set
             {
-                ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = value as Int32?;
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                Int32? value1 = value as Int32?;
+                if(value is null || value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = (Int32)value1!;
             }
         }
         internal PrimaryKeyClass(CatPoco owner)

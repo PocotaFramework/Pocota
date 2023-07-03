@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPrimaryKey                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -26,7 +26,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
     {
         get
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     return _idFemale;
@@ -40,25 +40,25 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
         }
         set
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     _idFemale = value as Int32?;
-                    if(value is {} && _idFemale is null)
+                    if (value is null || _idFemale is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case 1:
                     _idFemaleCattery = value as Int32?;
-                    if(value is {} && _idFemaleCattery is null)
+                    if (value is null || _idFemaleCattery is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case 2:
                     _idLitter = value as Int32?;
-                    if(value is {} && _idLitter is null)
+                    if (value is null || _idLitter is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -72,7 +72,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
     {
         get
         {
-            switch(name)
+            switch (name)
             {
                 case "IdFemale":
                     return _idFemale;
@@ -86,25 +86,25 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
         }
         set
         {
-            switch(name)
+            switch (name)
             {
                 case "IdFemale":
                     _idFemale = value as Int32?;
-                    if(value is {} && _idFemale is null)
+                    if (value is null || _idFemale is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case "IdFemaleCattery":
                     _idFemaleCattery = value as Int32?;
-                    if(value is {} && _idFemaleCattery is null)
+                    if (value is null || _idFemaleCattery is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case "IdLitter":
                     _idLitter = value as Int32?;
-                    if(value is {} && _idLitter is null)
+                    if (value is null || _idLitter is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -124,7 +124,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
         set
         {
             _idFemale = value as Int32?;
-            if(value is {} && _idFemale is null)
+            if (value is null || _idFemale is null)
             {
                 throw new InvalidCastException();
             }
@@ -136,7 +136,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
         set
         {
             _idFemaleCattery = value as Int32?;
-            if(value is {} && _idFemaleCattery is null)
+            if (value is null || _idFemaleCattery is null)
             {
                 throw new InvalidCastException();
             }
@@ -148,7 +148,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
         set
         {
             _idLitter = value as Int32?;
-            if(value is {} && _idLitter is null)
+            if (value is null || _idLitter is null)
             {
                 throw new InvalidCastException();
             }

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPrimaryKey                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -24,7 +24,7 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
     {
         get
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     return _idCat;
@@ -36,18 +36,18 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
         }
         set
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     _idCat = value as Int32?;
-                    if(value is {} && _idCat is null)
+                    if (value is null || _idCat is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case 1:
                     _idCattery = value as Int32?;
-                    if(value is {} && _idCattery is null)
+                    if (value is null || _idCattery is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -61,7 +61,7 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
     {
         get
         {
-            switch(name)
+            switch (name)
             {
                 case "IdCat":
                     return _idCat;
@@ -73,18 +73,18 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
         }
         set
         {
-            switch(name)
+            switch (name)
             {
                 case "IdCat":
                     _idCat = value as Int32?;
-                    if(value is {} && _idCat is null)
+                    if (value is null || _idCat is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case "IdCattery":
                     _idCattery = value as Int32?;
-                    if(value is {} && _idCattery is null)
+                    if (value is null || _idCattery is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -104,7 +104,7 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
         set
         {
             _idCat = value as Int32?;
-            if(value is {} && _idCat is null)
+            if (value is null || _idCat is null)
             {
                 throw new InvalidCastException();
             }
@@ -116,7 +116,7 @@ public class CatPrimaryKey : IPrimaryKey<ICat>
         set
         {
             _idCattery = value as Int32?;
-            if(value is {} && _idCattery is null)
+            if (value is null || _idCattery is null)
             {
                 throw new InvalidCastException();
             }

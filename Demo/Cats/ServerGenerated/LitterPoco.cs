@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -42,18 +42,28 @@ public class LitterPoco : EntityBase, ILitter
                 switch(index)
                 {
                     case 0:
-                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
-                        break;
-                    case 1:
-                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
-                        break;
-                    case 2:
-                        Int32? value2 = value as Int32?;
-                        if(value is {} && value2 is null)
+                        Int32? value0 = value as Int32?;
+                        if(value is null || value0 is null)
                         {
                             throw new InvalidCastException();
                         }
-                            _owner.Order = (Int32)value2!;
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = (Int32)value0!;
+                        break;
+                    case 1:
+                        Int32? value1 = value as Int32?;
+                        if(value is null || value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = (Int32)value1!;
+                        break;
+                    case 2:
+                        Int32? value2 = value as Int32?;
+                        if(value is null || value2 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        _owner.Order = (Int32)value2!;
                         break;
                     default:
                         base[index] = value;
@@ -86,14 +96,24 @@ public class LitterPoco : EntityBase, ILitter
                 switch(name)
                 {
                     case "IdFemale":
-                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
+                        Int32? value0 = value as Int32?;
+                        if(value is null || value0 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = (Int32)value0!;
                         break;
                     case "IdFemaleCattery":
-                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
+                        Int32? value1 = value as Int32?;
+                        if(value is null || value1 is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = (Int32)value1!;
                         break;
                     case "IdLitter":
                         Int32? value2 = value as Int32?;
-                        if(value is {} && value2 is null)
+                        if(value is null || value2 is null)
                         {
                             throw new InvalidCastException();
                         }   
@@ -113,7 +133,16 @@ public class LitterPoco : EntityBase, ILitter
             }
             set
             {
-                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = value as Int32?;
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                Int32? value1 = value as Int32?;
+                if(value is null || value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCat = (Int32)value1!;
             }
         }
         public override Int32? IdFemaleCattery 
@@ -124,7 +153,16 @@ public class LitterPoco : EntityBase, ILitter
             }
             set
             {
-                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = value as Int32?;
+                if(!_owner.IsUnderConstruction)
+                {
+                    throw new InvalidOperationException();
+                }
+                Int32? value1 = value as Int32?;
+                if(value is null || value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                ((CatPrimaryKey)_owner.Female.PrimaryKey).IdCattery = (Int32)value1!;
             }
         }
         internal PrimaryKeyClass(LitterPoco owner)

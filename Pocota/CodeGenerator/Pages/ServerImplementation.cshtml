@@ -56,18 +56,22 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             @if(Model.PrimaryKey!.Parts[i].IsProperty)
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is {} && value@{}@i is null)
+                        if(value is null || value@{}@i is null)
                         {
                             throw new InvalidCastException();
                         }
-                            _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{
-                            }@i!;
+                        _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
 </text>
             }
             else
             {
-                <text>                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if(value is null || value@{}@i is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
 </text>
             }
@@ -124,7 +128,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             @if(Model.PrimaryKey!.Parts[i].IsProperty)
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is {} && value@{}@i is null)
+                        if(value is null || value@{}@i is null)
                         {
                             throw new InvalidCastException();
                         }   
@@ -134,7 +138,12 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             else
             {
-                <text>                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if(value is null || value@{}@i is null)
+                        {
+                            throw new InvalidCastException();
+                        }
+                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
 </text>
             }
@@ -166,14 +175,14 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             set
             {
-        @if(pkpm.IsProperty)
-        {
-            <text>                if(!_owner.IsUnderConstruction)
+                if(!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
-                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
-                if(value is {} && value1 is null)
+        @if(pkpm.IsProperty)
+        {
+            <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
+                if(value is null || value1 is null)
                 {
                     throw new InvalidCastException();
                 }
@@ -182,7 +191,12 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         else
         {
-            <text>                ((@pkpm.PrimaryKeyClassName)_owner.@pkpm.Property).@pkpm.KeyReference = value as @pkpm.Type@pkpm.AsTypeAsk;
+            <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
+                if(value is null || value1 is null)
+                {
+                    throw new InvalidCastException();
+                }
+                ((@pkpm.PrimaryKeyClassName)_owner.@pkpm.Property).@pkpm.KeyReference = (@pkpm.Type)value1!;
 </text>
         }
             }

@@ -1,5 +1,11 @@
-﻿using System.Data.SqlClient;
+﻿using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Demo.Cats.Common;
+using Net.Leksi.Pocota.Server;
+using System.Data;
+using System.Data.Common;
+using System.Data.SqlClient;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Server;
@@ -40,6 +46,142 @@ public class Storage : IStorage
                 throw;
             }
         }
+    }
+
+    public DbDataReader? SelectCats(ICatFilter? filter)
+    {
+        SqlConnection conn = new(_connectionString);
+        conn.Open();
+
+        SqlCommand sqlCommand = new();
+
+        StringBuilder sb = new(@"
+SELECT Cats.IdCat, Cats.IdCattery, Cats.IdBreed, Cats.IdGroup, Cats.IdLitter, Cats.IdMother, Cats.IdMotherCattery, 
+            Litters.Date, Litters.IdMale IdFather, Litters.IdMaleCattery IdFatherCattery,
+            Cats.Gender, Cats.NameEng, Cats.NameNat, 
+	        Cats.OwnerInfo, Cats.Exterior, Cats.Title,
+            Catteries.NameEng CatteryNameEng, Catteries.NameNat CatteryNameNat,
+            Breeds.NameEng BreedNameEng, Breeds.NameNat BreedNameNat
+            FROM Cats 
+                join Catteries on Catteries.IdCattery=Cats.IdCattery 
+                join Breeds on Breeds.IdBreed=Cats.IdBreed and Breeds.IdGroup=Cats.IdGroup
+                left join Litters on Cats.IdLitter=Litters.IdLitter and Cats.IdMother=Litters.IdFemale and Cats.IdMotherCattery=Litters.IdFemaleCattery
+");
+
+
+        if (filter is { })
+        {
+            ApplyCatListFilter(filter, sqlCommand, sb);
+        }
+
+        sqlCommand.CommandText = sb.ToString();
+
+        sqlCommand.Connection = conn;
+
+        return sqlCommand.ExecuteReader(CommandBehavior.CloseConnection);
+    }
+
+    private void ApplyCatListFilter(ICatFilter filterObject, SqlCommand sqlCommand, StringBuilder sb)
+    {
+        StringBuilder sbWhere = new();
+        if (filterObject.Breed is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdBreed=@IdBreed AND Cats.IdGroup=@IdGroup");
+            IPrimaryKey primaryKeyBreed = ((IEntity)filterObject.Breed).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdBreed", primaryKeyBreed["IdBreed"]!);
+            sqlCommand.Parameters.AddWithValue("IdGroup", primaryKeyBreed["IdGroup"]!);
+        }
+        if (filterObject.Cattery is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdCattery=@IDCattery");
+            IPrimaryKey primaryKeyCattery = ((IEntity)filterObject.Cattery).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdCattery", primaryKeyCattery["IdCattery"]!);
+        }
+        if (filterObject.BornAfter is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Litters.Date>=@BornAfter");
+            sqlCommand.Parameters.AddWithValue("BornAfter", filterObject.BornAfter?.ToString("yyyy-MM-dd"));
+        }
+        if (filterObject.BornBefore is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Litters.Date<=@BornBefore");
+            sqlCommand.Parameters.AddWithValue("BornBefore", filterObject.BornBefore?.ToString("yyyy-MM-dd"));
+        }
+        if (filterObject.Gender is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.Gender=@Gender");
+            sqlCommand.Parameters.AddWithValue("Gender", filterObject.Gender switch { Gender.Male => "M", Gender.Female => "F", Gender.FemaleCastrate => "FC", _ => "MC" });
+        }
+        if (filterObject.Self is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdCat=@IdCat AND Cats.IdCattery=@IdCattery");
+            IPrimaryKey primaryKeySelf = ((IEntity)filterObject.Self).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdCat", primaryKeySelf["IdCat"]);
+            sqlCommand.Parameters.AddWithValue("IdCattery", primaryKeySelf["IdCattery"]);
+        }
+        if (filterObject.Mother is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdMother=@IdMother AND Cats.IdMotherCattery=@IdMotherCattery");
+            IPrimaryKey primaryKeyMother = ((IEntity)filterObject.Mother).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdMother", primaryKeyMother["IdCat"]);
+            sqlCommand.Parameters.AddWithValue("IdMotherCattery", primaryKeyMother["IdCattery"]);
+        }
+        if (filterObject.Father is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdLitter is not null AND Litters.IdMale=@IdFather AND  Litters.IdMaleCattery=@IdFatherCattery");
+            IPrimaryKey primaryKeyFather = ((IEntity)filterObject.Father).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdFather", primaryKeyFather["IdCat"]);
+            sqlCommand.Parameters.AddWithValue("IdFatherCattery", primaryKeyFather["IdCattery"]);
+        }
+        if (filterObject.Litter is { })
+        {
+            if (sbWhere.Length > 0)
+            {
+                sbWhere.Append(" AND ");
+            }
+            sbWhere.Append("Cats.IdLitter is not null AND Litters.IdLitter=@IdLitter AND Litters.IdFemale=@IdFemale AND  Litters.IdFemaleCattery=@IdFemaleCattery");
+            IPrimaryKey primaryKeyLitter = ((IEntity)filterObject.Litter).PrimaryKey;
+            sqlCommand.Parameters.AddWithValue("IdLitter", primaryKeyLitter["IdLitter"]);
+            sqlCommand.Parameters.AddWithValue("IdFemale", primaryKeyLitter["IdFemale"]);
+            sqlCommand.Parameters.AddWithValue("IdFemaleCattery", primaryKeyLitter["IdFemaleCattery"]);
+        }
+        if (sbWhere.Length > 0)
+        {
+            sb.Append(" WHERE ").Append(sbWhere);
+        }
+
     }
 
     private void InstallDatabase(string db)

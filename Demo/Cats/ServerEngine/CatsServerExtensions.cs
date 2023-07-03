@@ -18,6 +18,7 @@ public static class CatsServerExtensions
             serviceProvider,
             connectionString)
         );
+        services.AddTransient<FindCatsDataProvider>();
 
         return services;
     }

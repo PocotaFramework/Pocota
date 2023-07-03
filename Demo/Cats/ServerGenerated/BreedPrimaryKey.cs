@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPrimaryKey                             //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -24,7 +24,7 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
     {
         get
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     return _idBreed;
@@ -36,18 +36,18 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
         }
         set
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     _idBreed = value as String;
-                    if(value is {} && _idBreed is null)
+                    if (value is null || _idBreed is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case 1:
                     _idGroup = value as String;
-                    if(value is {} && _idGroup is null)
+                    if (value is null || _idGroup is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -61,7 +61,7 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
     {
         get
         {
-            switch(name)
+            switch (name)
             {
                 case "IdBreed":
                     return _idBreed;
@@ -73,18 +73,18 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
         }
         set
         {
-            switch(name)
+            switch (name)
             {
                 case "IdBreed":
                     _idBreed = value as String;
-                    if(value is {} && _idBreed is null)
+                    if (value is null || _idBreed is null)
                     {
                         throw new InvalidCastException();
                     }
                     break;
                 case "IdGroup":
                     _idGroup = value as String;
-                    if(value is {} && _idGroup is null)
+                    if (value is null || _idGroup is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -104,7 +104,7 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
         set
         {
             _idBreed = value as String;
-            if(value is {} && _idBreed is null)
+            if (value is null || _idBreed is null)
             {
                 throw new InvalidCastException();
             }
@@ -116,7 +116,7 @@ public class BreedPrimaryKey : IPrimaryKey<IBreed>
         set
         {
             _idGroup = value as String;
-            if(value is {} && _idGroup is null)
+            if (value is null || _idGroup is null)
             {
                 throw new InvalidCastException();
             }

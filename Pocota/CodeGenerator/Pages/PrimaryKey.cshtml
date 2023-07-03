@@ -27,7 +27,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         get
         {
-            switch(index)
+            switch (index)
             {
 @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
 {
@@ -41,13 +41,13 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         set
         {
-            switch(index)
+            switch (index)
             {
 @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
 {
     <text>                case @i:
                     @Model.PrimaryKey!.Parts[i].FieldName = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                    if(value is {} && @Model.PrimaryKey!.Parts[i].FieldName is null)
+                    if (value is null || @Model.PrimaryKey!.Parts[i].FieldName is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -63,7 +63,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         get
         {
-            switch(name)
+            switch (name)
             {
 @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
 {
@@ -77,13 +77,13 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         set
         {
-            switch(name)
+            switch (name)
             {
 @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
 {
     <text>                case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
                     @Model.PrimaryKey!.Parts[i].FieldName = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                    if(value is {} && @Model.PrimaryKey!.Parts[i].FieldName is null)
+                    if (value is null || @Model.PrimaryKey!.Parts[i].FieldName is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -107,7 +107,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         set
         {
             @pkpm.FieldName = value as @pkpm.Type@pkpm.AsTypeAsk;
-            if(value is {} && @pkpm.FieldName is null)
+            if (value is null || @pkpm.FieldName is null)
             {
                 throw new InvalidCastException();
             }

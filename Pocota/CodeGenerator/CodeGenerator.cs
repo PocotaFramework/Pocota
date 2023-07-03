@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
-using Net.Leksi.Pocota.Server.Generic;
 using Net.Leksi.TextGenerator;
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Common;
 

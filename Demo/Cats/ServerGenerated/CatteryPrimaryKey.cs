@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPrimaryKey                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -22,7 +22,7 @@ public class CatteryPrimaryKey : IPrimaryKey<ICattery>
     {
         get
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     return _idCattery;
@@ -32,11 +32,11 @@ public class CatteryPrimaryKey : IPrimaryKey<ICattery>
         }
         set
         {
-            switch(index)
+            switch (index)
             {
                 case 0:
                     _idCattery = value as Int32?;
-                    if(value is {} && _idCattery is null)
+                    if (value is null || _idCattery is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -50,7 +50,7 @@ public class CatteryPrimaryKey : IPrimaryKey<ICattery>
     {
         get
         {
-            switch(name)
+            switch (name)
             {
                 case "IdCattery":
                     return _idCattery;
@@ -60,11 +60,11 @@ public class CatteryPrimaryKey : IPrimaryKey<ICattery>
         }
         set
         {
-            switch(name)
+            switch (name)
             {
                 case "IdCattery":
                     _idCattery = value as Int32?;
-                    if(value is {} && _idCattery is null)
+                    if (value is null || _idCattery is null)
                     {
                         throw new InvalidCastException();
                     }
@@ -84,7 +84,7 @@ public class CatteryPrimaryKey : IPrimaryKey<ICattery>
         set
         {
             _idCattery = value as Int32?;
-            if(value is {} && _idCattery is null)
+            if (value is null || _idCattery is null)
             {
                 throw new InvalidCastException();
             }

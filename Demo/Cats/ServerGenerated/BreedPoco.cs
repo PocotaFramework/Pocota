@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-02T16:37:21                                                        //
+// at 2023-07-03T15:20:48                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -41,19 +41,19 @@ public class BreedPoco : EntityBase, IBreed
                 {
                     case 0:
                         String value0 = value as String;
-                        if(value is {} && value0 is null)
+                        if(value is null || value0 is null)
                         {
                             throw new InvalidCastException();
                         }
-                            _owner.Code = (String)value0!;
+                        _owner.Code = (String)value0!;
                         break;
                     case 1:
                         String value1 = value as String;
-                        if(value is {} && value1 is null)
+                        if(value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }
-                            _owner.Group = (String)value1!;
+                        _owner.Group = (String)value1!;
                         break;
                     default:
                         base[index] = value;
@@ -85,7 +85,7 @@ public class BreedPoco : EntityBase, IBreed
                 {
                     case "IdBreed":
                         String value0 = value as String;
-                        if(value is {} && value0 is null)
+                        if(value is null || value0 is null)
                         {
                             throw new InvalidCastException();
                         }   
@@ -93,7 +93,7 @@ public class BreedPoco : EntityBase, IBreed
                         break;
                     case "IdGroup":
                         String value1 = value as String;
-                        if(value is {} && value1 is null)
+                        if(value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }   
