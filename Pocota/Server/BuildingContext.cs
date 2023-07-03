@@ -37,10 +37,11 @@ internal class BuildingContext
 
     internal BuildingContext(BuildingContext parent)
     {
-        this._parent = parent;
-        TracingLog = this._parent.TracingLog;
-        WithDirectOutput = this._parent.WithDirectOutput;
-        WithTracing = this._parent.WithTracing;
+        _parent = parent;
+        TracingLog = _parent.TracingLog;
+        WithDirectOutput = _parent.WithDirectOutput;
+        WithTracing = _parent.WithTracing;
+        _hasError = _parent.HasError;
     }
 
     internal BuildingContext(bool withDirectOutput, bool withTracing)

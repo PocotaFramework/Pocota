@@ -52,7 +52,7 @@ public class Core: IServiceCollection
     {
         if (IsCommitted)
         {
-            throw new InvalidOperationException("Forbidden Call!");
+            throw new InvalidOperationException("Denied Call!");
         }
         ServiceDescriptor? sd = AddServiceDescriptor(item);
         if(sd is { })

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -21,7 +21,7 @@ public class BreedPoco : EntityBase, IBreed
         {
             get
             {
-                switch(index)
+                switch (index)
                 {
                     case 0:
                        return _owner.Code;
@@ -33,15 +33,15 @@ public class BreedPoco : EntityBase, IBreed
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
-                switch(index)
+                switch (index)
                 {
                     case 0:
                         String value0 = value as String;
-                        if(value is null || value0 is null)
+                        if (value is null || value0 is null)
                         {
                             throw new InvalidCastException();
                         }
@@ -49,7 +49,7 @@ public class BreedPoco : EntityBase, IBreed
                         break;
                     case 1:
                         String value1 = value as String;
-                        if(value is null || value1 is null)
+                        if (value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }
@@ -65,7 +65,7 @@ public class BreedPoco : EntityBase, IBreed
         {
             get
             {
-                switch(name)
+                switch (name)
                 {
                     case "IdBreed":
                        return _owner.Code;
@@ -77,7 +77,7 @@ public class BreedPoco : EntityBase, IBreed
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
@@ -85,7 +85,7 @@ public class BreedPoco : EntityBase, IBreed
                 {
                     case "IdBreed":
                         String value0 = value as String;
-                        if(value is null || value0 is null)
+                        if (value is null || value0 is null)
                         {
                             throw new InvalidCastException();
                         }   
@@ -93,7 +93,7 @@ public class BreedPoco : EntityBase, IBreed
                         break;
                     case "IdGroup":
                         String value1 = value as String;
-                        if(value is null || value1 is null)
+                        if (value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }   
@@ -105,6 +105,17 @@ public class BreedPoco : EntityBase, IBreed
                 }
             }
         }
+        
+        public override bool IsAssigned 
+        {
+            get
+            {
+                return s_CodeProperty.GetAccess(_owner) is not PropertyAccessMode.Denied 
+                    && s_GroupProperty.GetAccess(_owner) is not PropertyAccessMode.Denied 
+                    && base.IsAssigned;
+            }
+        }
+        
         internal PrimaryKeyClass(BreedPoco owner)
         {
             _owner = owner;
@@ -123,11 +134,19 @@ public class BreedPoco : EntityBase, IBreed
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -142,15 +161,28 @@ public class BreedPoco : EntityBase, IBreed
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is BreedPoco obj1 ? obj1._codeAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is BreedPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._codeAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((BreedPoco)target).Code = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).Code;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is BreedPoco target1 ? target1._codeAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is BreedPoco target1)
+            {
+                target1._codeAccessMode  = mode;
             }
         }
     }
@@ -164,15 +196,28 @@ public class BreedPoco : EntityBase, IBreed
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is BreedPoco obj1 ? obj1._groupAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is BreedPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._groupAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((BreedPoco)target).Group = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).Group;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is BreedPoco target1 ? target1._groupAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is BreedPoco target1)
+            {
+                target1._groupAccessMode  = mode;
             }
         }
     }
@@ -186,15 +231,28 @@ public class BreedPoco : EntityBase, IBreed
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is BreedPoco obj1 ? obj1._nameNatAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is BreedPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameNatAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((BreedPoco)target).NameNat = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).NameNat;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is BreedPoco target1 ? target1._nameNatAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is BreedPoco target1)
+            {
+                target1._nameNatAccessMode  = mode;
             }
         }
     }
@@ -208,15 +266,28 @@ public class BreedPoco : EntityBase, IBreed
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is BreedPoco obj1 ? obj1._nameEngAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is BreedPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameEngAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((BreedPoco)target).NameEng = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((BreedPoco)target).NameEng;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is BreedPoco target1 ? target1._nameEngAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is BreedPoco target1)
+            {
+                target1._nameEngAccessMode  = mode;
             }
         }
     }
@@ -232,13 +303,13 @@ public class BreedPoco : EntityBase, IBreed
 
     #region fields
     private String _code = null!;
-    private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _codeAccessMode = PropertyAccessMode.Denied;
     private String _group = null!;
-    private PropertyAccessMode _groupAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _groupAccessMode = PropertyAccessMode.Denied;
     private String? _nameNat = null;
-    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Denied;
     private String? _nameEng = null;
-    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
@@ -254,7 +325,7 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            if(_codeAccessMode is PropertyAccessMode.Forbidden)
+            if(_codeAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -285,7 +356,7 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            if(_groupAccessMode is PropertyAccessMode.Forbidden)
+            if(_groupAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -316,7 +387,7 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameNatAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -347,7 +418,7 @@ public class BreedPoco : EntityBase, IBreed
     {
         get
         {
-            if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameEngAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }

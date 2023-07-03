@@ -16,7 +16,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             get
             {
-                switch(index)
+                switch (index)
                 {
     @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
@@ -42,11 +42,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new @nameof(InvalidOperationException)@{}();
                 }
-                switch(index)
+                switch (index)
                 {
     @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
@@ -56,9 +56,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             @if(Model.PrimaryKey!.Parts[i].IsProperty)
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is null || value@{}@i is null)
+                        if (value is null || value@{}@i is null)
                         {
-                            throw new InvalidCastException();
+                            throw new @nameof(InvalidCastException)@{}();
                         }
                         _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
@@ -67,9 +67,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             else
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is null || value@{}@i is null)
+                        if (value is null || value@{}@i is null)
                         {
-                            throw new InvalidCastException();
+                            throw new @nameof(InvalidCastException)@{}();
                         }
                         ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
@@ -88,7 +88,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             get
             {
-                switch(name)
+                switch (name)
                 {
     @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
     {
@@ -114,7 +114,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new @nameof(InvalidOperationException)@{}();
                 }
@@ -128,9 +128,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             @if(Model.PrimaryKey!.Parts[i].IsProperty)
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is null || value@{}@i is null)
+                        if (value is null || value@{}@i is null)
                         {
-                            throw new InvalidCastException();
+                            throw new @nameof(InvalidCastException)@{}();
                         }   
                         _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
@@ -139,9 +139,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             else
             {
                 <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
-                        if(value is null || value@{}@i is null)
+                        if (value is null || value@{}@i is null)
                         {
-                            throw new InvalidCastException();
+                            throw new @nameof(InvalidCastException)@{}();
                         }
                         ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
                         break;
@@ -175,16 +175,16 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
-                    throw new InvalidOperationException();
+                    throw new @nameof(InvalidCastException)@{}();
                 }
         @if(pkpm.IsProperty)
         {
             <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
-                if(value is null || value1 is null)
+                if (value is null || value1 is null)
                 {
-                    throw new InvalidCastException();
+                    throw new @nameof(InvalidCastException)@{}();
                 }
                 _owner.@pkpm.Property = (@pkpm.Type)value1!;
 </text>
@@ -192,9 +192,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         else
         {
             <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
-                if(value is null || value1 is null)
+                if (value is null || value1 is null)
                 {
-                    throw new InvalidCastException();
+                    throw new @nameof(InvalidCastException)@{}();
                 }
                 ((@pkpm.PrimaryKeyClassName)_owner.@pkpm.Property).@pkpm.KeyReference = (@pkpm.Type)value1!;
 </text>
@@ -203,6 +203,22 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
 </text>
     }
+        
+        public override bool IsAssigned 
+        {
+            get
+            {
+                return @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {       
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+                <text>s_@{}@Model.PrimaryKey!.Parts[@i].PropertyName@{}Property.GetAccess(_owner) is not @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Denied) 
+                    && </text>
+        }
+    }base.IsAssigned;
+            }
+        }
+        
         internal PrimaryKeyClass(@Model.ClassName owner)
         {
             _owner = owner;
@@ -225,7 +241,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         public bool IsEntity => @pm.IsEntity.ToString().ToLower();
         public bool IsList => @pm.IsList.ToString().ToLower();
         public Type? ItemType => @(pm.ItemObjectType is { } ? Html.Raw($"typeof({pm.ItemObjectType})") : "null");
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
     @if(string.IsNullOrEmpty(pm.Name))
     {
@@ -234,11 +250,16 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     else
     {
-        <text>            return obj is @Model.ClassName obj1 ? obj1.@pm.AccessModeFieldName : @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Forbidden);
+        <text>            @Html.Raw(pm.ObjectType)? value1 = value as @Html.Raw(pm.ObjectType)@pm.AsTypeAsk;
+            if (value is {} && value1 is null@{}@if(!pm.IsNullable){<text> || value is null</text>})
+            {
+                throw new @nameof(InvalidCastException)@{}();
+            }
+            ((@Model.ClassName)target).@pm.Name = @if(!pm.IsNullable && !string.IsNullOrEmpty(pm.AsTypeAsk)){<text>(@Html.Raw(pm.ObjectType))</text>}value1@{}@if(!pm.IsNullable){<text>!</text>};
 </text>
     }
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
         {
     @if(string.IsNullOrEmpty(pm.Name))
     {
@@ -247,9 +268,35 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     else
     {
-        <text>            if(obj is @Model.ClassName obj1)
+        <text>            return ((@Model.ClassName)target).@pm.Name;
+</text>
+    }
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+    @if(string.IsNullOrEmpty(pm.Name))
+    {
+        <text>            throw new @nameof(InvalidOperationException)@{}();
+</text>
+    }
+    else
+    {
+        <text>            return target is @Model.ClassName target1 ? target1.@pm.AccessModeFieldName : @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Denied);
+</text>
+    }
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+    @if(string.IsNullOrEmpty(pm.Name))
+    {
+        <text>            throw new @nameof(InvalidOperationException)@{}();
+</text>
+    }
+    else
+    {
+        <text>            if(target is @Model.ClassName target1)
             {
-                obj1.@pm.AccessModeFieldName  = mode;
+                target1.@pm.AccessModeFieldName  = mode;
             }
 </text>
     }
@@ -276,7 +323,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.Type)@pm.NullableSuffix @pm.ProxyFieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
 </text>    
     }
-    private PropertyAccessMode @pm.AccessModeFieldName = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode @pm.AccessModeFieldName = @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Denied);
 </text>    
 }
     #endregion fields
@@ -315,7 +362,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         get
         {
-            if(@pm.AccessModeFieldName is PropertyAccessMode.Forbidden)
+            if(@pm.AccessModeFieldName is @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Denied))
             {
                 throw new @nameof(InvalidOperationException)@{}(s_noAccess);
             }
@@ -325,11 +372,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         <text>        set
         {
-            if(!IsUnderConstruction && @pm.AccessModeFieldName is not PropertyAccessMode.Full)
+            if(!IsUnderConstruction && @pm.AccessModeFieldName is not @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Full))
             {
                 throw new @nameof(InvalidOperationException)@{}(s_noAccess);
             }
-            @pm.AccessModeFieldName = PropertyAccessMode.@{}@if(pm.IsReadOnly){<text>ReadOnly</text>} else {<text>Full</text>};
+            @pm.AccessModeFieldName = @nameof(PropertyAccessMode).@{}@if(pm.IsReadOnly){<text>@nameof(PropertyAccessMode.ReadOnly)</text>} else {<text>@nameof(PropertyAccessMode.Full)</text>};
             @pm.FieldName = value;
             @if(pm.IsList && pm.IsPoco)
             {

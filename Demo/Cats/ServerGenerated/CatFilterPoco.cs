@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -25,11 +25,19 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -44,15 +52,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._breedAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            BreedPoco? value1 = value as BreedPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._breedAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Breed = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Breed;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._breedAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._breedAccessMode  = mode;
             }
         }
     }
@@ -66,15 +87,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._catteryAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatteryPoco? value1 = value as CatteryPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._catteryAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Cattery = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Cattery;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._catteryAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._catteryAccessMode  = mode;
             }
         }
     }
@@ -88,15 +122,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._bornAfterAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            DateOnly? value1 = value as DateOnly?;
+            if (value is {} && value1 is null)
             {
-                obj1._bornAfterAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).BornAfter = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).BornAfter;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._bornAfterAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._bornAfterAccessMode  = mode;
             }
         }
     }
@@ -110,15 +157,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._bornBeforeAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            DateOnly? value1 = value as DateOnly?;
+            if (value is {} && value1 is null)
             {
-                obj1._bornBeforeAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).BornBefore = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).BornBefore;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._bornBeforeAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._bornBeforeAccessMode  = mode;
             }
         }
     }
@@ -132,15 +192,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._nameRegexAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameRegexAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).NameRegex = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).NameRegex;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._nameRegexAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._nameRegexAccessMode  = mode;
             }
         }
     }
@@ -154,15 +227,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._genderAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            Gender? value1 = value as Gender?;
+            if (value is {} && value1 is null)
             {
-                obj1._genderAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Gender = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Gender;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._genderAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._genderAccessMode  = mode;
             }
         }
     }
@@ -176,15 +262,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._childAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._childAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Child = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Child;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._childAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._childAccessMode  = mode;
             }
         }
     }
@@ -198,15 +297,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._selfAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._selfAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Self = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Self;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._selfAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._selfAccessMode  = mode;
             }
         }
     }
@@ -220,15 +332,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._motherAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._motherAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Mother = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Mother;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._motherAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._motherAccessMode  = mode;
             }
         }
     }
@@ -242,15 +367,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._fatherAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._fatherAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Father = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Father;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._fatherAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._fatherAccessMode  = mode;
             }
         }
     }
@@ -264,15 +402,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._ancestorAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._ancestorAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Ancestor = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Ancestor;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._ancestorAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._ancestorAccessMode  = mode;
             }
         }
     }
@@ -286,15 +437,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._descendantAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            CatPoco? value1 = value as CatPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._descendantAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Descendant = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Descendant;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._descendantAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._descendantAccessMode  = mode;
             }
         }
     }
@@ -308,15 +472,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._litterAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            LitterPoco? value1 = value as LitterPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._litterAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).Litter = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).Litter;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._litterAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._litterAccessMode  = mode;
             }
         }
     }
@@ -330,15 +507,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._exteriorRegexAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._exteriorRegexAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).ExteriorRegex = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).ExteriorRegex;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._exteriorRegexAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._exteriorRegexAccessMode  = mode;
             }
         }
     }
@@ -352,15 +542,28 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatFilterPoco obj1 ? obj1._titleRegexAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatFilterPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._titleRegexAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatFilterPoco)target).TitleRegex = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatFilterPoco)target).TitleRegex;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatFilterPoco target1 ? target1._titleRegexAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatFilterPoco target1)
+            {
+                target1._titleRegexAccessMode  = mode;
             }
         }
     }
@@ -387,35 +590,35 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
 
     #region fields
     private BreedPoco? _breed = null;
-    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Denied;
     private CatteryPoco? _cattery = null;
-    private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Denied;
     private DateOnly? _bornAfter = null;
-    private PropertyAccessMode _bornAfterAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _bornAfterAccessMode = PropertyAccessMode.Denied;
     private DateOnly? _bornBefore = null;
-    private PropertyAccessMode _bornBeforeAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _bornBeforeAccessMode = PropertyAccessMode.Denied;
     private String? _nameRegex = null;
-    private PropertyAccessMode _nameRegexAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameRegexAccessMode = PropertyAccessMode.Denied;
     private Gender? _gender = null;
-    private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _child = null;
-    private PropertyAccessMode _childAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _childAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _self = null;
-    private PropertyAccessMode _selfAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _selfAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _mother = null;
-    private PropertyAccessMode _motherAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _motherAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _father = null;
-    private PropertyAccessMode _fatherAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _fatherAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _ancestor = null;
-    private PropertyAccessMode _ancestorAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _ancestorAccessMode = PropertyAccessMode.Denied;
     private CatPoco? _descendant = null;
-    private PropertyAccessMode _descendantAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _descendantAccessMode = PropertyAccessMode.Denied;
     private LitterPoco? _litter = null;
-    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Denied;
     private String? _exteriorRegex = null;
-    private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.Denied;
     private String? _titleRegex = null;
-    private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
 
@@ -428,7 +631,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_breedAccessMode is PropertyAccessMode.Forbidden)
+            if(_breedAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -459,7 +662,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_catteryAccessMode is PropertyAccessMode.Forbidden)
+            if(_catteryAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -490,7 +693,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_bornAfterAccessMode is PropertyAccessMode.Forbidden)
+            if(_bornAfterAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -521,7 +724,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_bornBeforeAccessMode is PropertyAccessMode.Forbidden)
+            if(_bornBeforeAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -552,7 +755,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_nameRegexAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameRegexAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -583,7 +786,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_genderAccessMode is PropertyAccessMode.Forbidden)
+            if(_genderAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -614,7 +817,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_childAccessMode is PropertyAccessMode.Forbidden)
+            if(_childAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -645,7 +848,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_selfAccessMode is PropertyAccessMode.Forbidden)
+            if(_selfAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -676,7 +879,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_motherAccessMode is PropertyAccessMode.Forbidden)
+            if(_motherAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -707,7 +910,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_fatherAccessMode is PropertyAccessMode.Forbidden)
+            if(_fatherAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -738,7 +941,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_ancestorAccessMode is PropertyAccessMode.Forbidden)
+            if(_ancestorAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -769,7 +972,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_descendantAccessMode is PropertyAccessMode.Forbidden)
+            if(_descendantAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -800,7 +1003,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_litterAccessMode is PropertyAccessMode.Forbidden)
+            if(_litterAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -831,7 +1034,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_exteriorRegexAccessMode is PropertyAccessMode.Forbidden)
+            if(_exteriorRegexAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -862,7 +1065,7 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     {
         get
         {
-            if(_titleRegexAccessMode is PropertyAccessMode.Forbidden)
+            if(_titleRegexAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }

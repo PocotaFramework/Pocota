@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -21,7 +21,7 @@ public class CatPoco : EntityBase, ICat
         {
             get
             {
-                switch(index)
+                switch (index)
                 {
                     case 1:
                        return ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery;
@@ -31,15 +31,15 @@ public class CatPoco : EntityBase, ICat
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
-                switch(index)
+                switch (index)
                 {
                     case 1:
                         Int32? value1 = value as Int32?;
-                        if(value is null || value1 is null)
+                        if (value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }
@@ -55,7 +55,7 @@ public class CatPoco : EntityBase, ICat
         {
             get
             {
-                switch(name)
+                switch (name)
                 {
                     case "IdCattery":
                        return ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery;
@@ -65,7 +65,7 @@ public class CatPoco : EntityBase, ICat
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
@@ -73,7 +73,7 @@ public class CatPoco : EntityBase, ICat
                 {
                     case "IdCattery":
                         Int32? value1 = value as Int32?;
-                        if(value is null || value1 is null)
+                        if (value is null || value1 is null)
                         {
                             throw new InvalidCastException();
                         }
@@ -93,18 +93,28 @@ public class CatPoco : EntityBase, ICat
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidCastException();
                 }
                 Int32? value1 = value as Int32?;
-                if(value is null || value1 is null)
+                if (value is null || value1 is null)
                 {
                     throw new InvalidCastException();
                 }
                 ((CatteryPrimaryKey)_owner.Cattery.PrimaryKey).IdCattery = (Int32)value1!;
             }
         }
+        
+        public override bool IsAssigned 
+        {
+            get
+            {
+                return s_CatteryProperty.GetAccess(_owner) is not PropertyAccessMode.Denied 
+                    && base.IsAssigned;
+            }
+        }
+        
         internal PrimaryKeyClass(CatPoco owner)
         {
             _owner = owner;
@@ -123,11 +133,19 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -142,15 +160,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._catteryAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            CatteryPoco? value1 = value as CatteryPoco;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._catteryAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Cattery = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Cattery;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._catteryAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._catteryAccessMode  = mode;
             }
         }
     }
@@ -164,15 +195,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._nameNatAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameNatAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).NameNat = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).NameNat;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._nameNatAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._nameNatAccessMode  = mode;
             }
         }
     }
@@ -186,15 +230,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._breedAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            BreedPoco? value1 = value as BreedPoco;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._breedAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Breed = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Breed;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._breedAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._breedAccessMode  = mode;
             }
         }
     }
@@ -208,15 +265,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._nameEngAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameEngAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).NameEng = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).NameEng;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._nameEngAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._nameEngAccessMode  = mode;
             }
         }
     }
@@ -230,15 +300,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._genderAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            Gender? value1 = value as Gender?;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._genderAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Gender = (Gender)value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Gender;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._genderAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._genderAccessMode  = mode;
             }
         }
     }
@@ -252,15 +335,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._litterAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            LitterPoco? value1 = value as LitterPoco;
+            if (value is {} && value1 is null)
             {
-                obj1._litterAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Litter = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Litter;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._litterAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._litterAccessMode  = mode;
             }
         }
     }
@@ -274,15 +370,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._exteriorAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._exteriorAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Exterior = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Exterior;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._exteriorAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._exteriorAccessMode  = mode;
             }
         }
     }
@@ -296,15 +405,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._titleAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._titleAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Title = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Title;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._titleAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._titleAccessMode  = mode;
             }
         }
     }
@@ -318,15 +440,28 @@ public class CatPoco : EntityBase, ICat
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatPoco obj1 ? obj1._descriptionAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._descriptionAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Description = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).Description;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._descriptionAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._descriptionAccessMode  = mode;
             }
         }
     }
@@ -347,23 +482,23 @@ public class CatPoco : EntityBase, ICat
 
     #region fields
     private CatteryPoco _cattery = null!;
-    private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.Denied;
     private String? _nameNat = null;
-    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Denied;
     private BreedPoco _breed = null!;
-    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Denied;
     private String? _nameEng = null;
-    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Denied;
     private Gender _gender;
-    private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _genderAccessMode = PropertyAccessMode.Denied;
     private LitterPoco? _litter = null;
-    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Denied;
     private String? _exterior = null;
-    private PropertyAccessMode _exteriorAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _exteriorAccessMode = PropertyAccessMode.Denied;
     private String? _title = null;
-    private PropertyAccessMode _titleAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _titleAccessMode = PropertyAccessMode.Denied;
     private String? _description = null;
-    private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
@@ -379,7 +514,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_catteryAccessMode is PropertyAccessMode.Forbidden)
+            if(_catteryAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -410,7 +545,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameNatAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -441,7 +576,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_breedAccessMode is PropertyAccessMode.Forbidden)
+            if(_breedAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -472,7 +607,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameEngAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -503,7 +638,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_genderAccessMode is PropertyAccessMode.Forbidden)
+            if(_genderAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -534,7 +669,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_litterAccessMode is PropertyAccessMode.Forbidden)
+            if(_litterAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -565,7 +700,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_exteriorAccessMode is PropertyAccessMode.Forbidden)
+            if(_exteriorAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -596,7 +731,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_titleAccessMode is PropertyAccessMode.Forbidden)
+            if(_titleAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -627,7 +762,7 @@ public class CatPoco : EntityBase, ICat
     {
         get
         {
-            if(_descriptionAccessMode is PropertyAccessMode.Forbidden)
+            if(_descriptionAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }

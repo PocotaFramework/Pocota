@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPrimaryKey                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -116,7 +116,7 @@ public class LitterPrimaryKey : IPrimaryKey<ILitter>
     }
     public IList<KeyDefinition> Definitions => _definitions;
     public int Count => _definitions.Count;
-    public bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
+    public virtual bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
 
     public virtual Int32? IdFemale 
     {

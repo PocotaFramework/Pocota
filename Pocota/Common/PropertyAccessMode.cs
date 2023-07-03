@@ -4,5 +4,5 @@ public enum PropertyAccessMode
 {
     Full,
     ReadOnly,
-    Forbidden
+    Denied
 }

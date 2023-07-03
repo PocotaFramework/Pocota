@@ -20,4 +20,6 @@ internal class PropertyModel
     internal bool CanBeNull { get; set; } = false;
     internal string PropertyClass { get; set; } = null!;
     internal string PropertyField { get; set; } = null!;
+    internal string AsTypeAsk = string.Empty;
+
 }

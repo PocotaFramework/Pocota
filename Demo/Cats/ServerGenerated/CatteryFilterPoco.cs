@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryFilterPoco                           //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -25,11 +25,19 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -44,15 +52,28 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatteryFilterPoco obj1 ? obj1._searchRegexAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatteryFilterPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._searchRegexAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatteryFilterPoco)target).SearchRegex = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatteryFilterPoco)target).SearchRegex;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatteryFilterPoco target1 ? target1._searchRegexAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatteryFilterPoco target1)
+            {
+                target1._searchRegexAccessMode  = mode;
             }
         }
     }
@@ -65,7 +86,7 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
 
     #region fields
     private String? _searchRegex = null;
-    private PropertyAccessMode _searchRegexAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _searchRegexAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
 
@@ -78,7 +99,7 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
     {
         get
         {
-            if(_searchRegexAccessMode is PropertyAccessMode.Forbidden)
+            if(_searchRegexAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }

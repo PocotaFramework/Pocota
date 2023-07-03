@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -21,7 +21,7 @@ public class CatteryPoco : EntityBase, ICattery
         {
             get
             {
-                switch(index)
+                switch (index)
                 {
                     default:
                         return base[index];
@@ -29,11 +29,11 @@ public class CatteryPoco : EntityBase, ICattery
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
-                switch(index)
+                switch (index)
                 {
                     default:
                         base[index] = value;
@@ -45,7 +45,7 @@ public class CatteryPoco : EntityBase, ICattery
         {
             get
             {
-                switch(name)
+                switch (name)
                 {
                     default:
                         return base[name];
@@ -53,7 +53,7 @@ public class CatteryPoco : EntityBase, ICattery
             }
             set
             {
-                if(!_owner.IsUnderConstruction)
+                if (!_owner.IsUnderConstruction)
                 {
                     throw new InvalidOperationException();
                 }
@@ -65,6 +65,15 @@ public class CatteryPoco : EntityBase, ICattery
                 }
             }
         }
+        
+        public override bool IsAssigned 
+        {
+            get
+            {
+                return base.IsAssigned;
+            }
+        }
+        
         internal PrimaryKeyClass(CatteryPoco owner)
         {
             _owner = owner;
@@ -83,11 +92,19 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -102,15 +119,28 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatteryPoco obj1 ? obj1._nameEngAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatteryPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameEngAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatteryPoco)target).NameEng = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatteryPoco)target).NameEng;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatteryPoco target1 ? target1._nameEngAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatteryPoco target1)
+            {
+                target1._nameEngAccessMode  = mode;
             }
         }
     }
@@ -124,15 +154,28 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is CatteryPoco obj1 ? obj1._nameNatAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is CatteryPoco obj1)
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
             {
-                obj1._nameNatAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((CatteryPoco)target).NameNat = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatteryPoco)target).NameNat;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatteryPoco target1 ? target1._nameNatAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatteryPoco target1)
+            {
+                target1._nameNatAccessMode  = mode;
             }
         }
     }
@@ -146,9 +189,9 @@ public class CatteryPoco : EntityBase, ICattery
 
     #region fields
     private String? _nameEng = null;
-    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Denied;
     private String? _nameNat = null;
-    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
@@ -164,7 +207,7 @@ public class CatteryPoco : EntityBase, ICattery
     {
         get
         {
-            if(_nameEngAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameEngAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -195,7 +238,7 @@ public class CatteryPoco : EntityBase, ICattery
     {
         get
         {
-            if(_nameNatAccessMode is PropertyAccessMode.Forbidden)
+            if(_nameNatAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }

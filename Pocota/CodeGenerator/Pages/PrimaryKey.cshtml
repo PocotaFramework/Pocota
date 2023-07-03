@@ -97,7 +97,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     public IList@{}@Html.Raw("<KeyDefinition>") Definitions => _definitions;
     public int Count => _definitions.Count;
-    public bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
+    public virtual bool IsAssigned => _definitions.Select(def => this[def.Name] is { }).All(e => e);
 
 @foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts)
 {

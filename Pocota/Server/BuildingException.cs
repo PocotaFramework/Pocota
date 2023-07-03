@@ -61,6 +61,17 @@ public class BuildingException: Exception
                 sb.AppendLine();
             }
         }
+        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+        if (exceptions.Any())
+        {
+            sb.AppendLine("Exceptions:");
+            for(int i = 0; i < exceptions.Count; ++i)
+            {
+                sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+                sb.Append($"[{i + 1}]: ").AppendLine(exceptions[i].ToString());
+            }
+            sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+        }
 
         return new BuildingException(sb.ToString(), tracings);
     }

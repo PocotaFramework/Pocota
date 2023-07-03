@@ -16,7 +16,13 @@ public class FindCatsDataProvider : DataProvider
     {
         get
         {
-            return DateTime.Now;
+            switch (path)
+            {
+                case "IdCat":
+                    return _dataReader!["IdCat"];
+                case "IdCattery":
+                    return _dataReader!["IdCattery"];
+            }
             return DataProviderResponse.Miss;
         }
     }

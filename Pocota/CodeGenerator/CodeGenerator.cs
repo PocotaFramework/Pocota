@@ -635,7 +635,9 @@ public class CodeGenerator
                     IsNullable = nc.Create(pi).WriteState is NullabilityState.Nullable,
                     Type = MakeTypeName(pi.PropertyType),
                     PropertyClass = $"{pi.Name}{s_property}{s_class}",
-                    PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}"
+                    PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}",
+                    AsTypeAsk = (pi.PropertyType.IsClass || pi.PropertyType.IsInterface) ? string.Empty : s_ask,
+
                 };
                 pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");

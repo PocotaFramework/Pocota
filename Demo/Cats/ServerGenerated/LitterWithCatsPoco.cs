@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T15:20:48                                                        //
+// at 2023-07-03T18:35:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -25,11 +25,19 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public bool IsEntity => false;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object obj, PropertyAccessMode mode)
+        public object? GetValue(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
@@ -44,15 +52,28 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public bool IsEntity => true;
         public bool IsList => false;
         public Type? ItemType => null;
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is LitterWithCatsPoco obj1 ? obj1._litterAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is LitterWithCatsPoco obj1)
+            LitterPoco? value1 = value as LitterPoco;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._litterAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((LitterWithCatsPoco)target).Litter = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((LitterWithCatsPoco)target).Litter;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._litterAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is LitterWithCatsPoco target1)
+            {
+                target1._litterAccessMode  = mode;
             }
         }
     }
@@ -66,15 +87,28 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public bool IsEntity => true;
         public bool IsList => true;
         public Type? ItemType => typeof(CatPoco);
-        public PropertyAccessMode GetAccess(object obj)
+        public void SetValue(object target, object? value)
         {
-            return obj is LitterWithCatsPoco obj1 ? obj1._catsAccessMode : PropertyAccessMode.Forbidden;
-        }
-        public void SetAccess(object obj, PropertyAccessMode mode)
-        {
-            if(obj is LitterWithCatsPoco obj1)
+            IList<CatPoco>? value1 = value as IList<CatPoco>;
+            if (value is {} && value1 is null || value is null)
             {
-                obj1._catsAccessMode  = mode;
+                throw new InvalidCastException();
+            }
+            ((LitterWithCatsPoco)target).Cats = value1!;
+        }
+        public object? GetValue(object target)
+        {
+            return ((LitterWithCatsPoco)target).Cats;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._catsAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is LitterWithCatsPoco target1)
+            {
+                target1._catsAccessMode  = mode;
             }
         }
     }
@@ -88,10 +122,10 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
 
     #region fields
     private LitterPoco _litter = null!;
-    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Denied;
     private IList<CatPoco> _cats = null!;
     private IList<ICat> _catsProxy = null!;
-    private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Forbidden;
+    private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
 
@@ -104,7 +138,7 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_litterAccessMode is PropertyAccessMode.Forbidden)
+            if(_litterAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
@@ -135,7 +169,7 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_catsAccessMode is PropertyAccessMode.Forbidden)
+            if(_catsAccessMode is PropertyAccessMode.Denied)
             {
                 throw new InvalidOperationException(s_noAccess);
             }
