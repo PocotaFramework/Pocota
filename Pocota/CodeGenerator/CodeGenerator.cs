@@ -838,42 +838,59 @@ public class CodeGenerator
 
     private void EnsurePrimaryKeyPaths(PropertyUseModel result)
     {
-        if (result.Type is { } &&  _interfaceHoldersByType.TryGetValue(result.Type, out InterfaceHolder? ih) && ih.KeysDefinitions.Any())
+        if (result.Type is { } &&  _interfaceHoldersByType.TryGetValue(result.Type, out InterfaceHolder? ih))
         {
-            int pos = 0;
-            foreach(KeyValuePair<string, PrimaryKeyDefinition> kd in ih.KeysDefinitions)
+            if(ih.KeysDefinitions.Any())
             {
-                if(kd.Value.Property is { })
+                int pos = 0;
+                foreach (KeyValuePair<string, PrimaryKeyDefinition> kd in ih.KeysDefinitions)
                 {
-                    if(result.Properties is null)
+                    if (kd.Value.Property is { })
                     {
-                        result.Properties = new List<PropertyUseModel>();
-                    }
-                    if(result.Properties.Find(p => p.Name.Equals(kd.Value.Property.Name)) is PropertyUseModel pum)
-                    {
-                        result.Properties.Remove(pum);
-                    }
-                    else
-                    {
-                        pum = new PropertyUseModel
+                        if (result.Properties is null)
                         {
-                            Name = kd.Value.Property.Name,
-                            PropertyField = $"{result.TypeName}.{s_staticPrefix}{kd.Value.Property.Name}{s_property}",
-                            Path = $"{result.Path}.{kd.Value.Property.Name}",
-                            Type = kd.Value.Property.PropertyType,
-                            Indentation = $"{result.Indentation}{s_propertyUseIndentation}",
-                        };
-                        if (_interfaceHoldersByType.TryGetValue(pum.Type, out InterfaceHolder? ih1))
+                            result.Properties = new List<PropertyUseModel>();
+                        }
+                        if (result.Properties.Find(p => p.Name.Equals(kd.Value.Property.Name)) is PropertyUseModel pum)
                         {
-                            pum.TypeName = MakePocoClassName(ih1.Interface);
+                            result.Properties.Remove(pum);
                         }
                         else
                         {
-                            pum.TypeName = MakeTypeName(pum.Type);
+                            pum = new PropertyUseModel
+                            {
+                                Name = kd.Value.Property.Name,
+                                PropertyField = $"{result.TypeName}.{s_staticPrefix}{kd.Value.Property.Name}{s_property}",
+                                Path = $"{result.Path}.{kd.Value.Property.Name}",
+                                Type = kd.Value.Property.PropertyType,
+                                Indentation = $"{result.Indentation}{s_propertyUseIndentation}",
+                            };
+                            if (_interfaceHoldersByType.TryGetValue(pum.Type, out InterfaceHolder? ih1))
+                            {
+                                pum.TypeName = MakePocoClassName(ih1.Interface);
+                            }
+                            else
+                            {
+                                pum.TypeName = MakeTypeName(pum.Type);
+                            }
                         }
+                        if(pos >= result.Properties!.Count)
+                        {
+                            result.Properties!.Add(pum);
+                        }
+                        else
+                        {
+                            result.Properties!.Insert(pos, pum);
+                        }
+                        ++pos;
                     }
-                    result.Properties!.Insert(pos, pum);
-                    ++pos;
+                }
+            }
+            if(result.Properties is { })
+            {
+                foreach (PropertyUseModel prop in result.Properties)
+                {
+                    EnsurePrimaryKeyPaths(prop);
                 }
             }
         }

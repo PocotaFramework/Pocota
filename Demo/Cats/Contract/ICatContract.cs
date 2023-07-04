@@ -19,7 +19,8 @@ public interface ICatContract
         "NameNat",
         "Breed.NameNat",
         "Breed.NameEng",
-        "Cattery.*"
+        "Cattery.*",
+        "LitterWithCats.*"
     })]
     IList<ICat> FindCats(ICatFilter? filter);
 

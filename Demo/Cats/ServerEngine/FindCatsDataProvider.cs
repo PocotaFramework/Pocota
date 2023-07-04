@@ -16,12 +16,15 @@ public class FindCatsDataProvider : DataProvider
     {
         get
         {
+            Console.WriteLine(path);
             switch (path)
             {
                 case "IdCat":
                     return _dataReader!["IdCat"];
                 case "IdCattery":
                     return _dataReader!["IdCattery"];
+                case "LitterWithCats":
+                    return DataProviderResponse.Touch;
             }
             return DataProviderResponse.Miss;
         }

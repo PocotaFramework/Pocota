@@ -11,14 +11,14 @@ public class BuildingException: Exception
     private const string s_responseHeader = "Response";
     private const string s_successHeader = "Success";
     private const string s_commentHeader = "Comment";
-    public List<TracingHolder> TracingLog { get; init; }
+    public IEnumerable<TracingEntry> TracingLog { get; init; }
 
-    private BuildingException(string? message, List<TracingHolder> tracings): base(message)
+    private BuildingException(string? message, IEnumerable<TracingEntry> tracingsLog): base(message)
     {
-        TracingLog = tracings;
+        TracingLog = tracingsLog;
     }
 
-    internal static BuildingException Create(string? message, List<TracingHolder> tracings)
+    internal static BuildingException Create(string? message, IEnumerable<TracingEntry> tracings)
     {
         StringBuilder sb = new();
         List<Exception> exceptions = new();
@@ -43,7 +43,7 @@ public class BuildingException: Exception
         sb.AppendFormat($"{{0, -{maxCommentLength}}}", s_commentHeader);
         sb.AppendLine();
         sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
-        foreach (TracingHolder tracing in tracings)
+        foreach (TracingEntry tracing in tracings)
         {
             if(tracing.Success is bool success)
             {

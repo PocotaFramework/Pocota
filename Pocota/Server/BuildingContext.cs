@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.Pocota.Common;
+using System.Collections;
 
 namespace Net.Leksi.Pocota.Server;
 
@@ -6,6 +7,7 @@ internal class BuildingContext
 {
     private readonly BuildingContext? _parent;
     private bool _hasError = false;
+    private List<TracingEntry> _tracingLog { get; init; }
 
     internal PropertyUse PropertyUse { get; set; } = null!;
     internal Dictionary<string, BuildingContext> PropertyUsesContexts { get; init; } = new();
@@ -14,7 +16,6 @@ internal class BuildingContext
     internal int EntityLevel { get; set; } = -1;
     internal bool IsSingleQuery { get; set; } = true;
     internal bool WithDirectOutput { get; init; }
-    internal List<TracingHolder> TracingLog { get; init; }
     internal object? Value { get; set; } = null;
     internal Dictionary<string, object> SetKeyParts { get; init; } = new();
     internal bool WithTracing { get; init; } = false;
@@ -34,11 +35,14 @@ internal class BuildingContext
             }
         }
     }
+    internal IEnumerable<TracingEntry> TracingLog => _tracingLog.Select(e => e);
+
+    internal TracingEntry? LastTracingEntry => _tracingLog.LastOrDefault();
 
     internal BuildingContext(BuildingContext parent)
     {
         _parent = parent;
-        TracingLog = _parent.TracingLog;
+        _tracingLog = _parent._tracingLog;
         WithDirectOutput = _parent.WithDirectOutput;
         WithTracing = _parent.WithTracing;
         _hasError = _parent.HasError;
@@ -49,6 +53,20 @@ internal class BuildingContext
         WithDirectOutput = withDirectOutput;
         WithTracing = withTracing;
         _parent = null;
-        TracingLog = new();
+        _tracingLog = new();
+    }
+
+    internal void Clear()
+    {
+        if (IsTop)
+        {
+            _tracingLog.Clear();
+        }
+        Value = null;
+    }
+
+    internal void Trace(TracingEntry tracingEntry)
+    {
+        _tracingLog.Add(tracingEntry);
     }
 }

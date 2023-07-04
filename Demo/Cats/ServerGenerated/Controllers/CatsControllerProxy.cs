@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T18:35:49                                                        //
+// at 2023-07-04T15:46:08                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -51,6 +51,16 @@ public class CatsControllerProxy : ControllerProxy
                 Properties = new() {
                     new()
                     {
+                        Property = BreedPoco.s_CodeProperty,
+                        Path = "Breed.Code",
+                    },
+                    new()
+                    {
+                        Property = BreedPoco.s_GroupProperty,
+                        Path = "Breed.Group",
+                    },
+                    new()
+                    {
                         Property = BreedPoco.s_NameNatProperty,
                         Path = "Breed.NameNat",
                     },
@@ -58,6 +68,42 @@ public class CatsControllerProxy : ControllerProxy
                     {
                         Property = BreedPoco.s_NameEngProperty,
                         Path = "Breed.NameEng",
+                    },
+                }
+            },
+            new()
+            {
+                Property = CatPoco.s_LitterWithCatsProperty,
+                Path = "LitterWithCats",
+                Properties = new() {
+                    new()
+                    {
+                        Property = LitterWithCatsPoco.s_LitterProperty,
+                        Path = "LitterWithCats.Litter",
+                        Properties = new() {
+                            new()
+                            {
+                                Property = LitterPoco.s_FemaleProperty,
+                                Path = "LitterWithCats.Litter.Female",
+                                Properties = new() {
+                                    new()
+                                    {
+                                        Property = CatPoco.s_CatteryProperty,
+                                        Path = "LitterWithCats.Litter.Female.Cattery",
+                                    },
+                                }
+                            },
+                            new()
+                            {
+                                Property = LitterPoco.s_OrderProperty,
+                                Path = "LitterWithCats.Litter.Order",
+                            },
+                        }
+                    },
+                    new()
+                    {
+                        Property = LitterWithCatsPoco.s_CatsProperty,
+                        Path = "LitterWithCats.Cats",
                     },
                 }
             },
@@ -81,6 +127,23 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = CatPoco.s_BreedProperty,
                 Path = "Breed",
+                Properties = new() {
+                    new()
+                    {
+                        Property = BreedPoco.s_CodeProperty,
+                        Path = "Breed.Code",
+                    },
+                    new()
+                    {
+                        Property = BreedPoco.s_GroupProperty,
+                        Path = "Breed.Group",
+                    },
+                }
+            },
+            new()
+            {
+                Property = CatPoco.s_LitterWithCatsProperty,
+                Path = "LitterWithCats",
             },
             new()
             {
@@ -96,6 +159,25 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = CatPoco.s_LitterProperty,
                 Path = "Litter",
+                Properties = new() {
+                    new()
+                    {
+                        Property = LitterPoco.s_FemaleProperty,
+                        Path = "Litter.Female",
+                        Properties = new() {
+                            new()
+                            {
+                                Property = CatPoco.s_CatteryProperty,
+                                Path = "Litter.Female.Cattery",
+                            },
+                        }
+                    },
+                    new()
+                    {
+                        Property = LitterPoco.s_OrderProperty,
+                        Path = "Litter.Order",
+                    },
+                }
             },
             new()
             {
@@ -164,6 +246,25 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = LitterWithCatsPoco.s_LitterProperty,
                 Path = "Litter",
+                Properties = new() {
+                    new()
+                    {
+                        Property = LitterPoco.s_FemaleProperty,
+                        Path = "Litter.Female",
+                        Properties = new() {
+                            new()
+                            {
+                                Property = CatPoco.s_CatteryProperty,
+                                Path = "Litter.Female.Cattery",
+                            },
+                        }
+                    },
+                    new()
+                    {
+                        Property = LitterPoco.s_OrderProperty,
+                        Path = "Litter.Order",
+                    },
+                }
             },
             new()
             {

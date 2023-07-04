@@ -11,4 +11,6 @@ public interface ICat
     string? Exterior { get; set; }
     string? Title { get; set; }
     string? Description { get; set; }
+    //for test
+    ILitterWithCats? LitterWithCats { get; set; }
 }

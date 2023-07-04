@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-03T18:35:50                                                        //
+// at 2023-07-04T15:46:08                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -255,6 +255,41 @@ public class CatPoco : EntityBase, ICat
             }
         }
     }
+    public class LitterWithCatsPropertyClass: IProperty
+    {
+        public string Name => "LitterWithCats";
+        public Type Type => typeof(LitterWithCatsPoco);
+        public bool IsNullable => true;
+        public bool IsReadOnly => false;
+        public bool IsPoco => true;
+        public bool IsEntity => false;
+        public bool IsList => false;
+        public Type? ItemType => null;
+        public void SetValue(object target, object? value)
+        {
+            LitterWithCatsPoco? value1 = value as LitterWithCatsPoco;
+            if (value is {} && value1 is null)
+            {
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).LitterWithCats = value1;
+        }
+        public object? GetValue(object target)
+        {
+            return ((CatPoco)target).LitterWithCats;
+        }
+        public PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._litterWithCatsAccessMode : PropertyAccessMode.Denied;
+        }
+        public void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._litterWithCatsAccessMode  = mode;
+            }
+        }
+    }
     public class NameEngPropertyClass: IProperty
     {
         public string Name => "NameEng";
@@ -472,6 +507,7 @@ public class CatPoco : EntityBase, ICat
     public static CatteryPropertyClass s_CatteryProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
     public static BreedPropertyClass s_BreedProperty = new();
+    public static LitterWithCatsPropertyClass s_LitterWithCatsProperty = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
     public static GenderPropertyClass s_GenderProperty = new();
     public static LitterPropertyClass s_LitterProperty = new();
@@ -487,6 +523,8 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.Denied;
     private BreedPoco _breed = null!;
     private PropertyAccessMode _breedAccessMode = PropertyAccessMode.Denied;
+    private LitterWithCatsPoco? _litterWithCats = null;
+    private PropertyAccessMode _litterWithCatsAccessMode = PropertyAccessMode.Denied;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.Denied;
     private Gender _gender;
@@ -601,6 +639,37 @@ public class CatPoco : EntityBase, ICat
        set
         {
             Breed = (value as BreedPoco)!;
+        }
+    }
+    public LitterWithCatsPoco? LitterWithCats
+    {
+        get
+        {
+            if(_litterWithCatsAccessMode is PropertyAccessMode.Denied)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            return _litterWithCats;
+        }
+        set
+        {
+            if(!IsUnderConstruction && _litterWithCatsAccessMode is not PropertyAccessMode.Full)
+            {
+                throw new InvalidOperationException(s_noAccess);
+            }
+            _litterWithCatsAccessMode = PropertyAccessMode.Full;
+            _litterWithCats = value;
+        }
+    }
+    ILitterWithCats? ICat.LitterWithCats
+    {
+        get
+        {
+            return LitterWithCats;
+        }
+       set
+        {
+            LitterWithCats = (value as LitterWithCatsPoco)!;
         }
     }
     public String? NameEng

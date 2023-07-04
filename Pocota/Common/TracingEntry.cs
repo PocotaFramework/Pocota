@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public class TracingHolder
+public class TracingEntry
 {
     public DataProviderRequest Request { get; set; }
     public string? Path { get; set; }

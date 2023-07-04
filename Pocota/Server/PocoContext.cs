@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common;
-using System.IO;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Server;
 
 public class PocoContext : IPocoContext
 {
-    private const string? s_invalidPrimaryKey = $"Invalid response. <{nameof(DataProviderResponse.Skip)}> or not null value expected.";
+    private const string s_invalidPrimaryKey = $"<{nameof(DataProviderResponse.Skip)}> or not null key(part) value expected.";
+    private const string s_primaryKeyIsNotAssigned = $"Primary Key is not assigned.";
+    private const string s_invalidValue = $"<{nameof(DataProviderResponse.Skip)}> or value expected.";
+    private const string s_invalidPocoResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> expected.";
 
     private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions = new(() =>
     {
@@ -67,13 +68,6 @@ public class PocoContext : IPocoContext
 
         ProcessBuildingContext(buildingContext, target);
 
-        if (buildingContext.WithTracing)
-        {
-            foreach(TracingHolder th in buildingContext.TracingLog)
-            {
-                Console.WriteLine(th);
-            }
-        }
     }
 
     private void ProcessBuildingContext(BuildingContext buildingContext, List<object?>? target)
@@ -81,16 +75,12 @@ public class PocoContext : IPocoContext
         HashSet<string> processedProperties = new();
         Queue<BuildingContext> queue = new();
 
-        buildingContext.Value = null;
 
         while (buildingContext.DataProvider?.Read() ?? true)
         {
             bool isSkipped = false;
             processedProperties.Clear();
-            if (buildingContext.IsTop)
-            {
-                buildingContext.TracingLog.Clear();
-            }
+            buildingContext.Clear();
 
             if (buildingContext.PropertyUse.Property is { })
             {
@@ -116,7 +106,7 @@ public class PocoContext : IPocoContext
                         }
                         if (buildingContext.WithTracing)
                         {
-                            buildingContext.TracingLog.Add(new TracingHolder
+                            buildingContext.Trace(new TracingEntry
                             {
                                 Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                 Path = path,
@@ -128,7 +118,7 @@ public class PocoContext : IPocoContext
                             isSkipped = true;
                             if (buildingContext.WithTracing)
                             {
-                                buildingContext.TracingLog.Last().Success = true;
+                                buildingContext.LastTracingEntry!.Success = true;
                             }
                             break;
                         }
@@ -137,11 +127,11 @@ public class PocoContext : IPocoContext
                             buildingContext.HasError = true;
                             if (buildingContext.WithTracing)
                             {
-                                buildingContext.TracingLog.Last().Success = false;
+                                buildingContext.LastTracingEntry!.Success = false;
                             }
                             else
                             {
-                                buildingContext.TracingLog.Add(new TracingHolder
+                                buildingContext.Trace(new TracingEntry
                                 {
                                     Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                     Path = path,
@@ -149,7 +139,7 @@ public class PocoContext : IPocoContext
                                     Success = false,
                                 });
                             }
-                            buildingContext.TracingLog.Last().Comment = s_invalidPrimaryKey;
+                            buildingContext.LastTracingEntry!.Comment = s_invalidPrimaryKey;
                         }
                         else
                         {
@@ -158,7 +148,7 @@ public class PocoContext : IPocoContext
                                 pk[name] = value;
                                 if (buildingContext.WithTracing)
                                 {
-                                    buildingContext.TracingLog.Last().Success = true;
+                                    buildingContext.LastTracingEntry!.Success = true;
                                 }
                             }
                             catch (Exception ex)
@@ -166,12 +156,12 @@ public class PocoContext : IPocoContext
                                 buildingContext.HasError = true;
                                 if (buildingContext.WithTracing)
                                 {
-                                    buildingContext.TracingLog.Last().Success = false;
-                                    buildingContext.TracingLog.Last().Exception = ex;
+                                    buildingContext.LastTracingEntry!.Success = false;
+                                    buildingContext.LastTracingEntry!.Exception = ex;
                                 }
                                 else
                                 {
-                                    buildingContext.TracingLog.Add(new TracingHolder
+                                    buildingContext.Trace(new TracingEntry
                                     {
                                         Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                         Path = path,
@@ -218,20 +208,46 @@ public class PocoContext : IPocoContext
                                 }
                                 bc.SetKeyParts.Add(def.KeyReference, pk[def.Name]!);
                             }
+                            else if (pk[def.Name] is { })
+                            {
+                                entity.PrimaryKey[def.Name] = pk[def.Name];
+                            }
                         }
                         while(queue.TryDequeue(out BuildingContext? bc1))
                         {
                             ProcessBuildingContext(bc1, null);
                             if(bc1.PropertyUse.Property.GetAccess(entity) is PropertyAccessMode.Denied)
                             {
-                                bc1.PropertyUse.Property.SetValue(entity, bc1.Value);
+                                try
+                                {
+                                    bc1.PropertyUse.Property.SetValue(entity, bc1.Value);
+                                    buildingContext.Trace(new TracingEntry
+                                    {
+                                        Request = DataProviderRequest.Value,
+                                        Path = bc1.PropertyUse.Path,
+                                        Response = PresentResponse(bc1.Value),
+                                        Success = true,
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    buildingContext.HasError = true;
+                                    buildingContext.Trace(new TracingEntry
+                                    {
+                                        Request = DataProviderRequest.Value,
+                                        Path = bc1.PropertyUse.Path,
+                                        Response = PresentResponse(bc1.Value),
+                                        Success = false,
+                                        Exception = ex,
+                                    });
+                                }
                             }
                         }
                     }
                     buildingContext.Value = entity;
                     if (buildingContext.WithTracing || !entity.PrimaryKey.IsAssigned)
                     {
-                        buildingContext.TracingLog.Add(new TracingHolder
+                        buildingContext.Trace(new TracingEntry
                         {
                             Request = DataProviderRequest.Entity,
                             Path = buildingContext.PropertyUse.Path,
@@ -242,6 +258,7 @@ public class PocoContext : IPocoContext
                     if (!entity.PrimaryKey.IsAssigned)
                     {
                         buildingContext.HasError = true;
+                        buildingContext.LastTracingEntry!.Comment = s_primaryKeyIsNotAssigned;
                     }
                 }
                 else
@@ -252,7 +269,7 @@ public class PocoContext : IPocoContext
 
                     if (buildingContext.WithTracing)
                     {
-                        buildingContext.TracingLog.Add(new TracingHolder
+                        buildingContext.Trace(new TracingEntry
                         {
                             Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                             Path = buildingContext.PropertyUse.Path,
@@ -265,7 +282,7 @@ public class PocoContext : IPocoContext
                         value = null;
                         if (buildingContext.WithTracing)
                         {
-                            buildingContext.TracingLog.Last().Success = true;
+                            buildingContext.LastTracingEntry!.Success = true;
                         }
                     }
                     else if (value is DataProviderResponse.Touch)
@@ -273,24 +290,26 @@ public class PocoContext : IPocoContext
                         value = _services.GetRequiredService(buildingContext.PropertyUse.Property.Type);
                         if (buildingContext.WithTracing)
                         {
-                            buildingContext.TracingLog.Last().Success = true;
+                            buildingContext.LastTracingEntry!.Success = true;
                         }
                     }
-                    else if(value is DataProviderResponse)
+                    else
                     {
                         buildingContext.HasError = true;
                         if (buildingContext.WithTracing)
                         {
-                            buildingContext.TracingLog.Last().Success = false;
+                            buildingContext.LastTracingEntry!.Success = false;
+                            buildingContext.LastTracingEntry!.Comment = s_invalidPocoResponse;
                         }
                         else
                         {
-                            buildingContext.TracingLog.Add(new TracingHolder
+                            buildingContext.Trace(new TracingEntry
                             {
                                 Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                 Path = buildingContext.PropertyUse.Path,
                                 Response = PresentResponse(value),
                                 Success = false,
+                                Comment = s_invalidPocoResponse,
                             });
                         }
                         if(value is DataProviderResponse.Miss)
@@ -323,27 +342,23 @@ public class PocoContext : IPocoContext
                                 buildingContext.PropertyUsesContexts.Add(pu.Property.Name, bc);
                             }
                             ProcessBuildingContext(bc, null);
-                            DataProviderRequest request = pu.Property.IsEntity ? DataProviderRequest.Entity : DataProviderRequest.Poco;
                             try
                             {
                                 pu.Property.SetValue(buildingContext.Value, bc.Value);
-                                if (buildingContext.WithTracing)
+                                buildingContext.Trace(new TracingEntry
                                 {
-                                    buildingContext.TracingLog.Add(new TracingHolder
-                                    {
-                                        Request = request,
-                                        Path = pu.Path,
-                                        Response = PresentResponse(bc.Value),
-                                        Success = true,
-                                    });
-                                }
+                                    Request = DataProviderRequest.Value,
+                                    Path = pu.Path,
+                                    Response = PresentResponse(bc.Value),
+                                    Success = true,
+                                });
                             }
                             catch (Exception ex)
                             {
                                 buildingContext.HasError = true;
-                                buildingContext.TracingLog.Add(new TracingHolder
+                                buildingContext.Trace(new TracingEntry
                                 {
-                                    Request = request,
+                                    Request = DataProviderRequest.Value,
                                     Path = pu.Path,
                                     Response = PresentResponse(bc.Value),
                                     Success = false,
@@ -359,7 +374,7 @@ public class PocoContext : IPocoContext
 
                             if (buildingContext.WithTracing)
                             {
-                                buildingContext.TracingLog.Add(new TracingHolder
+                                buildingContext.Trace(new TracingEntry
                                 {
                                     Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                     Path = pu.Path,
@@ -376,16 +391,18 @@ public class PocoContext : IPocoContext
                                 buildingContext.HasError = true;
                                 if (buildingContext.WithTracing)
                                 {
-                                    buildingContext.TracingLog.Last().Success = false;
+                                    buildingContext.LastTracingEntry!.Success = false;
+                                    buildingContext.LastTracingEntry!.Comment = s_invalidValue;
                                 }
                                 else
                                 {
-                                    buildingContext.TracingLog.Add(new TracingHolder
+                                    buildingContext.Trace(new TracingEntry
                                     {
                                         Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                         Path = pu.Path,
                                         Response = PresentResponse(value),
                                         Success = false,
+                                        Comment = s_invalidValue,
                                     });
                                 }
                             }
@@ -397,7 +414,7 @@ public class PocoContext : IPocoContext
                                     pu.Property.SetValue(buildingContext.Value, value);
                                     if (buildingContext.WithTracing)
                                     {
-                                        buildingContext.TracingLog.Last().Success = true;
+                                        buildingContext.LastTracingEntry!.Success = true;
                                     }
                                 }
                                 catch (Exception ex)
@@ -405,11 +422,11 @@ public class PocoContext : IPocoContext
                                     buildingContext.HasError = true;
                                     if (buildingContext.WithTracing)
                                     {
-                                        buildingContext.TracingLog.Last().Success = false;
+                                        buildingContext.LastTracingEntry!.Success = false;
                                     }
                                     else
                                     {
-                                        buildingContext.TracingLog.Add(new TracingHolder
+                                        buildingContext.Trace(new TracingEntry
                                         {
                                             Request = buildingContext.DataReaderRoot.DataProvider!.Request,
                                             Path = pu.Path,
@@ -442,9 +459,20 @@ public class PocoContext : IPocoContext
 
             target?.Add(buildingContext.Value);
 
-            if(buildingContext.IsTop && buildingContext.HasError)
+            if(buildingContext.IsTop)
             {
-                throw BuildingException.Create(null, buildingContext.TracingLog);
+                if (buildingContext.HasError)
+                {
+                    throw BuildingException.Create(null, buildingContext.TracingLog);
+                }
+                if (buildingContext.WithTracing)
+                {
+                    foreach (TracingEntry th in buildingContext.TracingLog)
+                    {
+                        Console.WriteLine(th);
+                    }
+                }
+
             }
 
             if (buildingContext.DataReaderRoot.IsSingleQuery || buildingContext.DataProvider is null)
