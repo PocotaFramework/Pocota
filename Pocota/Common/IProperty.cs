@@ -9,6 +9,8 @@ public interface IProperty
     bool IsPoco { get; }
     bool IsEntity { get; }
     bool IsList { get; }
+    bool IsExtender { get; }
+    bool IsKeyPart { get; }
     Type? ItemType { get; }
     void SetValue(object target, object? value);
     object? GetValue(object target);

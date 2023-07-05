@@ -8,4 +8,8 @@
     <AssemblyName>Net.Leksi.Pocota.Demo.Cats.Common</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Pocota\Common\CommonDebug.csproj" />
+  </ItemGroup>
+
 </Project>

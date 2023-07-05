@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-04T15:46:08                                                        //
+// at 2023-07-05T17:56:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +10,8 @@ using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,12 +23,12 @@ public class CatsControllerProxy : ControllerProxy
     private static readonly PropertyUse s_findCatsPropertyUse = new()
     {
         Property = CatPoco.s_Property,
-        Properties = new() {
+        Properties = new PropertyUse[] {
             new()
             {
                 Property = CatPoco.s_CatteryProperty,
                 Path = "Cattery",
-                Properties = new() {
+                Properties = new PropertyUse[] {
                     new()
                     {
                         Property = CatteryPoco.s_NameEngProperty,
@@ -37,7 +39,7 @@ public class CatsControllerProxy : ControllerProxy
                         Property = CatteryPoco.s_NameNatProperty,
                         Path = "Cattery.NameNat",
                     },
-                }
+                }.ToImmutableList()
             },
             new()
             {
@@ -48,7 +50,7 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = CatPoco.s_BreedProperty,
                 Path = "Breed",
-                Properties = new() {
+                Properties = new PropertyUse[] {
                     new()
                     {
                         Property = BreedPoco.s_CodeProperty,
@@ -69,50 +71,26 @@ public class CatsControllerProxy : ControllerProxy
                         Property = BreedPoco.s_NameEngProperty,
                         Path = "Breed.NameEng",
                     },
-                }
+                }.ToImmutableList()
             },
             new()
             {
                 Property = CatPoco.s_LitterWithCatsProperty,
                 Path = "LitterWithCats",
-                Properties = new() {
-                    new()
-                    {
-                        Property = LitterWithCatsPoco.s_LitterProperty,
-                        Path = "LitterWithCats.Litter",
-                        Properties = new() {
-                            new()
-                            {
-                                Property = LitterPoco.s_FemaleProperty,
-                                Path = "LitterWithCats.Litter.Female",
-                                Properties = new() {
-                                    new()
-                                    {
-                                        Property = CatPoco.s_CatteryProperty,
-                                        Path = "LitterWithCats.Litter.Female.Cattery",
-                                    },
-                                }
-                            },
-                            new()
-                            {
-                                Property = LitterPoco.s_OrderProperty,
-                                Path = "LitterWithCats.Litter.Order",
-                            },
-                        }
-                    },
+                Properties = new PropertyUse[] {
                     new()
                     {
                         Property = LitterWithCatsPoco.s_CatsProperty,
                         Path = "LitterWithCats.Cats",
                     },
-                }
+                }.ToImmutableList()
             },
-        }
+        }.ToImmutableList()
     };
     private static readonly PropertyUse s_getCatPropertyUse = new()
     {
         Property = CatPoco.s_Property,
-        Properties = new() {
+        Properties = new PropertyUse[] {
             new()
             {
                 Property = CatPoco.s_CatteryProperty,
@@ -127,7 +105,7 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = CatPoco.s_BreedProperty,
                 Path = "Breed",
-                Properties = new() {
+                Properties = new PropertyUse[] {
                     new()
                     {
                         Property = BreedPoco.s_CodeProperty,
@@ -138,7 +116,7 @@ public class CatsControllerProxy : ControllerProxy
                         Property = BreedPoco.s_GroupProperty,
                         Path = "Breed.Group",
                     },
-                }
+                }.ToImmutableList()
             },
             new()
             {
@@ -159,25 +137,25 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = CatPoco.s_LitterProperty,
                 Path = "Litter",
-                Properties = new() {
+                Properties = new PropertyUse[] {
                     new()
                     {
                         Property = LitterPoco.s_FemaleProperty,
                         Path = "Litter.Female",
-                        Properties = new() {
+                        Properties = new PropertyUse[] {
                             new()
                             {
                                 Property = CatPoco.s_CatteryProperty,
                                 Path = "Litter.Female.Cattery",
                             },
-                        }
+                        }.ToImmutableList()
                     },
                     new()
                     {
                         Property = LitterPoco.s_OrderProperty,
                         Path = "Litter.Order",
                     },
-                }
+                }.ToImmutableList()
             },
             new()
             {
@@ -194,12 +172,12 @@ public class CatsControllerProxy : ControllerProxy
                 Property = CatPoco.s_DescriptionProperty,
                 Path = "Description",
             },
-        }
+        }.ToImmutableList()
     };
     private static readonly PropertyUse s_findBreedsPropertyUse = new()
     {
         Property = BreedPoco.s_Property,
-        Properties = new() {
+        Properties = new PropertyUse[] {
             new()
             {
                 Property = BreedPoco.s_CodeProperty,
@@ -220,12 +198,12 @@ public class CatsControllerProxy : ControllerProxy
                 Property = BreedPoco.s_NameEngProperty,
                 Path = "NameEng",
             },
-        }
+        }.ToImmutableList()
     };
     private static readonly PropertyUse s_findCatteriesPropertyUse = new()
     {
         Property = CatteryPoco.s_Property,
-        Properties = new() {
+        Properties = new PropertyUse[] {
             new()
             {
                 Property = CatteryPoco.s_NameEngProperty,
@@ -236,42 +214,18 @@ public class CatsControllerProxy : ControllerProxy
                 Property = CatteryPoco.s_NameNatProperty,
                 Path = "NameNat",
             },
-        }
+        }.ToImmutableList()
     };
     private static readonly PropertyUse s_findLittersWithCatsPropertyUse = new()
     {
         Property = LitterWithCatsPoco.s_Property,
-        Properties = new() {
-            new()
-            {
-                Property = LitterWithCatsPoco.s_LitterProperty,
-                Path = "Litter",
-                Properties = new() {
-                    new()
-                    {
-                        Property = LitterPoco.s_FemaleProperty,
-                        Path = "Litter.Female",
-                        Properties = new() {
-                            new()
-                            {
-                                Property = CatPoco.s_CatteryProperty,
-                                Path = "Litter.Female.Cattery",
-                            },
-                        }
-                    },
-                    new()
-                    {
-                        Property = LitterPoco.s_OrderProperty,
-                        Path = "Litter.Order",
-                    },
-                }
-            },
+        Properties = new PropertyUse[] {
             new()
             {
                 Property = LitterWithCatsPoco.s_CatsProperty,
                 Path = "Cats",
             },
-        }
+        }.ToImmutableList()
     };
     private static readonly PropertyUse s_findExteriorsPropertyUse = new()
     {

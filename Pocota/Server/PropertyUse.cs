@@ -4,7 +4,7 @@ namespace Net.Leksi.Pocota.Server;
 
 public class PropertyUse
 {
-    public IProperty Property { get; set; } = null!;
-    public string Path { get; set; } = string.Empty;
-    public List<PropertyUse> Properties { get; init; } = new();
+    public IProperty? Property { get; init; } = null;
+    public string Path { get; init; } = string.Empty;
+    public IList<PropertyUse>? Properties { get; init; } = null;
 }

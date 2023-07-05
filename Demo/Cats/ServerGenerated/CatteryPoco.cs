@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-04T15:46:08                                                        //
+// at 2023-07-05T17:56:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -91,6 +91,8 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsPoco => true;
         public bool IsEntity => true;
         public bool IsList => false;
+        public bool IsKeyPart => false;
+        public bool IsExtender => false;
         public Type? ItemType => null;
         public void SetValue(object target, object? value)
         {
@@ -118,6 +120,8 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsPoco => false;
         public bool IsEntity => false;
         public bool IsList => false;
+        public bool IsKeyPart => false;
+        public bool IsExtender => false;
         public Type? ItemType => null;
         public void SetValue(object target, object? value)
         {
@@ -153,6 +157,8 @@ public class CatteryPoco : EntityBase, ICattery
         public bool IsPoco => false;
         public bool IsEntity => false;
         public bool IsList => false;
+        public bool IsKeyPart => false;
+        public bool IsExtender => false;
         public Type? ItemType => null;
         public void SetValue(object target, object? value)
         {

@@ -12,7 +12,7 @@ public class FindCatsDataProvider : DataProvider
     private readonly IStorage _storage;
     private DbDataReader? _dataReader = null;
 
-    public override object? this[string path]
+    protected override object? this[string path]
     {
         get
         {
@@ -51,7 +51,7 @@ public class FindCatsDataProvider : DataProvider
         _storage = _services.GetRequiredService<IStorage>();
     }
 
-    public override bool Read()
+    protected override bool Read()
     {
         if(_dataReader is null)
         {

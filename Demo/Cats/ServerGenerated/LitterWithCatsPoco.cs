@@ -2,10 +2,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-04T15:46:08                                                        //
+// at 2023-07-05T17:56:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
+using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System.Collections.Generic;
 
@@ -24,6 +26,8 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public bool IsPoco => true;
         public bool IsEntity => false;
         public bool IsList => false;
+        public bool IsKeyPart => false;
+        public bool IsExtender => true;
         public Type? ItemType => null;
         public void SetValue(object target, object? value)
         {
@@ -40,41 +44,6 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
-        }
-    }
-    public class LitterPropertyClass: IProperty
-    {
-        public string Name => "Litter";
-        public Type Type => typeof(LitterPoco);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => true;
-        public bool IsEntity => true;
-        public bool IsList => false;
-        public Type? ItemType => null;
-        public void SetValue(object target, object? value)
-        {
-            LitterPoco? value1 = value as LitterPoco;
-            if (value is {} && value1 is null || value is null)
-            {
-                throw new InvalidCastException();
-            }
-            ((LitterWithCatsPoco)target).Litter = value1!;
-        }
-        public object? GetValue(object target)
-        {
-            return ((LitterWithCatsPoco)target).Litter;
-        }
-        public PropertyAccessMode GetAccess(object target)
-        {
-            return target is LitterWithCatsPoco target1 ? target1._litterAccessMode : PropertyAccessMode.Denied;
-        }
-        public void SetAccess(object target, PropertyAccessMode mode)
-        {
-            if(target is LitterWithCatsPoco target1)
-            {
-                target1._litterAccessMode  = mode;
-            }
         }
     }
     public class CatsPropertyClass: IProperty
@@ -86,6 +55,8 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         public bool IsPoco => true;
         public bool IsEntity => true;
         public bool IsList => true;
+        public bool IsKeyPart => false;
+        public bool IsExtender => false;
         public Type? ItemType => typeof(CatPoco);
         public void SetValue(object target, object? value)
         {
@@ -116,55 +87,23 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
 
     #region Property fields
     public static PropertyClass s_Property = new();
-    public static LitterPropertyClass s_LitterProperty = new();
     public static CatsPropertyClass s_CatsProperty = new();
     #endregion Property fields
 
     #region fields
-    private LitterPoco _litter = null!;
-    private PropertyAccessMode _litterAccessMode = PropertyAccessMode.Denied;
     private IList<CatPoco> _cats = null!;
     private IList<ICat> _catsProxy = null!;
     private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Denied;
     #endregion fields
 
+    public IPrimaryKey PrimaryKey { get; init; }
 
     public LitterWithCatsPoco(IServiceProvider services) : base(services)
     {
+        PrimaryKey = _services.GetRequiredService<IPrimaryKey<ILitter>>();
     }
 
     #region properties
-    public LitterPoco Litter
-    {
-        get
-        {
-            if(_litterAccessMode is PropertyAccessMode.Denied)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
-            return _litter;
-        }
-        set
-        {
-            if(!IsUnderConstruction && _litterAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
-            _litterAccessMode = PropertyAccessMode.Full;
-            _litter = value;
-        }
-    }
-    ILitter ILitterWithCats.Litter
-    {
-        get
-        {
-            return Litter;
-        }
-       set
-        {
-            Litter = (value as LitterPoco)!;
-        }
-    }
     public IList<CatPoco> Cats
     {
         get

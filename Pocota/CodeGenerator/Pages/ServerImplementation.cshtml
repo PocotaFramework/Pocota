@@ -240,6 +240,8 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         public bool IsPoco => @pm.IsPoco.ToString().ToLower();
         public bool IsEntity => @pm.IsEntity.ToString().ToLower();
         public bool IsList => @pm.IsList.ToString().ToLower();
+        public bool IsKeyPart => @pm.IsKeyPart.ToString().ToLower();
+        public bool IsExtender => @pm.IsExtender.ToString().ToLower();
         public Type? ItemType => @(pm.ItemObjectType is { } ? Html.Raw($"typeof({pm.ItemObjectType})") : "null");
         public void SetValue(object target, object? value)
         {
@@ -333,7 +335,12 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     <text>    private readonly PrimaryKeyClass _primaryKey;
     public override IPrimaryKey PrimaryKey => _primaryKey;
 </text>
-    
+
+}
+else if (Model.ExtenderPrimaryKeyInterface is { })
+{
+    <text>    public IPrimaryKey PrimaryKey { get; init; }
+</text>
 }
 
     public @Model.ClassName@{}(IServiceProvider services) : base(services)
@@ -351,6 +358,11 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 @if(Model.PrimaryKey is { })
 {
     <text>        _primaryKey = new(this);
+</text>
+}
+else if (Model.ExtenderPrimaryKeyInterface is { })
+{
+    <text>        PrimaryKey = _services.GetRequiredService@{}@Html.Raw($"<{Model.ExtenderPrimaryKeyInterface}>")@{}();
 </text>
 }
     }

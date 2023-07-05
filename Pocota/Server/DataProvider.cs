@@ -5,15 +5,30 @@ namespace Net.Leksi.Pocota.Server;
 public abstract class DataProvider
 {
     protected readonly IServiceProvider _services;
+    protected BuildingContext? BuildingContext { get; private set; } = null;
 
-    public abstract object? this[string path] { get; }
+    protected abstract object? this[string path] { get; }
 
-    public DataProviderRequest Request { get; set; } = DataProviderRequest.None;
+    internal DataProviderRequest _request = DataProviderRequest.None;
+
+    protected DataProviderRequest Request => _request;
 
     public DataProvider(IServiceProvider services)
     {
         _services = services;
     }
 
-    public abstract bool Read();
+    protected abstract bool Read();
+
+    internal bool Read(BuildingContext buildingContext)
+    {
+        BuildingContext = buildingContext;
+        return Read();
+    }
+
+    internal object? Get(BuildingContext buildingContext, string path)
+    {
+        BuildingContext = buildingContext;
+        return this[path];
+    }
 }

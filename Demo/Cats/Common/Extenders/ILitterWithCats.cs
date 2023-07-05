@@ -1,7 +1,8 @@
-﻿namespace Net.Leksi.Pocota.Demo.Cats.Common;
+﻿using Net.Leksi.Pocota.Common.Generic;
 
-public interface ILitterWithCats
+namespace Net.Leksi.Pocota.Demo.Cats.Common;
+
+public interface ILitterWithCats: IExtender<ILitter>
 {
-    ILitter Litter { get; set; }
     IList<ICat> Cats { get; set; }
 }

@@ -3,27 +3,28 @@ using System.Collections;
 
 namespace Net.Leksi.Pocota.Server;
 
-internal class BuildingContext
+public class BuildingContext
 {
     private readonly BuildingContext? _parent;
     private bool _hasError = false;
     private List<TracingEntry> _tracingLog { get; init; }
 
-    internal PropertyUse PropertyUse { get; set; } = null!;
     internal Dictionary<string, BuildingContext> PropertyUsesContexts { get; init; } = new();
     internal BuildingContext DataReaderRoot { get; set; } = null!;
+    internal BuildingContext Root { get; init; } = null!;
     internal DataProvider? DataProvider { get; set; }
-    internal int EntityLevel { get; set; } = -1;
     internal bool IsSingleQuery { get; set; } = true;
-    internal bool WithDirectOutput { get; init; }
-    internal object? Value { get; set; } = null;
     internal Dictionary<string, object> SetKeyParts { get; init; } = new();
-    internal bool WithTracing { get; init; } = false;
-    internal bool IsTop => _parent is null;
-    internal bool HasError
+    internal TracingEntry? LastTracingEntry => _tracingLog.LastOrDefault();
+
+    public object? Value { get; internal set; } = null;
+    public PropertyUse PropertyUse { get; init; } = null!;
+    public bool WithTracing { get; init; } = false;
+    public bool IsRoot => _parent is null;
+    public bool HasError
     {
         get => _hasError;
-        set
+        internal set
         {
             if(!_hasError && value)
             {
@@ -35,9 +36,9 @@ internal class BuildingContext
             }
         }
     }
-    internal IEnumerable<TracingEntry> TracingLog => _tracingLog.Select(e => e);
-
-    internal TracingEntry? LastTracingEntry => _tracingLog.LastOrDefault();
+    public IEnumerable<TracingEntry> TracingLog => _tracingLog.Select(e => e);
+    public bool WithDirectOutput { get; init; } = false;
+    public BuildingContext? Parent => _parent;
 
     internal BuildingContext(BuildingContext parent)
     {
@@ -46,6 +47,8 @@ internal class BuildingContext
         WithDirectOutput = _parent.WithDirectOutput;
         WithTracing = _parent.WithTracing;
         _hasError = _parent.HasError;
+        DataReaderRoot = _parent.DataReaderRoot;
+        Root = _parent.Root;
     }
 
     internal BuildingContext(bool withDirectOutput, bool withTracing)
@@ -54,11 +57,12 @@ internal class BuildingContext
         WithTracing = withTracing;
         _parent = null;
         _tracingLog = new();
+        Root = this;
     }
 
     internal void Clear()
     {
-        if (IsTop)
+        if (IsRoot)
         {
             _tracingLog.Clear();
         }

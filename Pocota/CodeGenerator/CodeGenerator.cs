@@ -18,6 +18,8 @@ public class CodeGenerator
     private const string s_primaryKey = "PrimaryKey";
     private const string s_configurator = "Configurator";
     private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
+    private const string s_systemLinq = "System.Linq";
+    private const string s_systemCollectionImmutable = "System.Collections.Immutable";
     private const string s_accessMode = "AccessMode";
     private const string s_proxy= "Proxy";
     private const string s_controller = "Controller";
@@ -429,6 +431,8 @@ public class CodeGenerator
             AddUsings(model, typeof(HttpUtility));
             AddUsings(model, typeof(RouteAttribute));
             AddUsings(model, typeof(Controller));
+            model.Usings.Add(s_systemLinq);
+            model.Usings.Add(s_systemCollectionImmutable);
 
             model.Interfaces.Add(MakeTypeName(typeof(ControllerProxy)));
 
@@ -586,6 +590,14 @@ public class CodeGenerator
         }
     }
 
+    private Type? GetExtendingInterface(Type @interface)
+    {
+        return Enumerable.Concat(
+                    new Type[] { @interface },
+                    @interface.GetInterfaces()
+                ).Where(t => t.IsGenericType && typeof(IExtender<>) == t.GetGenericTypeDefinition()).FirstOrDefault()?.GetGenericArguments()[0];
+    }
+
     internal void BuildServerImplementation(ClassModel model)
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
@@ -603,6 +615,8 @@ public class CodeGenerator
 
             model.Interface = MakeTypeName(request.Interface);
 
+            Type? extendingInterface = GetExtendingInterface(request.Interface);
+
             if (_interfaceHoldersByType[request.Interface].KeysDefinitions.Count > 0)
             {
                 AddUsings(model, typeof(Server.EntityBase));
@@ -612,6 +626,13 @@ public class CodeGenerator
             {
                 AddUsings(model, typeof(Server.PocoBase));
                 model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
+                if (extendingInterface is { })
+                {
+                    AddUsings(model, typeof(IPrimaryKey<>));
+                    AddUsings(model, extendingInterface);
+                    model.Usings.Add(s_dependencyInjection);
+                    model.ExtenderPrimaryKeyInterface = $"{nameof(IPrimaryKey)}<{MakeTypeName(extendingInterface)}>";
+                }
             }
             model.Interfaces.Add(MakeTypeName(request.Interface));
 
@@ -623,7 +644,8 @@ public class CodeGenerator
                 IsPoco = true,
                 IsEntity = _interfaceHoldersByType[request.Interface].KeysDefinitions.Any(),
                 PropertyClass = $"{s_property}{s_class}",
-                PropertyField = $"{s_staticPrefix}{s_property}"
+                PropertyField = $"{s_staticPrefix}{s_property}",
+                IsExtender = extendingInterface is { },
             };
             model.Properties.Add(pm);
             foreach (PropertyInfo pi in @interface.Interface.GetProperties())
@@ -637,7 +659,7 @@ public class CodeGenerator
                     PropertyClass = $"{pi.Name}{s_property}{s_class}",
                     PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}",
                     AsTypeAsk = (pi.PropertyType.IsClass || pi.PropertyType.IsInterface) ? string.Empty : s_ask,
-
+                    IsExtender = GetExtendingInterface(pi.PropertyType) is { },
                 };
                 pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
@@ -699,6 +721,16 @@ public class CodeGenerator
                         AddUsings(model, itemType);
                     }
 
+                }
+                if (
+                    !pm.IsList 
+                    && _interfaceHoldersByType[request.Interface].KeysDefinitions.Any(
+                        e => e.Value.Property is { } 
+                        && e.Value.Property.Name.Equals(pm.Name)
+                    )
+                )
+                {
+                    pm.IsKeyPart = true;
                 }
                 model.Properties.Add(pm);
             }

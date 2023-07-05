@@ -10,6 +10,8 @@ internal class PropertyModel
     internal bool IsPoco { get; set; } = false;
     internal bool IsEntity { get; set; } = false;
     internal bool IsList { get; set; } = false;
+    internal bool IsKeyPart { get; set; } = false;
+    internal bool IsExtender { get; set; } = false;
     internal string Type { get; set; } = null!;
     internal string ObjectType { get; set; } = null!;
     internal string? ItemType { get; set; } = null;

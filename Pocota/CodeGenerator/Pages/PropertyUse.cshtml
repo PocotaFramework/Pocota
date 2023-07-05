@@ -12,15 +12,15 @@ new()
     <text>@Html.Raw(Model.Indentation)    Path = "@Html.Raw(Model.Path)",
 </text>
 }
-@if(Model.Properties is { } && Model.Properties.Any())
+@if (Model.Properties is { } && Model.Properties.Any())
 {
-    <text>@Html.Raw(Model.Indentation)    Properties = new() {
+    <text>@Html.Raw(Model.Indentation)    Properties = new PropertyUse[] {
     @foreach(var item in Model.Properties)
     {
         <text>@Html.Raw(Model.Indentation)        @Html.Partial("PropertyUse", item),
 </text>
     }
-@Html.Raw(Model.Indentation)    }
+@Html.Raw(Model.Indentation)    }.ToImmutableList()
 </text>
 }
 @Html.Raw(Model.Indentation)}
