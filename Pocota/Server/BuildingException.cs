@@ -34,18 +34,21 @@ public class BuildingException: Exception
         int maxPathLength = tracings.Select(t => Math.Max(t.Path?.Length ?? 0, s_pathHeader.Length)).Max();
         int maxCommentLength = tracings.Select(t => Math.Max(t.Comment?.Length ?? 0, s_commentHeader.Length)).Max();
         int maxRequestLength = tracings.Select(t => Math.Max(t.Request.ToString().Length, s_requestHeader.Length)).Max();
-
-        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+        List<string> responses = tracings.Select(t => t.Response.ToString()).Select(r => r.Length <= s_responseTrim ? r : $"{r.Substring(0, (s_responseTrim - 3) / 2)}...{r.Substring(r.Length - (s_responseTrim - 3) / 2)}").ToList();
+        int maxResponseLength = responses.Select(r => r.Length).Max();
+        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + maxResponseLength + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
         sb.AppendFormat($"{{0,-{maxRequestLength}}}|", s_requestHeader);
         sb.AppendFormat($"{{0,-{maxPathLength}}}|", s_pathHeader);
-        sb.AppendFormat($"{{0,-{s_responseTrim}}}|", s_responseHeader);
+        sb.AppendFormat($"{{0,-{maxResponseLength}}}|", s_responseHeader);
         sb.AppendFormat($"{{0, -{s_successHeader.Length}}}|", s_successHeader);
         sb.AppendFormat($"{{0, -{maxCommentLength}}}", s_commentHeader);
         sb.AppendLine();
-        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
-        foreach (TracingEntry tracing in tracings)
+        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + maxResponseLength + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+        IEnumerator<TracingEntry> enumerator = tracings.GetEnumerator();
+        for (int i = 0; enumerator.MoveNext(); ++i)
         {
-            if(tracing.Success is bool success)
+            TracingEntry tracing = enumerator.Current;
+            if (tracing.Success is bool success)
             {
                 if(tracing.Exception is { })
                 {
@@ -55,13 +58,13 @@ public class BuildingException: Exception
                 sb.AppendFormat($"{{0,-{maxRequestLength}}}|", tracing.Request);
                 sb.AppendFormat($"{{0,-{maxPathLength}}}|", tracing.Path);
                 string response = tracing.Response?.ToString() ?? "null";
-                sb.AppendFormat($"{{0,-{s_responseTrim}}}|", response.Length <= s_responseTrim ? response : $"{response.Substring(0, (s_responseTrim - 3) / 2)}...{response.Substring(response.Length - (s_responseTrim - 3) / 2)}");
+                sb.AppendFormat($"{{0,-{maxResponseLength}}}|", responses[i]);
                 sb.AppendFormat($"{{0, -{s_successHeader.Length}}}|", success ? "OK" : "Fail");
                 sb.AppendFormat($"{{0, -{maxCommentLength}}}", tracing.Comment ?? string.Empty);
                 sb.AppendLine();
             }
         }
-        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + s_responseTrim + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
+        sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + maxResponseLength + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
         if (exceptions.Any())
         {
             sb.AppendLine("Exceptions:");
