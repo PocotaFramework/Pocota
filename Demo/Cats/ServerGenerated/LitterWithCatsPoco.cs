@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-05T17:56:50                                                        //
+// at 2023-07-06T13:36:50                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.Extensions.DependencyInjection;
@@ -49,7 +49,7 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     public class CatsPropertyClass: IProperty
     {
         public string Name => "Cats";
-        public Type Type => typeof(IList<CatPoco>);
+        public Type Type => typeof(List<CatPoco>);
         public bool IsNullable => false;
         public bool IsReadOnly => false;
         public bool IsPoco => true;

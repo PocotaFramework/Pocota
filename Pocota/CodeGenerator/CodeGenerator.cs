@@ -647,6 +647,7 @@ public class CodeGenerator
                 PropertyField = $"{s_staticPrefix}{s_property}",
                 IsExtender = extendingInterface is { },
             };
+            pm.InstanceType = pm.ObjectType;
             model.Properties.Add(pm);
             foreach (PropertyInfo pi in @interface.Interface.GetProperties())
             {
@@ -697,12 +698,14 @@ public class CodeGenerator
                         pm.ItemType = MakeTypeName(itemType);
                         pm.ItemObjectType = MakePocoClassName(itemType);
                         pm.ObjectType = $"IList<{pm.ItemObjectType}>";
+                        pm.InstanceType = $"List<{pm.ItemObjectType}>";
                         AddUsings(model, typeof(List<>));
                         AddUsings(model, itemType);
                     }
                     else
                     {
                         pm.ObjectType = MakePocoClassName(itemType);
+                        pm.InstanceType = pm.ObjectType;
                     }
                 }
                 else
@@ -712,12 +715,14 @@ public class CodeGenerator
                         pm.ItemObjectType = MakeTypeName(itemType);
                         pm.ItemType = pm.ItemObjectType;
                         pm.ObjectType = pm.Type;
+                        pm.InstanceType = $"List<{pm.ItemObjectType}>";
                         AddUsings(model, typeof(List<>));
                         AddUsings(model, itemType);
                     }
                     else
                     {
                         pm.ObjectType = pm.Type;
+                        pm.InstanceType = pm.ObjectType;
                         AddUsings(model, itemType);
                     }
 

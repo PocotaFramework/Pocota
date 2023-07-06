@@ -234,7 +234,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     <text>    public class @pm.PropertyClass: IProperty
     {
         public string Name => @(!string.IsNullOrEmpty(pm.Name) ? Html.Raw($"\"{pm.Name}\"") : "string.Empty");
-        public Type Type => typeof(@Html.Raw(pm.ObjectType));
+        public Type Type => typeof(@Html.Raw(pm.InstanceType));
         public bool IsNullable => @pm.IsNullable.ToString().ToLower();
         public bool IsReadOnly => @pm.IsReadOnly.ToString().ToLower();
         public bool IsPoco => @pm.IsPoco.ToString().ToLower();

@@ -15,7 +15,7 @@ public class PocoContext : IPocoContext
     private const string s_invalidPocoResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> expected.";
     private const string s_notNullableNullKeyPart = $"Not null key(part) value expected.";
     private const string s_notNullableNull = $"Not null value expected.";
-    private const string s_invalidListResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> or typeof{nameof(DataProvider)} value or typeof{nameof(IList)}<> value  expected.";
+    private const string s_invalidListResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> or {nameof(DataProvider)} value or {nameof(IList)}<> value  expected.";
     private const string s_readOnlyListRewrite = $"<{nameof(DataProviderResponse.Touch)}> or typeof{nameof(DataProvider)} value expected.";
 
     private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions = new(() =>

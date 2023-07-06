@@ -14,6 +14,7 @@ internal class PropertyModel
     internal bool IsExtender { get; set; } = false;
     internal string Type { get; set; } = null!;
     internal string ObjectType { get; set; } = null!;
+    internal string InstanceType { get; set; } = null!;
     internal string? ItemType { get; set; } = null;
     internal string? ItemObjectType { get; set; } = null;
     internal string FieldName { get; set; } = null!;
