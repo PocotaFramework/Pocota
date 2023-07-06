@@ -5,7 +5,7 @@ namespace Net.Leksi.Pocota.Server;
 
 public class BuildingException: Exception
 {
-    private const int s_responseTrim = 20;
+    private const int s_responseTrim = 80;
     private const string s_requestHeader = "Request";
     private const string s_pathHeader = "Path";
     private const string s_responseHeader = "Response";

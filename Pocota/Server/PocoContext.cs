@@ -9,14 +9,14 @@ namespace Net.Leksi.Pocota.Server;
 
 public class PocoContext : IPocoContext
 {
-    private const string s_invalidPrimaryKey = $"<{nameof(DataProviderResponse.Skip)}> or not null key(part) value expected.";
+    private const string s_invalidPrimaryKey = $"(<{nameof(DataProviderResponse.Skip)}> | not null key(part) value) expected.";
     private const string s_primaryKeyIsNotAssigned = $"Primary Key is not assigned.";
-    private const string s_invalidValue = $"<{nameof(DataProviderResponse.Skip)}> or value expected.";
-    private const string s_invalidPocoResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> expected.";
-    private const string s_notNullableNullKeyPart = $"Not null key(part) value expected.";
-    private const string s_notNullableNull = $"Not null value expected.";
-    private const string s_invalidListResponse = $"<{nameof(DataProviderResponse.Skip)}> or <{nameof(DataProviderResponse.Touch)}> or {nameof(DataProvider)} value or {nameof(IList)}<> value  expected.";
-    private const string s_readOnlyListRewrite = $"<{nameof(DataProviderResponse.Touch)}> or typeof{nameof(DataProvider)} value expected.";
+    private const string s_invalidValue = $"(<{nameof(DataProviderResponse.Skip)}> | appropriate value) expected.";
+    private const string s_invalidPocoResponse = $"(<{nameof(DataProviderResponse.Skip)}> | <{nameof(DataProviderResponse.Touch)}>) expected.";
+    private const string s_notNullableNullKeyPart = $"Not null key(part) appropriate value expected.";
+    private const string s_notNullableNull = $"Not null appropriate value expected.";
+    private const string s_invalidListResponse = $"(<{nameof(DataProviderResponse.Skip)}> | <{nameof(DataProviderResponse.Touch)}> | {nameof(DataProvider)} | {nameof(IList)}<appropriate type>) expected.";
+    private const string s_readOnlyListRewrite = $"(<{nameof(DataProviderResponse.Touch)}> | typeof{nameof(DataProvider)}) expected.";
 
     private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions = new(() =>
     {
