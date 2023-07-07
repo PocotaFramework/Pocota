@@ -1,17 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common.Generic;
+using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.TextGenerator;
 using System.Collections;
+using System.Diagnostics.Contracts;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Common;
 
-public class CodeGenerator
+public class Implementer
 {
     private const string s_void = "void";
     private const string s_poco = "Poco";
@@ -36,7 +39,6 @@ public class CodeGenerator
     private const string s_propertyUseIndentation = "        ";
 
 
-    private readonly HashSet<Type> _contracts = new();
     private readonly HashSet<Type> _queue = new();
     private readonly Dictionary<Type, InterfaceHolder> _interfaceHoldersByType = new();
     private readonly HashSet<string> _variables = new();
@@ -44,128 +46,145 @@ public class CodeGenerator
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
 
+    private Type _contract = null!;
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public string? ServerGeneratedDirectory { get; set; } = null;
     public string? ClientGeneratedDirectory { get; set; } = null;
 
-    public void AddContract<T>()
+    public Type Contract
     {
-        AddContract(typeof(T));
-    }
-
-    public void AddContract(Type contract)
-    {
-        if (contract.GetCustomAttribute<PocoContractAttribute>() is not PocoContractAttribute contractAttribute)
+        get => _contract;
+        set
         {
-            throw new InvalidOperationException($"Contract {contract} must be {typeof(PocoContractAttribute)}!");
-        }
-        if(contract.GetMethod(s_update) is { })
-        {
-            throw new InvalidOperationException($"Contract {contract} cannot contain {s_update} method, it is reserved!");
-        }
-        if (_contracts.Add(contract))
-        {
-            _queue.Add(contract);
-            foreach (PocoAttribute attr in contract.GetCustomAttributes<PocoAttribute>())
+            if(value is null)
             {
-                if (!attr.Interface.IsInterface)
+                throw new ArgumentNullException(nameof(value));
+            }
+            if(_contract != value)
+            {
+                try
                 {
-                    throw new InvalidOperationException($"Only interfaces allowed ({attr.Interface} from {contract})!");
-                }
-                if (attr.Interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
-                {
-                    throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface} from {contract}!");
-                }
-                if (!_interfaceHoldersByType.TryGetValue(attr.Interface, out InterfaceHolder? @interface))
-                {
-                    @interface = new() { Interface = attr.Interface, Contract = contract };
-                    Match match = _interfaceNameCheck.Match(attr.Interface.Name);
-                    if (!match.Success)
-                    {
-                        throw new InvalidOperationException($"Projector {attr.Interface} has not assigned Name and does not meet name condition: I{{Name}}!");
-                    }
-                    @interface.Name = match.Groups[1].Captures[0].Value;
-                    _interfaceHoldersByType.Add(attr.Interface, @interface);
-                    _queue.Add(attr.Interface);
-                }
-                else
-                {
-                    throw new InvalidOperationException($"Interface {attr.Interface} from {contract} is already defined at {@interface.Contract}!");
-                }
-                if (attr.PrimaryKey is { })
-                {
-                    PrimaryKeyDefinition? keyDefinition = null;
+                    _queue.Clear();
+                    _interfaceHoldersByType.Clear();
+                    _variables.Clear();
 
-                    for (int i = 0; i < attr.PrimaryKey.Length; ++i)
+                    _contract = value;
+
+                    if (_contract.GetCustomAttribute<PocoContractAttribute>() is not PocoContractAttribute contractAttribute)
                     {
-                        if (i % 2 == 0)
+                        throw new InvalidOperationException($"Contract {_contract} must be {typeof(PocoContractAttribute)}!");
+                    }
+                    if (_contract.GetMethod(s_update) is { })
+                    {
+                        throw new InvalidOperationException($"Contract {_contract} cannot contain {s_update} method, it is reserved!");
+                    }
+                    _queue.Add(_contract);
+                    foreach (PocoAttribute attr in _contract.GetCustomAttributes<PocoAttribute>())
+                    {
+                        if (!attr.Interface.IsInterface)
                         {
-                            if (attr.PrimaryKey[i] is string name && _keyNameCheck.IsMatch(name))
+                            throw new InvalidOperationException($"Only interfaces allowed ({attr.Interface} from {_contract})!");
+                        }
+                        if (attr.Interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
+                        {
+                            throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface} from {_contract}!");
+                        }
+                        if (!_interfaceHoldersByType.TryGetValue(attr.Interface, out InterfaceHolder? @interface))
+                        {
+                            @interface = new() { Interface = attr.Interface, Contract = _contract };
+                            Match match = _interfaceNameCheck.Match(attr.Interface.Name);
+                            if (!match.Success)
                             {
-                                keyDefinition = new PrimaryKeyDefinition { Name = name };
+                                throw new InvalidOperationException($"Projector {attr.Interface} has not assigned Name and does not meet name condition: I{{Name}}!");
                             }
-                            else
-                            {
-                                throw new InvalidOperationException(
-                                    $"Invalid primary key's field name {attr.PrimaryKey[i]} for target {attr.Interface}!"
-                                    );
-                            }
+                            @interface.Name = match.Groups[1].Captures[0].Value;
+                            _interfaceHoldersByType.Add(attr.Interface, @interface);
+                            _queue.Add(attr.Interface);
                         }
                         else
                         {
-                            if (attr.PrimaryKey[i] is Type type)
+                            throw new InvalidOperationException($"Interface {attr.Interface} from {_contract} is already defined at {@interface.Contract}!");
+                        }
+                        if (attr.PrimaryKey is { })
+                        {
+                            PrimaryKeyDefinition? keyDefinition = null;
+
+                            for (int i = 0; i < attr.PrimaryKey.Length; ++i)
                             {
-                                keyDefinition!.Type = type;
-                            }
-                            else if (attr.PrimaryKey[i] is string path && _keyPathCheck.IsMatch(path))
-                            {
-                                Match match1 = _keyPathCheck.Match(path);
-                                string propertyName = match1.Groups[1].Captures[0].Value;
-                                keyDefinition!.Property = attr.Interface.GetProperty(propertyName);
-                                if (keyDefinition!.Property is null)
+                                if (i % 2 == 0)
                                 {
-                                    throw new InvalidOperationException(
-                                        $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is absent!"
-                                        );
-                                }
-                                NullabilityInfoContext nullability = new();
-                                NullabilityInfo nullabilityInfo = nullability.Create(keyDefinition!.Property);
-                                if (nullabilityInfo.ReadState is NullabilityState.Nullable)
-                                {
-                                    throw new InvalidOperationException(
-                                        $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is nullable!"
-                                        );
-                                }
-                                if (match1.Groups[2].Captures.Count == 1)
-                                {
-                                    keyDefinition.KeyReference = match1.Groups[2].Captures[0].Value;
+                                    if (attr.PrimaryKey[i] is string name && _keyNameCheck.IsMatch(name))
+                                    {
+                                        keyDefinition = new PrimaryKeyDefinition { Name = name };
+                                    }
+                                    else
+                                    {
+                                        throw new InvalidOperationException(
+                                            $"Invalid primary key's field name {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                                            );
+                                    }
                                 }
                                 else
                                 {
-                                    keyDefinition!.Type = keyDefinition.Property.PropertyType;
+                                    if (attr.PrimaryKey[i] is Type type)
+                                    {
+                                        keyDefinition!.Type = type;
+                                    }
+                                    else if (attr.PrimaryKey[i] is string path && _keyPathCheck.IsMatch(path))
+                                    {
+                                        Match match1 = _keyPathCheck.Match(path);
+                                        string propertyName = match1.Groups[1].Captures[0].Value;
+                                        keyDefinition!.Property = attr.Interface.GetProperty(propertyName);
+                                        if (keyDefinition!.Property is null)
+                                        {
+                                            throw new InvalidOperationException(
+                                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is absent!"
+                                                );
+                                        }
+                                        NullabilityInfoContext nullability = new();
+                                        NullabilityInfo nullabilityInfo = nullability.Create(keyDefinition!.Property);
+                                        if (nullabilityInfo.ReadState is NullabilityState.Nullable)
+                                        {
+                                            throw new InvalidOperationException(
+                                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is nullable!"
+                                                );
+                                        }
+                                        if (match1.Groups[2].Captures.Count == 1)
+                                        {
+                                            keyDefinition.KeyReference = match1.Groups[2].Captures[0].Value;
+                                        }
+                                        else
+                                        {
+                                            keyDefinition!.Type = keyDefinition.Property.PropertyType;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        throw new InvalidOperationException(
+                                            $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                                            );
+                                    }
+                                    if (!@interface.KeysDefinitions.TryAdd(keyDefinition.Name, keyDefinition))
+                                    {
+                                        throw new InvalidOperationException(
+                                            $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                                            );
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException(
-                                    $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}!"
-                                    );
-                            }
-                            if (!@interface.KeysDefinitions.TryAdd(keyDefinition.Name, keyDefinition))
-                            {
-                                throw new InvalidOperationException(
-                                    $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for target {attr.Interface}!"
-                                    );
                             }
                         }
                     }
                 }
+                catch (Exception)
+                {
+                    _contract = null!;
+                    throw;
+                }
             }
         }
-
     }
 
-    public void Generate()
+    public void Implement()
     {
         CheckPrimaryKeys();
 
@@ -181,7 +200,7 @@ public class CodeGenerator
 
         foreach (Type @interface in _queue)
         {
-            if (_contracts.Contains(@interface))
+            if (_contract == @interface)
             {
                 if (
                     @interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0
@@ -386,7 +405,7 @@ public class CodeGenerator
             AddUsings(model, typeof(Server.ExpectedOutputTypeAttribute));
             AddUsings(model, typeof(Server.IPocotaController));
 
-            model.Interfaces.Add(MakeTypeName(typeof(Server.IPocotaController)));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(Server.IPocotaController)));
 
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
@@ -395,7 +414,7 @@ public class CodeGenerator
                 {
                     ReturnType = s_void,
                     Name = method.Name,
-                    ExpectedOutputType = MakeTypeName(method.ReturnType)
+                    ExpectedOutputType = Util.MakeTypeName(method.ReturnType)
                 };
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -434,7 +453,7 @@ public class CodeGenerator
             model.Usings.Add(s_systemLinq);
             model.Usings.Add(s_systemCollectionImmutable);
 
-            model.Interfaces.Add(MakeTypeName(typeof(ControllerProxy)));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(ControllerProxy)));
 
             Dictionary<string, string> objectNodeClasses = new();
 
@@ -449,7 +468,7 @@ public class CodeGenerator
                 {
                     ReturnType = s_void,
                     Name = method.Name,
-                    ExpectedOutputType = MakeTypeName(method.ReturnType),
+                    ExpectedOutputType = Util.MakeTypeName(method.ReturnType),
                 };
                 Type returnItemType = method.ReturnType;
                 if (
@@ -477,7 +496,7 @@ public class CodeGenerator
                     {
                         paths = pa.Properties;
                     }
-                    mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties);
+                    mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties, model);
                 }
 
 
@@ -500,7 +519,7 @@ public class CodeGenerator
                         FilterModel fm = new FilterModel
                         {
                             Name = parameter.Name!,
-                            Type = $"{MakeTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
+                            Type = $"{Util.MakeTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
                             Variable = GetUniqueVariable(parameter.Name!),
                             IsNullable = isNullable,
                             IsConvertible = typeof(IConvertible).IsAssignableFrom(parameter.ParameterType)
@@ -552,17 +571,17 @@ public class CodeGenerator
             AddUsings(model, typeof(Controller));
             model.Usings.Add(s_dependencyInjection);
 
-            model.Interfaces.Add(MakeTypeName(typeof(IContractConfigurator)));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IContractConfigurator)));
             model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
-            model.ContractName = MakeTypeName(model.Contract);
+            model.ContractName = Util.MakeTypeName(model.Contract);
 
             foreach (Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
             {
                 AddUsings(model, @interface);
-                model.Services.Add(MakeTypeName(@interface), MakePocoClassName(@interface));
+                model.Services.Add(Util.MakeTypeName(@interface), MakePocoClassName(@interface));
                 if (_interfaceHoldersByType[@interface].KeysDefinitions.Any())
                 {
-                    model.Services.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { @interface })), MakePrimaryKeyName(@interface));
+                    model.Services.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { @interface })), MakePrimaryKeyName(@interface));
                 }
             }
         }
@@ -584,7 +603,7 @@ public class CodeGenerator
             AddUsings(model, typeof(IPrimaryKey<>));
             AddUsings(model, typeof(KeyDefinition));
 
-            model.Interfaces.Add(MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
 
             FillPrimaryKeyModel(model, @interface);
         }
@@ -613,28 +632,28 @@ public class CodeGenerator
 
             AddUsings(model, typeof(PropertyAccessMode));
 
-            model.Interface = MakeTypeName(request.Interface);
+            model.Interface = Util.MakeTypeName(request.Interface);
 
             Type? extendingInterface = GetExtendingInterface(request.Interface);
 
             if (_interfaceHoldersByType[request.Interface].KeysDefinitions.Count > 0)
             {
                 AddUsings(model, typeof(Server.EntityBase));
-                model.Interfaces.Add(MakeTypeName(typeof(Server.EntityBase)));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(Server.EntityBase)));
             }
             else
             {
                 AddUsings(model, typeof(Server.PocoBase));
-                model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{MakeTypeName(typeof(Server.PocoBase))}");
+                model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{Util.MakeTypeName(typeof(Server.PocoBase))}");
                 if (extendingInterface is { })
                 {
                     AddUsings(model, typeof(IPrimaryKey<>));
                     AddUsings(model, extendingInterface);
                     model.Usings.Add(s_dependencyInjection);
-                    model.ExtenderPrimaryKeyInterface = $"{nameof(IPrimaryKey)}<{MakeTypeName(extendingInterface)}>";
+                    model.ExtenderPrimaryKeyInterface = $"{nameof(IPrimaryKey)}<{Util.MakeTypeName(extendingInterface)}>";
                 }
             }
-            model.Interfaces.Add(MakeTypeName(request.Interface));
+            model.Interfaces.Add(Util.MakeTypeName(request.Interface));
 
             NullabilityInfoContext nc = new();
 
@@ -656,7 +675,7 @@ public class CodeGenerator
                     Name = pi.Name,
                     IsReadOnly = !pi.CanWrite,
                     IsNullable = nc.Create(pi).WriteState is NullabilityState.Nullable,
-                    Type = MakeTypeName(pi.PropertyType),
+                    Type = Util.MakeTypeName(pi.PropertyType),
                     PropertyClass = $"{pi.Name}{s_property}{s_class}",
                     PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}",
                     AsTypeAsk = (pi.PropertyType.IsClass || pi.PropertyType.IsInterface) ? string.Empty : s_ask,
@@ -695,7 +714,7 @@ public class CodeGenerator
                     }
                     if (pm.IsList)
                     {
-                        pm.ItemType = MakeTypeName(itemType);
+                        pm.ItemType = Util.MakeTypeName(itemType);
                         pm.ItemObjectType = MakePocoClassName(itemType);
                         pm.ObjectType = $"IList<{pm.ItemObjectType}>";
                         pm.InstanceType = $"List<{pm.ItemObjectType}>";
@@ -712,7 +731,7 @@ public class CodeGenerator
                 {
                     if (pm.IsList)
                     {
-                        pm.ItemObjectType = MakeTypeName(itemType);
+                        pm.ItemObjectType = Util.MakeTypeName(itemType);
                         pm.ItemType = pm.ItemObjectType;
                         pm.ObjectType = pm.Type;
                         pm.InstanceType = $"List<{pm.ItemObjectType}>";
@@ -743,7 +762,7 @@ public class CodeGenerator
         }
     }
 
-    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths)
+    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths, ClassModel model)
     {
         Dictionary<string, PropertyUseModel> cache = new();
         List<string> queue = new();
@@ -756,12 +775,14 @@ public class CodeGenerator
         };
         if (_interfaceHoldersByType.TryGetValue(rootType, out InterfaceHolder? ih))
         {
-            result.PropertyField = $"{MakePocoClassName(ih.Interface)}.{s_staticPrefix}{s_property}";
             result.TypeName = MakePocoClassName(ih.Interface);
+            result.PropertyField = $"{MakePocoClassName(ih.Interface)}.{s_staticPrefix}{s_property}";
         }
         else
         {
-            result.TypeName = MakeTypeName(rootType);
+            AddUsings(model, typeof(FreeProperty));
+            result.TypeName = Util.MakeTypeName(rootType);
+            result.PropertyField = $"new {nameof(FreeProperty)} {{ Type = typeof({result.TypeName}) }}";
         }
 
         if (paths is null && _interfaceHoldersByType.ContainsKey(rootType))
@@ -811,14 +832,22 @@ public class CodeGenerator
                     done = true;
                     break;
                 }
+
                 string path = string.Join('.', Enumerable.Range(0, i + 1).Select(e => parts[e]));
+
                 if (!cache.TryGetValue(path, out PropertyUseModel? node))
                 {
                     Type? nodeType = null;
+                    string nodeName = string.Empty;
                     if (parent.Type is { })
                     {
-                        if (parent.Type?.GetProperty(parts[i]) is PropertyInfo pi)
+                        if(parent.IsList && "@".Equals(parts[i]))
                         {
+                            nodeType = parent.ItemType;
+                        }
+                        else if (parent.Type?.GetProperty(parts[i]) is PropertyInfo pi)
+                        {
+                            nodeName = parts[i];
                             nodeType = pi.PropertyType;
                         }
                         else
@@ -827,21 +856,37 @@ public class CodeGenerator
                         }
                     }
                     node = new PropertyUseModel {
-                        Name = parts[i],
-                        PropertyField = $"{parent.TypeName}.{s_staticPrefix}{parts[i]}{s_property}",
+                        Name = nodeName,
                         Path = path,
                         Type = nodeType,
                         Indentation = $"{parent.Indentation}{s_propertyUseIndentation}",
                     };
                     if (nodeType is { })
                     {
-                        if (_interfaceHoldersByType.TryGetValue(nodeType, out InterfaceHolder? ih1))
+                        bool isPoco = _interfaceHoldersByType.TryGetValue(nodeType, out InterfaceHolder? ih1);
+                        if (isPoco)
                         {
-                            node.TypeName = MakePocoClassName(ih1.Interface);
+                            node.TypeName = MakePocoClassName(ih1!.Interface);
                         }
                         else
                         {
-                            node.TypeName = MakeTypeName(nodeType);
+                            node.TypeName = Util.MakeTypeName(nodeType);
+                        }
+                        if (parent.IsList)
+                        {
+                            if (isPoco)
+                            {
+                                node.PropertyField = $"{node.TypeName}.{s_staticPrefix}{s_property}";
+                            }
+                            else
+                            {
+                                AddUsings(model, typeof(FreeProperty));
+                                node.PropertyField = $"new {nameof(FreeProperty)} {{ Type = typeof({node.TypeName}) }}";
+                            }
+                        }
+                        else
+                        {
+                            node.PropertyField = $"{parent.TypeName}.{s_staticPrefix}{parts[i]}{s_property}";
                         }
                     }
 
@@ -858,6 +903,18 @@ public class CodeGenerator
                 if (_interfaceHoldersByType.ContainsKey(node.Type!))
                 {
                     parent = node;
+                }
+                else if(node.Type!.IsGenericType && typeof(IList<>).IsAssignableFrom(node.Type.GetGenericTypeDefinition()))
+                {
+                    node.IsList = true;
+                    node.ItemType = node.Type.GetGenericArguments()[0];
+                    parent = node;
+                    if(i == parts.Length - 1)
+                    {
+                        queue.RemoveAt(0);
+                        queue.Insert(0, $"{path}.@");
+                        done = true;
+                    }
                 }
                 else if(i < parts.Length - 1)
                 {
@@ -908,7 +965,7 @@ public class CodeGenerator
                             }
                             else
                             {
-                                pum.TypeName = MakeTypeName(pum.Type);
+                                pum.TypeName = Util.MakeTypeName(pum.Type);
                             }
                         }
                         if(pos >= result.Properties!.Count)
@@ -923,12 +980,12 @@ public class CodeGenerator
                     }
                 }
             }
-            if(result.Properties is { })
+        }
+        if (result.Properties is { })
+        {
+            foreach (PropertyUseModel prop in result.Properties)
             {
-                foreach (PropertyUseModel prop in result.Properties)
-                {
-                    EnsurePrimaryKeyPaths(prop);
-                }
+                EnsurePrimaryKeyPaths(prop);
             }
         }
     }
@@ -948,7 +1005,7 @@ public class CodeGenerator
                 {
                     Name = partDefinition.Key,
                     FieldName = $"_{partDefinition.Key.Substring(0, 1).ToLower()}{partDefinition.Key.Substring(1)}",
-                    Type = MakeTypeName(partDefinition.Value.Type),
+                    Type = Util.MakeTypeName(partDefinition.Value.Type),
                     AsTypeAsk = partDefinition.Value.Type.IsClass ? string.Empty : s_ask,
                 };
                 if (partDefinition.Value.KeyReference is { })
@@ -1034,24 +1091,6 @@ public class CodeGenerator
     private string MakeControllerInterfaceName(Type @interface)
     {
         return $"I{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
-    }
-
-    private string MakeTypeName(Type type)
-    {
-        if (type == typeof(void))
-        {
-            return s_void;
-        }
-        if (!type.IsGenericType)
-        {
-            return type.Name;
-        }
-        if (type.GetGenericTypeDefinition() == typeof(Nullable<>))
-        {
-            return MakeTypeName(type.GetGenericArguments()[0]);
-        }
-        return type.GetGenericTypeDefinition().Name.Substring(0, type.GetGenericTypeDefinition().Name.IndexOf('`'))
-            + '<' + String.Join(',', type.GetGenericArguments().Select(v => MakeTypeName(v))) + '>';
     }
 
     private void AddUsings(ClassModel model, Type type)

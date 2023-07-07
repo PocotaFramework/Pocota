@@ -1,11 +1,12 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-06T21:11:09                                                        //
+// at 2023-07-07T17:04:43                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
 using System;
@@ -82,6 +83,56 @@ public class CatsControllerProxy : ControllerProxy
                     {
                         Property = LitterWithCatsPoco.s_CatsProperty,
                         Path = "LitterWithCats.Cats",
+                        Properties = new PropertyUse[] {
+                            new()
+                            {
+                                Property = CatPoco.s_Property,
+                                Path = "LitterWithCats.Cats.@",
+                                Properties = new PropertyUse[] {
+                                    new()
+                                    {
+                                        Property = CatPoco.s_CatteryProperty,
+                                        Path = "LitterWithCats.Cats.@.Cattery",
+                                    },
+                                }.ToImmutableList()
+                            },
+                        }.ToImmutableList()
+                    },
+                    new()
+                    {
+                        Property = LitterWithCatsPoco.s_StringsProperty,
+                        Path = "LitterWithCats.Strings",
+                        Properties = new PropertyUse[] {
+                            new()
+                            {
+                                Property = new FreeProperty { Type = typeof(String) },
+                                Path = "LitterWithCats.Strings.@",
+                            },
+                        }.ToImmutableList()
+                    },
+                    new()
+                    {
+                        Property = LitterWithCatsPoco.s_ListsProperty,
+                        Path = "LitterWithCats.Lists",
+                        Properties = new PropertyUse[] {
+                            new()
+                            {
+                                Property = new FreeProperty { Type = typeof(IList<String>) },
+                                Path = "LitterWithCats.Lists.@",
+                                Properties = new PropertyUse[] {
+                                    new()
+                                    {
+                                        Property = new FreeProperty { Type = typeof(String) },
+                                        Path = "LitterWithCats.Lists.@.@",
+                                    },
+                                }.ToImmutableList()
+                            },
+                        }.ToImmutableList()
+                    },
+                    new()
+                    {
+                        Property = LitterWithCatsPoco.s_CatFilterProperty,
+                        Path = "LitterWithCats.CatFilter",
                     },
                 }.ToImmutableList()
             },
@@ -224,14 +275,66 @@ public class CatsControllerProxy : ControllerProxy
             {
                 Property = LitterWithCatsPoco.s_CatsProperty,
                 Path = "Cats",
+                Properties = new PropertyUse[] {
+                    new()
+                    {
+                        Property = CatPoco.s_Property,
+                        Path = "Cats.@",
+                        Properties = new PropertyUse[] {
+                            new()
+                            {
+                                Property = CatPoco.s_CatteryProperty,
+                                Path = "Cats.@.Cattery",
+                            },
+                        }.ToImmutableList()
+                    },
+                }.ToImmutableList()
+            },
+            new()
+            {
+                Property = LitterWithCatsPoco.s_StringsProperty,
+                Path = "Strings",
+                Properties = new PropertyUse[] {
+                    new()
+                    {
+                        Property = new FreeProperty { Type = typeof(String) },
+                        Path = "Strings.@",
+                    },
+                }.ToImmutableList()
+            },
+            new()
+            {
+                Property = LitterWithCatsPoco.s_ListsProperty,
+                Path = "Lists",
+                Properties = new PropertyUse[] {
+                    new()
+                    {
+                        Property = new FreeProperty { Type = typeof(IList<String>) },
+                        Path = "Lists.@",
+                        Properties = new PropertyUse[] {
+                            new()
+                            {
+                                Property = new FreeProperty { Type = typeof(String) },
+                                Path = "Lists.@.@",
+                            },
+                        }.ToImmutableList()
+                    },
+                }.ToImmutableList()
+            },
+            new()
+            {
+                Property = LitterWithCatsPoco.s_CatFilterProperty,
+                Path = "CatFilter",
             },
         }.ToImmutableList()
     };
     private static readonly PropertyUse s_findExteriorsPropertyUse = new()
     {
+        Property = new FreeProperty { Type = typeof(String) },
     };
     private static readonly PropertyUse s_findTitlesPropertyUse = new()
     {
+        Property = new FreeProperty { Type = typeof(String) },
     };
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindCats/{filter?}")]

@@ -20,7 +20,7 @@ public class ClassModel: PageModel
     internal string ContractName { get; set; } = null!;
     internal string? ExtenderPrimaryKeyInterface { get; set; } = null;
 
-    public void OnGet([FromServices] CodeGenerator generator)
+    public void OnGet([FromServices] Implementer generator)
     {
         if (HttpContext.Request.Path.Equals("/ControllerInterface"))
         {

@@ -12,5 +12,6 @@ public class PropertyUseModel: PageModel
     internal List<PropertyUseModel>? Properties { get; set; } = null;
     internal string FirstIndentation { get; set; } = string.Empty;
     internal string Indentation { get; set; } = string.Empty;
-
+    internal bool IsList { get; set; } = false;
+    internal Type? ItemType { get; set; } = null;
 }

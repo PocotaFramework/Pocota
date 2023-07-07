@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utility", "Utility", "{4CDE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TextGeneratorDebug", "..\TextGenerator\Library\TextGeneratorDebug.csproj", "{BFDA1539-E1E7-4380-986E-62061D5F1B06}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGeneratorDebug", "Pocota\CodeGenerator\CodeGeneratorDebug.csproj", "{6EF6C2AC-E7E3-4916-8F16-DAA606F53973}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractImplementerDebug", "Pocota\ContractImplementer\ContractImplementerDebug.csproj", "{6EF6C2AC-E7E3-4916-8F16-DAA606F53973}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{A3C1CAC6-1B9F-4AED-8357-88C997DB60CF}"
 EndProject
@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "Tests\Consol
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractDebug", "Demo\Cats\Contract\ContractDebug.csproj", "{A1DFD7E4-8B33-4C40-8E21-2A3DF62D3C7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerEngineDebug", "Demo\Cats\ServerEngine\ServerEngineDebug.csproj", "{C9704AAC-3CF4-42BD-B5D8-CA5E6122497E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerEngineDebug", "Demo\Cats\ServerEngine\ServerEngineDebug.csproj", "{C9704AAC-3CF4-42BD-B5D8-CA5E6122497E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CatsServerDebug", "Demo\Cats\CatsServer\CatsServerDebug.csproj", "{A579ADA7-05BE-48DA-A8B6-0EB2EF50A50A}"
 EndProject

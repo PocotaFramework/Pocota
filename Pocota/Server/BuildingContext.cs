@@ -10,14 +10,15 @@ public class BuildingContext
     private List<TracingEntry> _tracingLog { get; init; }
 
     internal Dictionary<string, BuildingContext> PropertyUsesContexts { get; init; } = new();
-    internal BuildingContext DataReaderRoot { get; set; } = null!;
+    internal BuildingContext DataProviderRoot { get; set; } = null!;
     internal BuildingContext Root { get; init; } = null!;
     internal DataProvider? DataProvider { get; set; }
     internal bool IsSingleQuery { get; set; } = true;
     internal Dictionary<string, object> SetKeyParts { get; init; } = new();
     internal TracingEntry? LastTracingEntry => _tracingLog.LastOrDefault();
+    internal Action? ProcessAList { get; set; }
 
-    public object? Value { get; internal set; } = null;
+    public object? Value { get; internal set; }
     public PropertyUse PropertyUse { get; init; } = null!;
     public bool WithTracing { get; init; } = false;
     public bool IsRoot => _parent is null;
@@ -47,7 +48,7 @@ public class BuildingContext
         WithDirectOutput = _parent.WithDirectOutput;
         WithTracing = _parent.WithTracing;
         _hasError = _parent.HasError;
-        DataReaderRoot = _parent.DataReaderRoot;
+        DataProviderRoot = _parent.DataProviderRoot;
         Root = _parent.Root;
     }
 

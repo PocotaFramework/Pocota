@@ -4,5 +4,5 @@ public enum DataProviderResponse
 {
     Skip,
     Touch,
-    Miss
+    Miss,
 }

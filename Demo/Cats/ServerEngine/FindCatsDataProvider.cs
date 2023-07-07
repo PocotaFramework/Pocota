@@ -16,15 +16,20 @@ public class FindCatsDataProvider : DataProvider
     {
         get
         {
-            Console.WriteLine(path);
+            Console.WriteLine($"{path}, {BuildingContext!.GetHashCode()}");
             switch (path)
             {
-                case "IdCat":
-                    return _dataReader!["IdCat"];
-                case "IdCattery":
-                    return _dataReader!["IdCattery"];
+                //case "IdCat":
+                //    return _dataReader!["IdCat"];
+                //case "IdCattery":
+                //    return _dataReader!["IdCattery"];
                 case "LitterWithCats":
                     return DataProviderResponse.Touch;
+                case "LitterWithCats.Lists":
+                    return new List<IList<string>>();
+                    return DataProviderResponse.Touch;
+                case "LitterWithCats.Lists.@":
+                    return new List<string>();
             }
             return DataProviderResponse.Miss;
         }

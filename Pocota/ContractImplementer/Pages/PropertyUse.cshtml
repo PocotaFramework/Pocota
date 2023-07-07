@@ -4,7 +4,7 @@ new()
 @Html.Raw(Model.Indentation){
 @if (!string.IsNullOrEmpty(Model.PropertyField))
 {
-    <text>@Html.Raw(Model.Indentation)    Property = @Model.PropertyField,
+    <text>@Html.Raw(Model.Indentation)    Property = @Html.Raw(Model.PropertyField),
 </text>
 }
 @if (!string.IsNullOrEmpty(Model.Path))

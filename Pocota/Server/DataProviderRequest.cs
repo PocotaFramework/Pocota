@@ -7,5 +7,6 @@ public enum DataProviderRequest
     Entity,
     Poco,
     List,
-    Value
+    Value,
+    Item,
 }
