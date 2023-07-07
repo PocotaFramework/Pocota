@@ -1,21 +1,48 @@
-﻿using Net.Leksi.Pocota.Common;
-using System.Text;
+﻿using System.Text;
 
 namespace Net.Leksi.Pocota.Server;
 
-public class BuildingException: Exception
+public class BuildingException: Common.BuildingException
 {
-    private const int s_responseTrim = 80;
-    private const string s_requestHeader = "Request";
-    private const string s_pathHeader = "Path";
-    private const string s_responseHeader = "Response";
-    private const string s_successHeader = "Success";
-    private const string s_commentHeader = "Comment";
+    private static readonly Func<TracingEntry, string> _getResponse = t =>
+    {
+        string? r = t.Response!.ToString(); 
+        return r!.Length <= s_responseTrim 
+            ? r : 
+            $"{r.Substring(0, (s_responseTrim - 3) / 2)}...{r.Substring(r.Length - (s_responseTrim - 3) / 2)}";
+    };
+
     public IEnumerable<TracingEntry> TracingLog { get; init; }
 
-    private BuildingException(string? message, IEnumerable<TracingEntry> tracingsLog): base(message)
+    internal BuildingException(string? message, List<TracingEntry> tracingsLog): base(message)
     {
         TracingLog = tracingsLog;
+        RecommendedRequestFieldLength = tracingsLog.Select(t => Math.Max(t.Request.ToString().Length, s_requestHeader.Length)).Max();
+        RecommendedPathFieldLength = tracingsLog.Select(t => Math.Max(t.Path?.Length ?? 0, s_pathHeader.Length)).Max();
+        RecommendedResponseFieldLength = tracingsLog.Select(_getResponse).Select(r => r.Length).Max();
+        RecommendedCommentFieldLength = tracingsLog.Select(t => Math.Max(t.Comment?.Length ?? 0, s_commentHeader.Length)).Max();
+        List<TracingEntry>.Enumerator enumerator = tracingsLog.GetEnumerator();
+        for (int i = 0; enumerator.MoveNext(); ++i)
+        {
+            TracingEntry tracing = enumerator.Current;
+            if (tracing.Success is bool success)
+            {
+                if (tracing.Exception is { })
+                {
+                    tracing.Comment = $"Exception: [{_exceptions.Count + 1}]";
+                    _exceptions.Add(tracing.Exception);
+                }
+                TracingEntries.Add(
+                    new Common.TracingEntry
+                    {
+                        Request = tracing.Request.ToString(),
+                        Path = tracing.Path!,
+                        Response = tracing.Response!.ToString()!,
+                        Comment = tracing.Comment,
+                    }
+                );
+            }
+        }
     }
 
     internal static BuildingException Create(string? message, IEnumerable<TracingEntry> tracings)
@@ -34,7 +61,7 @@ public class BuildingException: Exception
         int maxPathLength = tracings.Select(t => Math.Max(t.Path?.Length ?? 0, s_pathHeader.Length)).Max();
         int maxCommentLength = tracings.Select(t => Math.Max(t.Comment?.Length ?? 0, s_commentHeader.Length)).Max();
         int maxRequestLength = tracings.Select(t => Math.Max(t.Request.ToString().Length, s_requestHeader.Length)).Max();
-        List<string> responses = tracings.Select(t => t.Response.ToString()).Select(r => r.Length <= s_responseTrim ? r : $"{r.Substring(0, (s_responseTrim - 3) / 2)}...{r.Substring(r.Length - (s_responseTrim - 3) / 2)}").ToList();
+        List<string> responses = tracings.Select(_getResponse).ToList();
         int maxResponseLength = responses.Select(r => r.Length).Max();
         sb.AppendLine(string.Format($"{{0, -{maxRequestLength + maxPathLength + maxResponseLength + s_successHeader.Length + maxCommentLength + 4}}}", string.Empty).Replace(' ', '-'));
         sb.AppendFormat($"{{0,-{maxRequestLength}}}|", s_requestHeader);
