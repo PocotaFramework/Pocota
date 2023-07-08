@@ -53,7 +53,7 @@ public class BuildingException: Exception
                 }
                 sb.AppendFormat($"{{0,-{RecommendedRequestFieldLength}}}|", tracing.Request);
                 sb.AppendFormat($"{{0,-{RecommendedPathFieldLength}}}|", tracing.Path);
-                sb.AppendFormat($"{{0,-{RecommendedResponseFieldLength}}}|", tracing.Response);
+                sb.AppendFormat($"{{0,-{RecommendedResponseFieldLength}}}|", _ge tracing.Response);
                 sb.AppendFormat($"{{0, -{s_successHeader.Length}}}|", tracing.Success);
                 sb.AppendFormat($"{{0, -{RecommendedCommentFieldLength}}}", tracing.Comment);
                 sb.AppendLine();

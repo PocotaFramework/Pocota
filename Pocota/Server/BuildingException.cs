@@ -2,7 +2,7 @@
 
 namespace Net.Leksi.Pocota.Server;
 
-public class BuildingException: Common.BuildingException
+public class BuildingException : Common.BuildingException
 {
     protected const int s_responseTrim = 80;
 
@@ -14,7 +14,7 @@ public class BuildingException: Common.BuildingException
             $"{r.Substring(0, (s_responseTrim - 3) / 2)}...{r.Substring(r.Length - (s_responseTrim - 3) / 2)}";
     };
 
-    internal BuildingException(string? message, IList<TracingEntry> tracingsLog): base(message)
+    internal BuildingException(string? message, IList<TracingEntry> tracingsLog) : base(message)
     {
         RecommendedRequestFieldLength = tracingsLog.Select(t => Math.Max(t.Request.ToString().Length, s_requestHeader.Length)).Max();
         RecommendedPathFieldLength = tracingsLog.Select(t => Math.Max(t.Path?.Length ?? 0, s_pathHeader.Length)).Max();
@@ -38,6 +38,7 @@ public class BuildingException: Common.BuildingException
                         Path = tracingEntry.Path!,
                         Response = _getResponse(tracingEntry),
                         Comment = tracingEntry.Comment,
+                        Success = success ? "OK" : "Fail",
                     }
                 );
                 if (tracingEntry.Exception is { })
