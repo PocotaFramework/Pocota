@@ -2,11 +2,11 @@
 
 public class TracingEntry
 {
-    public string Request { get; init; } = null!;
-    public string Path { get; init; } = null!;
-    public string Response { get; init; } = null!;
-    public string Success { get; init; } = null!;
-    public string? Comment { get; init; } = null;
+    public string Request { get; init; } = string.Empty;
+    public string Path { get; init; } = string.Empty;
+    public string Response { get; init; } = string.Empty;
+    public string Success { get; init; } = string.Empty;
+    public string Comment { get; set; } = string.Empty;
     public string? Exception { get; set; } = null;
 
 }

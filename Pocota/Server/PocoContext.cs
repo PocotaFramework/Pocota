@@ -757,7 +757,7 @@ public class PocoContext : IPocoContext
             {
                 if (buildingContext.HasError)
                 {
-                    throw BuildingException.Create(null, buildingContext.TracingLog);
+                    throw new BuildingException(null, buildingContext.TracingLog);
                 }
                 if (buildingContext.WithTracing)
                 {

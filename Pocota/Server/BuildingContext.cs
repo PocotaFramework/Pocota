@@ -1,5 +1,6 @@
 ﻿using Net.Leksi.Pocota.Common;
 using System.Collections;
+using System.Collections.Immutable;
 
 namespace Net.Leksi.Pocota.Server;
 
@@ -37,7 +38,7 @@ public class BuildingContext
             }
         }
     }
-    public IEnumerable<TracingEntry> TracingLog => _tracingLog.Select(e => e);
+    public IList<TracingEntry> TracingLog => _tracingLog.Select(e => e).ToImmutableList();
     public bool WithDirectOutput { get; init; } = false;
     public BuildingContext? Parent => _parent;
 

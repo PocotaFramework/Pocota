@@ -22,7 +22,14 @@ public class Middleware
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
+            if(ex is BuildingException buildingException)
+            {
+                Console.WriteLine(buildingException.GetExtendedMessage());
+            }
+            else
+            {
+                Console.WriteLine(ex);
+            }
             await context.Response.WriteAsync($"{{{context.Response.Headers[Constants.ExceptionBoundaryHeaderName][0]}}}");
             JsonSerializerOptions options = new JsonSerializerOptions { ReferenceHandler = ReferenceHandler.Preserve };
             options.Converters.Add(new ExceptionJsonConverter());
