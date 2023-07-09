@@ -66,6 +66,40 @@ public class ExceptionJsonConverter : JsonConverter<Exception>
         return exception;
     }
 
+    public override void Write(Utf8JsonWriter writer, Exception value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WritePropertyName(ExceptionType);
+        writer.WriteStringValue(value.GetType().FullName);
+        foreach (PropertyInfo pi in value.GetType().GetProperties())
+        {
+            if (
+                typeof(string) == pi.PropertyType 
+                || typeof(Exception).IsAssignableFrom(pi.PropertyType)
+                || pi.PropertyType.IsPrimitive
+                || typeof(ICollection<Exception>).IsAssignableFrom(pi.PropertyType)
+                || typeof(IList<TracingEntry>).IsAssignableFrom(pi.PropertyType)
+                || "Data".Equals(pi.Name)
+            )
+            {
+                object? valueObj = pi.GetValue(value);
+                if (valueObj is { })
+                {
+                    writer.WritePropertyName(pi.Name);
+                    try
+                    {
+                        JsonSerializer.Serialize(writer, valueObj, pi.PropertyType, options);
+                    }
+                    catch (Exception ex)
+                    {
+                        writer.WriteStringValue("<<<skipped>>>");
+                    }
+                }
+            }
+        }
+        writer.WriteEndObject();
+    }
+
     private object? Deserialize(JsonElement jsonElement)
     {
         switch (jsonElement.ValueKind)
@@ -89,36 +123,4 @@ public class ExceptionJsonConverter : JsonConverter<Exception>
         }
     }
 
-    public override void Write(Utf8JsonWriter writer, Exception value, JsonSerializerOptions options)
-    {
-        writer.WriteStartObject();
-        writer.WritePropertyName(ExceptionType);
-        writer.WriteStringValue(value.GetType().FullName);
-        foreach (PropertyInfo pi in value.GetType().GetProperties())
-        {
-            if (
-                typeof(string) == pi.PropertyType 
-                || typeof(Exception).IsAssignableFrom(pi.PropertyType)
-                || pi.PropertyType.IsPrimitive
-                || typeof(ICollection<Exception>).IsAssignableFrom(pi.PropertyType)
-                || "Data".Equals(pi.Name)
-            )
-            {
-                object? valueObj = pi.GetValue(value);
-                if (valueObj is { })
-                {
-                    writer.WritePropertyName(pi.Name);
-                    try
-                    {
-                        JsonSerializer.Serialize(writer, valueObj, pi.PropertyType, options);
-                    }
-                    catch (Exception ex)
-                    {
-                        writer.WriteStringValue("<<<skipped>>>");
-                    }
-                }
-            }
-        }
-        writer.WriteEndObject();
-    }
 }
