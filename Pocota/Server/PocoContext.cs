@@ -743,11 +743,6 @@ public class PocoContext : IPocoContext
 
                 buildingContext.Value = buildingContext.DataProviderRoot.DataProvider!.Get(buildingContext, buildingContext.PropertyUse.Path);
 
-                if (buildingContext.Value == DBNull.Value)
-                {
-                    buildingContext.Value = null;
-                }
-
                 buildingContext.DataProviderRoot.DataProvider!._request = DataProviderRequest.None;
             }
 
