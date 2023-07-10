@@ -1,20 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
-using Net.Leksi.TextGenerator;
 using System.Collections;
-using System.Diagnostics.Contracts;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Common;
 
-public class Implementer
+public class Implementer: Runner
 {
     private const string s_void = "void";
     private const string s_poco = "Poco";
@@ -191,12 +189,11 @@ public class Implementer
         int fails = 0;
         int done = 0;
 
-        using Generator generator = new();
-        generator.AddService(this);
+        AddService(this);
 
-        generator.Start();
+        Start();
 
-        IConnector connector = generator.GetConnector();
+        IConnector connector = GetConnector();
 
         foreach (Type @interface in _queue)
         {
@@ -338,7 +335,7 @@ public class Implementer
 
         }
 
-        generator.Stop();
+        Stop();
 
         Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
     }
@@ -391,7 +388,7 @@ public class Implementer
 
     internal void BuildControllerInterface(ClassModel model)
     {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
              as GeneratingRequest;
         if (request is { })
         {
@@ -430,7 +427,7 @@ public class Implementer
 
     internal void BuildControllerProxy(ClassModel model)
     {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
             as GeneratingRequest;
         if (request is { })
         {
@@ -555,7 +552,7 @@ public class Implementer
 
     internal void BuildServerContractConfigurator(ClassModel model)
     {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
              as GeneratingRequest;
         if (request is { })
         {
@@ -589,7 +586,7 @@ public class Implementer
 
     internal void BuildPrimaryKey(ClassModel model)
     {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
              as GeneratingRequest;
         if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface) && @interface.KeysDefinitions.Any())
         {
@@ -619,7 +616,7 @@ public class Implementer
 
     internal void BuildServerImplementation(ClassModel model)
     {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameterHolder>().Parameter
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
              as GeneratingRequest;
         if (request is { } && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface))
         {
@@ -1175,5 +1172,15 @@ public class Implementer
                 _interfaceHoldersByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
             }
         }
+    }
+
+    protected override void ConfigureBuilder(WebApplicationBuilder builder)
+    {
+        builder.Services.AddRazorPages();
+    }
+
+    protected override void ConfigureApplication(WebApplication app)
+    {
+        app.MapRazorPages();
     }
 }

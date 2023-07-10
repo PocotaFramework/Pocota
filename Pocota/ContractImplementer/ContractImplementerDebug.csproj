@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\TextGenerator\Library\TextGeneratorDebug.csproj" />
+    <ProjectReference Include="..\..\..\E6dWebApp\Library\E6dWebAppDebug.csproj" />
     <ProjectReference Include="..\..\Demo\Cats\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\Contract\ContractDebug.csproj" />
