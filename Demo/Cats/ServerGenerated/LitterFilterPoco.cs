@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-10T17:24:30                                                        //
+// at 2023-07-10T19:45:04                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
