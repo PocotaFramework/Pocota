@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPrimaryKey                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-10T17:24:30                                                        //
+// at 2023-07-12T12:56:10                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;

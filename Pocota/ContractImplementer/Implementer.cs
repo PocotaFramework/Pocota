@@ -189,8 +189,6 @@ public class Implementer: Runner
         int fails = 0;
         int done = 0;
 
-        AddService(this);
-
         Start();
 
         IConnector connector = GetConnector();
@@ -335,7 +333,7 @@ public class Implementer: Runner
 
         }
 
-        Stop();
+        //Stop();
 
         Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
     }
@@ -1176,6 +1174,7 @@ public class Implementer: Runner
 
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton(this);
         builder.Services.AddRazorPages();
     }
 
