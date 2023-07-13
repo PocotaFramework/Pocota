@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota.Demo.Cats.Common;
+﻿namespace Net.Leksi.Pocota.Common;
 
 public static class Util
 {
