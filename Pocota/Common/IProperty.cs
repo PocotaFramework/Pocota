@@ -12,8 +12,6 @@ public interface IProperty
     bool IsExtender { get; }
     bool IsKeyPart { get; }
     Type? ItemType { get; }
-    void SetValue(object target, object? value);
     object? GetValue(object target);
     PropertyAccessMode GetAccess(object target);
-    void SetAccess(object target, PropertyAccessMode mode);
 }

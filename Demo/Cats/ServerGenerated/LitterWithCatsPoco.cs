@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-13T10:14:27                                                        //
+// at 2023-07-17T18:27:20                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.Extensions.DependencyInjection;
@@ -18,48 +18,52 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
 {
 
     #region Property classes
-    public class PropertyClass: IProperty
+    public class PropertyClass: Property
     {
-        public string Name => string.Empty;
-        public Type Type => typeof(LitterWithCatsPoco);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => true;
-        public bool IsEntity => false;
-        public bool IsList => false;
-        public bool IsKeyPart => false;
-        public bool IsExtender => true;
-        public Type? ItemType => null;
-        public void SetValue(object target, object? value)
+        public override string Name => string.Empty;
+        public override Type Type => typeof(LitterWithCatsPoco);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => true;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => true;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
         {
             throw new InvalidOperationException();
         }
-        public object? GetValue(object target)
+        protected override void SetValue(object target, object? value)
         {
             throw new InvalidOperationException();
         }
-        public PropertyAccessMode GetAccess(object target)
+        public override object? GetValue(object target)
         {
             throw new InvalidOperationException();
         }
-        public void SetAccess(object target, PropertyAccessMode mode)
+        protected override void SetAccess(object target, PropertyAccessMode mode)
         {
             throw new InvalidOperationException();
         }
     }
-    public class CatsPropertyClass: IProperty
+    public class CatsPropertyClass: Property
     {
-        public string Name => "Cats";
-        public Type Type => typeof(List<CatPoco>);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => true;
-        public bool IsEntity => true;
-        public bool IsList => true;
-        public bool IsKeyPart => false;
-        public bool IsExtender => false;
-        public Type? ItemType => typeof(CatPoco);
-        public void SetValue(object target, object? value)
+        public override string Name => "Cats";
+        public override Type Type => typeof(List<CatPoco>);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => true;
+        public override bool IsEntity => true;
+        public override bool IsList => true;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => typeof(CatPoco);
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._catsAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
         {
             IList<CatPoco>? value1 = value as IList<CatPoco>;
             if (value is {} && value1 is null || value is null)
@@ -68,15 +72,11 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
             ((LitterWithCatsPoco)target).Cats = value1!;
         }
-        public object? GetValue(object target)
+        public override object? GetValue(object target)
         {
             return ((LitterWithCatsPoco)target).Cats;
         }
-        public PropertyAccessMode GetAccess(object target)
-        {
-            return target is LitterWithCatsPoco target1 ? target1._catsAccessMode : PropertyAccessMode.Denied;
-        }
-        public void SetAccess(object target, PropertyAccessMode mode)
+        protected override void SetAccess(object target, PropertyAccessMode mode)
         {
             if(target is LitterWithCatsPoco target1)
             {
@@ -84,19 +84,23 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
         }
     }
-    public class StringsPropertyClass: IProperty
+    public class StringsPropertyClass: Property
     {
-        public string Name => "Strings";
-        public Type Type => typeof(List<String>);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => false;
-        public bool IsEntity => false;
-        public bool IsList => true;
-        public bool IsKeyPart => false;
-        public bool IsExtender => false;
-        public Type? ItemType => typeof(String);
-        public void SetValue(object target, object? value)
+        public override string Name => "Strings";
+        public override Type Type => typeof(List<String>);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => true;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => typeof(String);
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._stringsAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
         {
             IList<String>? value1 = value as IList<String>;
             if (value is {} && value1 is null || value is null)
@@ -105,15 +109,11 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
             ((LitterWithCatsPoco)target).Strings = value1!;
         }
-        public object? GetValue(object target)
+        public override object? GetValue(object target)
         {
             return ((LitterWithCatsPoco)target).Strings;
         }
-        public PropertyAccessMode GetAccess(object target)
-        {
-            return target is LitterWithCatsPoco target1 ? target1._stringsAccessMode : PropertyAccessMode.Denied;
-        }
-        public void SetAccess(object target, PropertyAccessMode mode)
+        protected override void SetAccess(object target, PropertyAccessMode mode)
         {
             if(target is LitterWithCatsPoco target1)
             {
@@ -121,19 +121,23 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
         }
     }
-    public class ListsPropertyClass: IProperty
+    public class ListsPropertyClass: Property
     {
-        public string Name => "Lists";
-        public Type Type => typeof(List<IList<String>>);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => false;
-        public bool IsEntity => false;
-        public bool IsList => true;
-        public bool IsKeyPart => false;
-        public bool IsExtender => false;
-        public Type? ItemType => typeof(IList<String>);
-        public void SetValue(object target, object? value)
+        public override string Name => "Lists";
+        public override Type Type => typeof(List<IList<String>>);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => true;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => typeof(IList<String>);
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._listsAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
         {
             IList<IList<String>>? value1 = value as IList<IList<String>>;
             if (value is {} && value1 is null || value is null)
@@ -142,15 +146,11 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
             ((LitterWithCatsPoco)target).Lists = value1!;
         }
-        public object? GetValue(object target)
+        public override object? GetValue(object target)
         {
             return ((LitterWithCatsPoco)target).Lists;
         }
-        public PropertyAccessMode GetAccess(object target)
-        {
-            return target is LitterWithCatsPoco target1 ? target1._listsAccessMode : PropertyAccessMode.Denied;
-        }
-        public void SetAccess(object target, PropertyAccessMode mode)
+        protected override void SetAccess(object target, PropertyAccessMode mode)
         {
             if(target is LitterWithCatsPoco target1)
             {
@@ -158,19 +158,23 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
         }
     }
-    public class CatFilterPropertyClass: IProperty
+    public class CatFilterPropertyClass: Property
     {
-        public string Name => "CatFilter";
-        public Type Type => typeof(CatFilterPoco);
-        public bool IsNullable => false;
-        public bool IsReadOnly => false;
-        public bool IsPoco => true;
-        public bool IsEntity => false;
-        public bool IsList => false;
-        public bool IsKeyPart => false;
-        public bool IsExtender => false;
-        public Type? ItemType => null;
-        public void SetValue(object target, object? value)
+        public override string Name => "CatFilter";
+        public override Type Type => typeof(CatFilterPoco);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => true;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is LitterWithCatsPoco target1 ? target1._catFilterAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
         {
             CatFilterPoco? value1 = value as CatFilterPoco;
             if (value is {} && value1 is null || value is null)
@@ -179,15 +183,11 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
             }
             ((LitterWithCatsPoco)target).CatFilter = value1!;
         }
-        public object? GetValue(object target)
+        public override object? GetValue(object target)
         {
             return ((LitterWithCatsPoco)target).CatFilter;
         }
-        public PropertyAccessMode GetAccess(object target)
-        {
-            return target is LitterWithCatsPoco target1 ? target1._catFilterAccessMode : PropertyAccessMode.Denied;
-        }
-        public void SetAccess(object target, PropertyAccessMode mode)
+        protected override void SetAccess(object target, PropertyAccessMode mode)
         {
             if(target is LitterWithCatsPoco target1)
             {
@@ -208,13 +208,13 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     #region fields
     private IList<CatPoco> _cats = null!;
     private IList<ICat> _catsProxy = null!;
-    private PropertyAccessMode _catsAccessMode = PropertyAccessMode.Denied;
+    private PropertyAccessMode _catsAccessMode = PropertyAccessMode.NotSet;
     private IList<String> _strings = null!;
-    private PropertyAccessMode _stringsAccessMode = PropertyAccessMode.Denied;
+    private PropertyAccessMode _stringsAccessMode = PropertyAccessMode.NotSet;
     private IList<IList<String>> _lists = null!;
-    private PropertyAccessMode _listsAccessMode = PropertyAccessMode.Denied;
+    private PropertyAccessMode _listsAccessMode = PropertyAccessMode.NotSet;
     private CatFilterPoco _catFilter = null!;
-    private PropertyAccessMode _catFilterAccessMode = PropertyAccessMode.Denied;
+    private PropertyAccessMode _catFilterAccessMode = PropertyAccessMode.NotSet;
     #endregion fields
 
     public IPrimaryKey PrimaryKey { get; init; }
@@ -229,18 +229,14 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_catsAccessMode is PropertyAccessMode.Denied)
+            if(_catsAccessMode is PropertyAccessMode.NotSet)
             {
-                throw new InvalidOperationException(s_noAccess);
+                throw new InvalidOperationException(s_notSet);
             }
             return _cats;
         }
         set
         {
-            if(!IsUnderConstruction && _catsAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
             _catsAccessMode = PropertyAccessMode.Full;
             _cats = value;
             _catsProxy = new ListProxy<CatPoco, ICat>(_cats);
@@ -262,18 +258,14 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_stringsAccessMode is PropertyAccessMode.Denied)
+            if(_stringsAccessMode is PropertyAccessMode.NotSet)
             {
-                throw new InvalidOperationException(s_noAccess);
+                throw new InvalidOperationException(s_notSet);
             }
             return _strings;
         }
         set
         {
-            if(!IsUnderConstruction && _stringsAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
             _stringsAccessMode = PropertyAccessMode.Full;
             _strings = value;
         }
@@ -293,18 +285,14 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_listsAccessMode is PropertyAccessMode.Denied)
+            if(_listsAccessMode is PropertyAccessMode.NotSet)
             {
-                throw new InvalidOperationException(s_noAccess);
+                throw new InvalidOperationException(s_notSet);
             }
             return _lists;
         }
         set
         {
-            if(!IsUnderConstruction && _listsAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
             _listsAccessMode = PropertyAccessMode.Full;
             _lists = value;
         }
@@ -324,18 +312,14 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
     {
         get
         {
-            if(_catFilterAccessMode is PropertyAccessMode.Denied)
+            if(_catFilterAccessMode is PropertyAccessMode.NotSet)
             {
-                throw new InvalidOperationException(s_noAccess);
+                throw new InvalidOperationException(s_notSet);
             }
             return _catFilter;
         }
         set
         {
-            if(!IsUnderConstruction && _catFilterAccessMode is not PropertyAccessMode.Full)
-            {
-                throw new InvalidOperationException(s_noAccess);
-            }
             _catFilterAccessMode = PropertyAccessMode.Full;
             _catFilter = value;
         }

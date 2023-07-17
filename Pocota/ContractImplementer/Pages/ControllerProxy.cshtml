@@ -1,10 +1,44 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common
+@using Net.Leksi.Pocota.Server;
 @model ClassModel
 @Html.Partial("Header", Model)
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>    public interface @mm.DataProviderFactoryInterface: @Html.Raw(nameof(IDataProviderFactory))
+    {
+        @Html.Raw(nameof(DataProvider)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
+        {
+            if(i > 0)
+            {
+                <text>, </text>
+            }
+            <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
+        });
+    }
+</text>
+}
+
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>    public interface @mm.ProcessorFactoryInterface: @Html.Raw(nameof(IProcessorFactory))
+    {
+        @Html.Raw(nameof(DataProvider)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
+        {
+            if(i > 0)
+            {
+                <text>, </text>
+            }
+            <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
+        });
+    }
+</text>
+}
+
+
 @foreach (MethodModel mm in Model.Methods)
 {
     if(mm.PropertyUseVariable is {})

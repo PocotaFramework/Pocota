@@ -1,11 +1,9 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public abstract class PocoBase: IPoco
+public class PocoBase: IPoco
 {
-    protected const string s_noAccess = "No access";
+    protected const string s_notSet = "Not set";
     protected IServiceProvider _services;
-
-    protected abstract bool IsUnderConstruction { get; }
 
     public PocoBase(IServiceProvider services)
     {

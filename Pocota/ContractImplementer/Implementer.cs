@@ -35,6 +35,8 @@ public class Implementer: Runner
     private const string s_staticPrefix = "s_";
     private const string s_propertyUse = "PropertyUse";
     private const string s_propertyUseIndentation = "        ";
+    private const string s_dataProviderFactory = "DataProviderFactory";
+    private const string s_processorFactory = "ProcessorFactory";
 
 
     private readonly HashSet<Type> _queue = new();
@@ -445,6 +447,8 @@ public class Implementer: Runner
             AddUsings(model, typeof(HttpUtility));
             AddUsings(model, typeof(RouteAttribute));
             AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(IDataProviderFactory));
+            AddUsings(model, typeof(IProcessorFactory));
             model.Usings.Add(s_systemLinq);
             model.Usings.Add(s_systemCollectionImmutable);
 
@@ -494,7 +498,8 @@ public class Implementer: Runner
                     mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties, model);
                 }
 
-
+                mm.DataProviderFactoryInterface = $"I{mm.Name}{s_dataProviderFactory}";
+                mm.ProcessorFactoryInterface = $"I{mm.Name}{s_processorFactory}";
 
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -777,7 +782,7 @@ public class Implementer: Runner
         {
             AddUsings(model, typeof(FreeProperty));
             result.TypeName = Util.MakeTypeName(rootType);
-            result.PropertyField = $"new {nameof(FreeProperty)} {{ Type = typeof({result.TypeName}) }}";
+            result.PropertyField = $"new {nameof(FreeProperty)}(typeof({result.TypeName}))";
         }
 
         if (paths is null && _interfaceHoldersByType.ContainsKey(rootType))
@@ -876,7 +881,7 @@ public class Implementer: Runner
                             else
                             {
                                 AddUsings(model, typeof(FreeProperty));
-                                node.PropertyField = $"new {nameof(FreeProperty)} {{ Type = typeof({node.TypeName}) }}";
+                                node.PropertyField = $"new {nameof(FreeProperty)}(typeof({node.TypeName}))";
                             }
                         }
                         else
@@ -1015,6 +1020,10 @@ public class Implementer: Runner
                     partModel.IsProperty = true;
                     partModel.PropertyName = partDefinition.Value.Property!.Name!;
                     partModel.Property = partModel.PropertyName;
+                }
+                if(partModel.Property is { })
+                {
+                    partModel.PropertyField = $"_{partModel.Property.Substring(0, 1).ToLower()}{partModel.Property.Substring(1)}";
                 }
                 model.PrimaryKey.Parts.Add(partModel);
             }

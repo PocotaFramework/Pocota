@@ -2,6 +2,7 @@
 
 public enum PropertyAccessMode
 {
+    NotSet,
     Full,
     ReadOnly,
     Denied

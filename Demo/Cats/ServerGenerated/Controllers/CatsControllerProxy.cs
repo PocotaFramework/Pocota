@@ -1,12 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-13T10:14:27                                                        //
+// at 2023-07-17T18:27:20                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
 using System;
@@ -21,6 +20,65 @@ namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
 public class CatsControllerProxy : ControllerProxy
 {
+    public interface IFindCatsDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create(ICatFilter? filter);
+    }
+    public interface IGetCatDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create(ICat cat);
+    }
+    public interface IFindBreedsDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create(IBreedFilter? filter);
+    }
+    public interface IFindCatteriesDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create(ICatteryFilter? filter);
+    }
+    public interface IFindLittersWithCatsDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create(ICatFilter? filter);
+    }
+    public interface IFindExteriorsDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create();
+    }
+    public interface IFindTitlesDataProviderFactory: IDataProviderFactory
+    {
+        DataProvider Create();
+    }
+
+    public interface IFindCatsProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create(ICatFilter? filter);
+    }
+    public interface IGetCatProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create(ICat cat);
+    }
+    public interface IFindBreedsProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create(IBreedFilter? filter);
+    }
+    public interface IFindCatteriesProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create(ICatteryFilter? filter);
+    }
+    public interface IFindLittersWithCatsProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create(ICatFilter? filter);
+    }
+    public interface IFindExteriorsProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create();
+    }
+    public interface IFindTitlesProcessorFactory: IProcessorFactory
+    {
+        DataProvider Create();
+    }
+
+
     private static readonly PropertyUse s_findCatsPropertyUse = new()
     {
         Property = CatPoco.s_Property,
@@ -105,7 +163,7 @@ public class CatsControllerProxy : ControllerProxy
                         Properties = new PropertyUse[] {
                             new()
                             {
-                                Property = new FreeProperty { Type = typeof(String) },
+                                Property = new FreeProperty(typeof(String)),
                                 Path = "LitterWithCats.Strings.@",
                             },
                         }.ToImmutableList()
@@ -117,12 +175,12 @@ public class CatsControllerProxy : ControllerProxy
                         Properties = new PropertyUse[] {
                             new()
                             {
-                                Property = new FreeProperty { Type = typeof(IList<String>) },
+                                Property = new FreeProperty(typeof(IList<String>)),
                                 Path = "LitterWithCats.Lists.@",
                                 Properties = new PropertyUse[] {
                                     new()
                                     {
-                                        Property = new FreeProperty { Type = typeof(String) },
+                                        Property = new FreeProperty(typeof(String)),
                                         Path = "LitterWithCats.Lists.@.@",
                                     },
                                 }.ToImmutableList()
@@ -297,7 +355,7 @@ public class CatsControllerProxy : ControllerProxy
                 Properties = new PropertyUse[] {
                     new()
                     {
-                        Property = new FreeProperty { Type = typeof(String) },
+                        Property = new FreeProperty(typeof(String)),
                         Path = "Strings.@",
                     },
                 }.ToImmutableList()
@@ -309,12 +367,12 @@ public class CatsControllerProxy : ControllerProxy
                 Properties = new PropertyUse[] {
                     new()
                     {
-                        Property = new FreeProperty { Type = typeof(IList<String>) },
+                        Property = new FreeProperty(typeof(IList<String>)),
                         Path = "Lists.@",
                         Properties = new PropertyUse[] {
                             new()
                             {
-                                Property = new FreeProperty { Type = typeof(String) },
+                                Property = new FreeProperty(typeof(String)),
                                 Path = "Lists.@.@",
                             },
                         }.ToImmutableList()
@@ -330,11 +388,11 @@ public class CatsControllerProxy : ControllerProxy
     };
     private static readonly PropertyUse s_findExteriorsPropertyUse = new()
     {
-        Property = new FreeProperty { Type = typeof(String) },
+        Property = new FreeProperty(typeof(String)),
     };
     private static readonly PropertyUse s_findTitlesPropertyUse = new()
     {
-        Property = new FreeProperty { Type = typeof(String) },
+        Property = new FreeProperty(typeof(String)),
     };
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindCats/{filter?}")]

@@ -13,4 +13,6 @@ internal class MethodModel
     internal List<string> CallParameters { get; init; } = new();
     internal string? PropertyUseVariable { get; set; } = null;
     internal PropertyUseModel? PropertyUse { get; set; } = null;
+    internal string DataProviderFactoryInterface { get; set; } = null!;
+    internal string ProcessorFactoryInterface { get; set; } = null!;
 }
