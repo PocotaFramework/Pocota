@@ -10,7 +10,7 @@ public static class CatsServerExtensions
     {
         services.AddPocota(serv =>
         {
-            serv.AddContract<CatContractConfigurator, CatsController>();
+            serv.AddContract<CatContractConfigurator>();
             serv.AddTransient<ICat, Cat>();
         });
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Common.Generic;
-using Net.Leksi.Pocota.Demo.Cats.Common;
 using Net.Leksi.Pocota.Server;
 using System.Collections;
 using System.Reflection;
@@ -24,7 +23,7 @@ public class Implementer: Runner
     private const string s_accessMode = "AccessMode";
     private const string s_proxy= "Proxy";
     private const string s_controller = "Controller";
-    private const string s_controllerProxy = "ControllerProxy";
+    private const string s_controllerProxy = "Controller";
     private const string s_template = "!Template";
     private const string s_string = "string";
     private const string s_update = "Update";
@@ -50,6 +49,7 @@ public class Implementer: Runner
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public string? ServerGeneratedDirectory { get; set; } = null;
     public string? ClientGeneratedDirectory { get; set; } = null;
+    public bool ClearTargetDirectory { get; set; } = true;
 
     public Type Contract
     {
@@ -191,6 +191,32 @@ public class Implementer: Runner
         int fails = 0;
         int done = 0;
 
+        if(ClearTargetDirectory) 
+        { 
+            if(ClientGeneratedDirectory is { } && Directory.Exists(ClientGeneratedDirectory))
+            {
+                foreach(string path in Directory.EnumerateFiles(
+                    ClientGeneratedDirectory, 
+                    "*.cs", 
+                    new EnumerationOptions { RecurseSubdirectories = true }
+                ))
+                {
+                    File.Delete(path);
+                }
+            }
+            if (ServerGeneratedDirectory is { } && Directory.Exists(ServerGeneratedDirectory))
+            {
+                foreach (string path in Directory.EnumerateFiles(
+                    ServerGeneratedDirectory,
+                    "*.cs",
+                    new EnumerationOptions { RecurseSubdirectories = true }
+                ))
+                {
+                    File.Delete(path);
+                }
+            }
+        }
+
         Start();
 
         IConnector connector = GetConnector();
@@ -237,20 +263,7 @@ public class Implementer: Runner
                         if (
                             ProcessInterface(
                                 connector, @interface,
-                                $"/ControllerInterface", RequestKind.ControllerInterface, @interface
-                            )
-                        )
-                        {
-                            ++done;
-                        }
-                        else
-                        {
-                            ++fails;
-                        }
-                        if (
-                            ProcessInterface(
-                                connector, @interface,
-                                $"/ControllerProxy", RequestKind.ControllerProxy, @interface
+                                $"/Controller", RequestKind.Controller, @interface
                             )
                         )
                         {
@@ -335,8 +348,6 @@ public class Implementer: Runner
 
         }
 
-        //Stop();
-
         Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
     }
 
@@ -350,7 +361,7 @@ public class Implementer: Runner
         };
         string outputDirectory = requestKind switch
         {
-            RequestKind.ControllerProxy => Path.Combine(ServerGeneratedDirectory!, "Controllers"),
+            RequestKind.Controller => Path.Combine(ServerGeneratedDirectory!, "Controllers"),
             RequestKind.ClientImplementation => ClientGeneratedDirectory!,
             RequestKind.Connector => ClientGeneratedDirectory!,
             _ => ServerGeneratedDirectory!
@@ -386,46 +397,7 @@ public class Implementer: Runner
         throw new NotImplementedException();
     }
 
-    internal void BuildControllerInterface(ClassModel model)
-    {
-        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
-             as GeneratingRequest;
-        if (request is { })
-        {
-            InitClassModel(model, request);
-
-            model.ClassName = MakeControllerInterfaceName(request.Interface);
-
-            request.ResultName = model.ClassName;
-
-            AddUsings(model, typeof(Task));
-            AddUsings(model, typeof(Server.ExpectedOutputTypeAttribute));
-            AddUsings(model, typeof(Server.IPocotaController));
-
-            model.Interfaces.Add(Util.MakeTypeName(typeof(Server.IPocotaController)));
-
-            foreach (MethodInfo method in request.Interface.GetMethods())
-            {
-                AddUsings(model, method.ReturnType);
-                MethodModel mm = new()
-                {
-                    ReturnType = s_void,
-                    Name = method.Name,
-                    ExpectedOutputType = Util.MakeTypeName(method.ReturnType)
-                };
-                foreach (ParameterInfo parameter in method.GetParameters())
-                {
-                    AddUsings(model, parameter.ParameterType);
-                    bool isNullable = new NullabilityInfoContext().Create(parameter).ReadState is NullabilityState.Nullable;
-                    mm.Parameters.Add(new ParameterModel { Name = parameter.Name!, Type = $"{parameter.ParameterType.Name}{(isNullable ? "?" : String.Empty)}" });
-                }
-                model.Methods.Add(mm);
-            }
-
-        }
-    }
-
-    internal void BuildControllerProxy(ClassModel model)
+    internal void BuildController(ClassModel model)
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
             as GeneratingRequest;
@@ -433,11 +405,9 @@ public class Implementer: Runner
         {
             InitClassModel(model, request);
 
-            model.ClassName = MakeControllerProxyName(request.Interface);
+            model.ClassName = MakeControllerName(request.Interface);
 
             request.ResultName = model.ClassName;
-
-            model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
 
             model.Usings.Add(s_dependencyInjection);
 
@@ -448,7 +418,9 @@ public class Implementer: Runner
             AddUsings(model, typeof(RouteAttribute));
             AddUsings(model, typeof(Controller));
             AddUsings(model, typeof(IDataProviderFactory));
+            AddUsings(model, typeof(DataProvider));
             AddUsings(model, typeof(IProcessorFactory));
+            AddUsings(model, typeof(IProcessor));
             model.Usings.Add(s_systemLinq);
             model.Usings.Add(s_systemCollectionImmutable);
 
@@ -533,7 +505,6 @@ public class Implementer: Runner
                     }
                 }
                 route.Properties[s_template] = Regex.Replace(route.Properties[s_template], "/+", "/");
-                mm.ControllerVariable = GetUniqueVariable(mm.ControllerVariable);
                 if (mm.Filters.Count > 0)
                 {
                     AddUsings(model, typeof(JsonSerializerOptions));
@@ -572,7 +543,6 @@ public class Implementer: Runner
             model.Usings.Add(s_dependencyInjection);
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IContractConfigurator)));
-            model.ControllerInterface = MakeControllerInterfaceName(request.Interface);
             model.ContractName = Util.MakeTypeName(model.Contract);
 
             foreach (Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
@@ -1058,9 +1028,9 @@ public class Implementer: Runner
         return routeValue.ToString();
     }
 
-    private string MakeControllerProxyName(Type @interface)
+    private string MakeControllerName(Type @interface)
     {
-        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controllerProxy}";
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
     }
 
     private string MakeContractConfiguratorName(Type contract)
@@ -1090,11 +1060,6 @@ public class Implementer: Runner
             }
         }
 
-    }
-
-    private string MakeControllerInterfaceName(Type @interface)
-    {
-        return $"I{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
     }
 
     private void AddUsings(ClassModel model, Type type)

@@ -6,7 +6,7 @@ internal enum RequestKind
 {
     Connector,
     ControllerInterface,
-    ControllerProxy,
+    Controller,
     ServerImplementation,
     ClientImplementation,
     PrimaryKey

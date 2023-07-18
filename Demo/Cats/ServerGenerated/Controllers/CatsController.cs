@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
-// Net.Leksi.Pocota.Demo.Cats.Contract.CatsControllerProxy                       //
+// Net.Leksi.Pocota.Demo.Cats.Contract.CatsController                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-17T18:27:20                                                        //
+// at 2023-07-18T15:33:08                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -18,66 +18,78 @@ using System.Web;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
-public class CatsControllerProxy : ControllerProxy
+public interface IFindCatsDataProviderFactory: IDataProviderFactory
 {
-    public interface IFindCatsDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create(ICatFilter? filter);
-    }
-    public interface IGetCatDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create(ICat cat);
-    }
-    public interface IFindBreedsDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create(IBreedFilter? filter);
-    }
-    public interface IFindCatteriesDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create(ICatteryFilter? filter);
-    }
-    public interface IFindLittersWithCatsDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create(ICatFilter? filter);
-    }
-    public interface IFindExteriorsDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create();
-    }
-    public interface IFindTitlesDataProviderFactory: IDataProviderFactory
-    {
-        DataProvider Create();
-    }
+    DataProvider Create(ICatFilter? filter);
+}
 
-    public interface IFindCatsProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create(ICatFilter? filter);
-    }
-    public interface IGetCatProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create(ICat cat);
-    }
-    public interface IFindBreedsProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create(IBreedFilter? filter);
-    }
-    public interface IFindCatteriesProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create(ICatteryFilter? filter);
-    }
-    public interface IFindLittersWithCatsProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create(ICatFilter? filter);
-    }
-    public interface IFindExteriorsProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create();
-    }
-    public interface IFindTitlesProcessorFactory: IProcessorFactory
-    {
-        DataProvider Create();
-    }
+public interface IGetCatDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create(ICat cat);
+}
 
+public interface IFindBreedsDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create(IBreedFilter? filter);
+}
+
+public interface IFindCatteriesDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create(ICatteryFilter? filter);
+}
+
+public interface IFindLittersWithCatsDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create(ICatFilter? filter);
+}
+
+public interface IFindExteriorsDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create();
+}
+
+public interface IFindTitlesDataProviderFactory: IDataProviderFactory
+{
+    DataProvider Create();
+}
+
+public interface IFindCatsProcessorFactory: IProcessorFactory
+{
+    IProcessor Create(ICatFilter? filter);
+}
+
+public interface IGetCatProcessorFactory: IProcessorFactory
+{
+    IProcessor Create(ICat cat);
+}
+
+public interface IFindBreedsProcessorFactory: IProcessorFactory
+{
+    IProcessor Create(IBreedFilter? filter);
+}
+
+public interface IFindCatteriesProcessorFactory: IProcessorFactory
+{
+    IProcessor Create(ICatteryFilter? filter);
+}
+
+public interface IFindLittersWithCatsProcessorFactory: IProcessorFactory
+{
+    IProcessor Create(ICatFilter? filter);
+}
+
+public interface IFindExteriorsProcessorFactory: IProcessorFactory
+{
+    IProcessor Create();
+}
+
+public interface IFindTitlesProcessorFactory: IProcessorFactory
+{
+    IProcessor Create();
+}
+
+public class CatsController : ControllerProxy
+{
 
     private static readonly PropertyUse s_findCatsPropertyUse = new()
     {
@@ -407,8 +419,10 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindCats(filter1);
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindCatsDataProviderFactory>().Create(filter1),
+            HttpContext.RequestServices.GetRequiredService<IFindCatsProcessorFactory>().Create(filter1)
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/GetCat/{cat}")]
@@ -423,8 +437,10 @@ public class CatsControllerProxy : ControllerProxy
         {
             cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), pocoContext.JsonSerializerOptions)!;
         }
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.GetCat(cat1);
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IGetCatDataProviderFactory>().Create(cat1),
+            HttpContext.RequestServices.GetRequiredService<IGetCatProcessorFactory>().Create(cat1)
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindBreeds/{filter?}")]
@@ -439,8 +455,10 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindBreeds(filter1);
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindBreedsDataProviderFactory>().Create(filter1),
+            HttpContext.RequestServices.GetRequiredService<IFindBreedsProcessorFactory>().Create(filter1)
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindCatteries/{filter?}")]
@@ -455,8 +473,10 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindCatteries(filter1);
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindCatteriesDataProviderFactory>().Create(filter1),
+            HttpContext.RequestServices.GetRequiredService<IFindCatteriesProcessorFactory>().Create(filter1)
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindLittersWithCats/{filter?}")]
@@ -471,8 +491,10 @@ public class CatsControllerProxy : ControllerProxy
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindLittersWithCats(filter1);
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsDataProviderFactory>().Create(filter1),
+            HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsProcessorFactory>().Create(filter1)
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindExteriors")]
@@ -482,8 +504,10 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.PropertyUse = s_findExteriorsPropertyUse;
         pocoContext.ExpectedOutputType = typeof(IList<String>);
         pocoContext.ControllerContext = ControllerContext;
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindExteriors();
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindExteriorsDataProviderFactory>().Create(),
+            HttpContext.RequestServices.GetRequiredService<IFindExteriorsProcessorFactory>().Create()
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindTitles")]
@@ -493,8 +517,10 @@ public class CatsControllerProxy : ControllerProxy
         pocoContext.PropertyUse = s_findTitlesPropertyUse;
         pocoContext.ExpectedOutputType = typeof(IList<String>);
         pocoContext.ControllerContext = ControllerContext;
-        ICatsController controller = HttpContext.RequestServices.GetRequiredService<ICatsController>();
-        controller.FindTitles();
+        pocoContext.HandleRequest(
+            HttpContext.RequestServices.GetRequiredService<IFindTitlesDataProviderFactory>().Create(),
+            HttpContext.RequestServices.GetRequiredService<IFindTitlesProcessorFactory>().Create()
+        );
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/Update")]

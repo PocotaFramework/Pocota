@@ -8,7 +8,8 @@ public class BuildingContext
 {
     private readonly BuildingContext? _parent;
     private bool _hasError = false;
-    private List<TracingEntry> _tracingLog { get; init; }
+    private readonly List<TracingEntry> _tracingLog;
+    private readonly IServiceProvider _services;
 
     internal Dictionary<string, BuildingContext> PropertyUsesContexts { get; init; } = new();
     internal BuildingContext DataProviderRoot { get; set; } = null!;
@@ -21,7 +22,6 @@ public class BuildingContext
 
     public object? Value { get; internal set; }
     public PropertyUse PropertyUse { get; init; } = null!;
-    public bool WithTracing { get; init; } = false;
     public bool IsRoot => _parent is null;
     public bool HasError
     {
@@ -39,24 +39,21 @@ public class BuildingContext
         }
     }
     public IList<TracingEntry> TracingLog => _tracingLog.Select(e => e).ToImmutableList();
-    public bool WithDirectOutput { get; init; } = false;
     public BuildingContext? Parent => _parent;
 
     internal BuildingContext(BuildingContext parent)
     {
         _parent = parent;
+        _services = parent._services;
         _tracingLog = _parent._tracingLog;
-        WithDirectOutput = _parent.WithDirectOutput;
-        WithTracing = _parent.WithTracing;
         _hasError = _parent.HasError;
         DataProviderRoot = _parent.DataProviderRoot;
         Root = _parent.Root;
     }
 
-    internal BuildingContext(bool withDirectOutput, bool withTracing)
+    internal BuildingContext(IServiceProvider services)
     {
-        WithDirectOutput = withDirectOutput;
-        WithTracing = withTracing;
+        _services = services;
         _parent = null;
         _tracingLog = new();
         Root = this;

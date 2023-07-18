@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatContractConfigurator                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-17T18:27:20                                                        //
+// at 2023-07-18T15:33:08                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +15,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 
 public class CatContractConfigurator : IContractConfigurator
 {
-    public void Configure<TController>(IServiceCollection services) where TController : IPocotaController
+    public void Configure(IServiceCollection services)
     {
         services.StartAddContract<ICatContract>();
         services.AddTransient<ICat, CatPoco>();
@@ -31,6 +31,5 @@ public class CatContractConfigurator : IContractConfigurator
         services.AddTransient<ICatteryFilter, CatteryFilterPoco>();
         services.AddTransient<ILitterFilter, LitterFilterPoco>();
         services.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
-        services.Add(new ServiceDescriptor(typeof(ICatsController), typeof(TController), ServiceLifetime.Transient));
     }
 }

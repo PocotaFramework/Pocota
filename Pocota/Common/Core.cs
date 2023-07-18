@@ -201,7 +201,7 @@ public class Core: IServiceCollection
                 {
                     if (!_contractsByType.ContainsKey(item.ServiceType))
                     {
-                        throw new InvalidOperationException("Out of contract");
+                        throw new InvalidOperationException($"Out of contract: {item.ServiceType}");
                     }
                     _serviceCollection!.RemoveAll(_actualTypes[item.ServiceType]);
                     _serviceCollection!.AddTransient(_actualTypes[item.ServiceType], item.ImplementationType!);

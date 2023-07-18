@@ -19,11 +19,10 @@ public static class PocotaExtensions
         return services;
     }
 
-    public static IServiceCollection AddContract<TConfigurator, TController> (this IServiceCollection services) 
+    public static IServiceCollection AddContract<TConfigurator> (this IServiceCollection services) 
         where TConfigurator : IContractConfigurator, new()
-        where TController : IPocotaController
     {
-        Core.UseContractConfigurator<TConfigurator, TController>(services);
+        Core.UseContractConfigurator<TConfigurator>(services);
         return services;
     }
 

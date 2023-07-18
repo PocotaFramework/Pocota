@@ -4,14 +4,13 @@ namespace Net.Leksi.Pocota.Server;
 
 public class Core: Common.Core
 {
-    public static void UseContractConfigurator<TConfigurator, TController>(IServiceCollection services)
+    public static void UseContractConfigurator<TConfigurator>(IServiceCollection services)
         where TConfigurator : IContractConfigurator, new()
-        where TController : IPocotaController
     {
         if (services is Core core)
         {
             core.IsConfiguringContract = true;
-            new TConfigurator().Configure<TController>(services);
+            new TConfigurator().Configure(services);
             core.IsConfiguringContract = false;
         }
         else
