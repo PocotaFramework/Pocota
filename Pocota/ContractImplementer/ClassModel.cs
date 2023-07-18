@@ -18,6 +18,7 @@ public class ClassModel: PageModel
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
     internal string ContractName { get; set; } = null!;
     internal string? ExtenderPrimaryKeyInterface { get; set; } = null;
+    internal string? DefaultDataProviderFactoryName { get; set; } = null;
 
     public void OnGet([FromServices] Implementer generator)
     {

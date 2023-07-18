@@ -1,6 +1,4 @@
-﻿using Net.Leksi.Pocota.Common;
-
-namespace Net.Leksi.Pocota.Server;
+﻿namespace Net.Leksi.Pocota.Server;
 
 public abstract class DataProvider
 {

@@ -419,6 +419,7 @@ public class Implementer: Runner
             AddUsings(model, typeof(Controller));
             AddUsings(model, typeof(IDataProviderFactory));
             AddUsings(model, typeof(DataProvider));
+            AddUsings(model, typeof(DataProviderStub));
             AddUsings(model, typeof(IProcessorFactory));
             AddUsings(model, typeof(IProcessor));
             model.Usings.Add(s_systemLinq);
@@ -426,13 +427,15 @@ public class Implementer: Runner
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(ControllerProxy)));
 
+            model.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(request.Interface);
+
             Dictionary<string, string> objectNodeClasses = new();
 
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
                 _variables.Clear();
                 AddUsings(model, method.ReturnType);
-                
+
                 Type propertyUseType = method.ReturnType;
 
                 MethodModel mm = new MethodModel
@@ -451,8 +454,9 @@ public class Implementer: Runner
                     propertyUseType = returnItemType;
                 }
 
-                AttributeModel route = new() { 
-                    Name = nameof(RouteAttribute) 
+                AttributeModel route = new()
+                {
+                    Name = nameof(RouteAttribute)
                 };
                 route.Properties.Add(s_template, $"\"/{MakeRoute(model.Contract, method.Name)}\"");
 
@@ -470,7 +474,7 @@ public class Implementer: Runner
                     mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties, model);
                 }
 
-                mm.DataProviderFactoryInterface = $"I{mm.Name}{s_dataProviderFactory}";
+                mm.DataProviderFactoryInterface = MakeDataProviderFactoryInterfaceName(method.Name);
                 mm.ProcessorFactoryInterface = $"I{mm.Name}{s_processorFactory}";
 
                 foreach (ParameterInfo parameter in method.GetParameters())
@@ -540,6 +544,8 @@ public class Implementer: Runner
             AddUsings(model, typeof(IContractConfigurator));
             AddUsings(model, typeof(IPrimaryKey<>));
             AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(DataProviderStub));
+
             model.Usings.Add(s_dependencyInjection);
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IContractConfigurator)));
@@ -553,6 +559,13 @@ public class Implementer: Runner
                 {
                     model.Services.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { @interface })), MakePrimaryKeyName(@interface));
                 }
+            }
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                model.Services.Add(
+                    MakeDataProviderFactoryInterfaceName(method.Name), 
+                    Util.MakeTypeName(typeof(DataProviderStub))
+                );
             }
         }
     }
@@ -1028,6 +1041,11 @@ public class Implementer: Runner
         return routeValue.ToString();
     }
 
+    private static string MakeDataProviderFactoryInterfaceName(string methodName)
+    {
+        return $"I{methodName}{s_dataProviderFactory}";
+    }
+
     private string MakeControllerName(Type @interface)
     {
         return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
@@ -1041,6 +1059,11 @@ public class Implementer: Runner
     private string MakePrimaryKeyName(Type @interface)
     {
         return $"{_interfaceHoldersByType[@interface].Name}{s_primaryKey}";
+    }
+
+    private string MakeDefaultDataProviderFactoryName(Type @interface)
+    {
+        return $"{_interfaceHoldersByType[@interface].Name}{s_dataProviderFactory}";
     }
 
     private string GetUniqueVariable(string initial)

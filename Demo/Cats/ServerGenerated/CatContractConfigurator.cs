@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatContractConfigurator                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T15:33:08                                                        //
+// at 2023-07-18T19:12:59                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -31,5 +31,12 @@ public class CatContractConfigurator : IContractConfigurator
         services.AddTransient<ICatteryFilter, CatteryFilterPoco>();
         services.AddTransient<ILitterFilter, LitterFilterPoco>();
         services.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
+        services.AddTransient<IFindCatsDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IGetCatDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IFindBreedsDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IFindCatteriesDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IFindLittersWithCatsDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IFindExteriorsDataProviderFactory, DataProviderStub>();
+        services.AddTransient<IFindTitlesDataProviderFactory, DataProviderStub>();
     }
 }
