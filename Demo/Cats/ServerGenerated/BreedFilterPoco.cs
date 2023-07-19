@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedFilterPoco                             //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -111,6 +111,10 @@ public class BreedFilterPoco : Pocota.Server.PocoBase, IBreedFilter
         }
         set
         {
+            if(_searchRegexAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _searchRegexAccessMode = PropertyAccessMode.Full;
             _searchRegex = value;
         }

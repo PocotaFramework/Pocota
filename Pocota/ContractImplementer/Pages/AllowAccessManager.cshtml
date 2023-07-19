@@ -1,0 +1,13 @@
+﻿@page
+@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces)) 
+{
+    public void Confirm(PropertyUse propertyUse, object? value, Action<object?> onConfirm) 
+    {
+        onConfirm?.Invoke(value);
+    }
+}

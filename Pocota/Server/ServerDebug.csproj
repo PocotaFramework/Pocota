@@ -7,11 +7,8 @@
     <AssemblyName>Net.Leksi.Pocota.Server</AssemblyName>
     <RootNamespace>Net.Leksi.Pocota.Server</RootNamespace>
     <OutputType>Library</OutputType>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Demo\Cats\Common\CommonDebug.csproj" />

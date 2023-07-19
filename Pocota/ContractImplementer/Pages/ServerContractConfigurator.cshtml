@@ -1,17 +1,28 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common;
+@using Core = Net.Leksi.Pocota.Server.Core;
 @model ClassModel
 
 @Html.Partial("Header", Model)
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-    public void Configure(IServiceCollection services)
+    public void Configure(@nameof(Core) core)
     {
-        services.StartAddContract@{}@Html.Raw($"<{@Model.ContractName}>")@{}();
+        core.StartAddContract@{}@Html.Raw($"<{@Model.ContractName}>")@{}();
 @foreach(var service in Model.Services)
 {
-    <text>        services.AddTransient@{}@Html.Raw($"<{service.Key}, {service.Value}>")@{}();
+    <text>        core.@nameof(Core.Add)@{}@service.LifeTime@{}@Html.Raw($"<{service.ServiceType}, {service.ImplementationType}>")@{}();
+</text>
+}
+@foreach(var map in Model.PrimaryKeyMapping)
+{
+    <text>        core.@nameof(Core.MapPrimaryKeyType)@{}(typeof(@map.Key), typeof(@map.Value));
+</text>
+}
+@foreach(var map in Model.AccessManagerMapping)
+{
+    <text>        core.@nameof(Core.MapAccessManagerType)@{}(typeof(@map.Key), typeof(@map.Value));
 </text>
 }
     }

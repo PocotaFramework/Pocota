@@ -7,11 +7,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Net.Leksi.Pocota.Demo.Cats.Server</RootNamespace>
     <AssemblyName>Net.Leksi.Pocota.Demo.Cats.ServerEngine</AssemblyName>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />

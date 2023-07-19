@@ -14,4 +14,5 @@ internal class MethodModel
     internal PropertyUseModel? PropertyUse { get; set; } = null;
     internal string DataProviderFactoryInterface { get; set; } = null!;
     internal string ProcessorFactoryInterface { get; set; } = null!;
+    internal string? DefaultDataProviderFactoryName { get; set; } = null;
 }

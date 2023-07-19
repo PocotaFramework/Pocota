@@ -23,7 +23,6 @@ public class Implementer: Runner
     private const string s_accessMode = "AccessMode";
     private const string s_proxy= "Proxy";
     private const string s_controller = "Controller";
-    private const string s_controllerProxy = "Controller";
     private const string s_template = "!Template";
     private const string s_string = "string";
     private const string s_update = "Update";
@@ -36,7 +35,8 @@ public class Implementer: Runner
     private const string s_propertyUseIndentation = "        ";
     private const string s_dataProviderFactory = "DataProviderFactory";
     private const string s_processorFactory = "ProcessorFactory";
-
+    private const string s_accessManager = "AccessManager";
+    private const string s_allowAccessManager = "AllowAccessManager";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Dictionary<Type, InterfaceHolder> _interfaceHoldersByType = new();
@@ -234,7 +234,7 @@ public class Implementer: Runner
                         if (
                             ProcessInterface(
                                 connector, @interface,
-                                $"/{ClientLanguage}/Connector", RequestKind.Connector, @interface
+                                $"/{ClientLanguage}/Connector", RequestKind.ClientImplementation, @interface
                             )
                         )
                         {
@@ -331,7 +331,38 @@ public class Implementer: Runner
                         if (
                             ProcessInterface(
                                 connector, @interface,
-                                $"/PrimaryKey", RequestKind.PrimaryKey,
+                                $"/PrimaryKey", RequestKind.ServerImplementation,
+                                target.Contract
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                    }
+                    if (target.KeysDefinitions.Count > 0 || typeof(IExtender).IsAssignableFrom(@interface))
+                    {
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/AccessManagerInterface", RequestKind.ServerImplementation,
+                                target.Contract
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/AllowAccessManager", RequestKind.ServerImplementation,
                                 target.Contract
                             )
                         )
@@ -363,7 +394,6 @@ public class Implementer: Runner
         {
             RequestKind.Controller => Path.Combine(ServerGeneratedDirectory!, "Controllers"),
             RequestKind.ClientImplementation => ClientGeneratedDirectory!,
-            RequestKind.Connector => ClientGeneratedDirectory!,
             _ => ServerGeneratedDirectory!
         };
         string ext = ClientLanguage switch { _ => ".cs" };
@@ -376,7 +406,7 @@ public class Implementer: Runner
             TextReader reader = connector.Get(path, request);
             string outputPath = Path.Combine(outputDirectory, request.ResultName + ext);
             File.WriteAllText(outputPath, reader.ReadToEnd());
-            Console.WriteLine($"{requestKind} generated: {outputPath}");
+            Console.WriteLine($"{path} for {@interface} generated: {outputPath}");
             return true;
 
         }
@@ -397,6 +427,64 @@ public class Implementer: Runner
         throw new NotImplementedException();
     }
 
+    internal void BuildAccessManagerInterface(ClassModel model)
+    {
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { } 
+            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface) 
+            && (
+                @interface.KeysDefinitions.Any() 
+                || typeof(IExtender).IsAssignableFrom(@interface.Interface)
+            )
+        )
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            AddUsings(model, typeof(IAccessManager));
+
+            model.ClassName = MakeAccessManagerInterface(request.Interface);
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IAccessManager)));
+            request.ResultName = model.ClassName;
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
+    }
+
+    internal void BuildAllowAccessManager(ClassModel model)
+    {
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+            && (
+                @interface.KeysDefinitions.Any()
+                || typeof(IExtender).IsAssignableFrom(@interface.Interface)
+            )
+        )
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            AddUsings(model, typeof(IAccessManager));
+
+            model.ClassName = MakeAllowAccessManager(request.Interface);
+            model.Interfaces.Add(MakeAccessManagerInterface(request.Interface));
+            request.ResultName = model.ClassName;
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
+    }
+
     internal void BuildController(ClassModel model)
     {
         GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
@@ -411,12 +499,12 @@ public class Implementer: Runner
 
             model.Usings.Add(s_dependencyInjection);
 
-            AddUsings(model, typeof(ControllerProxy));
+            AddUsings(model, typeof(Server.PocoController));
             AddUsings(model, typeof(IPocoContext));
             AddUsings(model, typeof(Task));
             AddUsings(model, typeof(HttpUtility));
             AddUsings(model, typeof(RouteAttribute));
-            AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(Microsoft.AspNetCore.Mvc.Controller));
             AddUsings(model, typeof(IDataProviderFactory));
             AddUsings(model, typeof(DataProvider));
             AddUsings(model, typeof(DataProviderStub));
@@ -425,9 +513,7 @@ public class Implementer: Runner
             model.Usings.Add(s_systemLinq);
             model.Usings.Add(s_systemCollectionImmutable);
 
-            model.Interfaces.Add(Util.MakeTypeName(typeof(ControllerProxy)));
-
-            model.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(request.Interface);
+            model.Interfaces.Add(Util.MakeTypeName(typeof(Server.PocoController)));
 
             Dictionary<string, string> objectNodeClasses = new();
 
@@ -476,6 +562,8 @@ public class Implementer: Runner
 
                 mm.DataProviderFactoryInterface = MakeDataProviderFactoryInterfaceName(method.Name);
                 mm.ProcessorFactoryInterface = $"I{mm.Name}{s_processorFactory}";
+                mm.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(method.Name);
+
 
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -526,6 +614,10 @@ public class Implementer: Runner
             model.UpdateRouteAttribute.Properties[s_template] = 
                 Regex.Replace(model.UpdateRouteAttribute.Properties[s_template], "/+", "/");
         }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     internal void BuildServerContractConfigurator(ClassModel model)
@@ -542,8 +634,7 @@ public class Implementer: Runner
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IContractConfigurator));
-            AddUsings(model, typeof(IPrimaryKey<>));
-            AddUsings(model, typeof(Controller));
+            AddUsings(model, typeof(PocoController));
             AddUsings(model, typeof(DataProviderStub));
 
             model.Usings.Add(s_dependencyInjection);
@@ -554,19 +645,45 @@ public class Implementer: Runner
             foreach (Type @interface in _interfaceHoldersByType.Where(h => h.Value.Contract == request.Contract).Select(h => h.Key))
             {
                 AddUsings(model, @interface);
-                model.Services.Add(Util.MakeTypeName(@interface), MakePocoClassName(@interface));
-                if (_interfaceHoldersByType[@interface].KeysDefinitions.Any())
+                model.Services.Add(
+                    new ServiceModel 
+                    { 
+                        ServiceType = Util.MakeTypeName(@interface), 
+                        ImplementationType = MakePocoClassName(@interface), 
+                    }
+                );
+                if (_interfaceHoldersByType[@interface].KeysDefinitions.Any() || typeof(IExtender).IsAssignableFrom(@interface))
                 {
-                    model.Services.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { @interface })), MakePrimaryKeyName(@interface));
+                    Type targetType = typeof(IExtender).IsAssignableFrom(@interface) ? GetExtendingInterface(@interface)! : @interface;
+                    model.Services.Add(
+                        new ServiceModel
+                        {
+                            ServiceType = MakeAccessManagerInterface(@interface),
+                            ImplementationType = MakeAllowAccessManager(@interface),
+                            LifeTime = nameof(ServiceLifetime.Scoped),
+                        }
+                    );
+                    model.PrimaryKeyMapping.Add(Util.MakeTypeName(@interface), MakePrimaryKeyName(targetType));
+                    model.PrimaryKeyMapping.Add(MakePocoClassName(@interface), MakePrimaryKeyName(targetType));
+                    model.AccessManagerMapping.Add(Util.MakeTypeName(@interface), MakeAccessManagerInterface(@interface));
+                    model.AccessManagerMapping.Add(MakePocoClassName(@interface), MakeAccessManagerInterface(@interface));
                 }
             }
             foreach (MethodInfo method in request.Interface.GetMethods())
             {
                 model.Services.Add(
-                    MakeDataProviderFactoryInterfaceName(method.Name), 
-                    Util.MakeTypeName(typeof(DataProviderStub))
+                    new ServiceModel
+                    {
+                        ServiceType = MakeDataProviderFactoryInterfaceName(method.Name),
+                        ImplementationType = MakeDefaultDataProviderFactoryName(method.Name),
+                        LifeTime = nameof(ServiceLifetime.Singleton),
+                    }
                 );
             }
+        }
+        else
+        {
+            throw new InvalidOperationException();
         }
     }
 
@@ -583,12 +700,16 @@ public class Implementer: Runner
             model.ClassName = MakePrimaryKeyName(request.Interface);
             request.ResultName = model.ClassName;
 
-            AddUsings(model, typeof(IPrimaryKey<>));
+            AddUsings(model, typeof(IPrimaryKey));
             AddUsings(model, typeof(KeyDefinition));
 
-            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey)));
 
             FillPrimaryKeyModel(model, @interface);
+        }
+        else
+        {
+            throw new InvalidOperationException();
         }
     }
 
@@ -623,6 +744,7 @@ public class Implementer: Runner
             {
                 AddUsings(model, typeof(Server.EntityBase));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(Server.EntityBase)));
+                model.IsEntity = true;
             }
             else
             {
@@ -630,11 +752,11 @@ public class Implementer: Runner
                 model.Interfaces.Add($"{nameof(Pocota)}.{nameof(Server)}.{Util.MakeTypeName(typeof(Server.PocoBase))}");
                 if (extendingInterface is { })
                 {
-                    AddUsings(model, typeof(IPrimaryKey<>));
                     AddUsings(model, extendingInterface);
                     model.Usings.Add(s_dependencyInjection);
-                    model.ExtenderPrimaryKeyInterface = $"{nameof(IPrimaryKey)}<{Util.MakeTypeName(extendingInterface)}>";
+                    model.ExtenderPrimaryKey = MakePrimaryKeyName(extendingInterface);
                 }
+                model.IsEntity = false;
             }
             model.Interfaces.Add(Util.MakeTypeName(request.Interface));
 
@@ -1041,19 +1163,29 @@ public class Implementer: Runner
         return routeValue.ToString();
     }
 
+    private static string MakeAccessManagerInterface(Type @interface)
+    {
+        return $"{@interface.Name}{s_accessManager}";
+    }
+
+    private string MakeAllowAccessManager(Type @interface)
+    {
+        return $"{_interfaceHoldersByType[@interface].Name}{s_allowAccessManager}";
+    }
+
     private static string MakeDataProviderFactoryInterfaceName(string methodName)
     {
         return $"I{methodName}{s_dataProviderFactory}";
     }
 
-    private string MakeControllerName(Type @interface)
+    private static string MakeControllerName(Type @interface)
     {
         return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
     }
 
-    private string MakeContractConfiguratorName(Type contract)
+    private string MakeContractConfiguratorName(Type @interface)
     {
-        return $"{_interfaceNameCheck.Match(contract.Name).Groups[1].Captures[0].Value}{s_configurator}";
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_configurator}";
     }
 
     private string MakePrimaryKeyName(Type @interface)
@@ -1061,9 +1193,9 @@ public class Implementer: Runner
         return $"{_interfaceHoldersByType[@interface].Name}{s_primaryKey}";
     }
 
-    private string MakeDefaultDataProviderFactoryName(Type @interface)
+    private string MakeDefaultDataProviderFactoryName(string methodName)
     {
-        return $"{_interfaceHoldersByType[@interface].Name}{s_dataProviderFactory}";
+        return $"{methodName}{s_dataProviderFactory}";
     }
 
     private string GetUniqueVariable(string initial)

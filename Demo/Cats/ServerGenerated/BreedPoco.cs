@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                   //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -335,6 +335,11 @@ public class BreedPoco : EntityBase, IBreed
         }
         set
         {
+            if(_codeAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _codeAccessMode = PropertyAccessMode.Full;
             _code = value;
         }
@@ -362,6 +367,11 @@ public class BreedPoco : EntityBase, IBreed
         }
         set
         {
+            if(_groupAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _groupAccessMode = PropertyAccessMode.Full;
             _group = value;
         }
@@ -389,6 +399,11 @@ public class BreedPoco : EntityBase, IBreed
         }
         set
         {
+            if(_nameNatAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }
@@ -416,6 +431,11 @@ public class BreedPoco : EntityBase, IBreed
         }
         set
         {
+            if(_nameEngAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }

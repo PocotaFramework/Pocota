@@ -13,12 +13,14 @@ public class ClassModel: PageModel
     internal List<MethodModel> Methods { get; init; } = new();
     internal List<PropertyModel> Properties { get; init; } = new();
     internal List<string> Interfaces { get; init; } = new();
-    internal Dictionary<string, string?> Services { get; init; } = new();
+    internal List<ServiceModel> Services { get; init; } = new();
     internal AttributeModel? UpdateRouteAttribute { get; set; } = null;
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
     internal string ContractName { get; set; } = null!;
-    internal string? ExtenderPrimaryKeyInterface { get; set; } = null;
-    internal string? DefaultDataProviderFactoryName { get; set; } = null;
+    internal string? ExtenderPrimaryKey { get; set; } = null;
+    internal bool IsEntity { get; set; } = false;
+    internal Dictionary<string, string> PrimaryKeyMapping { get; init; } = new();
+    internal Dictionary<string, string> AccessManagerMapping { get; init; } = new();
 
     public void OnGet([FromServices] Implementer generator)
     {
@@ -45,6 +47,14 @@ public class ClassModel: PageModel
         else if (HttpContext.Request.Path.Equals("/ServerContractConfigurator"))
         {
             generator.BuildServerContractConfigurator(this);
+        }
+        else if (HttpContext.Request.Path.Equals("/AccessManagerInterface"))
+        {
+            generator.BuildAccessManagerInterface(this);
+        }
+        else if (HttpContext.Request.Path.Equals("/AllowAccessManager"))
+        {
+            generator.BuildAllowAccessManager(this);
         }
 
     }

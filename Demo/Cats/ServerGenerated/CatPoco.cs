@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                     //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:15                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -570,6 +570,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_catteryAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _catteryAccessMode = PropertyAccessMode.Full;
             _cattery = value;
         }
@@ -597,6 +602,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_nameNatAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }
@@ -624,6 +634,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_breedAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _breedAccessMode = PropertyAccessMode.Full;
             _breed = value;
         }
@@ -651,6 +666,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_litterWithCatsAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _litterWithCatsAccessMode = PropertyAccessMode.Full;
             _litterWithCats = value;
         }
@@ -678,6 +698,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_nameEngAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }
@@ -705,6 +730,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_genderAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _genderAccessMode = PropertyAccessMode.Full;
             _gender = value;
         }
@@ -732,6 +762,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_litterAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _litterAccessMode = PropertyAccessMode.Full;
             _litter = value;
         }
@@ -759,6 +794,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_exteriorAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _exteriorAccessMode = PropertyAccessMode.Full;
             _exterior = value;
         }
@@ -786,6 +826,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_titleAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _titleAccessMode = PropertyAccessMode.Full;
             _title = value;
         }
@@ -813,6 +858,11 @@ public class CatPoco : EntityBase, ICat
         }
         set
         {
+            if(_descriptionAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _descriptionAccessMode = PropertyAccessMode.Full;
             _description = value;
         }

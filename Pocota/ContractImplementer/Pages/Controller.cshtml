@@ -6,9 +6,9 @@
 
 @foreach (MethodModel mm in Model.Methods)
 {
-    <text>public interface @mm.DataProviderFactoryInterface: @Html.Raw(nameof(IDataProviderFactory))
+    <text>public interface @mm.DataProviderFactoryInterface: @nameof(IDataProviderFactory)
 {
-    @Html.Raw(nameof(DataProvider)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
+    @nameof(DataProvider) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
     {
         if(i > 0)
         {
@@ -22,25 +22,46 @@
 }
 @foreach (MethodModel mm in Model.Methods)
 {
-    <text>public interface @mm.ProcessorFactoryInterface: @Html.Raw(nameof(IProcessorFactory))
+    <text>public class @mm.DefaultDataProviderFactoryName: @mm.DataProviderFactoryInterface
 {
-    @Html.Raw(nameof(IProcessor)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
+    private readonly @nameof(IServiceProvider) _services;
+
+    public @mm.DefaultDataProviderFactoryName@{}(@nameof(IServiceProvider) services)
+    {
+        _services = services;
+    }
+
+    public @Html.Raw(nameof(DataProvider)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
     {
         if(i > 0)
         {
             <text>, </text>
         }
         <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
-    });
+    })
+    {
+        return new @Html.Raw(nameof(DataProviderStub))@{}(_services);
+    }
 }
 
 </text>
 }
-public class @Model.DefaultDataProviderFactoryName: @Html.Raw()
+@foreach (MethodModel mm in Model.Methods)
 {
+    <text>public interface @mm.ProcessorFactoryInterface: @nameof(IProcessorFactory)
+    {
+        @nameof(IProcessor) Create(@for (int i = 0; i < mm.Filters.Count; ++i)
+        {
+            if (i > 0)
+            {
+                <text>, </text>
+            }
+            <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
+        });
+    }
 
+</text>
 }
-
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
 

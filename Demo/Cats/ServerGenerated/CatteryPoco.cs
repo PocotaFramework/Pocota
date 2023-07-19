@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                 //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -213,6 +213,11 @@ public class CatteryPoco : EntityBase, ICattery
         }
         set
         {
+            if(_nameEngAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }
@@ -240,6 +245,11 @@ public class CatteryPoco : EntityBase, ICattery
         }
         set
         {
+            if(_nameNatAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }

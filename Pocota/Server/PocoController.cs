@@ -2,7 +2,7 @@
 
 namespace Net.Leksi.Pocota.Server;
 
-public class ControllerProxy : Controller
+public class PocoController: Controller
 {
     public virtual void Update()
     {

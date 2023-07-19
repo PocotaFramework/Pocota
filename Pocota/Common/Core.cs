@@ -3,22 +3,24 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Net.Leksi.Pocota.Common.Generic;
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace Net.Leksi.Pocota.Common;
 
 public class Core: IServiceCollection
 {
-    private readonly Dictionary<Type, Dictionary<string, IProperty>> _properties = new();
-    private readonly Dictionary<Type, Type> _actualTypes = new();
-    private readonly Dictionary<Type, HashSet<Type>> _typesByContract = new();
-    private readonly Dictionary<Type, Type> _contractsByType = new();
-    private readonly Dictionary<Type, Type> _primaryKeyTypesByType = new();
-
-    private Type? _currentContract = null;
+    private IServiceProvider? _services = null;
     private bool _isConfiguringContract = false;
 
     private bool IsCommitted => _serviceCollection is null;
 
+    protected readonly Dictionary<Type, Dictionary<string, IProperty>> _properties = new();
+    protected readonly Dictionary<Type, Type> _actualTypes = new();
+    protected readonly Dictionary<Type, HashSet<Type>> _typesByContract = new();
+    protected readonly Dictionary<Type, Type> _contractsByType = new();
+    protected readonly Dictionary<Type, Type> _primaryKeyTypesByType = new();
+
+    protected Type? _currentContract = null;
     protected IServiceCollection? _serviceCollection = null;
 
     protected bool IsConfiguringContract
@@ -31,22 +33,34 @@ public class Core: IServiceCollection
         }
     }
 
-    internal IServiceCollection? Services => _serviceCollection;
-
-    public Type GetPrimaryKeyType(Type targetType)
-    {
-        if(_primaryKeyTypesByType.TryGetValue(targetType, out var primaryKeyType))
-        {
-            return primaryKeyType;
-        }
-        throw new ArgumentException(nameof(targetType));
-    }
+    internal IServiceCollection? ServiceCollection => _serviceCollection;
 
     public int Count => throw new NotImplementedException();
 
     public bool IsReadOnly => throw new NotImplementedException();
 
     public ServiceDescriptor this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public IServiceProvider? Services
+    {
+        get => _services;
+        set
+        {
+            if(_services is null && value is { })
+            {
+                _services = value;
+            }
+        }
+    }
+
+    public Type GetPrimaryKeyType(Type targetType)
+    {
+        if (_primaryKeyTypesByType.TryGetValue(targetType, out var primaryKeyType))
+        {
+            return primaryKeyType;
+        }
+        throw new ArgumentException(nameof(targetType));
+    }
 
     public virtual void Add(ServiceDescriptor item)
     {
@@ -71,6 +85,8 @@ public class Core: IServiceCollection
         _serviceCollection = null;
     }
 
+    public virtual void ReceiveTelemetry() { }
+
     public static void StartAddContract<TContract>(IServiceCollection services)
     {
         if (services is Core core)
@@ -81,6 +97,24 @@ public class Core: IServiceCollection
         {
             throw new InvalidOperationException();
         }
+    }
+
+    public void MapPrimaryKeyType(Type entityType, Type primaryKeyType)
+    {
+        if (!IsConfiguringContract)
+        {
+            throw new InvalidOperationException($"Calling of the method MapPrimaryKeyType is forbidden!");
+        }
+        _primaryKeyTypesByType.Add(entityType, primaryKeyType);
+    }
+
+    public Type? GetActualType(Type @interface)
+    {
+        if(_actualTypes.TryGetValue(@interface, out Type? result))
+        {
+            return result;
+        }
+        return null;
     }
 
     #region IServiceCollection
@@ -132,6 +166,7 @@ public class Core: IServiceCollection
 
     #endregion IServiceCollection
 
+
     protected virtual ServiceDescriptor? AddServiceDescriptor(ServiceDescriptor item)
     {
         if (typeof(IPoco).IsAssignableFrom(item.ServiceType) || typeof(IPoco).IsAssignableFrom(item.ImplementationType) || typeof(IPrimaryKey).IsAssignableFrom(item.ServiceType))
@@ -152,68 +187,40 @@ public class Core: IServiceCollection
             {
                 throw new InvalidOperationException("Factory is forbidden");
             }
-            if (typeof(IPrimaryKey).IsAssignableFrom(item.ServiceType))
+            if (IsConfiguringContract)
             {
-                if (!IsConfiguringContract)
+                if (_actualTypes.ContainsKey(item.ServiceType))
                 {
-                    throw new InvalidOperationException("Cannot register PrimaryKey");
+                    throw new InvalidOperationException("Duplicate");
                 }
-                Type type;
-                if(
-                    item.ServiceType.IsGenericType
-                    && item.ServiceType.GetGenericTypeDefinition() == typeof(IPrimaryKey<>)
-                    && item.ServiceType.GetGenericArguments()[0] is Type type1
-                    && (type = type1) == type
-                )
+                if (_currentContract is null)
                 {
-                    if (_currentContract is null || !_typesByContract.TryGetValue(_currentContract, out HashSet<Type>? types) || !types.Contains(type))
-                    {
-                        throw new InvalidOperationException("Out of contract PrimaryKey");
-                    }
-                    _primaryKeyTypesByType.Add(type, item.ImplementationType!);
-                    if(_actualTypes.TryGetValue(type, out Type? actualType) && type != actualType)
-                    {
-                        _primaryKeyTypesByType.Add(actualType, item.ImplementationType!);
-                    }
+                    throw new InvalidOperationException("No contract");
                 }
+                _actualTypes.Add(item.ServiceType, item.ImplementationType!);
+                _contractsByType.Add(item.ServiceType, _currentContract);
+                if (!_typesByContract.ContainsKey(_currentContract))
+                {
+                    _typesByContract.Add(_currentContract, new HashSet<Type>());
+                }
+                _typesByContract[_currentContract].Add(item.ServiceType);
             }
             else
             {
-                if (IsConfiguringContract)
+                if (!_contractsByType.ContainsKey(item.ServiceType))
                 {
-                    if (_actualTypes.ContainsKey(item.ServiceType))
-                    {
-                        throw new InvalidOperationException("Duplicate");
-                    }
-                    if (_currentContract is null)
-                    {
-                        throw new InvalidOperationException("No contract");
-                    }
-                    _actualTypes.Add(item.ServiceType, item.ImplementationType!);
-                    _contractsByType.Add(item.ServiceType, _currentContract);
-                    if (!_typesByContract.ContainsKey(_currentContract))
-                    {
-                        _typesByContract.Add(_currentContract, new HashSet<Type>());
-                    }
-                    _typesByContract[_currentContract].Add(item.ServiceType);
+                    throw new InvalidOperationException($"Out of contract: {item.ServiceType}");
                 }
-                else
-                {
-                    if (!_contractsByType.ContainsKey(item.ServiceType))
-                    {
-                        throw new InvalidOperationException($"Out of contract: {item.ServiceType}");
-                    }
-                    _serviceCollection!.RemoveAll(_actualTypes[item.ServiceType]);
-                    _serviceCollection!.AddTransient(_actualTypes[item.ServiceType], item.ImplementationType!);
-                    _typesByContract[_contractsByType[item.ServiceType]].Remove(_actualTypes[item.ServiceType]);
-                    _contractsByType.Remove(_actualTypes[item.ServiceType]);
-                    _primaryKeyTypesByType.Add(item.ImplementationType!, _primaryKeyTypesByType[_actualTypes[item.ServiceType]]);
-                    _actualTypes[_actualTypes[item.ServiceType]] = item.ImplementationType!;
-                    _actualTypes[item.ServiceType] = item.ImplementationType!;
-                    _typesByContract[_contractsByType[item.ServiceType]].Add(item.ImplementationType!);
-                    _contractsByType.Add(item.ImplementationType!, _contractsByType[item.ServiceType]);
-                    _serviceCollection!.RemoveAll(item.ServiceType);
-                }
+                _serviceCollection!.RemoveAll(_actualTypes[item.ServiceType]);
+                _serviceCollection!.AddTransient(_actualTypes[item.ServiceType], item.ImplementationType!);
+                _typesByContract[_contractsByType[item.ServiceType]].Remove(_actualTypes[item.ServiceType]);
+                _contractsByType.Remove(_actualTypes[item.ServiceType]);
+                _primaryKeyTypesByType.Add(item.ImplementationType!, _primaryKeyTypesByType[item.ServiceType]);
+                _actualTypes[_actualTypes[item.ServiceType]] = item.ImplementationType!;
+                _actualTypes[item.ServiceType] = item.ImplementationType!;
+                _typesByContract[_contractsByType[item.ServiceType]].Add(item.ImplementationType!);
+                _contractsByType.Add(item.ImplementationType!, _contractsByType[item.ServiceType]);
+                _serviceCollection!.RemoveAll(item.ServiceType);
             }
             _serviceCollection!.AddTransient(item.ImplementationType!);
 

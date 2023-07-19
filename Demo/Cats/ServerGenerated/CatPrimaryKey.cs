@@ -2,15 +2,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPrimaryKey                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:15                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Common.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatPrimaryKey : IPrimaryKey<ICat>
+public class CatPrimaryKey : IPrimaryKey
 {
     private Int32? _idCat = null;
     private Int32? _idCattery = null;

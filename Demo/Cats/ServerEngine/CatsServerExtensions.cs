@@ -10,7 +10,7 @@ public static class CatsServerExtensions
     {
         services.AddPocota(serv =>
         {
-            serv.AddContract<CatContractConfigurator>();
+            serv.AddContract<CatsConfigurator>();
             serv.AddTransient<ICat, Cat>();
         });
 
@@ -25,6 +25,8 @@ public static class CatsServerExtensions
 
     public static WebApplication UseCatServer(this WebApplication app)
     {
+        app.Services.GetRequiredService<Core>().Services = app.Services;
+        app.Services.GetRequiredService<Core>().ReceiveTelemetry();
         app.UsePocota();
         return app;
     }

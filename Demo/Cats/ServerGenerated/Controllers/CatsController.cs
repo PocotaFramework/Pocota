@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsController                            //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:15                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
@@ -53,42 +53,147 @@ public interface IFindTitlesDataProviderFactory: IDataProviderFactory
     DataProvider Create();
 }
 
-public interface IFindCatsProcessorFactory: IProcessorFactory
+public class FindCatsDataProviderFactory: IFindCatsDataProviderFactory
 {
-    IProcessor Create(ICatFilter? filter);
+    private readonly IServiceProvider _services;
+
+    public FindCatsDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create(ICatFilter? filter)
+    {
+        return new DataProviderStub(_services);
+    }
 }
+
+public class GetCatDataProviderFactory: IGetCatDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public GetCatDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create(ICat cat)
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public class FindBreedsDataProviderFactory: IFindBreedsDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public FindBreedsDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create(IBreedFilter? filter)
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public class FindCatteriesDataProviderFactory: IFindCatteriesDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public FindCatteriesDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create(ICatteryFilter? filter)
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public class FindLittersWithCatsDataProviderFactory: IFindLittersWithCatsDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public FindLittersWithCatsDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create(ICatFilter? filter)
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public class FindExteriorsDataProviderFactory: IFindExteriorsDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public FindExteriorsDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create()
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public class FindTitlesDataProviderFactory: IFindTitlesDataProviderFactory
+{
+    private readonly IServiceProvider _services;
+
+    public FindTitlesDataProviderFactory(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public DataProvider Create()
+    {
+        return new DataProviderStub(_services);
+    }
+}
+
+public interface IFindCatsProcessorFactory: IProcessorFactory
+    {
+        IProcessor Create(ICatFilter? filter);
+    }
 
 public interface IGetCatProcessorFactory: IProcessorFactory
-{
-    IProcessor Create(ICat cat);
-}
+    {
+        IProcessor Create(ICat cat);
+    }
 
 public interface IFindBreedsProcessorFactory: IProcessorFactory
-{
-    IProcessor Create(IBreedFilter? filter);
-}
+    {
+        IProcessor Create(IBreedFilter? filter);
+    }
 
 public interface IFindCatteriesProcessorFactory: IProcessorFactory
-{
-    IProcessor Create(ICatteryFilter? filter);
-}
+    {
+        IProcessor Create(ICatteryFilter? filter);
+    }
 
 public interface IFindLittersWithCatsProcessorFactory: IProcessorFactory
-{
-    IProcessor Create(ICatFilter? filter);
-}
+    {
+        IProcessor Create(ICatFilter? filter);
+    }
 
 public interface IFindExteriorsProcessorFactory: IProcessorFactory
-{
-    IProcessor Create();
-}
+    {
+        IProcessor Create();
+    }
 
 public interface IFindTitlesProcessorFactory: IProcessorFactory
-{
-    IProcessor Create();
-}
+    {
+        IProcessor Create();
+    }
 
-public class CatsController : ControllerProxy
+public class CatsController : PocoController
 {
 
     private static readonly PropertyUse s_findCatsPropertyUse = new()

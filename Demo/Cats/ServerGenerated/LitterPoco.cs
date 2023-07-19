@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -388,6 +388,11 @@ public class LitterPoco : EntityBase, ILitter
         }
         set
         {
+            if(_orderAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _orderAccessMode = PropertyAccessMode.Full;
             _order = value;
         }
@@ -415,6 +420,11 @@ public class LitterPoco : EntityBase, ILitter
         }
         set
         {
+            if(_femaleAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _femaleAccessMode = PropertyAccessMode.Full;
             _female = value;
         }
@@ -442,6 +452,11 @@ public class LitterPoco : EntityBase, ILitter
         }
         set
         {
+            if(_dateAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _dateAccessMode = PropertyAccessMode.Full;
             _date = value;
         }
@@ -469,6 +484,11 @@ public class LitterPoco : EntityBase, ILitter
         }
         set
         {
+            if(_maleAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            OnPropertyIsSet();
             _maleAccessMode = PropertyAccessMode.Full;
             _male = value;
         }

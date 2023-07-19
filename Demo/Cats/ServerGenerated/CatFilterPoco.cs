@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                               //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
@@ -671,6 +671,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_breedAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _breedAccessMode = PropertyAccessMode.Full;
             _breed = value;
         }
@@ -698,6 +702,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_catteryAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _catteryAccessMode = PropertyAccessMode.Full;
             _cattery = value;
         }
@@ -725,6 +733,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_bornAfterAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _bornAfterAccessMode = PropertyAccessMode.Full;
             _bornAfter = value;
         }
@@ -752,6 +764,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_bornBeforeAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _bornBeforeAccessMode = PropertyAccessMode.Full;
             _bornBefore = value;
         }
@@ -779,6 +795,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_nameRegexAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _nameRegexAccessMode = PropertyAccessMode.Full;
             _nameRegex = value;
         }
@@ -806,6 +826,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_genderAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _genderAccessMode = PropertyAccessMode.Full;
             _gender = value;
         }
@@ -833,6 +857,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_childAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _childAccessMode = PropertyAccessMode.Full;
             _child = value;
         }
@@ -860,6 +888,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_selfAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _selfAccessMode = PropertyAccessMode.Full;
             _self = value;
         }
@@ -887,6 +919,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_motherAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _motherAccessMode = PropertyAccessMode.Full;
             _mother = value;
         }
@@ -914,6 +950,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_fatherAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _fatherAccessMode = PropertyAccessMode.Full;
             _father = value;
         }
@@ -941,6 +981,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_ancestorAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _ancestorAccessMode = PropertyAccessMode.Full;
             _ancestor = value;
         }
@@ -968,6 +1012,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_descendantAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _descendantAccessMode = PropertyAccessMode.Full;
             _descendant = value;
         }
@@ -995,6 +1043,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_litterAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _litterAccessMode = PropertyAccessMode.Full;
             _litter = value;
         }
@@ -1022,6 +1074,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_exteriorRegexAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _exteriorRegexAccessMode = PropertyAccessMode.Full;
             _exteriorRegex = value;
         }
@@ -1049,6 +1105,10 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
         set
         {
+            if(_titleRegexAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _titleRegexAccessMode = PropertyAccessMode.Full;
             _titleRegex = value;
         }

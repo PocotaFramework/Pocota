@@ -1,5 +1,6 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common;
+@using Net.Leksi.Pocota.Server;
 @model ClassModel
 
 @Html.Partial("Header", Model)
@@ -325,7 +326,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
 
 }
-else if (Model.ExtenderPrimaryKeyInterface is { })
+else if (Model.ExtenderPrimaryKey is { })
 {
     <text>    public IPrimaryKey PrimaryKey { get; init; }
 </text>
@@ -348,9 +349,9 @@ else if (Model.ExtenderPrimaryKeyInterface is { })
     <text>        _primaryKey = new(this);
 </text>
 }
-else if (Model.ExtenderPrimaryKeyInterface is { })
+else if (Model.ExtenderPrimaryKey is { })
 {
-    <text>        PrimaryKey = _services.GetRequiredService@{}@Html.Raw($"<{Model.ExtenderPrimaryKeyInterface}>")@{}();
+    <text>        PrimaryKey = new @Model.ExtenderPrimaryKey@{}();
 </text>
 }
     }
@@ -372,6 +373,15 @@ else if (Model.ExtenderPrimaryKeyInterface is { })
     {
         <text>        set
         {
+            if(@pm.AccessModeFieldName is not @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.NotSet))
+            {
+                throw new @nameof(InvalidOperationException)@{}(s_alreadySet);
+            }
+        @if(Model.IsEntity)
+        {
+            <text>            OnPropertyIsSet();
+</text>
+        }
             @pm.AccessModeFieldName = @nameof(PropertyAccessMode).@{}@if(pm.IsReadOnly){<text>@nameof(PropertyAccessMode.ReadOnly)</text>} else {<text>@nameof(PropertyAccessMode.Full)</text>};
             @pm.FieldName = value;
             @if(pm.IsList && pm.IsPoco)

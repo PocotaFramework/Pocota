@@ -2,15 +2,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPrimaryKey                             //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Common.Generic;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class BreedPrimaryKey : IPrimaryKey<IBreed>
+public class BreedPrimaryKey : IPrimaryKey
 {
     private String? _idBreed = null;
     private String? _idGroup = null;

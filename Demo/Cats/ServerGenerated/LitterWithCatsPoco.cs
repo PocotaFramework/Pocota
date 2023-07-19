@@ -2,12 +2,11 @@
 ///////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterWithCatsPoco                          //
 // Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-18T19:12:59                                                        //
+// at 2023-07-19T18:10:16                                                        //
 ///////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System;
 using System.Collections.Generic;
@@ -221,7 +220,7 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
 
     public LitterWithCatsPoco(IServiceProvider services) : base(services)
     {
-        PrimaryKey = _services.GetRequiredService<IPrimaryKey<ILitter>>();
+        PrimaryKey = new LitterPrimaryKey();
     }
 
     #region properties
@@ -237,6 +236,10 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         }
         set
         {
+            if(_catsAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _catsAccessMode = PropertyAccessMode.Full;
             _cats = value;
             _catsProxy = new ListProxy<CatPoco, ICat>(_cats);
@@ -266,6 +269,10 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         }
         set
         {
+            if(_stringsAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _stringsAccessMode = PropertyAccessMode.Full;
             _strings = value;
         }
@@ -293,6 +300,10 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         }
         set
         {
+            if(_listsAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _listsAccessMode = PropertyAccessMode.Full;
             _lists = value;
         }
@@ -320,6 +331,10 @@ public class LitterWithCatsPoco : Pocota.Server.PocoBase, ILitterWithCats
         }
         set
         {
+            if(_catFilterAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
             _catFilterAccessMode = PropertyAccessMode.Full;
             _catFilter = value;
         }

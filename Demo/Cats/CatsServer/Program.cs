@@ -1,19 +1,13 @@
-using Net.Leksi.Pocota.Demo.Cats.Server;
+using CatsServerDebug;
+
+Server server = new(args);
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCatsServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+server.ConfigureBuilder(builder);
 
 var app = builder.Build();
 
-app.Services.CreateScope().ServiceProvider.GetRequiredService<IStorage>().CheckDatabase();
-
-if (args.Contains("--CheckDatabase"))
-{
-    Environment.Exit(0);
-}
-
-app.UseCatServer();
-
+server.ConfigureApplication(app);
 
 app.Run();

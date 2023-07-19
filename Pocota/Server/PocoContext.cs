@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Demo.Cats.Common;
 using System.Collections;
 using System.Text.Json;
 
@@ -762,6 +761,7 @@ public class PocoContext : IPocoContext
                         Console.WriteLine(th);
                     }
                 }
+
                 processor?.Push(buildingContext.Value);
             }
 
@@ -769,6 +769,14 @@ public class PocoContext : IPocoContext
             {
                 break;
             }
+        }
+    }
+
+    private void OnConfirm(object? obj)
+    {
+        if(obj is EntityBase entity)
+        {
+            entity.IsAccessConfirmed = true;
         }
     }
 
@@ -793,6 +801,7 @@ public class PocoContext : IPocoContext
         if (keysArray.Any(e => e is null))
         {
             entity = (IEntity)_services.GetRequiredService(type);
+            entity.PropertyIsSet += Entity_PropertyIsSet;
             return false;
         }
         if (!_entitiesCache.TryGetValue(type, out Dictionary<object[], IEntity>? dict))
@@ -804,9 +813,19 @@ public class PocoContext : IPocoContext
         if (!result)
         {
             entity = (IEntity)_services.GetRequiredService(type);
+            entity.PropertyIsSet += Entity_PropertyIsSet;
             dict.Add(keysArray, entity);
         }
         return result;
+    }
+
+    private void Entity_PropertyIsSet(object? sender, EventArgs e)
+    {
+        if(sender is EntityBase entity)
+        {
+            entity.IsTransmitted = false;
+            entity.IsAccessConfirmed = false;
+        }
     }
 
     private string PresentResponse(object? value)
