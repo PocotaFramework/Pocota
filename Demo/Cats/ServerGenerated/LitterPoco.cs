@@ -1,9 +1,10 @@
 
-///////////////////////////////////////////////////////////////////////////////////
-// Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                  //
-// Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-19T18:10:16                                                        //
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// Net.Leksi.Pocota.Demo.Cats.Common.LitterPoco                                      //
+// was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
+// at 2023-07-20T17:48:18.                                                           //
+// Modifying this file will break the program!                                       //
+///////////////////////////////////////////////////////////////////////////////////////
 
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Server;

@@ -4,8 +4,9 @@
     string[] lines = new[]
     {
         string.Join(".", new string[] { Model.NamespaceValue, Model.ClassName}),
-        $"Generated automatically from {Model.Contract}",
-        $"at {DateTime.Now.ToString("s")}"
+        $"was generated automatically from {Model.Contract}",
+        $"at {DateTime.Now.ToString("s")}.",
+        "Modifying this file will break the program!"
     };
     int maxLength = lines.Select(l => l.Length).Max();
     <text>//@Html.Raw(string.Format($"{{0,{maxLength + 2}}}", string.Empty).Replace(' ', '/'))//

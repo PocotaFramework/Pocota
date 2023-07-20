@@ -2,7 +2,7 @@
 
 public abstract class DataProvider
 {
-    protected readonly IServiceProvider _services;
+    protected readonly IServiceProvider? _services;
     protected BuildingContext? BuildingContext { get; private set; } = null;
 
     protected abstract object? this[string path] { get; }
@@ -11,7 +11,7 @@ public abstract class DataProvider
 
     protected DataProviderRequest Request => _request;
 
-    public DataProvider(IServiceProvider services)
+    public DataProvider(IServiceProvider? services = null)
     {
         _services = services;
     }

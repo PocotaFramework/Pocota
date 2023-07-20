@@ -105,6 +105,10 @@ public class Core: IServiceCollection
         {
             throw new InvalidOperationException($"Calling of the method MapPrimaryKeyType is forbidden!");
         }
+        if (!_primaryKeyTypesByType.ContainsValue(primaryKeyType))
+        {
+            _serviceCollection!.Add(new ServiceDescriptor(primaryKeyType, primaryKeyType, ServiceLifetime.Transient));
+        }
         _primaryKeyTypesByType.Add(entityType, primaryKeyType);
     }
 

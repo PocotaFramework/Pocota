@@ -1,6 +1,7 @@
 ﻿namespace Net.Leksi.Pocota.Server;
 
-public interface IProcessor
+public interface IProcessor<T>
 {
-    void Push(object? item);
+    IEnumerable<T> ProcessEnumerable(IEnumerable<T> source);
+    T ProcessSingle(T source);
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common;
 using System.Collections;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
@@ -47,8 +48,6 @@ public class PocoContext : IPocoContext
 
     public PropertyUse PropertyUse { get; set; } = null!;
 
-    public Type ExpectedOutputType { get; set; } = null!;
-
     public ControllerContext ControllerContext { get; set; } = null!;
 
     public bool WithTracing { get; set; } = false;
@@ -66,39 +65,32 @@ public class PocoContext : IPocoContext
         return (IPrimaryKey)_services.GetRequiredService(_core.GetPrimaryKeyType(targetType));
     }
 
-    public void HandleRequest(DataProvider data, IProcessor processor)
+    public IEnumerable<T> Build<T>(DataProvider dataProvider, bool isSingleQuery)
     {
         if (PropertyUse is null)
         {
             throw new InvalidOperationException(nameof(PropertyUse));
         }
-        if (ExpectedOutputType is null)
-        {
-            throw new InvalidOperationException(nameof(ExpectedOutputType));
-        }
         if (ControllerContext is null)
         {
             throw new InvalidOperationException(nameof(ControllerContext));
         }
-        if (data is null)
+        if (dataProvider is null)
         {
-            throw new InvalidOperationException(nameof(data));
+            throw new InvalidOperationException(nameof(dataProvider));
         }
         BuildingContext buildingContext = new(_services)
         {
             PropertyUse = this.PropertyUse,
-            DataProvider = data,
-            IsSingleQuery = !ExpectedOutputType.IsGenericType
-                || !typeof(IList<>).MakeGenericType(new Type[] { ExpectedOutputType.GetGenericArguments()[0] })
-                        .IsAssignableFrom(ExpectedOutputType),
+            DataProvider = dataProvider,
+            IsSingleQuery = isSingleQuery,
         };
         buildingContext.DataProviderRoot = buildingContext;
 
-        ProcessBuildingContext(buildingContext, processor);
-
+        return ProcessBuildingContext<T>(buildingContext);
     }
 
-    private void ProcessBuildingContext(BuildingContext buildingContext, IProcessor? processor)
+    private IEnumerable<T> ProcessBuildingContext<T>(BuildingContext buildingContext)
     {
         HashSet<string> processedProperties = new();
         Queue<BuildingContext> queue = new();
@@ -215,7 +207,7 @@ public class PocoContext : IPocoContext
                             {
                                 buildingContext.ProcessAList = () =>
                                 {
-                                    ReprocessBuildingContextWithDataProvider(buildingContext, dataProvider, false);
+                                    ReprocessBuildingContextWithDataProvider<T>(buildingContext, dataProvider, false).GetEnumerator().MoveNext();
                                 };
                             }
                         }
@@ -320,8 +312,8 @@ public class PocoContext : IPocoContext
                             {
                                 buildingContext.LastTracingEntry!.Success = true;
                             }
-                            ReprocessBuildingContextWithDataProvider(buildingContext, dp, true);
-                            return;
+                            ReprocessBuildingContextWithDataProvider<T>(buildingContext, dp, true).GetEnumerator().MoveNext();
+                            yield break;
                         }
                         else
                         {
@@ -397,7 +389,7 @@ public class PocoContext : IPocoContext
                             }
                             while (queue.TryDequeue(out BuildingContext? bc1))
                             {
-                                ProcessBuildingContext(bc1, null);
+                                ProcessBuildingContext<object>(bc1).GetEnumerator().MoveNext();
                                 if (bc1.PropertyUse.Property!.GetAccess(entity) is PropertyAccessMode.Denied)
                                 {
                                     try
@@ -553,7 +545,7 @@ public class PocoContext : IPocoContext
                             {
                                 bc.Value = pu.Property.GetValue(buildingContext.Value);
                             }
-                            ProcessBuildingContext(bc, null);
+                            ProcessBuildingContext<object>(bc).GetEnumerator().MoveNext();
                             if (!pu.Property.IsReadOnly)
                             {
                                 pu.Property.SetValue(buildingContext.Value, bc.Value);
@@ -571,7 +563,7 @@ public class PocoContext : IPocoContext
                                 };
                                 buildingContext.PropertyUsesContexts.Add(pu.Property.Name, bc);
                             }
-                            ProcessBuildingContext(bc, null);
+                            ProcessBuildingContext<object>(bc).GetEnumerator().MoveNext();
                             if (buildingContext.PropertyUse.Property.IsList)
                             {
                                 try
@@ -762,7 +754,7 @@ public class PocoContext : IPocoContext
                     }
                 }
 
-                processor?.Push(buildingContext.Value);
+                yield return (T)buildingContext.Value!;
             }
 
             if (buildingContext.DataProviderRoot.IsSingleQuery || buildingContext.DataProvider is null)
@@ -780,7 +772,7 @@ public class PocoContext : IPocoContext
         }
     }
 
-    private void ReprocessBuildingContextWithDataProvider(BuildingContext buildingContext, DataProvider dataProvider, bool isSingleQuery)
+    private IEnumerable<T> ReprocessBuildingContextWithDataProvider<T>(BuildingContext buildingContext, DataProvider dataProvider, bool isSingleQuery)
     {
         DataProvider? saveDp = buildingContext.DataProvider;
         BuildingContext saveDpr = buildingContext.DataProviderRoot;
@@ -789,11 +781,13 @@ public class PocoContext : IPocoContext
         buildingContext.DataProviderRoot = buildingContext;
         buildingContext.IsSingleQuery = isSingleQuery;
 
-        ProcessBuildingContext(buildingContext, null);
+        IEnumerable<T> res = ProcessBuildingContext<T>(buildingContext);
 
         buildingContext.DataProvider = saveDp;
         buildingContext.DataProviderRoot = saveDpr;
         buildingContext.IsSingleQuery = saveSq;
+
+        return res;
     }
 
     public bool TryGetEntity(Type type, object[] keysArray, out IEntity entity)
@@ -844,5 +838,4 @@ public class PocoContext : IPocoContext
         }
         return value!.ToString()!;
     }
-
 }

@@ -1,8 +1,9 @@
-///////////////////////////////////////////////////////////////////////////////////
-// Net.Leksi.Pocota.Demo.Cats.Contract.CatsController                            //
-// Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-19T18:10:15                                                        //
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// Net.Leksi.Pocota.Demo.Cats.Contract.CatsController                                //
+// was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
+// at 2023-07-20T17:48:18.                                                           //
+// Modifying this file will break the program!                                       //
+///////////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,145 +54,152 @@ public interface IFindTitlesDataProviderFactory: IDataProviderFactory
     DataProvider Create();
 }
 
-public class FindCatsDataProviderFactory: IFindCatsDataProviderFactory
+public class FindCatsDefaultDataProviderFactory: IFindCatsDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindCatsDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create(ICatFilter? filter)
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class GetCatDataProviderFactory: IGetCatDataProviderFactory
+public class GetCatDefaultDataProviderFactory: IGetCatDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public GetCatDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create(ICat cat)
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class FindBreedsDataProviderFactory: IFindBreedsDataProviderFactory
+public class FindBreedsDefaultDataProviderFactory: IFindBreedsDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindBreedsDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create(IBreedFilter? filter)
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class FindCatteriesDataProviderFactory: IFindCatteriesDataProviderFactory
+public class FindCatteriesDefaultDataProviderFactory: IFindCatteriesDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindCatteriesDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create(ICatteryFilter? filter)
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class FindLittersWithCatsDataProviderFactory: IFindLittersWithCatsDataProviderFactory
+public class FindLittersWithCatsDefaultDataProviderFactory: IFindLittersWithCatsDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindLittersWithCatsDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create(ICatFilter? filter)
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class FindExteriorsDataProviderFactory: IFindExteriorsDataProviderFactory
+public class FindExteriorsDefaultDataProviderFactory: IFindExteriorsDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindExteriorsDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create()
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
-public class FindTitlesDataProviderFactory: IFindTitlesDataProviderFactory
+public class FindTitlesDefaultDataProviderFactory: IFindTitlesDataProviderFactory
 {
-    private readonly IServiceProvider _services;
-
-    public FindTitlesDataProviderFactory(IServiceProvider services)
-    {
-        _services = services;
-    }
-
     public DataProvider Create()
     {
-        return new DataProviderStub(_services);
+        return new DataProviderStub();
     }
 }
 
 public interface IFindCatsProcessorFactory: IProcessorFactory
     {
-        IProcessor Create(ICatFilter? filter);
+        IProcessor<ICat> Create(ICatFilter? filter);
     }
 
 public interface IGetCatProcessorFactory: IProcessorFactory
     {
-        IProcessor Create(ICat cat);
+        IProcessor<ICat> Create(ICat cat);
     }
 
 public interface IFindBreedsProcessorFactory: IProcessorFactory
     {
-        IProcessor Create(IBreedFilter? filter);
+        IProcessor<IBreed> Create(IBreedFilter? filter);
     }
 
 public interface IFindCatteriesProcessorFactory: IProcessorFactory
     {
-        IProcessor Create(ICatteryFilter? filter);
+        IProcessor<ICattery> Create(ICatteryFilter? filter);
     }
 
 public interface IFindLittersWithCatsProcessorFactory: IProcessorFactory
     {
-        IProcessor Create(ICatFilter? filter);
+        IProcessor<ILitterWithCats> Create(ICatFilter? filter);
     }
 
 public interface IFindExteriorsProcessorFactory: IProcessorFactory
     {
-        IProcessor Create();
+        IProcessor<String> Create();
     }
 
 public interface IFindTitlesProcessorFactory: IProcessorFactory
     {
-        IProcessor Create();
+        IProcessor<String> Create();
     }
+
+public class FindCatsDefaultProcessorFactory: IFindCatsProcessorFactory
+{
+    public IProcessor<ICat> Create(ICatFilter? filter)
+    {
+        return new FarNienteProcessor<ICat>();
+    }
+}
+
+public class GetCatDefaultProcessorFactory: IGetCatProcessorFactory
+{
+    public IProcessor<ICat> Create(ICat cat)
+    {
+        return new FarNienteProcessor<ICat>();
+    }
+}
+
+public class FindBreedsDefaultProcessorFactory: IFindBreedsProcessorFactory
+{
+    public IProcessor<IBreed> Create(IBreedFilter? filter)
+    {
+        return new FarNienteProcessor<IBreed>();
+    }
+}
+
+public class FindCatteriesDefaultProcessorFactory: IFindCatteriesProcessorFactory
+{
+    public IProcessor<ICattery> Create(ICatteryFilter? filter)
+    {
+        return new FarNienteProcessor<ICattery>();
+    }
+}
+
+public class FindLittersWithCatsDefaultProcessorFactory: IFindLittersWithCatsProcessorFactory
+{
+    public IProcessor<ILitterWithCats> Create(ICatFilter? filter)
+    {
+        return new FarNienteProcessor<ILitterWithCats>();
+    }
+}
+
+public class FindExteriorsDefaultProcessorFactory: IFindExteriorsProcessorFactory
+{
+    public IProcessor<String> Create()
+    {
+        return new FarNienteProcessor<String>();
+    }
+}
+
+public class FindTitlesDefaultProcessorFactory: IFindTitlesProcessorFactory
+{
+    public IProcessor<String> Create()
+    {
+        return new FarNienteProcessor<String>();
+    }
+}
 
 public class CatsController : PocoController
 {
@@ -517,16 +525,18 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findCatsPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<ICat>);
         pocoContext.ControllerContext = ControllerContext;
         ICatFilter? filter1 = default!;
         if (filter is { })
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindCatsDataProviderFactory>().Create(filter1),
-            HttpContext.RequestServices.GetRequiredService<IFindCatsProcessorFactory>().Create(filter1)
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindCatsProcessorFactory>().Create(filter1).ProcessEnumerable(
+                pocoContext.Build<ICat>(HttpContext.RequestServices.GetRequiredService<IFindCatsDataProviderFactory>().Create(filter1), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 
@@ -535,17 +545,21 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_getCatPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(ICat);
         pocoContext.ControllerContext = ControllerContext;
         ICat cat1 = default!;
         if (cat is { })
         {
             cat1 = JsonSerializer.Deserialize<ICat>(HttpUtility.UrlDecode(cat), pocoContext.JsonSerializerOptions)!;
         }
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IGetCatDataProviderFactory>().Create(cat1),
-            HttpContext.RequestServices.GetRequiredService<IGetCatProcessorFactory>().Create(cat1)
-        );
+        IEnumerator<ICat> en = pocoContext.Build<ICat>(HttpContext.RequestServices.GetRequiredService<IGetCatDataProviderFactory>().Create(cat1), true).GetEnumerator();
+        if(en.MoveNext())
+        {
+            JsonSerializer.Serialize(
+                new Utf8JsonWriter(HttpContext.Response.Body),
+                HttpContext.RequestServices.GetRequiredService<IGetCatProcessorFactory>().Create(cat1).ProcessSingle(en.Current),
+                pocoContext.JsonSerializerOptions
+            );
+        }
     }
 
     [Route("/api/v1.0/Net/Leksi/Pocota/Demo/Cats/Contract/ICatContract/FindBreeds/{filter?}")]
@@ -553,16 +567,18 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findBreedsPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<IBreed>);
         pocoContext.ControllerContext = ControllerContext;
         IBreedFilter? filter1 = default!;
         if (filter is { })
         {
             filter1 = JsonSerializer.Deserialize<IBreedFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindBreedsDataProviderFactory>().Create(filter1),
-            HttpContext.RequestServices.GetRequiredService<IFindBreedsProcessorFactory>().Create(filter1)
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindBreedsProcessorFactory>().Create(filter1).ProcessEnumerable(
+                pocoContext.Build<IBreed>(HttpContext.RequestServices.GetRequiredService<IFindBreedsDataProviderFactory>().Create(filter1), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 
@@ -571,16 +587,18 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findCatteriesPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<ICattery>);
         pocoContext.ControllerContext = ControllerContext;
         ICatteryFilter? filter1 = default!;
         if (filter is { })
         {
             filter1 = JsonSerializer.Deserialize<ICatteryFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindCatteriesDataProviderFactory>().Create(filter1),
-            HttpContext.RequestServices.GetRequiredService<IFindCatteriesProcessorFactory>().Create(filter1)
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindCatteriesProcessorFactory>().Create(filter1).ProcessEnumerable(
+                pocoContext.Build<ICattery>(HttpContext.RequestServices.GetRequiredService<IFindCatteriesDataProviderFactory>().Create(filter1), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 
@@ -589,16 +607,18 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findLittersWithCatsPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<ILitterWithCats>);
         pocoContext.ControllerContext = ControllerContext;
         ICatFilter? filter1 = default!;
         if (filter is { })
         {
             filter1 = JsonSerializer.Deserialize<ICatFilter?>(HttpUtility.UrlDecode(filter), pocoContext.JsonSerializerOptions);
         }
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsDataProviderFactory>().Create(filter1),
-            HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsProcessorFactory>().Create(filter1)
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsProcessorFactory>().Create(filter1).ProcessEnumerable(
+                pocoContext.Build<ILitterWithCats>(HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsDataProviderFactory>().Create(filter1), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 
@@ -607,11 +627,13 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findExteriorsPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<String>);
         pocoContext.ControllerContext = ControllerContext;
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindExteriorsDataProviderFactory>().Create(),
-            HttpContext.RequestServices.GetRequiredService<IFindExteriorsProcessorFactory>().Create()
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindExteriorsProcessorFactory>().Create().ProcessEnumerable(
+                pocoContext.Build<String>(HttpContext.RequestServices.GetRequiredService<IFindExteriorsDataProviderFactory>().Create(), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 
@@ -620,11 +642,13 @@ public class CatsController : PocoController
     {
         IPocoContext pocoContext = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         pocoContext.PropertyUse = s_findTitlesPropertyUse;
-        pocoContext.ExpectedOutputType = typeof(IList<String>);
         pocoContext.ControllerContext = ControllerContext;
-        pocoContext.HandleRequest(
-            HttpContext.RequestServices.GetRequiredService<IFindTitlesDataProviderFactory>().Create(),
-            HttpContext.RequestServices.GetRequiredService<IFindTitlesProcessorFactory>().Create()
+        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<IFindTitlesProcessorFactory>().Create().ProcessEnumerable(
+                pocoContext.Build<String>(HttpContext.RequestServices.GetRequiredService<IFindTitlesDataProviderFactory>().Create(), false)
+            ),
+            pocoContext.JsonSerializerOptions
         );
     }
 

@@ -509,7 +509,7 @@ public class Implementer: Runner
             AddUsings(model, typeof(DataProvider));
             AddUsings(model, typeof(DataProviderStub));
             AddUsings(model, typeof(IProcessorFactory));
-            AddUsings(model, typeof(IProcessor));
+            AddUsings(model, typeof(IProcessor<>));
             model.Usings.Add(s_systemLinq);
             model.Usings.Add(s_systemCollectionImmutable);
 
@@ -528,7 +528,7 @@ public class Implementer: Runner
                 {
                     ReturnType = s_void,
                     Name = method.Name,
-                    ExpectedOutputType = Util.MakeTypeName(method.ReturnType),
+                    OutputType = Util.MakeTypeName(method.ReturnType),
                 };
                 Type returnItemType = method.ReturnType;
                 if (
@@ -538,6 +538,7 @@ public class Implementer: Runner
                 {
                     returnItemType = method.ReturnType.GetGenericArguments()[0];
                     propertyUseType = returnItemType;
+                    mm.IsListOutput = true;
                 }
 
                 AttributeModel route = new()
@@ -560,9 +561,13 @@ public class Implementer: Runner
                     mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties, model);
                 }
 
+                mm.OutputItemType = Util.MakeTypeName(returnItemType);
                 mm.DataProviderFactoryInterface = MakeDataProviderFactoryInterfaceName(method.Name);
-                mm.ProcessorFactoryInterface = $"I{mm.Name}{s_processorFactory}";
+                mm.ProcessorFactoryInterface = MakeProcessorFactoryInterfaceName(method.Name);
+                mm.ProcessorInterface = $"IProcessor<{mm.OutputItemType}>";
                 mm.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(method.Name);
+                mm.DefaultProcessorFactoryName = MakeDefaultProcessorFactoryName(method.Name);
+                mm.OutputItemType = Util.MakeTypeName(returnItemType);
 
 
                 foreach (ParameterInfo parameter in method.GetParameters())
@@ -676,6 +681,14 @@ public class Implementer: Runner
                     {
                         ServiceType = MakeDataProviderFactoryInterfaceName(method.Name),
                         ImplementationType = MakeDefaultDataProviderFactoryName(method.Name),
+                        LifeTime = nameof(ServiceLifetime.Singleton),
+                    }
+                );
+                model.Services.Add(
+                    new ServiceModel
+                    {
+                        ServiceType = MakeProcessorFactoryInterfaceName(method.Name),
+                        ImplementationType = MakeDefaultProcessorFactoryName(method.Name),
                         LifeTime = nameof(ServiceLifetime.Singleton),
                     }
                 );
@@ -1178,6 +1191,11 @@ public class Implementer: Runner
         return $"I{methodName}{s_dataProviderFactory}";
     }
 
+    private string MakeProcessorFactoryInterfaceName(string methodName)
+    {
+        return $"I{methodName}{s_processorFactory}";
+    }
+
     private static string MakeControllerName(Type @interface)
     {
         return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
@@ -1195,7 +1213,12 @@ public class Implementer: Runner
 
     private string MakeDefaultDataProviderFactoryName(string methodName)
     {
-        return $"{methodName}{s_dataProviderFactory}";
+        return $"{methodName}Default{s_dataProviderFactory}";
+    }
+
+    private string MakeDefaultProcessorFactoryName(string methodName)
+    {
+        return $"{methodName}Default{s_processorFactory}";
     }
 
     private string GetUniqueVariable(string initial)

@@ -1,9 +1,10 @@
 
-///////////////////////////////////////////////////////////////////////////////////
-// Net.Leksi.Pocota.Demo.Cats.Contract.CatsConfigurator                          //
-// Generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-19T18:10:15                                                        //
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
+// Net.Leksi.Pocota.Demo.Cats.Contract.CatsConfigurator                              //
+// was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
+// at 2023-07-20T17:48:18.                                                           //
+// Modifying this file will break the program!                                       //
+///////////////////////////////////////////////////////////////////////////////////////
 
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Demo.Cats.Common;
@@ -30,13 +31,20 @@ public class CatsConfigurator : IContractConfigurator
         core.AddTransient<ILitterFilter, LitterFilterPoco>();
         core.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
         core.AddScoped<ILitterWithCatsAccessManager, LitterWithCatsAllowAccessManager>();
-        core.AddSingleton<IFindCatsDataProviderFactory, FindCatsDataProviderFactory>();
-        core.AddSingleton<IGetCatDataProviderFactory, GetCatDataProviderFactory>();
-        core.AddSingleton<IFindBreedsDataProviderFactory, FindBreedsDataProviderFactory>();
-        core.AddSingleton<IFindCatteriesDataProviderFactory, FindCatteriesDataProviderFactory>();
-        core.AddSingleton<IFindLittersWithCatsDataProviderFactory, FindLittersWithCatsDataProviderFactory>();
-        core.AddSingleton<IFindExteriorsDataProviderFactory, FindExteriorsDataProviderFactory>();
-        core.AddSingleton<IFindTitlesDataProviderFactory, FindTitlesDataProviderFactory>();
+        core.AddSingleton<IFindCatsDataProviderFactory, FindCatsDefaultDataProviderFactory>();
+        core.AddSingleton<IFindCatsProcessorFactory, FindCatsDefaultProcessorFactory>();
+        core.AddSingleton<IGetCatDataProviderFactory, GetCatDefaultDataProviderFactory>();
+        core.AddSingleton<IGetCatProcessorFactory, GetCatDefaultProcessorFactory>();
+        core.AddSingleton<IFindBreedsDataProviderFactory, FindBreedsDefaultDataProviderFactory>();
+        core.AddSingleton<IFindBreedsProcessorFactory, FindBreedsDefaultProcessorFactory>();
+        core.AddSingleton<IFindCatteriesDataProviderFactory, FindCatteriesDefaultDataProviderFactory>();
+        core.AddSingleton<IFindCatteriesProcessorFactory, FindCatteriesDefaultProcessorFactory>();
+        core.AddSingleton<IFindLittersWithCatsDataProviderFactory, FindLittersWithCatsDefaultDataProviderFactory>();
+        core.AddSingleton<IFindLittersWithCatsProcessorFactory, FindLittersWithCatsDefaultProcessorFactory>();
+        core.AddSingleton<IFindExteriorsDataProviderFactory, FindExteriorsDefaultDataProviderFactory>();
+        core.AddSingleton<IFindExteriorsProcessorFactory, FindExteriorsDefaultProcessorFactory>();
+        core.AddSingleton<IFindTitlesDataProviderFactory, FindTitlesDefaultDataProviderFactory>();
+        core.AddSingleton<IFindTitlesProcessorFactory, FindTitlesDefaultProcessorFactory>();
         core.MapPrimaryKeyType(typeof(ICat), typeof(CatPrimaryKey));
         core.MapPrimaryKeyType(typeof(CatPoco), typeof(CatPrimaryKey));
         core.MapPrimaryKeyType(typeof(IBreed), typeof(BreedPrimaryKey));

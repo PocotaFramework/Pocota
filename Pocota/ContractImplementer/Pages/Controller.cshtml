@@ -24,13 +24,6 @@
 {
     <text>public class @mm.DefaultDataProviderFactoryName: @mm.DataProviderFactoryInterface
 {
-    private readonly @nameof(IServiceProvider) _services;
-
-    public @mm.DefaultDataProviderFactoryName@{}(@nameof(IServiceProvider) services)
-    {
-        _services = services;
-    }
-
     public @Html.Raw(nameof(DataProvider)) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
     {
         if(i > 0)
@@ -40,7 +33,7 @@
         <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
     })
     {
-        return new @Html.Raw(nameof(DataProviderStub))@{}(_services);
+        return new @Html.Raw(nameof(DataProviderStub))@{}();
     }
 }
 
@@ -50,7 +43,7 @@
 {
     <text>public interface @mm.ProcessorFactoryInterface: @nameof(IProcessorFactory)
     {
-        @nameof(IProcessor) Create(@for (int i = 0; i < mm.Filters.Count; ++i)
+        @Html.Raw(mm.ProcessorInterface) Create(@for (int i = 0; i < mm.Filters.Count; ++i)
         {
             if (i > 0)
             {
@@ -59,6 +52,25 @@
             <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
         });
     }
+
+</text>
+}
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>public class @mm.DefaultProcessorFactoryName: @mm.ProcessorFactoryInterface
+{
+    public @Html.Raw(mm.ProcessorInterface) Create(@for(int i = 0; i < mm.Filters.Count; ++i)
+    {
+        if(i > 0)
+        {
+            <text>, </text>
+        }
+        <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
+    })
+    {
+        return new @Html.Raw($"FarNienteProcessor<{mm.OutputItemType}>")@{}();
+    }
+}
 
 </text>
 }
@@ -85,7 +97,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         IPocoContext @mm.PocoContextVariable = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         @mm.PocoContextVariable@{}.PropertyUse = @mm.PropertyUseVariable;
-        @mm.PocoContextVariable@{}.ExpectedOutputType = typeof(@Html.Raw(mm.ExpectedOutputType));
         @mm.PocoContextVariable@{}.ControllerContext = ControllerContext;
     @if(mm.Filters.Count > 0)
     {
@@ -110,10 +121,30 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
         }
     }
-        @mm.PocoContextVariable@{}.@Html.Raw(nameof(IPocoContext.HandleRequest))@{}(
-            HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)),
-            HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters))
+    @if(mm.IsListOutput)
+    {
+        <text>        JsonSerializer.Serialize(
+            new Utf8JsonWriter(HttpContext.Response.Body),
+            HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessEnumerable(
+                @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
+            ),
+            @mm.PocoContextVariable@{}.JsonSerializerOptions
         );
+</text>
+    }
+    else
+    {
+        <text>        IEnumerator<@mm.OutputItemType> en = @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), true).GetEnumerator();
+        if(en.MoveNext())
+        {
+            JsonSerializer.Serialize(
+                new Utf8JsonWriter(HttpContext.Response.Body),
+                HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessSingle(en.Current),
+                @mm.PocoContextVariable@{}.JsonSerializerOptions
+            );
+        }
+</text>
+    }
     }
 
 </text>

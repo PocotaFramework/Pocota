@@ -15,5 +15,4 @@ public class DataProviderStub : DataProvider
         return true;
     }
 
-    public DataProviderStub(IServiceProvider _services): base(_services) { }
 }

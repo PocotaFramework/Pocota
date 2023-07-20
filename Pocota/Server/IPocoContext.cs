@@ -6,12 +6,11 @@ namespace Net.Leksi.Pocota.Server;
 
 public interface IPocoContext
 {
-    Type ExpectedOutputType { get; set; }
     PropertyUse PropertyUse { get; set; }
     ControllerContext ControllerContext { get; set; }
     JsonSerializerOptions JsonSerializerOptions { get; }
     bool WithTracing { get; set; }
     IPrimaryKey CreatePrimaryKey(Type targetType);
     bool TryGetEntity(Type type, object[] keysArray, out IEntity entity);
-    void HandleRequest(DataProvider data, IProcessor processor);
+    IEnumerable<T> Build<T>(DataProvider dataProvider, bool isSingleQuery);
 }
