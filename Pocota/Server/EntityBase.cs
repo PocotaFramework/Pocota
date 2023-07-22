@@ -8,11 +8,9 @@ public abstract class EntityBase : PocoBase, IEntity
 
     private static readonly EventArgs s_propertyIsSetEventArgs = new();
 
-    protected const string s_accessConfirmed = "Access confirmed";
-
     public abstract IPrimaryKey PrimaryKey { get; }
 
-    public bool IsAccessConfirmed { get; internal set; } = false;
+    public AccessConfirmed AccessConfirmed { get; internal set; } = AccessConfirmed.Not;
 
     public bool IsTransmitted { get; internal set; } = false;
 

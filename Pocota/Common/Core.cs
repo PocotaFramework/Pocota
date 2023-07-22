@@ -19,6 +19,7 @@ public class Core: IServiceCollection
     protected readonly Dictionary<Type, HashSet<Type>> _typesByContract = new();
     protected readonly Dictionary<Type, Type> _contractsByType = new();
     protected readonly Dictionary<Type, Type> _primaryKeyTypesByType = new();
+    protected readonly Dictionary<Type, Type> _jsonSerialyzerTypesByType = new();
 
     protected Type? _currentContract = null;
     protected IServiceCollection? _serviceCollection = null;
@@ -60,6 +61,18 @@ public class Core: IServiceCollection
             return primaryKeyType;
         }
         throw new ArgumentException(nameof(targetType));
+    }
+
+    public void SetJsonConverter<TTarget, TSerialyzer>()
+    {
+        if (!_jsonSerialyzerTypesByType.ContainsKey(typeof(TTarget)))
+        {
+            _jsonSerialyzerTypesByType.Add(typeof(TTarget), typeof(TSerialyzer));
+        }
+        else
+        {
+            _jsonSerialyzerTypesByType[typeof(TTarget)] = typeof(TSerialyzer);
+        }
     }
 
     public virtual void Add(ServiceDescriptor item)

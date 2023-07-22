@@ -1,11 +1,11 @@
 ﻿namespace Net.Leksi.Pocota.Server;
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class ExpectedOutputTypeAttribute: Attribute
+public class OutputTypeAttribute: Attribute
 {
     public Type Type { get; set; }
 
-    public ExpectedOutputTypeAttribute(Type type)
+    public OutputTypeAttribute(Type type)
     {
         Type = type;
     }

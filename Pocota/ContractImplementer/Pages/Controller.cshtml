@@ -127,7 +127,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessEnumerable(
                 @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
-            ),
+            ).Select(v => @mm.PocoContextVariable@{}.ConfirmAccess(v)),
             @mm.PocoContextVariable@{}.JsonSerializerOptions
         );
 </text>
@@ -139,7 +139,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             JsonSerializer.Serialize(
                 new Utf8JsonWriter(HttpContext.Response.Body),
-                HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessSingle(en.Current),
+                @mm.PocoContextVariable@{}.ConfirmAccess(
+                    HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessSingle(en.Current)
+                ),
                 @mm.PocoContextVariable@{}.JsonSerializerOptions
             );
         }

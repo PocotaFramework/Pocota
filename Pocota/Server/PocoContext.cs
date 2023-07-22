@@ -22,6 +22,7 @@ public class PocoContext : IPocoContext
     private const string s_missNullableNotPocoList = $"(null | <{nameof(DataProviderResponse.Skip)}> | <{nameof(DataProviderResponse.Touch)}> | {nameof(DataProvider)} | {nameof(IList)}<{{0}}>) expected.";
     private const string s_missNotNullablePocoList = $"(<{nameof(DataProviderResponse.Touch)}> | {nameof(DataProvider)}) expected.";
     private const string s_missNullablePocoList = $"(null | <{nameof(DataProviderResponse.Skip)}> | <{nameof(DataProviderResponse.Touch)}> | {nameof(DataProvider)}) expected.";
+    private const string s_accessConfirmed = "Access confirmed";
 
     private enum ListRequestResponseCase
     {
@@ -38,13 +39,10 @@ public class PocoContext : IPocoContext
         SuppliedValue,
     }
 
-    private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions = new(() =>
-    {
-        return new JsonSerializerOptions();
-    });
     private readonly IServiceProvider _services;
     private readonly Core _core;
     private readonly Dictionary<Type, Dictionary<object[], IEntity>> _entitiesCache = new();
+    private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions;
 
     public PropertyUse PropertyUse { get; set; } = null!;
 
@@ -58,6 +56,14 @@ public class PocoContext : IPocoContext
     {
         _services = services;
         _core = _services.GetRequiredService<Core>();
+        _jsonSerializerOptions = new(GetJsonSerializerOptions);
+    }
+
+    private JsonSerializerOptions GetJsonSerializerOptions()
+    {
+        JsonSerializerOptions options = new JsonSerializerOptions();
+        options.Converters.Add(new PocoJsonConverterFactory(_services));
+        return options;
     }
 
     public IPrimaryKey CreatePrimaryKey(Type targetType)
@@ -88,6 +94,11 @@ public class PocoContext : IPocoContext
         buildingContext.DataProviderRoot = buildingContext;
 
         return ProcessBuildingContext<T>(buildingContext);
+    }
+
+    public IEnumerable<T> ConfirmAccess<T>(T value)
+    {
+        throw new NotImplementedException();
     }
 
     private IEnumerable<T> ProcessBuildingContext<T>(BuildingContext buildingContext)
@@ -764,11 +775,11 @@ public class PocoContext : IPocoContext
         }
     }
 
-    private void OnConfirm(object? obj)
+    private void OnConfirm(object? obj, AccessConfirmed state)
     {
         if(obj is EntityBase entity)
         {
-            entity.IsAccessConfirmed = true;
+            entity.AccessConfirmed = state;
         }
     }
 
@@ -790,7 +801,7 @@ public class PocoContext : IPocoContext
         return res;
     }
 
-    public bool TryGetEntity(Type type, object[] keysArray, out IEntity entity)
+    private bool TryGetEntity(Type type, object[] keysArray, out IEntity entity)
     {
         if (keysArray.Any(e => e is null))
         {
@@ -818,7 +829,10 @@ public class PocoContext : IPocoContext
         if(sender is EntityBase entity)
         {
             entity.IsTransmitted = false;
-            entity.IsAccessConfirmed = false;
+            if(entity.AccessConfirmed is not AccessConfirmed.Not)
+            {
+                throw new InvalidOperationException(s_accessConfirmed);
+            }
         }
     }
 

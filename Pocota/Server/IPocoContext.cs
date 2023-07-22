@@ -11,6 +11,6 @@ public interface IPocoContext
     JsonSerializerOptions JsonSerializerOptions { get; }
     bool WithTracing { get; set; }
     IPrimaryKey CreatePrimaryKey(Type targetType);
-    bool TryGetEntity(Type type, object[] keysArray, out IEntity entity);
     IEnumerable<T> Build<T>(DataProvider dataProvider, bool isSingleQuery);
+    IEnumerable<T> ConfirmAccess<T>(T value);
 }

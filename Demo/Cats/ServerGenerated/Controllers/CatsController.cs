@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsController                                //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-20T17:48:18.                                                           //
+// at 2023-07-22T09:17:59.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -535,7 +535,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindCatsProcessorFactory>().Create(filter1).ProcessEnumerable(
                 pocoContext.Build<ICat>(HttpContext.RequestServices.GetRequiredService<IFindCatsDataProviderFactory>().Create(filter1), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }
@@ -556,7 +556,9 @@ public class CatsController : PocoController
         {
             JsonSerializer.Serialize(
                 new Utf8JsonWriter(HttpContext.Response.Body),
-                HttpContext.RequestServices.GetRequiredService<IGetCatProcessorFactory>().Create(cat1).ProcessSingle(en.Current),
+                pocoContext.ConfirmAccess(
+                    HttpContext.RequestServices.GetRequiredService<IGetCatProcessorFactory>().Create(cat1).ProcessSingle(en.Current)
+                ),
                 pocoContext.JsonSerializerOptions
             );
         }
@@ -577,7 +579,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindBreedsProcessorFactory>().Create(filter1).ProcessEnumerable(
                 pocoContext.Build<IBreed>(HttpContext.RequestServices.GetRequiredService<IFindBreedsDataProviderFactory>().Create(filter1), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }
@@ -597,7 +599,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindCatteriesProcessorFactory>().Create(filter1).ProcessEnumerable(
                 pocoContext.Build<ICattery>(HttpContext.RequestServices.GetRequiredService<IFindCatteriesDataProviderFactory>().Create(filter1), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }
@@ -617,7 +619,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsProcessorFactory>().Create(filter1).ProcessEnumerable(
                 pocoContext.Build<ILitterWithCats>(HttpContext.RequestServices.GetRequiredService<IFindLittersWithCatsDataProviderFactory>().Create(filter1), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }
@@ -632,7 +634,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindExteriorsProcessorFactory>().Create().ProcessEnumerable(
                 pocoContext.Build<String>(HttpContext.RequestServices.GetRequiredService<IFindExteriorsDataProviderFactory>().Create(), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }
@@ -647,7 +649,7 @@ public class CatsController : PocoController
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<IFindTitlesProcessorFactory>().Create().ProcessEnumerable(
                 pocoContext.Build<String>(HttpContext.RequestServices.GetRequiredService<IFindTitlesDataProviderFactory>().Create(), false)
-            ),
+            ).Select(v => pocoContext.ConfirmAccess(v)),
             pocoContext.JsonSerializerOptions
         );
     }

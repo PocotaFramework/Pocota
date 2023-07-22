@@ -6,6 +6,6 @@ public interface IEntity: IPoco
 {
     event EventHandler<EventArgs>? PropertyIsSet;
     IPrimaryKey PrimaryKey { get; }
-    bool IsAccessConfirmed { get; }
+    AccessConfirmed AccessConfirmed { get; }
     bool IsTransmitted { get; }
 }
