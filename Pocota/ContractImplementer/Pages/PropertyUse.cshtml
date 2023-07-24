@@ -12,6 +12,11 @@ new()
     <text>@Html.Raw(Model.Indentation)    Path = "@Html.Raw(Model.Path)",
 </text>
 }
+@if (Model.IsAccessStuff)
+{
+    <text>@Html.Raw(Model.Indentation)    IsAccessStuff = true,
+</text>
+}
 @if (Model.Properties is { } && Model.Properties.Any())
 {
     <text>@Html.Raw(Model.Indentation)    Properties = new PropertyUse[] {

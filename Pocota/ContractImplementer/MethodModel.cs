@@ -6,6 +6,7 @@ internal class MethodModel
     internal string ReturnType { get; set; } = null!;
     internal string OutputType { get; set; } = null!;
     internal string OutputItemType { get; set; } = null!;
+    internal string AccessExtenderType { get; set; } = null!;
     internal bool IsListOutput { get; set; } = false;
     internal List<ParameterModel> Parameters { get; init; } = new();
     internal List<AttributeModel> Attributes { get; init; } = new();

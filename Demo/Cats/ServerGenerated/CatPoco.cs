@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                         //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -141,6 +141,64 @@ public class CatPoco : EntityBase, ICat
             throw new InvalidOperationException();
         }
     }
+    public class IdCatPropertyClass: Property
+    {
+        public override string Name => "IdCat";
+        public override Type Type => typeof(Int32);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            throw new InvalidOperationException();
+        }
+        public override object? GetValue(object target)
+        {
+            return ((CatPrimaryKey)((CatPoco)target).PrimaryKey).IdCat;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class IdCatteryPropertyClass: Property
+    {
+        public override string Name => "IdCattery";
+        public override Type Type => typeof(Int32);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            throw new InvalidOperationException();
+        }
+        public override object? GetValue(object target)
+        {
+            return ((CatPrimaryKey)((CatPoco)target).PrimaryKey).IdCattery;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
     public class CatteryPropertyClass: Property
     {
         public override string Name => "Cattery";
@@ -249,43 +307,6 @@ public class CatPoco : EntityBase, ICat
             if(target is CatPoco target1)
             {
                 target1._breedAccessMode  = mode;
-            }
-        }
-    }
-    public class LitterWithCatsPropertyClass: Property
-    {
-        public override string Name => "LitterWithCats";
-        public override Type Type => typeof(LitterWithCatsPoco);
-        public override bool IsNullable => true;
-        public override bool IsReadOnly => false;
-        public override bool IsPoco => true;
-        public override bool IsEntity => false;
-        public override bool IsList => false;
-        public override bool IsKeyPart => false;
-        public override bool IsExtender => true;
-        public override Type? ItemType => null;
-        public override PropertyAccessMode GetAccess(object target)
-        {
-            return target is CatPoco target1 ? target1._litterWithCatsAccessMode : PropertyAccessMode.Denied;
-        }
-        protected override void SetValue(object target, object? value)
-        {
-            LitterWithCatsPoco? value1 = value as LitterWithCatsPoco;
-            if (value is {} && value1 is null)
-            {
-                throw new InvalidCastException();
-            }
-            ((CatPoco)target).LitterWithCats = value1;
-        }
-        public override object? GetValue(object target)
-        {
-            return ((CatPoco)target).LitterWithCats;
-        }
-        protected override void SetAccess(object target, PropertyAccessMode mode)
-        {
-            if(target is CatPoco target1)
-            {
-                target1._litterWithCatsAccessMode  = mode;
             }
         }
     }
@@ -515,10 +536,11 @@ public class CatPoco : EntityBase, ICat
 
     #region Property fields
     public static PropertyClass s_Property = new();
+    public static IdCatPropertyClass s_IdCatProperty = new();
+    public static IdCatteryPropertyClass s_IdCatteryProperty = new();
     public static CatteryPropertyClass s_CatteryProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
     public static BreedPropertyClass s_BreedProperty = new();
-    public static LitterWithCatsPropertyClass s_LitterWithCatsProperty = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
     public static GenderPropertyClass s_GenderProperty = new();
     public static LitterPropertyClass s_LitterProperty = new();
@@ -534,8 +556,6 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.NotSet;
     private BreedPoco _breed = null!;
     private PropertyAccessMode _breedAccessMode = PropertyAccessMode.NotSet;
-    private LitterWithCatsPoco? _litterWithCats = null;
-    private PropertyAccessMode _litterWithCatsAccessMode = PropertyAccessMode.NotSet;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.NotSet;
     private Gender _gender;
@@ -548,17 +568,15 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _titleAccessMode = PropertyAccessMode.NotSet;
     private String? _description = null;
     private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.NotSet;
-    #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
-    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public CatPoco(IServiceProvider services) : base(services)
-    {
-        _primaryKey = new(this);
-    }
+    #endregion fields
 
     #region properties
+
+    public override IPrimaryKey PrimaryKey => _primaryKey;
+
     public CatteryPoco Cattery
     {
         get
@@ -575,7 +593,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _catteryAccessMode = PropertyAccessMode.Full;
             _cattery = value;
         }
@@ -607,7 +624,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }
@@ -639,7 +655,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _breedAccessMode = PropertyAccessMode.Full;
             _breed = value;
         }
@@ -653,38 +668,6 @@ public class CatPoco : EntityBase, ICat
        set
         {
             Breed = (value as BreedPoco)!;
-        }
-    }
-    public LitterWithCatsPoco? LitterWithCats
-    {
-        get
-        {
-            if(_litterWithCatsAccessMode is PropertyAccessMode.NotSet)
-            {
-                throw new InvalidOperationException(s_notSet);
-            }
-            return _litterWithCats;
-        }
-        set
-        {
-            if(_litterWithCatsAccessMode is not PropertyAccessMode.NotSet)
-            {
-                throw new InvalidOperationException(s_alreadySet);
-            }
-            OnPropertyIsSet();
-            _litterWithCatsAccessMode = PropertyAccessMode.Full;
-            _litterWithCats = value;
-        }
-    }
-    ILitterWithCats? ICat.LitterWithCats
-    {
-        get
-        {
-            return LitterWithCats;
-        }
-       set
-        {
-            LitterWithCats = (value as LitterWithCatsPoco)!;
         }
     }
     public String? NameEng
@@ -703,7 +686,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }
@@ -735,7 +717,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _genderAccessMode = PropertyAccessMode.Full;
             _gender = value;
         }
@@ -767,7 +748,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _litterAccessMode = PropertyAccessMode.Full;
             _litter = value;
         }
@@ -799,7 +779,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _exteriorAccessMode = PropertyAccessMode.Full;
             _exterior = value;
         }
@@ -831,7 +810,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _titleAccessMode = PropertyAccessMode.Full;
             _title = value;
         }
@@ -863,7 +841,6 @@ public class CatPoco : EntityBase, ICat
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _descriptionAccessMode = PropertyAccessMode.Full;
             _description = value;
         }
@@ -880,4 +857,10 @@ public class CatPoco : EntityBase, ICat
         }
     }
     #endregion properties
+
+    public CatPoco(IServiceProvider services) : base(services)
+    {
+        _primaryKey = new(this);
+    }
+
 }

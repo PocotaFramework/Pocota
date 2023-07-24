@@ -234,7 +234,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         public override Type? ItemType => @(pm.ItemObjectType is { } ? Html.Raw($"typeof({pm.ItemObjectType})") : "null");
         public override PropertyAccessMode GetAccess(object target)
         {
-    @if(string.IsNullOrEmpty(pm.Name))
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -247,7 +247,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         protected override void SetValue(object target, object? value)
         {
-    @if(string.IsNullOrEmpty(pm.Name))
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -270,6 +270,16 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
     }
+    else if(pm.IsKey)
+    {
+        <text>            return ((@Model.PrimaryKey!.Name)((@Model.ClassName)target).PrimaryKey).@pm.Name;
+</text>
+    }
+    else if(pm.IsCore)
+    {
+        <text>            return ((@Model.ClassName)target).Core.@pm.Name;
+</text>
+    }
     else
     {
         <text>            return ((@Model.ClassName)target).@pm.Name;
@@ -278,7 +288,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         protected override void SetAccess(object target, PropertyAccessMode mode)
         {
-    @if(string.IsNullOrEmpty(pm.Name))
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -306,7 +316,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     #endregion Property fields
 
     #region fields
-@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey && !p.IsCore))
 {
     <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
     @if(pm.IsList && pm.IsPoco)
@@ -317,47 +327,46 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     private PropertyAccessMode @pm.AccessModeFieldName = @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.NotSet);
 </text>    
 }
-    #endregion fields
 
 @if(Model.PrimaryKey is { })
 {
     <text>    private readonly PrimaryKeyClass _primaryKey;
-    public override IPrimaryKey PrimaryKey => _primaryKey;
 </text>
 
 }
 else if (Model.ExtenderPrimaryKey is { })
 {
-    <text>    public IPrimaryKey PrimaryKey { get; init; }
+    <text>    private @Model.ExtenderCore? _core = null;
 </text>
 }
 
-    public @Model.ClassName@{}(IServiceProvider services) : base(services)
-    {
-@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && p.IsReadOnly && p.IsList))
-{
-    <text>        @pm.FieldName = new();
-    @if(pm.IsPoco)
-    {
-        <text>        @pm.ProxyFieldName = new ListProxy@{}@Html.Raw($"<{pm.ItemObjectType}, {pm.ItemType}>")@{}(@pm.FieldName);
-</text>
-    }
-</text>    
-}
-@if(Model.PrimaryKey is { })
-{
-    <text>        _primaryKey = new(this);
-</text>
-}
-else if (Model.ExtenderPrimaryKey is { })
-{
-    <text>        PrimaryKey = new @Model.ExtenderPrimaryKey@{}();
-</text>
-}
-    }
+    #endregion fields
 
     #region properties
-@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
+
+@if (Model.PrimaryKey is { })
+{
+    <text>    public override IPrimaryKey PrimaryKey => _primaryKey;
+</text>
+
+}
+else if (Model.ExtenderPrimaryKey is { })
+{
+    <text>    public IPrimaryKey? PrimaryKey => ((EntityBase)Core)?.PrimaryKey;
+    public @Model.ExtenderCore Core 
+    {
+        get => _core; 
+        set {
+            if(_core is null && value is {})
+            {
+                _core = value;
+            }
+        }
+    }
+</text>
+}
+
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey && !p.IsCore))
 {
     <text>    public @Html.Raw(pm.ObjectType)@{}@pm.NullableSuffix @pm.Name
     {
@@ -377,11 +386,6 @@ else if (Model.ExtenderPrimaryKey is { })
             {
                 throw new @nameof(InvalidOperationException)@{}(s_alreadySet);
             }
-        @if(Model.IsEntity)
-        {
-            <text>            OnPropertyIsSet();
-</text>
-        }
             @pm.AccessModeFieldName = @nameof(PropertyAccessMode).@{}@if(pm.IsReadOnly){<text>@nameof(PropertyAccessMode.ReadOnly)</text>} else {<text>@nameof(PropertyAccessMode.Full)</text>};
             @pm.FieldName = value;
             @if(pm.IsList && pm.IsPoco)
@@ -428,4 +432,24 @@ else if (Model.ExtenderPrimaryKey is { })
 </text>    
 }
     #endregion properties
+
+    public @Model.ClassName@{}(IServiceProvider services) : base(services)
+    {
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && p.IsReadOnly && p.IsList))
+{
+    <text>        @pm.FieldName = new();
+    @if(pm.IsPoco)
+    {
+        <text>        @pm.ProxyFieldName = new ListProxy@{}@Html.Raw($"<{pm.ItemObjectType}, {pm.ItemType}>")@{}(@pm.FieldName);
+</text>
+    }
+</text>    
+}
+@if(Model.PrimaryKey is { })
+{
+    <text>        _primaryKey = new(this);
+</text>
+}
+    }
+
 }

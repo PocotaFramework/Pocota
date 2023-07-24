@@ -44,8 +44,6 @@ public class PocoContext : IPocoContext
     private readonly Dictionary<Type, Dictionary<object[], IEntity>> _entitiesCache = new();
     private readonly Lazy<JsonSerializerOptions> _jsonSerializerOptions;
 
-    public PropertyUse PropertyUse { get; set; } = null!;
-
     public ControllerContext ControllerContext { get; set; } = null!;
 
     public bool WithTracing { get; set; } = false;
@@ -71,11 +69,11 @@ public class PocoContext : IPocoContext
         return (IPrimaryKey)_services.GetRequiredService(_core.GetPrimaryKeyType(targetType));
     }
 
-    public IEnumerable<T> Build<T>(DataProvider dataProvider, bool isSingleQuery)
+    public IEnumerable<T> Build<T>(PropertyUse propertyUse, DataProvider dataProvider, bool isSingleQuery)
     {
-        if (PropertyUse is null)
+        if (propertyUse is null)
         {
-            throw new InvalidOperationException(nameof(PropertyUse));
+            throw new InvalidOperationException(nameof(propertyUse));
         }
         if (ControllerContext is null)
         {
@@ -87,7 +85,7 @@ public class PocoContext : IPocoContext
         }
         BuildingContext buildingContext = new(_services)
         {
-            PropertyUse = this.PropertyUse,
+            PropertyUse = propertyUse,
             DataProvider = dataProvider,
             IsSingleQuery = isSingleQuery,
         };
@@ -96,7 +94,7 @@ public class PocoContext : IPocoContext
         return ProcessBuildingContext<T>(buildingContext);
     }
 
-    public IEnumerable<T> ConfirmAccess<T>(T value)
+    public T ConfirmAccess<T>(T value)
     {
         throw new NotImplementedException();
     }
@@ -775,14 +773,6 @@ public class PocoContext : IPocoContext
         }
     }
 
-    private void OnConfirm(object? obj, AccessConfirmed state)
-    {
-        if(obj is EntityBase entity)
-        {
-            entity.AccessConfirmed = state;
-        }
-    }
-
     private IEnumerable<T> ReprocessBuildingContextWithDataProvider<T>(BuildingContext buildingContext, DataProvider dataProvider, bool isSingleQuery)
     {
         DataProvider? saveDp = buildingContext.DataProvider;
@@ -806,7 +796,6 @@ public class PocoContext : IPocoContext
         if (keysArray.Any(e => e is null))
         {
             entity = (IEntity)_services.GetRequiredService(type);
-            entity.PropertyIsSet += Entity_PropertyIsSet;
             return false;
         }
         if (!_entitiesCache.TryGetValue(type, out Dictionary<object[], IEntity>? dict))
@@ -818,22 +807,9 @@ public class PocoContext : IPocoContext
         if (!result)
         {
             entity = (IEntity)_services.GetRequiredService(type);
-            entity.PropertyIsSet += Entity_PropertyIsSet;
             dict.Add(keysArray, entity);
         }
         return result;
-    }
-
-    private void Entity_PropertyIsSet(object? sender, EventArgs e)
-    {
-        if(sender is EntityBase entity)
-        {
-            entity.IsTransmitted = false;
-            if(entity.AccessConfirmed is not AccessConfirmed.Not)
-            {
-                throw new InvalidOperationException(s_accessConfirmed);
-            }
-        }
     }
 
     private string PresentResponse(object? value)

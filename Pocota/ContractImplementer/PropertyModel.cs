@@ -24,5 +24,6 @@ internal class PropertyModel
     internal string PropertyClass { get; set; } = null!;
     internal string PropertyField { get; set; } = null!;
     internal string AsTypeAsk = string.Empty;
-
+    internal bool IsKey { get; set; } = false;
+    internal bool IsCore { get; set; } = false;
 }

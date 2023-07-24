@@ -4,6 +4,7 @@ using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System.Collections;
 using System.Reflection;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -72,7 +73,7 @@ public class Implementer: Runner
 
                     if (_contract.GetCustomAttribute<PocoContractAttribute>() is not PocoContractAttribute contractAttribute)
                     {
-                        throw new InvalidOperationException($"Contract {_contract} must be {typeof(PocoContractAttribute)}!");
+                        throw new InvalidOperationException($"Contract {_contract} must have {typeof(PocoContractAttribute)}!");
                     }
                     if (_contract.GetMethod(s_update) is { })
                     {
@@ -83,11 +84,11 @@ public class Implementer: Runner
                     {
                         if (!attr.Interface.IsInterface)
                         {
-                            throw new InvalidOperationException($"Only interfaces allowed ({attr.Interface} from {_contract})!");
+                            throw new InvalidOperationException($"Only interfaces allowed ({attr.Interface})!");
                         }
                         if (attr.Interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
                         {
-                            throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface} from {_contract}!");
+                            throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface}!");
                         }
                         if (!_interfaceHoldersByType.TryGetValue(attr.Interface, out InterfaceHolder? @interface))
                         {
@@ -104,6 +105,17 @@ public class Implementer: Runner
                         else
                         {
                             throw new InvalidOperationException($"Interface {attr.Interface} from {_contract} is already defined at {@interface.Contract}!");
+                        }
+                        if (typeof(IExtender).IsAssignableFrom(attr.Interface))
+                        {
+                            Type coreType = attr.Interface.GetInterfaces()
+                                .Where(i => i.IsGenericType && typeof(IExtender<>) == i.GetGenericTypeDefinition())
+                                .Select(i => i.GetGenericArguments()[0]).First();
+                            if (attr.Interface.GetProperties().Where(pi => coreType.GetProperty(pi.Name) is { }).FirstOrDefault() is PropertyInfo dup)
+                            {
+                                throw new InvalidOperationException($"Extender {attr.Interface} cannot have any property with the same name ({dup.Name}) as its core type {coreType}!");
+                            }
+                            @interface.CoreType = coreType;
                         }
                         if (attr.PrimaryKey is { })
                         {
@@ -172,6 +184,31 @@ public class Implementer: Runner
                                     }
                                 }
                             }
+                            if (attr.AccessExtender is { })
+                            {
+                                if (attr.AccessExtender != attr.Interface)
+                                {
+                                    Type extender = typeof(IExtender<>).MakeGenericType(new Type[] { attr.Interface });
+                                    if (!extender.IsAssignableFrom(attr.AccessExtender))
+                                    {
+                                        throw new InvalidOperationException($"{nameof(attr.AccessExtender)} can be only {attr.Interface} or {extender}!");
+                                    }
+                                }
+                                if(attr.AccessProperties is null || !attr.AccessProperties.Any())
+                                {
+                                    throw new InvalidOperationException($"{nameof(attr.AccessProperties)} must have at least one element!");
+                                }
+                                @interface.AccessExtender = attr.AccessExtender;
+                                @interface.AccessProperties = attr.AccessProperties;
+                            }
+                            else if (attr.AccessProperties is { })
+                            {
+                                throw new InvalidOperationException($"{nameof(attr.AccessProperties)} is required {nameof(attr.AccessExtender)} defined!");
+                            }
+                        }
+                        else if(attr.AccessExtender is { } || attr.AccessProperties is { })
+                        {
+                            throw new InvalidOperationException($"Both {nameof(attr.AccessExtender)} and {nameof(attr.AccessProperties)} are allowed only for entities!");
                         }
                     }
                 }
@@ -179,6 +216,24 @@ public class Implementer: Runner
                 {
                     _contract = null!;
                     throw;
+                }
+            }
+            foreach(InterfaceHolder ih in _interfaceHoldersByType.Values)
+            {
+                if(ih.AccessExtender is { })
+                {
+                    ih.AccessAuxClassModel = new();
+                    ih.AccessPropertyUses = BuildPropertyUseModel(ih.AccessExtender!, ih.AccessProperties, ih.AccessAuxClassModel, true);
+                }
+                if (
+                    ih.CoreType is { } 
+                    && (
+                        !_interfaceHoldersByType.TryGetValue(ih.CoreType, out InterfaceHolder? ih1) 
+                        || !ih1.KeysDefinitions.Any()
+                    )
+                )
+                {
+                    throw new InvalidOperationException($"Extender {ih.Interface} core type {ih.CoreType} must be an entity!");
                 }
             }
         }
@@ -562,13 +617,19 @@ public class Implementer: Runner
                 }
 
                 mm.OutputItemType = Util.MakeTypeName(returnItemType);
+                if(_interfaceHoldersByType.TryGetValue(returnItemType, out InterfaceHolder? @interface) && @interface.AccessExtender is { })
+                {
+                    mm.AccessExtenderType = Util.MakeTypeName(@interface.AccessExtender);
+                }
+                else
+                {
+                    mm.AccessExtenderType = mm.OutputItemType;
+                }
                 mm.DataProviderFactoryInterface = MakeDataProviderFactoryInterfaceName(method.Name);
                 mm.ProcessorFactoryInterface = MakeProcessorFactoryInterfaceName(method.Name);
-                mm.ProcessorInterface = $"IProcessor<{mm.OutputItemType}>";
+                mm.ProcessorInterface = $"IProcessor<{mm.AccessExtenderType}>";
                 mm.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(method.Name);
                 mm.DefaultProcessorFactoryName = MakeDefaultProcessorFactoryName(method.Name);
-                mm.OutputItemType = Util.MakeTypeName(returnItemType);
-
 
                 foreach (ParameterInfo parameter in method.GetParameters())
                 {
@@ -753,7 +814,7 @@ public class Implementer: Runner
 
             Type? extendingInterface = GetExtendingInterface(request.Interface);
 
-            if (_interfaceHoldersByType[request.Interface].KeysDefinitions.Count > 0)
+            if (_interfaceHoldersByType[request.Interface].KeysDefinitions.Any())
             {
                 AddUsings(model, typeof(Server.EntityBase));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(Server.EntityBase)));
@@ -768,6 +829,7 @@ public class Implementer: Runner
                     AddUsings(model, extendingInterface);
                     model.Usings.Add(s_dependencyInjection);
                     model.ExtenderPrimaryKey = MakePrimaryKeyName(extendingInterface);
+                    model.ExtenderCore = Util.MakeTypeName(extendingInterface);
                 }
                 model.IsEntity = false;
             }
@@ -786,8 +848,29 @@ public class Implementer: Runner
             };
             pm.InstanceType = pm.ObjectType;
             model.Properties.Add(pm);
-            foreach (PropertyInfo pi in @interface.Interface.GetProperties())
+            foreach(PrimaryKeyDefinition keyPart in _interfaceHoldersByType[request.Interface].KeysDefinitions.Values)
             {
+                pm = new()
+                {
+                    Name = keyPart.Name,
+                    InstanceType = Util.MakeTypeName(keyPart.Type),
+                    PropertyClass = $"{keyPart.Name}{s_property}{s_class}",
+                    PropertyField = $"{s_staticPrefix}{keyPart.Name}{s_property}",
+                    IsKey = true,
+                };
+                model.Properties.Add(pm);
+            }
+            List<PropertyInfo> properies = new();
+            int corePropertiesCount = 0;
+            if(extendingInterface is { })
+            {
+                properies.AddRange(extendingInterface.GetProperties());
+                corePropertiesCount = properies.Count;
+            }
+            properies.AddRange(@interface.Interface.GetProperties());
+            for(int i = 0; i < properies.Count; ++i)
+            {
+                PropertyInfo pi = properies[i];
                 pm = new()
                 {
                     Name = pi.Name,
@@ -798,6 +881,7 @@ public class Implementer: Runner
                     PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}",
                     AsTypeAsk = (pi.PropertyType.IsClass || pi.PropertyType.IsInterface) ? string.Empty : s_ask,
                     IsExtender = GetExtendingInterface(pi.PropertyType) is { },
+                    IsCore = i < corePropertiesCount,
                 };
                 pm.CanBeNull = pi.PropertyType.IsClass || pi.PropertyType.IsInterface || pm.IsNullable;
                 pm.FieldName = GetUniqueVariable($"_{pm.Name.Substring(0, 1).ToLower()}{pm.Name.Substring(1)}");
@@ -880,7 +964,7 @@ public class Implementer: Runner
         }
     }
 
-    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths, ClassModel model)
+    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths, ClassModel model, bool accessStuff = false)
     {
         Dictionary<string, PropertyUseModel> cache = new();
         List<string> queue = new();
@@ -889,7 +973,7 @@ public class Implementer: Runner
         PropertyUseModel result = new()
         {
             Type = rootType,
-            Indentation = "    ",
+            Indentation = s_propertyUseIndentation,
         };
         if (_interfaceHoldersByType.TryGetValue(rootType, out InterfaceHolder? ih))
         {
@@ -921,6 +1005,17 @@ public class Implementer: Runner
         {
             bool done = false;
             PropertyUseModel parent = result;
+            if(_interfaceHoldersByType.TryGetValue(parent.Type, out InterfaceHolder? ih3) && ih3.AccessPropertyUses is { })
+            {
+                parent.Properties ??= new List<PropertyUseModel>();
+                foreach (PropertyUseModel node in ih3.AccessPropertyUses.Properties!
+                        .Where(pu => !parent.Properties.Select(pu1 => pu1.Name).Contains(pu.Name))
+                        .Select(pu1 => pu1.CloneAsChild(parent)))
+                {
+                    parent.Properties.Add(node);
+                    cache.TryAdd(node.Path, node);
+                }
+            }
             string[] parts = queue.First().Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             for (int i = 0; i < parts.Length; ++i)
             {
@@ -957,20 +1052,44 @@ public class Implementer: Runner
                 {
                     Type? nodeType = null;
                     string nodeName = string.Empty;
+                    bool isCore = false;
                     if (parent.Type is { })
                     {
-                        if(parent.IsList && "@".Equals(parts[i]))
+                        if (parent.IsList && "@".Equals(parts[i]))
                         {
                             nodeType = parent.ItemType;
                         }
-                        else if (parent.Type?.GetProperty(parts[i]) is PropertyInfo pi)
+                        else if (parent.Type is { })
                         {
-                            nodeName = parts[i];
-                            nodeType = pi.PropertyType;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"Type {parent.Type} does not have the property {parts[i]}!");
+                            Type? coreType = null;
+                            if (typeof(IExtender).IsAssignableFrom(parent.Type))
+                            {
+                                coreType = parent.Type.GetInterfaces()
+                                    .Where(i => i.IsGenericType && typeof(IExtender<>) == i.GetGenericTypeDefinition())
+                                    .Select(i => i.GetGenericArguments()[0]).First()!;
+                            }
+                            PropertyInfo? pi = null;
+                            InterfaceHolder? ih0 = null;
+                            if (
+                                parent.Type.GetProperty(parts[i]) is PropertyInfo pi1 && (pi = pi1) == pi
+                                || coreType is { } && coreType.GetProperty(parts[i]) is PropertyInfo pi2 && (pi = pi2) == pi && (isCore = true)
+                            )
+                            {
+                                nodeName = parts[i];
+                                nodeType = pi.PropertyType;
+                            }
+                            else if (
+                                _interfaceHoldersByType.TryGetValue(parent.Type, out InterfaceHolder? ih1) && ih1.KeysDefinitions.ContainsKey(parts[i]) && (ih0 = ih1) == ih0
+                                || coreType is { } && _interfaceHoldersByType.TryGetValue(coreType, out InterfaceHolder? ih2) && ih2.KeysDefinitions.ContainsKey(parts[i]) && (ih0 = ih2) == ih0 && (isCore = true)
+                            )
+                            {
+                                nodeName = parts[i];
+                                nodeType = ih0.KeysDefinitions[parts[i]].Type;
+                            }
+                            else
+                            {
+                                throw new InvalidOperationException($"Type {coreType} does not have the property {parts[i]}!");
+                            }
                         }
                     }
                     node = new PropertyUseModel {
@@ -978,6 +1097,8 @@ public class Implementer: Runner
                         Path = path,
                         Type = nodeType,
                         Indentation = $"{parent.Indentation}{s_propertyUseIndentation}",
+                        IsCore = isCore,
+                        IsAccessStuff = accessStuff,
                     };
                     if (nodeType is { })
                     {
@@ -1009,6 +1130,10 @@ public class Implementer: Runner
                     }
 
                     cache.Add(path, node);
+                }
+                else
+                {
+                    node.IsAccessStuff = false;
                 }
                 if(parent.Properties is null)
                 {
@@ -1045,6 +1170,7 @@ public class Implementer: Runner
             }
         }
         EnsurePrimaryKeyPaths(result);
+        Console.WriteLine(result);
         return result;
     }
 

@@ -2,4 +2,5 @@
 
 public interface IExtender<T>: IExtender where T : class
 {
+    T Core { get; }
 }

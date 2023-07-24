@@ -18,6 +18,7 @@ public class ClassModel: PageModel
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
     internal string ContractName { get; set; } = null!;
     internal string? ExtenderPrimaryKey { get; set; } = null;
+    internal string? ExtenderCore { get; set; } = null;
     internal bool IsEntity { get; set; } = false;
     internal Dictionary<string, string> PrimaryKeyMapping { get; init; } = new();
     internal Dictionary<string, string> AccessManagerMapping { get; init; } = new();

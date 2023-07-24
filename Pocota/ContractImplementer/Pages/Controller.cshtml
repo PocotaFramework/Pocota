@@ -4,6 +4,7 @@
 @model ClassModel
 @Html.Partial("Header", Model)
 
+#region DataProviderFactoryInterface
 @foreach (MethodModel mm in Model.Methods)
 {
     <text>public interface @mm.DataProviderFactoryInterface: @nameof(IDataProviderFactory)
@@ -20,6 +21,9 @@
 
 </text>
 }
+#endregion DataProviderFactoryInterface
+
+#region DefaultDataProviderFactory
 @foreach (MethodModel mm in Model.Methods)
 {
     <text>public class @mm.DefaultDataProviderFactoryName: @mm.DataProviderFactoryInterface
@@ -39,6 +43,9 @@
 
 </text>
 }
+#endregion DefaultDataProviderFactory
+
+#region ProcessorFactoryInterface
 @foreach (MethodModel mm in Model.Methods)
 {
     <text>public interface @mm.ProcessorFactoryInterface: @nameof(IProcessorFactory)
@@ -55,6 +62,9 @@
 
 </text>
 }
+#endregion ProcessorFactoryInterface
+
+#region DefaultProcessorFactory
 @foreach (MethodModel mm in Model.Methods)
 {
     <text>public class @mm.DefaultProcessorFactoryName: @mm.ProcessorFactoryInterface
@@ -68,15 +78,17 @@
         <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
     })
     {
-        return new @Html.Raw($"FarNienteProcessor<{mm.OutputItemType}>")@{}();
+        return new @Html.Raw($"FarNienteProcessor<{mm.AccessExtenderType}>")@{}();
     }
 }
 
 </text>
 }
+#endregion DefaultProcessorFactory
+
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-
+#region PropertyUse
 @foreach (MethodModel mm in Model.Methods)
 {
     if(mm.PropertyUseVariable is {})
@@ -85,7 +97,9 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
     }
 }
+#endregion PropertyUse
 
+#region RequestHandler
 @foreach (MethodModel mm in Model.Methods)
 {
     foreach(AttributeModel am in mm.Attributes)
@@ -96,7 +110,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     <text>    public @mm.ReturnType @mm.Name@{}(@Html.Raw(string.Join(", ", mm.Parameters.Select(v => $"{v.Type} {v.Name}")))) 
     {
         IPocoContext @mm.PocoContextVariable = HttpContext.RequestServices.GetRequiredService<IPocoContext>();
-        @mm.PocoContextVariable@{}.PropertyUse = @mm.PropertyUseVariable;
         @mm.PocoContextVariable@{}.ControllerContext = ControllerContext;
     @if(mm.Filters.Count > 0)
     {
@@ -126,22 +139,22 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         <text>        JsonSerializer.Serialize(
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessEnumerable(
-                @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
-            ).Select(v => @mm.PocoContextVariable@{}.ConfirmAccess(v)),
+                @mm.PocoContextVariable@{}.Build<@mm.AccessExtenderType>(@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
+            ).Select(v => @mm.PocoContextVariable@{}.ConfirmAccess(v))@if(!mm.AccessExtenderType.Equals(mm.OutputItemType)){<text>.Select(v =>  v.Core)</text>},
             @mm.PocoContextVariable@{}.JsonSerializerOptions
         );
 </text>
     }
     else
     {
-        <text>        IEnumerator<@mm.OutputItemType> en = @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), true).GetEnumerator();
+        <text>        IEnumerator<@mm.OutputItemType> en = @mm.PocoContextVariable@{}.Build<@mm.AccessExtenderType>(@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), true).GetEnumerator();
         if(en.MoveNext())
         {
             JsonSerializer.Serialize(
                 new Utf8JsonWriter(HttpContext.Response.Body),
                 @mm.PocoContextVariable@{}.ConfirmAccess(
                     HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessSingle(en.Current)
-                ),
+                )@if(!mm.AccessExtenderType.Equals(mm.OutputItemType)){<text>.Core</text>},
                 @mm.PocoContextVariable@{}.JsonSerializerOptions
             );
         }
@@ -156,4 +169,5 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         base.Update();
     }
+#endregion RequestHandler
 }

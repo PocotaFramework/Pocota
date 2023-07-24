@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                                   //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -652,14 +652,13 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
     private PropertyAccessMode _exteriorRegexAccessMode = PropertyAccessMode.NotSet;
     private String? _titleRegex = null;
     private PropertyAccessMode _titleRegexAccessMode = PropertyAccessMode.NotSet;
+
+
     #endregion fields
 
-
-    public CatFilterPoco(IServiceProvider services) : base(services)
-    {
-    }
-
     #region properties
+
+
     public BreedPoco? Breed
     {
         get
@@ -1126,4 +1125,9 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         }
     }
     #endregion properties
+
+    public CatFilterPoco(IServiceProvider services) : base(services)
+    {
+    }
+
 }

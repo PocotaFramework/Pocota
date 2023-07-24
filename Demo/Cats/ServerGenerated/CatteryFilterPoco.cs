@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryFilterPoco                               //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -92,14 +92,13 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
     #region fields
     private String? _searchRegex = null;
     private PropertyAccessMode _searchRegexAccessMode = PropertyAccessMode.NotSet;
+
+
     #endregion fields
 
-
-    public CatteryFilterPoco(IServiceProvider services) : base(services)
-    {
-    }
-
     #region properties
+
+
     public String? SearchRegex
     {
         get
@@ -132,4 +131,9 @@ public class CatteryFilterPoco : Pocota.Server.PocoBase, ICatteryFilter
         }
     }
     #endregion properties
+
+    public CatteryFilterPoco(IServiceProvider services) : base(services)
+    {
+    }
+
 }

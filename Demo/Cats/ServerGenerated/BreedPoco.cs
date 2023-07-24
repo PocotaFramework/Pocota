@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.BreedPoco                                       //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,6 +140,64 @@ public class BreedPoco : EntityBase, IBreed
         public override object? GetValue(object target)
         {
             throw new InvalidOperationException();
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class IdBreedPropertyClass: Property
+    {
+        public override string Name => "IdBreed";
+        public override Type Type => typeof(String);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            throw new InvalidOperationException();
+        }
+        public override object? GetValue(object target)
+        {
+            return ((BreedPrimaryKey)((BreedPoco)target).PrimaryKey).IdBreed;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
+    public class IdGroupPropertyClass: Property
+    {
+        public override string Name => "IdGroup";
+        public override Type Type => typeof(String);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            throw new InvalidOperationException();
+        }
+        public override object? GetValue(object target)
+        {
+            return ((BreedPrimaryKey)((BreedPoco)target).PrimaryKey).IdGroup;
         }
         protected override void SetAccess(object target, PropertyAccessMode mode)
         {
@@ -298,6 +356,8 @@ public class BreedPoco : EntityBase, IBreed
 
     #region Property fields
     public static PropertyClass s_Property = new();
+    public static IdBreedPropertyClass s_IdBreedProperty = new();
+    public static IdGroupPropertyClass s_IdGroupProperty = new();
     public static CodePropertyClass s_CodeProperty = new();
     public static GroupPropertyClass s_GroupProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
@@ -313,17 +373,15 @@ public class BreedPoco : EntityBase, IBreed
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.NotSet;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.NotSet;
-    #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
-    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public BreedPoco(IServiceProvider services) : base(services)
-    {
-        _primaryKey = new(this);
-    }
+    #endregion fields
 
     #region properties
+
+    public override IPrimaryKey PrimaryKey => _primaryKey;
+
     public String Code
     {
         get
@@ -340,7 +398,6 @@ public class BreedPoco : EntityBase, IBreed
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _codeAccessMode = PropertyAccessMode.Full;
             _code = value;
         }
@@ -372,7 +429,6 @@ public class BreedPoco : EntityBase, IBreed
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _groupAccessMode = PropertyAccessMode.Full;
             _group = value;
         }
@@ -404,7 +460,6 @@ public class BreedPoco : EntityBase, IBreed
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }
@@ -436,7 +491,6 @@ public class BreedPoco : EntityBase, IBreed
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }
@@ -453,4 +507,10 @@ public class BreedPoco : EntityBase, IBreed
         }
     }
     #endregion properties
+
+    public BreedPoco(IServiceProvider services) : base(services)
+    {
+        _primaryKey = new(this);
+    }
+
 }

@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsConfigurator                              //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,6 +41,8 @@ public class CatsConfigurator : IContractConfigurator
         core.AddSingleton<IFindCatteriesProcessorFactory, FindCatteriesDefaultProcessorFactory>();
         core.AddSingleton<IFindLittersWithCatsDataProviderFactory, FindLittersWithCatsDefaultDataProviderFactory>();
         core.AddSingleton<IFindLittersWithCatsProcessorFactory, FindLittersWithCatsDefaultProcessorFactory>();
+        core.AddSingleton<IFindLittersDataProviderFactory, FindLittersDefaultDataProviderFactory>();
+        core.AddSingleton<IFindLittersProcessorFactory, FindLittersDefaultProcessorFactory>();
         core.AddSingleton<IFindExteriorsDataProviderFactory, FindExteriorsDefaultDataProviderFactory>();
         core.AddSingleton<IFindExteriorsProcessorFactory, FindExteriorsDefaultProcessorFactory>();
         core.AddSingleton<IFindTitlesDataProviderFactory, FindTitlesDefaultDataProviderFactory>();

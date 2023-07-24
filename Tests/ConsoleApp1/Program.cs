@@ -1,43 +1,52 @@
-﻿using Net.Leksi.Pocota.Demo.Cats.Common;
-using Net.Leksi.Pocota.Demo.Cats.Server;
-using Net.Leksi.Pocota.Server;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-int n = 100000000;
-HashSet<Type> entityTypes = new() { 
-    typeof(Cat),  typeof(CatPoco), typeof(ICat),
-    typeof(BreedPoco), typeof(IBreed),
-    typeof(CatteryPoco), typeof(ICattery),
-    typeof(LitterPoco), typeof(ILitter),
-};
-List<Type> typesList = new()
+IHost host = Host.CreateDefaultBuilder().ConfigureServices(services =>
 {
-    typeof(Cat),  typeof(CatPoco), typeof(ICat),
-    typeof(BreedPoco), typeof(IBreed),
-    typeof(CatteryPoco), typeof(ICattery),
-    typeof(LitterPoco), typeof(ILitter),
-    typeof(CatFilterPoco), typeof(ICatFilter),
-    typeof(BreedFilterPoco), typeof(IBreedFilter),
-    typeof(CatteryFilterPoco), typeof(ICatteryFilter),
-    typeof(LitterWithCatsPoco), typeof(ILitterWithCats),
-    typeof(LitterFilterPoco), typeof(ILitterFilter),
-};
-DateTime start = DateTime.Now;
-for (int i = 0; i < n; ++i)
-{
+    services.AddScoped<Test>();
+    services.AddScoped<Test1>();
+}).Build();
 
-    if (typeof(IEntity).IsAssignableFrom(typesList[i % typesList.Count]))
+Test test = host.Services.GetRequiredService<Test>();
+Test1 test1 = host.Services.GetRequiredService<Test1>();
+
+Console.WriteLine(test.ToString());
+test.Show();
+
+public class Test
+{
+    private readonly IServiceProvider _services;
+    public Test(IServiceProvider services)
     {
+        _services = services;
+    }
 
+    public void Show()
+    {
+        Console.WriteLine(_services.CreateScope().ServiceProvider.GetRequiredService<Test>().ToString());
+    }
+
+    public override string ToString()
+    {
+        return $"<{_services.GetHashCode()}, {GetHashCode()}>";
     }
 }
-Console.WriteLine($"Elapsed: {DateTime.Now - start}");
-start = DateTime.Now;
-for (int i = 0; i < n; ++i)
-{
-    if (entityTypes.Contains(typesList[i % typesList.Count]))
-    {
 
+public class Test1
+{
+    private readonly IServiceProvider _services;
+    public Test1(IServiceProvider services)
+    {
+        _services = services;
+    }
+
+    public void Show()
+    {
+        Console.WriteLine(_services.CreateScope().ServiceProvider.GetRequiredService<Test>().ToString());
+    }
+
+    public override string ToString()
+    {
+        return $"<{_services.GetHashCode()}, {GetHashCode()}>";
     }
 }
-Console.WriteLine($"Elapsed: {DateTime.Now - start}");
-

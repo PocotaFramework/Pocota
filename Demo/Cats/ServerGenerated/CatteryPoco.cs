@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatteryPoco                                     //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:45.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -104,6 +104,35 @@ public class CatteryPoco : EntityBase, ICattery
             throw new InvalidOperationException();
         }
     }
+    public class IdCatteryPropertyClass: Property
+    {
+        public override string Name => "IdCattery";
+        public override Type Type => typeof(Int32);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override bool IsExtender => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            throw new InvalidOperationException();
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            throw new InvalidOperationException();
+        }
+        public override object? GetValue(object target)
+        {
+            return ((CatteryPrimaryKey)((CatteryPoco)target).PrimaryKey).IdCattery;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            throw new InvalidOperationException();
+        }
+    }
     public class NameEngPropertyClass: Property
     {
         public override string Name => "NameEng";
@@ -182,6 +211,7 @@ public class CatteryPoco : EntityBase, ICattery
 
     #region Property fields
     public static PropertyClass s_Property = new();
+    public static IdCatteryPropertyClass s_IdCatteryProperty = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
     #endregion Property fields
@@ -191,17 +221,15 @@ public class CatteryPoco : EntityBase, ICattery
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.NotSet;
     private String? _nameNat = null;
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.NotSet;
-    #endregion fields
 
     private readonly PrimaryKeyClass _primaryKey;
-    public override IPrimaryKey PrimaryKey => _primaryKey;
 
-    public CatteryPoco(IServiceProvider services) : base(services)
-    {
-        _primaryKey = new(this);
-    }
+    #endregion fields
 
     #region properties
+
+    public override IPrimaryKey PrimaryKey => _primaryKey;
+
     public String? NameEng
     {
         get
@@ -218,7 +246,6 @@ public class CatteryPoco : EntityBase, ICattery
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameEngAccessMode = PropertyAccessMode.Full;
             _nameEng = value;
         }
@@ -250,7 +277,6 @@ public class CatteryPoco : EntityBase, ICattery
             {
                 throw new InvalidOperationException(s_alreadySet);
             }
-            OnPropertyIsSet();
             _nameNatAccessMode = PropertyAccessMode.Full;
             _nameNat = value;
         }
@@ -267,4 +293,10 @@ public class CatteryPoco : EntityBase, ICattery
         }
     }
     #endregion properties
+
+    public CatteryPoco(IServiceProvider services) : base(services)
+    {
+        _primaryKey = new(this);
+    }
+
 }

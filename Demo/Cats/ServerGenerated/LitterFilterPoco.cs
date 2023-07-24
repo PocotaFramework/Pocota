@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.LitterFilterPoco                                //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-22T09:17:59.                                                           //
+// at 2023-07-24T18:11:46.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -131,14 +131,13 @@ public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
     private PropertyAccessMode _femaleAccessMode = PropertyAccessMode.NotSet;
     private CatPoco _male = null!;
     private PropertyAccessMode _maleAccessMode = PropertyAccessMode.NotSet;
+
+
     #endregion fields
 
-
-    public LitterFilterPoco(IServiceProvider services) : base(services)
-    {
-    }
-
     #region properties
+
+
     public CatPoco Female
     {
         get
@@ -202,4 +201,9 @@ public class LitterFilterPoco : Pocota.Server.PocoBase, ILitterFilter
         }
     }
     #endregion properties
+
+    public LitterFilterPoco(IServiceProvider services) : base(services)
+    {
+    }
+
 }
