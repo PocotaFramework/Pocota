@@ -199,7 +199,9 @@ public class Implementer: Runner
                                     throw new InvalidOperationException($"{nameof(attr.AccessProperties)} must have at least one element!");
                                 }
                                 @interface.AccessExtender = attr.AccessExtender;
-                                @interface.AccessProperties = attr.AccessProperties;
+                                @interface.AccessProperties = attr.AccessProperties.Select(path =>
+                                    string.Join('.', path.Split('.').Select(part => $"#{part}"))
+                                ).ToArray();
                             }
                             else if (attr.AccessProperties is { })
                             {
@@ -220,11 +222,6 @@ public class Implementer: Runner
             }
             foreach(InterfaceHolder ih in _interfaceHoldersByType.Values)
             {
-                if(ih.AccessExtender is { })
-                {
-                    ih.AccessAuxClassModel = new();
-                    ih.AccessPropertyUses = BuildPropertyUseModel(ih.AccessExtender!, ih.AccessProperties, ih.AccessAuxClassModel, true);
-                }
                 if (
                     ih.CoreType is { } 
                     && (
@@ -964,8 +961,9 @@ public class Implementer: Runner
         }
     }
 
-    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths, ClassModel model, bool accessStuff = false)
+    private PropertyUseModel BuildPropertyUseModel(Type rootType, string[]? paths, ClassModel? model)
     {
+        Console.WriteLine($"BuildPropertyUseModel: {rootType}");
         Dictionary<string, PropertyUseModel> cache = new();
         List<string> queue = new();
         HashSet<string> used = new();
@@ -995,7 +993,7 @@ public class Implementer: Runner
         {
             foreach (string path in paths)
             {
-                if (!queue.Contains(path))
+                if (used.Add(path))
                 {
                     queue.Add(path);
                 }
@@ -1003,17 +1001,22 @@ public class Implementer: Runner
         }
         while (queue.Count > 0)
         {
+            Console.WriteLine($"    {queue.First()}");
+
             bool done = false;
             PropertyUseModel parent = result;
-            if(_interfaceHoldersByType.TryGetValue(parent.Type, out InterfaceHolder? ih3) && ih3.AccessPropertyUses is { })
+            if(
+                parent.Type is { } 
+                && _interfaceHoldersByType.TryGetValue(parent.Type, out InterfaceHolder? ih3)
+                && ih3.AccessProperties is { } 
+            )
             {
-                parent.Properties ??= new List<PropertyUseModel>();
-                foreach (PropertyUseModel node in ih3.AccessPropertyUses.Properties!
-                        .Where(pu => !parent.Properties.Select(pu1 => pu1.Name).Contains(pu.Name))
-                        .Select(pu1 => pu1.CloneAsChild(parent)))
+                foreach(string p in ih3.AccessProperties)
                 {
-                    parent.Properties.Add(node);
-                    cache.TryAdd(node.Path, node);
+                    if (used.Add(p))
+                    {
+                        queue.Add(p);
+                    }
                 }
             }
             string[] parts = queue.First().Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
@@ -1045,7 +1048,12 @@ public class Implementer: Runner
                     done = true;
                     break;
                 }
-
+                bool isAccessStuff = parts[i].StartsWith('#');
+                if(isAccessStuff)
+                {
+                    parts[i] = parts[i].Substring(1);
+                }
+                
                 string path = string.Join('.', Enumerable.Range(0, i + 1).Select(e => parts[e]));
 
                 if (!cache.TryGetValue(path, out PropertyUseModel? node))
@@ -1091,6 +1099,21 @@ public class Implementer: Runner
                                 throw new InvalidOperationException($"Type {coreType} does not have the property {parts[i]}!");
                             }
                         }
+                        if (
+                            nodeType is { }
+                            && _interfaceHoldersByType.TryGetValue(nodeType, out InterfaceHolder? ih4)
+                            && ih4.AccessProperties is { }
+                        )
+                        {
+                            foreach (string p in ih4.AccessProperties.Select(p => $"{path}.{p}"))
+                            {
+                                if (!queue.Contains(p))
+                                {
+                                    queue.Add(p);
+                                }
+                            }
+                        }
+
                     }
                     node = new PropertyUseModel {
                         Name = nodeName,
@@ -1098,7 +1121,7 @@ public class Implementer: Runner
                         Type = nodeType,
                         Indentation = $"{parent.Indentation}{s_propertyUseIndentation}",
                         IsCore = isCore,
-                        IsAccessStuff = accessStuff,
+                        IsAccessStuff = isAccessStuff,
                     };
                     if (nodeType is { })
                     {
@@ -1170,7 +1193,7 @@ public class Implementer: Runner
             }
         }
         EnsurePrimaryKeyPaths(result);
-        Console.WriteLine(result);
+        Console.WriteLine("done");
         return result;
     }
 
@@ -1366,20 +1389,23 @@ public class Implementer: Runner
 
     }
 
-    private void AddUsings(ClassModel model, Type type)
+    private void AddUsings(ClassModel? model, Type type)
     {
-        if (!type.IsGenericType || type.IsGenericTypeDefinition)
+        if(model is { })
         {
-            if (model.NamespaceValue is null || !model.NamespaceValue.Equals(type.Namespace))
+            if (!type.IsGenericType || type.IsGenericTypeDefinition)
             {
-                model.Usings.Add(type.Namespace!);
+                if (model.NamespaceValue is null || !model.NamespaceValue.Equals(type.Namespace))
+                {
+                    model.Usings.Add(type.Namespace!);
+                }
+                return;
             }
-            return;
-        }
-        AddUsings(model, type.GetGenericTypeDefinition());
-        foreach (Type arg in type.GetGenericArguments())
-        {
-            AddUsings(model, arg);
+            AddUsings(model, type.GetGenericTypeDefinition());
+            foreach (Type arg in type.GetGenericArguments())
+            {
+                AddUsings(model, arg);
+            }
         }
     }
 

@@ -10,7 +10,7 @@ namespace Net.Leksi.Pocota.Demo.Cats.Contract;
 [Poco(typeof(ICattery), PrimaryKey = new object[] { "IdCattery", typeof(int) },
     AccessExtender = typeof(ICattery), AccessProperties = new string[] { "IdCattery" })]
 [Poco(typeof(ILitter), PrimaryKey = new object[] { "IdLitter", "Order", "IdFemale", "Female.IdCat", "IdFemaleCattery", "Female.IdCattery" },
-    AccessExtender = typeof(ILitterWithCats), AccessProperties = new string[] { "Female.Cattery", "Male.Cattery", "Cats.@.Cattery" } )]
+    AccessExtender = typeof(ILitterWithCats), AccessProperties = new string[] { "Female", "Male", "Cats.@" } )]
 [Poco(typeof(ICatFilter))]
 [Poco(typeof(IBreedFilter))]
 [Poco(typeof(ICatteryFilter))]
