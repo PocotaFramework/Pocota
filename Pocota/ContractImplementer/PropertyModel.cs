@@ -11,7 +11,6 @@ internal class PropertyModel
     internal bool IsEntity { get; set; } = false;
     internal bool IsList { get; set; } = false;
     internal bool IsKeyPart { get; set; } = false;
-    internal bool IsExtender { get; set; } = false;
     internal string Type { get; set; } = null!;
     internal string ObjectType { get; set; } = null!;
     internal string InstanceType { get; set; } = null!;
@@ -23,7 +22,7 @@ internal class PropertyModel
     internal bool CanBeNull { get; set; } = false;
     internal string PropertyClass { get; set; } = null!;
     internal string PropertyField { get; set; } = null!;
+    internal string DeclaringIterface { get; set; } = null!;
     internal string AsTypeAsk = string.Empty;
     internal bool IsKey { get; set; } = false;
-    internal bool IsCore { get; set; } = false;
 }

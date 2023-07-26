@@ -196,7 +196,7 @@ public class PocoContext : IPocoContext
                         }
                         else
                         {
-                            if(selector is ListRequestResponseCase.SuppliedValue)
+                            if (selector is ListRequestResponseCase.SuppliedValue)
                             {
                                 buildingContext.Value = value;
                                 buildingContext.ProcessAList = () =>
@@ -228,19 +228,10 @@ public class PocoContext : IPocoContext
                     buildingContext.DataProviderRoot.DataProvider!._request = DataProviderRequest.None;
 
                 }
-                else if (buildingContext.PropertyUse.Property.IsEntity || buildingContext.PropertyUse.Property.IsExtender)
+                else if (buildingContext.PropertyUse.Property.IsEntity)
                 {
-                    IExtender? extender = null;
                     IPrimaryKey pk;
-                    if (buildingContext.PropertyUse.Property.IsExtender)
-                    {
-                        extender = (IExtender)_services.GetRequiredService(buildingContext.PropertyUse.Property.Type);
-                        pk = extender.PrimaryKey;
-                    }
-                    else
-                    {
-                        pk = CreatePrimaryKey(buildingContext.PropertyUse.Property.Type);
-                    }
+                    pk = CreatePrimaryKey(buildingContext.PropertyUse.Property.Type);
                     buildingContext.DataProviderRoot.DataProvider!._request = DataProviderRequest.PrimaryKey;
                     for (int i = 0; i < pk.Definitions.Count; ++i)
                     {
@@ -315,7 +306,7 @@ public class PocoContext : IPocoContext
                             }
                             buildingContext.LastTracingEntry!.Comment = string.Format(mess, Util.MakeTypeName(def.Type));
                         }
-                        else if(value is DataProvider dp)
+                        else if (value is DataProvider dp)
                         {
                             if (WithTracing)
                             {
@@ -361,79 +352,72 @@ public class PocoContext : IPocoContext
                     {
                         continue;
                     }
-                    if (buildingContext.PropertyUse.Property.IsEntity)
-                    {
-                        if (
-                            !TryGetEntity(
-                                buildingContext.PropertyUse.Property.Type,
-                                pk.ToArray()!,
-                                out IEntity entity
-                            )
+                    if (
+                        !TryGetEntity(
+                            buildingContext.PropertyUse.Property.Type,
+                            pk.ToArray()!,
+                            out IEntity entity
                         )
+                    )
+                    {
+                        foreach (KeyDefinition def in pk.Definitions)
                         {
-                            foreach (KeyDefinition def in pk.Definitions)
+                            if (def.KeyReference is { })
                             {
-                                if (def.KeyReference is { })
+                                if (!buildingContext.PropertyUsesContexts.TryGetValue(def.Property!, out BuildingContext? bc))
                                 {
-                                    if (!buildingContext.PropertyUsesContexts.TryGetValue(def.Property!, out BuildingContext? bc))
+                                    bc = new BuildingContext(buildingContext)
                                     {
-                                        bc = new BuildingContext(buildingContext)
-                                        {
-                                            PropertyUse = buildingContext.PropertyUse.Properties?
-                                                .Where(p => def.Property!.Equals(p.Property?.Name)).FirstOrDefault()!,
-                                        };
-                                        buildingContext.PropertyUsesContexts.Add(def.Property!, bc);
-                                    }
-                                    if (processedProperties.Add(def.Property!))
-                                    {
-                                        bc.SetKeyParts.Clear();
-                                        queue.Enqueue(bc);
-                                    }
-                                    bc.SetKeyParts.Add(def.KeyReference, pk[def.Name]!);
+                                        PropertyUse = buildingContext.PropertyUse.Properties?
+                                            .Where(p => def.Property!.Equals(p.Property?.Name)).FirstOrDefault()!,
+                                    };
+                                    buildingContext.PropertyUsesContexts.Add(def.Property!, bc);
                                 }
-                                else if (pk[def.Name] is { })
+                                if (processedProperties.Add(def.Property!))
                                 {
-                                    entity.PrimaryKey[def.Name] = pk[def.Name];
+                                    bc.SetKeyParts.Clear();
+                                    queue.Enqueue(bc);
                                 }
+                                bc.SetKeyParts.Add(def.KeyReference, pk[def.Name]!);
                             }
-                            while (queue.TryDequeue(out BuildingContext? bc1))
+                            else if (pk[def.Name] is { })
                             {
-                                ProcessBuildingContext<object>(bc1).GetEnumerator().MoveNext();
-                                if (bc1.PropertyUse.Property!.GetAccess(entity) is PropertyAccessMode.Denied)
+                                entity.PrimaryKey[def.Name] = pk[def.Name];
+                            }
+                        }
+                        while (queue.TryDequeue(out BuildingContext? bc1))
+                        {
+                            ProcessBuildingContext<object>(bc1).GetEnumerator().MoveNext();
+                            if (bc1.PropertyUse.Property!.GetAccess(entity) is PropertyAccessMode.Denied)
+                            {
+                                try
                                 {
-                                    try
+                                    bc1.PropertyUse.Property.SetValue(entity, bc1.Value);
+                                    buildingContext.Trace(new TracingEntry
                                     {
-                                        bc1.PropertyUse.Property.SetValue(entity, bc1.Value);
-                                        buildingContext.Trace(new TracingEntry
-                                        {
-                                            Request = DataProviderRequest.Value,
-                                            Path = bc1.PropertyUse.Path,
-                                            Response = PresentResponse(bc1.Value),
-                                            Success = true,
-                                        });
-                                    }
-                                    catch (Exception ex)
+                                        Request = DataProviderRequest.Value,
+                                        Path = bc1.PropertyUse.Path,
+                                        Response = PresentResponse(bc1.Value),
+                                        Success = true,
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    buildingContext.HasError = true;
+                                    buildingContext.Trace(new TracingEntry
                                     {
-                                        buildingContext.HasError = true;
-                                        buildingContext.Trace(new TracingEntry
-                                        {
-                                            Request = DataProviderRequest.Value,
-                                            Path = bc1.PropertyUse.Path,
-                                            Response = PresentResponse(bc1.Value),
-                                            Success = false,
-                                            Exception = ex,
-                                        });
-                                    }
+                                        Request = DataProviderRequest.Value,
+                                        Path = bc1.PropertyUse.Path,
+                                        Response = PresentResponse(bc1.Value),
+                                        Success = false,
+                                        Exception = ex,
+                                    });
                                 }
                             }
                         }
-                        buildingContext.Value = entity;
-                        pk = entity.PrimaryKey;
                     }
-                    else
-                    {
-                        buildingContext.Value = extender;
-                    }
+                    buildingContext.Value = entity;
+                    pk = entity.PrimaryKey;
                     if (WithTracing || !pk.IsAssigned)
                     {
                         buildingContext.Trace(new TracingEntry

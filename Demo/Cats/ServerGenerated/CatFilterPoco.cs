@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatFilterPoco                                   //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-25T17:11:02.                                                           //
+// at 2023-07-26T13:07:15.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -55,7 +54,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -92,7 +90,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -129,7 +126,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -166,7 +162,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -203,7 +198,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -240,7 +234,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -277,7 +270,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -314,7 +306,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -351,7 +342,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -388,7 +378,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -425,7 +414,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -462,7 +450,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -499,7 +486,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -536,7 +522,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -573,7 +558,6 @@ public class CatFilterPoco : Pocota.Server.PocoBase, ICatFilter
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {

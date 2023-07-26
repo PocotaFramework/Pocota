@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Common.CatPoco                                         //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-25T17:11:02.                                                           //
+// at 2023-07-26T13:07:15.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -12,7 +12,7 @@ using System;
 
 namespace Net.Leksi.Pocota.Demo.Cats.Common;
 
-public class CatPoco : EntityBase, ICat
+public class CatPoco : EntityBase, ICat, IPedigree
 {
     #region PrimaryKey    
     public class PrimaryKeyClass: CatPrimaryKey
@@ -122,7 +122,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -151,7 +150,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -180,7 +178,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -209,7 +206,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => true;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -246,7 +242,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -273,43 +268,6 @@ public class CatPoco : EntityBase, ICat
             }
         }
     }
-    public class BreedPropertyClass: Property
-    {
-        public override string Name => "Breed";
-        public override Type Type => typeof(BreedPoco);
-        public override bool IsNullable => false;
-        public override bool IsReadOnly => false;
-        public override bool IsPoco => true;
-        public override bool IsEntity => true;
-        public override bool IsList => false;
-        public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
-        public override Type? ItemType => null;
-        public override PropertyAccessMode GetAccess(object target)
-        {
-            return target is CatPoco target1 ? target1._breedAccessMode : PropertyAccessMode.Denied;
-        }
-        protected override void SetValue(object target, object? value)
-        {
-            BreedPoco? value1 = value as BreedPoco;
-            if (value is {} && value1 is null || value is null)
-            {
-                throw new InvalidCastException();
-            }
-            ((CatPoco)target).Breed = value1!;
-        }
-        public override object? GetValue(object target)
-        {
-            return ((CatPoco)target).Breed;
-        }
-        protected override void SetAccess(object target, PropertyAccessMode mode)
-        {
-            if(target is CatPoco target1)
-            {
-                target1._breedAccessMode  = mode;
-            }
-        }
-    }
     public class NameEngPropertyClass: Property
     {
         public override string Name => "NameEng";
@@ -320,7 +278,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -357,7 +314,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -384,6 +340,42 @@ public class CatPoco : EntityBase, ICat
             }
         }
     }
+    public class BreedPropertyClass: Property
+    {
+        public override string Name => "Breed";
+        public override Type Type => typeof(BreedPoco);
+        public override bool IsNullable => false;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => true;
+        public override bool IsEntity => true;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._breedAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            BreedPoco? value1 = value as BreedPoco;
+            if (value is {} && value1 is null || value is null)
+            {
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).Breed = value1!;
+        }
+        public override object? GetValue(object target)
+        {
+            return ((CatPoco)target).Breed;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._breedAccessMode  = mode;
+            }
+        }
+    }
     public class LitterPropertyClass: Property
     {
         public override string Name => "Litter";
@@ -394,7 +386,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => true;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -431,7 +422,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -468,7 +458,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -505,7 +494,6 @@ public class CatPoco : EntityBase, ICat
         public override bool IsEntity => false;
         public override bool IsList => false;
         public override bool IsKeyPart => false;
-        public override bool IsExtender => false;
         public override Type? ItemType => null;
         public override PropertyAccessMode GetAccess(object target)
         {
@@ -532,6 +520,42 @@ public class CatPoco : EntityBase, ICat
             }
         }
     }
+    public class MotherInfoPropertyClass: Property
+    {
+        public override string Name => "MotherInfo";
+        public override Type Type => typeof(String);
+        public override bool IsNullable => true;
+        public override bool IsReadOnly => false;
+        public override bool IsPoco => false;
+        public override bool IsEntity => false;
+        public override bool IsList => false;
+        public override bool IsKeyPart => false;
+        public override Type? ItemType => null;
+        public override PropertyAccessMode GetAccess(object target)
+        {
+            return target is CatPoco target1 ? target1._motherInfoAccessMode : PropertyAccessMode.Denied;
+        }
+        protected override void SetValue(object target, object? value)
+        {
+            String? value1 = value as String;
+            if (value is {} && value1 is null)
+            {
+                throw new InvalidCastException();
+            }
+            ((CatPoco)target).MotherInfo = value1;
+        }
+        public override object? GetValue(object target)
+        {
+            return ((CatPoco)target).MotherInfo;
+        }
+        protected override void SetAccess(object target, PropertyAccessMode mode)
+        {
+            if(target is CatPoco target1)
+            {
+                target1._motherInfoAccessMode  = mode;
+            }
+        }
+    }
     #endregion Property classes
 
     #region Property fields
@@ -540,13 +564,14 @@ public class CatPoco : EntityBase, ICat
     public static IdCatteryPropertyClass s_IdCatteryProperty = new();
     public static CatteryPropertyClass s_CatteryProperty = new();
     public static NameNatPropertyClass s_NameNatProperty = new();
-    public static BreedPropertyClass s_BreedProperty = new();
     public static NameEngPropertyClass s_NameEngProperty = new();
     public static GenderPropertyClass s_GenderProperty = new();
+    public static BreedPropertyClass s_BreedProperty = new();
     public static LitterPropertyClass s_LitterProperty = new();
     public static ExteriorPropertyClass s_ExteriorProperty = new();
     public static TitlePropertyClass s_TitleProperty = new();
     public static DescriptionPropertyClass s_DescriptionProperty = new();
+    public static MotherInfoPropertyClass s_MotherInfoProperty = new();
     #endregion Property fields
 
     #region fields
@@ -554,12 +579,12 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _catteryAccessMode = PropertyAccessMode.NotSet;
     private String? _nameNat = null;
     private PropertyAccessMode _nameNatAccessMode = PropertyAccessMode.NotSet;
-    private BreedPoco _breed = null!;
-    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.NotSet;
     private String? _nameEng = null;
     private PropertyAccessMode _nameEngAccessMode = PropertyAccessMode.NotSet;
     private Gender _gender;
     private PropertyAccessMode _genderAccessMode = PropertyAccessMode.NotSet;
+    private BreedPoco _breed = null!;
+    private PropertyAccessMode _breedAccessMode = PropertyAccessMode.NotSet;
     private LitterPoco? _litter = null;
     private PropertyAccessMode _litterAccessMode = PropertyAccessMode.NotSet;
     private String? _exterior = null;
@@ -568,6 +593,8 @@ public class CatPoco : EntityBase, ICat
     private PropertyAccessMode _titleAccessMode = PropertyAccessMode.NotSet;
     private String? _description = null;
     private PropertyAccessMode _descriptionAccessMode = PropertyAccessMode.NotSet;
+    private String? _motherInfo = null;
+    private PropertyAccessMode _motherInfoAccessMode = PropertyAccessMode.NotSet;
 
     private readonly PrimaryKeyClass _primaryKey;
 
@@ -639,37 +666,6 @@ public class CatPoco : EntityBase, ICat
             NameNat = value;
         }
     }
-    public BreedPoco Breed
-    {
-        get
-        {
-            if(_breedAccessMode is PropertyAccessMode.NotSet)
-            {
-                throw new InvalidOperationException(s_notSet);
-            }
-            return _breed;
-        }
-        set
-        {
-            if(_breedAccessMode is not PropertyAccessMode.NotSet)
-            {
-                throw new InvalidOperationException(s_alreadySet);
-            }
-            _breedAccessMode = PropertyAccessMode.Full;
-            _breed = value;
-        }
-    }
-    IBreed ICat.Breed
-    {
-        get
-        {
-            return Breed;
-        }
-       set
-        {
-            Breed = (value as BreedPoco)!;
-        }
-    }
     public String? NameEng
     {
         get
@@ -730,6 +726,37 @@ public class CatPoco : EntityBase, ICat
        set
         {
             Gender = value;
+        }
+    }
+    public BreedPoco Breed
+    {
+        get
+        {
+            if(_breedAccessMode is PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_notSet);
+            }
+            return _breed;
+        }
+        set
+        {
+            if(_breedAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            _breedAccessMode = PropertyAccessMode.Full;
+            _breed = value;
+        }
+    }
+    IBreed ICat.Breed
+    {
+        get
+        {
+            return Breed;
+        }
+       set
+        {
+            Breed = (value as BreedPoco)!;
         }
     }
     public LitterPoco? Litter
@@ -854,6 +881,37 @@ public class CatPoco : EntityBase, ICat
        set
         {
             Description = value;
+        }
+    }
+    public String? MotherInfo
+    {
+        get
+        {
+            if(_motherInfoAccessMode is PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_notSet);
+            }
+            return _motherInfo;
+        }
+        set
+        {
+            if(_motherInfoAccessMode is not PropertyAccessMode.NotSet)
+            {
+                throw new InvalidOperationException(s_alreadySet);
+            }
+            _motherInfoAccessMode = PropertyAccessMode.Full;
+            _motherInfo = value;
+        }
+    }
+    String? IPedigree.MotherInfo
+    {
+        get
+        {
+            return MotherInfo;
+        }
+       set
+        {
+            MotherInfo = value;
         }
     }
     #endregion properties

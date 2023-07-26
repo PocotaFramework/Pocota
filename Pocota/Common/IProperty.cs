@@ -9,7 +9,6 @@ public interface IProperty
     bool IsPoco { get; }
     bool IsEntity { get; }
     bool IsList { get; }
-    bool IsExtender { get; }
     bool IsKeyPart { get; }
     Type? ItemType { get; }
     object? GetValue(object target);

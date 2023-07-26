@@ -11,7 +11,6 @@ public abstract class Property : IProperty
     public abstract bool IsPoco { get; }
     public abstract bool IsEntity { get; }
     public abstract bool IsList { get; }
-    public abstract bool IsExtender { get; }
     public abstract bool IsKeyPart { get; }
     public abstract Type? ItemType { get; }
 

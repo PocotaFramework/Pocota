@@ -5,7 +5,6 @@ public class PocoAttribute: Attribute
 {
     public Type Interface { get; init; }
     public object[]? PrimaryKey { get; set; }
-    public Type? AccessExtender { get; set; }
     public string[]? AccessProperties { get; set; }
 
     public PocoAttribute(Type @interface)

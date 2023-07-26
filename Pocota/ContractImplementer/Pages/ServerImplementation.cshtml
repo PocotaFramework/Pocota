@@ -230,11 +230,10 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         public override bool IsEntity => @pm.IsEntity.ToString().ToLower();
         public override bool IsList => @pm.IsList.ToString().ToLower();
         public override bool IsKeyPart => @pm.IsKeyPart.ToString().ToLower();
-        public override bool IsExtender => @pm.IsExtender.ToString().ToLower();
         public override Type? ItemType => @(pm.ItemObjectType is { } ? Html.Raw($"typeof({pm.ItemObjectType})") : "null");
         public override PropertyAccessMode GetAccess(object target)
         {
-        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -247,7 +246,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         protected override void SetValue(object target, object? value)
         {
-        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -275,11 +274,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         <text>            return ((@Model.PrimaryKey!.Name)((@Model.ClassName)target).PrimaryKey).@pm.Name;
 </text>
     }
-    else if(pm.IsCore)
-    {
-        <text>            return ((@Model.ClassName)target).Core.@pm.Name;
-</text>
-    }
     else
     {
         <text>            return ((@Model.ClassName)target).@pm.Name;
@@ -288,7 +282,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         }
         protected override void SetAccess(object target, PropertyAccessMode mode)
         {
-        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey || pm.IsCore)
+        @if (string.IsNullOrEmpty(pm.Name) || pm.IsKey)
     {
         <text>            throw new @nameof(InvalidOperationException)@{}();
 </text>
@@ -316,7 +310,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     #endregion Property fields
 
     #region fields
-@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey && !p.IsCore))
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey))
 {
     <text>    private@{}@pm.FieldReadOnly @Html.Raw(pm.ObjectType)@pm.NullableSuffix @pm.FieldName@if(pm.CanBeNull && (!pm.IsList ||!pm.IsReadOnly)){<text> = null@{}@if(!pm.IsNullable){<text>!</text>}</text>};
     @if(pm.IsList && pm.IsPoco)
@@ -334,11 +328,6 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
 
 }
-else if (Model.ExtenderPrimaryKey is { })
-{
-    <text>    private @Model.ExtenderCore? _core = null;
-</text>
-}
 
     #endregion fields
 
@@ -350,23 +339,8 @@ else if (Model.ExtenderPrimaryKey is { })
 </text>
 
 }
-else if (Model.ExtenderPrimaryKey is { })
-{
-    <text>    public IPrimaryKey? PrimaryKey => ((EntityBase)Core)?.PrimaryKey;
-    public @Model.ExtenderCore Core 
-    {
-        get => _core; 
-        set {
-            if(_core is null && value is {})
-            {
-                _core = value;
-            }
-        }
-    }
-</text>
-}
 
-@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey && !p.IsCore))
+@foreach (PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name) && !p.IsKey))
 {
     <text>    public @Html.Raw(pm.ObjectType)@{}@pm.NullableSuffix @pm.Name
     {
@@ -397,7 +371,7 @@ else if (Model.ExtenderPrimaryKey is { })
 </text>
     }
     }
-    @Html.Raw($"{pm.Type}{pm.NullableSuffix}") @Html.Raw(Model.Interfaces[1]).@pm.Name
+    @Html.Raw($"{pm.Type}{pm.NullableSuffix}") @Html.Raw(pm.DeclaringIterface).@pm.Name
     {
         get
         {

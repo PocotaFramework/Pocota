@@ -20,8 +20,6 @@ public class FreeProperty : Property
 
     public override bool IsList => false;
 
-    public override bool IsExtender => false;
-
     public override bool IsKeyPart => false;
 
     public override Type? ItemType => null;

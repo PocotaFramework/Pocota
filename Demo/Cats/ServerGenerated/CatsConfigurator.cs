@@ -2,7 +2,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 // Net.Leksi.Pocota.Demo.Cats.Contract.CatsConfigurator                              //
 // was generated automatically from Net.Leksi.Pocota.Demo.Cats.Contract.ICatContract //
-// at 2023-07-25T17:11:01.                                                           //
+// at 2023-07-26T13:07:15.                                                           //
 // Modifying this file will break the program!                                       //
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,8 +29,8 @@ public class CatsConfigurator : IContractConfigurator
         core.AddTransient<IBreedFilter, BreedFilterPoco>();
         core.AddTransient<ICatteryFilter, CatteryFilterPoco>();
         core.AddTransient<ILitterFilter, LitterFilterPoco>();
-        core.AddTransient<ILitterWithCats, LitterWithCatsPoco>();
-        core.AddScoped<ILitterWithCatsAccessManager, LitterWithCatsAllowAccessManager>();
+        core.AddTransient<IPedigree, PedigreePoco>();
+        core.AddScoped<IPedigreeAccessManager, PedigreeAllowAccessManager>();
         core.AddSingleton<IFindCatsDataProviderFactory, FindCatsDefaultDataProviderFactory>();
         core.AddSingleton<IFindCatsProcessorFactory, FindCatsDefaultProcessorFactory>();
         core.AddSingleton<IGetCatDataProviderFactory, GetCatDefaultDataProviderFactory>();
@@ -39,8 +39,6 @@ public class CatsConfigurator : IContractConfigurator
         core.AddSingleton<IFindBreedsProcessorFactory, FindBreedsDefaultProcessorFactory>();
         core.AddSingleton<IFindCatteriesDataProviderFactory, FindCatteriesDefaultDataProviderFactory>();
         core.AddSingleton<IFindCatteriesProcessorFactory, FindCatteriesDefaultProcessorFactory>();
-        core.AddSingleton<IFindLittersWithCatsDataProviderFactory, FindLittersWithCatsDefaultDataProviderFactory>();
-        core.AddSingleton<IFindLittersWithCatsProcessorFactory, FindLittersWithCatsDefaultProcessorFactory>();
         core.AddSingleton<IFindLittersDataProviderFactory, FindLittersDefaultDataProviderFactory>();
         core.AddSingleton<IFindLittersProcessorFactory, FindLittersDefaultProcessorFactory>();
         core.AddSingleton<IFindExteriorsDataProviderFactory, FindExteriorsDefaultDataProviderFactory>();
@@ -55,8 +53,8 @@ public class CatsConfigurator : IContractConfigurator
         core.MapPrimaryKeyType(typeof(CatteryPoco), typeof(CatteryPrimaryKey));
         core.MapPrimaryKeyType(typeof(ILitter), typeof(LitterPrimaryKey));
         core.MapPrimaryKeyType(typeof(LitterPoco), typeof(LitterPrimaryKey));
-        core.MapPrimaryKeyType(typeof(ILitterWithCats), typeof(LitterPrimaryKey));
-        core.MapPrimaryKeyType(typeof(LitterWithCatsPoco), typeof(LitterPrimaryKey));
+        core.MapPrimaryKeyType(typeof(IPedigree), typeof(CatPrimaryKey));
+        core.MapPrimaryKeyType(typeof(PedigreePoco), typeof(CatPrimaryKey));
         core.MapAccessManagerType(typeof(ICat), typeof(ICatAccessManager));
         core.MapAccessManagerType(typeof(CatPoco), typeof(ICatAccessManager));
         core.MapAccessManagerType(typeof(IBreed), typeof(IBreedAccessManager));
@@ -65,7 +63,7 @@ public class CatsConfigurator : IContractConfigurator
         core.MapAccessManagerType(typeof(CatteryPoco), typeof(ICatteryAccessManager));
         core.MapAccessManagerType(typeof(ILitter), typeof(ILitterAccessManager));
         core.MapAccessManagerType(typeof(LitterPoco), typeof(ILitterAccessManager));
-        core.MapAccessManagerType(typeof(ILitterWithCats), typeof(ILitterWithCatsAccessManager));
-        core.MapAccessManagerType(typeof(LitterWithCatsPoco), typeof(ILitterWithCatsAccessManager));
+        core.MapAccessManagerType(typeof(IPedigree), typeof(IPedigreeAccessManager));
+        core.MapAccessManagerType(typeof(PedigreePoco), typeof(IPedigreeAccessManager));
     }
 }

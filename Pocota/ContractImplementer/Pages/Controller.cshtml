@@ -78,7 +78,7 @@
         <text>@Html.Raw(mm.Filters[i].Type) @mm.Filters[i].Name</text>
     })
     {
-        return new @Html.Raw($"FarNienteProcessor<{mm.AccessExtenderType}>")@{}();
+        return new @Html.Raw($"FarNienteProcessor<{mm.OutputItemType}>")@{}();
     }
 }
 
@@ -139,22 +139,27 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         <text>        JsonSerializer.Serialize(
             new Utf8JsonWriter(HttpContext.Response.Body),
             HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessEnumerable(
-                @mm.PocoContextVariable@{}.Build<@mm.AccessExtenderType>(@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
-            ).Select(v => @mm.PocoContextVariable@{}.ConfirmAccess(v))@if(!mm.AccessExtenderType.Equals(mm.OutputItemType)){<text>.Select(v =>  v.Core)</text>},
+                @mm.PocoContextVariable@{}.Build<@mm.OutputItemType>(@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), false)
+            ).Select(v => @mm.PocoContextVariable@{}.ConfirmAccess(v)),
             @mm.PocoContextVariable@{}.JsonSerializerOptions
         );
 </text>
     }
     else
     {
-        <text>        IEnumerator<@mm.OutputItemType> en = @mm.PocoContextVariable@{}.Build<@mm.AccessExtenderType>(@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)), true).GetEnumerator();
+                <text>
+                    IEnumerator<@mm.OutputItemType>
+                        en = @mm.PocoContextVariable@{
+                        }.Build<@mm.OutputItemType>
+                            (@mm.PropertyUseVariable, HttpContext.RequestServices.GetRequiredService<@mm.DataProviderFactoryInterface>
+                                ().Create(@string.Join(", ", mm.CallParameters)), true).GetEnumerator();
         if(en.MoveNext())
         {
             JsonSerializer.Serialize(
                 new Utf8JsonWriter(HttpContext.Response.Body),
                 @mm.PocoContextVariable@{}.ConfirmAccess(
                     HttpContext.RequestServices.GetRequiredService<@mm.ProcessorFactoryInterface>().Create(@string.Join(", ", mm.CallParameters)).ProcessSingle(en.Current)
-                )@if(!mm.AccessExtenderType.Equals(mm.OutputItemType)){<text>.Core</text>},
+                ),
                 @mm.PocoContextVariable@{}.JsonSerializerOptions
             );
         }
