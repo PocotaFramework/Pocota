@@ -1,11 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Common;
 
-public class PathNode
+public class PathNode: ICloneable, INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
     private const int s_indentationStep = 4;
 
     private static int s_genId = 0;
@@ -13,9 +16,9 @@ public class PathNode
     private ObservableCollection<PathNode>? _children = null;
     private PathNode? _parent = null;
     private bool _isMandatory = false;
+    private bool _isList = false;
     private bool _isAccessStuff = false;
     private bool _isPropagatedMandatory = true;
-    private string? _path = null;
     private string _name = string.Empty;
 
     public int Id { get; init; } = Interlocked.Increment(ref s_genId);
@@ -28,22 +31,12 @@ public class PathNode
             if(string.IsNullOrEmpty(_name) && !string.IsNullOrEmpty(value))
             {
                 _name = value;
-                ClearPath();
             }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
         } 
     }
 
-    public string Path
-    {
-        get
-        {
-            if(_path is null)
-            {
-                BuildPath();
-            }
-            return _path;
-        }
-    }
+    public string Path => BuildPath();
 
     public ObservableCollection<PathNode>? Children
     {
@@ -59,10 +52,22 @@ public class PathNode
                     _children_CollectionChanged(_children, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
                 }
             }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Children)));
         }
     }
 
-    public bool IsList { get; set; } = false;
+    public bool IsList 
+    { 
+        get => _isList;
+        set
+        {
+            if (!_isList && value)
+            {
+                _isList = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsList)));
+            }
+        }
+    }
     public bool IsAccessStuff
     {
         get => _isAccessStuff;
@@ -71,6 +76,7 @@ public class PathNode
             if(!_isAccessStuff && value)
             {
                 PropagateAccessStuff();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAccessStuff)));
             }
         }
     }
@@ -84,6 +90,7 @@ public class PathNode
             {
                 _isPropagatedMandatory = false;
                 PropagateMandatory();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMandatory)));
             }
         }
     }
@@ -96,31 +103,71 @@ public class PathNode
         get => _parent; 
     }
 
-    public void Graft(PathNode scion, int level)
+    public void Graft(PathNode scion)
     {
-        string[] parts = (new string[] { string.Empty }).Concat(scion.Path.Split('.')).ToArray();
-        PathNode? current = this;
-        for(int i = 0; i <= level; ++i)
-        {
-            if(i >= parts.Length)
-            {
-                throw new InvalidOperationException($"The level {level} is too high!");
-            }
-            if (!current!.Name.Equals(parts[parts.Length - 1 - i]))
-            {
-                throw new InvalidOperationException($"Unexpected scion's Name: '{parts[parts.Length - 1 - i]}', '{current.Name}' expected!");
-            }
-            current = current.Parent;
-            if(current is null && i < level - 1)
-            {
-                throw new InvalidOperationException($"The level {level} is too high!");
-            }
-        }
+        Dictionary<string, PathNode> cache = new();
+        CollectBranch(cache);
+        WalkGraft(cache, this, this, scion);
     }
 
     public override string ToString()
     {
         return ToString(0);
+    }
+
+    public object Clone()
+    {
+        PathNode result = new();
+        result._name = _name;
+        result._isAccessStuff = _isAccessStuff;
+        result._isMandatory = _isMandatory;
+        result._isPropagatedMandatory = _isPropagatedMandatory;
+
+        if(Children is { })
+        {
+            result.Children = new ObservableCollection<PathNode>();
+            foreach (PathNode child in Children)
+            {
+                result.Children.Add((PathNode)child.Clone());
+            }
+        }
+
+        return result;
+    }
+
+    public void CollectBranch(Dictionary<string, PathNode> cache)
+    {
+        cache.Add(Path, this);
+        if (_children is { })
+        {
+            foreach (PathNode child in _children)
+            {
+                child.CollectBranch(cache);
+            }
+        }
+    }
+
+    private void WalkGraft(Dictionary<string, PathNode> cache, PathNode rootStock, PathNode currentStock, PathNode scion)
+    {
+        if(scion.Children is { })
+        {
+            foreach(PathNode node in scion.Children)
+            {
+                string newPath = $"{rootStock.Path}{(!string.IsNullOrEmpty(rootStock.Path) ? "." : string.Empty)}{node.Path}";
+                if(cache.TryGetValue(newPath, out PathNode? node1))
+                {
+                    WalkGraft(cache, this, node1, node);
+                }
+                else
+                {
+                    if(currentStock.Children is null)
+                    {
+                        currentStock.Children = new ObservableCollection<PathNode>();
+                    }
+                    currentStock.Children.Add((PathNode)node.Clone());
+                }
+            }
+        }
     }
 
     private void PropagateAccessStuff()
@@ -131,18 +178,6 @@ public class PathNode
             foreach(PathNode child in _children)
             {
                 child.PropagateAccessStuff();
-            }
-        }
-    }
-
-    private void ClearPath()
-    {
-        _path = null;
-        if (_children is { })
-        {
-            foreach (PathNode child in _children)
-            {
-                child.ClearPath();
             }
         }
     }
@@ -163,12 +198,17 @@ public class PathNode
                     {
                         node.PropagateAccessStuff();
                     }
-                    node.ClearPath();
+                    node.PropertyChanged += Node_PropertyChanged;
                 }
                 break;
             default:
                 throw new InvalidOperationException();
         }
+    }
+
+    private void Node_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        PropertyChanged?.Invoke(sender, e);
     }
 
     private void PropagateMandatory()
@@ -180,16 +220,14 @@ public class PathNode
         }
     }
 
-    private void BuildPath()
+    private string BuildPath()
     {
-        if(_parent is null)
+        Stack<string> stack = new();
+        for(PathNode cur = this; cur._parent != null; cur = cur._parent)
         {
-            _path = _name;
+            stack.Push(cur.Name);
         }
-        else
-        {
-            _path = string.IsNullOrEmpty(_parent.Path) ? _name : $"{_parent.Path}.{_name}";
-        }
+        return string.Join('.', stack);
     }
 
     private string ToString(int level)
