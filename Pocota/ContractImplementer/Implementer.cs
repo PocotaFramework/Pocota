@@ -1350,50 +1350,6 @@ public class Implementer : Runner
         model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
     }
 
-    private PathNode PathListToTree(string[] paths, bool isAccessStuff)
-    {
-        Dictionary<string, PathNode> cache = new();
-        StringBuilder sb = new();
-
-        PathNode result = new()
-        {
-            IsAccessStuff = isAccessStuff,
-        };
-
-        cache.Add(result.Name, result);
-
-        foreach (string path in paths)
-        {
-            string[] parts = path.Split('.');
-            sb.Clear();
-            for (int i = -1; i < parts.Length - 1; ++i)
-            {
-                PathNode parent = cache[sb.ToString()];
-                if (i >= 0)
-                {
-                    sb.Append('.');
-                }
-                sb.Append(parts[i + 1]);
-                if (!cache.TryGetValue(sb.ToString(), out PathNode? node))
-                {
-                    node = new()
-                    {
-                        Name = parts[i + 1],
-                        IsAccessStuff = isAccessStuff,
-                    };
-                    cache.Add(node.Name, node);
-                    if (parent.Children is null)
-                    {
-                        parent.Children = new ObservableCollection<PathNode>();
-                    }
-                    parent.Children.Add(node);
-                }
-            }
-        }
-
-        return result;
-    }
-
     private void CheckBaseInterfaces()
     {
         List<InterfaceHolder> chain = new();
@@ -1442,31 +1398,47 @@ public class Implementer : Runner
             InterfaceHolder ih = _interfaceHoldersByType[targetType];
             if(ih.AccessProperties is { })
             {
-                ih.AccessPropertiesTree = PathListToTree(ih.AccessProperties, true);
-                CheckPathNodeChildren(targetType, ih.AccessPropertiesTree);
+                ih.AccessPropertiesTree = PathNode.FromPaths(ih.AccessProperties);
+                ih.AccessPropertiesTree.IsAccessStuff = true;
+                CheckPathNode(targetType, ih.AccessPropertiesTree, false, false);
             }
         }
     }
 
-    private void CheckPathNodeChildren(Type targetType, PathNode node)
+    private void CheckPathNode(Type targetType, PathNode node, bool starsAllowed, bool claimAllowed)
     {
         if(node.Children is { })
         {
             foreach(PathNode child in node.Children)
             {
+                if(child.IsMandatory && !(bool)child.IsPropagatedMandatory!)
+                {
+                    if (!claimAllowed)
+                    {
+                        throw new InvalidOperationException($"'!' is not allowed here!");
+                    }
+                }
                 if (targetType.GetProperty(child.Name) is PropertyInfo pi)
                 {
                     if(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                     {
                         child.IsList = true;
-                        if(child.Children is { } && (child.Children.Count != 1 || !"@".Equals(child.Children[0].Name)))
+
+                        if(child.Children is { })
                         {
-                            throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have either no children or single child '@'!");
+                            if(child.Children.Count != 1 || !"@".Equals(child.Children[0].Name))
+                            {
+                                throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have either no children or single child '@'!");
+                            }
+                            if (_interfaceHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
+                            {
+                                CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed);
+                            }
                         }
                     }
                     else if (_interfaceHoldersByType.ContainsKey(pi.PropertyType))
                     {
-                        CheckPathNodeChildren(pi.PropertyType, child);
+                        CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed);
                     }
                     else
                     {
@@ -1481,6 +1453,21 @@ public class Implementer : Runner
                     if (child.Children is { })
                     {
                         throw new InvalidOperationException($"Key part {child.Name} of {targetType} at path {node.Path} must have no children!");
+                    }
+                }
+                else if ("*".Equals(child.Name))
+                {
+                    if (!starsAllowed)
+                    {
+                        throw new InvalidOperationException($"'*' is not allowed here!");
+                    }
+                    node.Children.RemoveAt(0);
+                    foreach (PropertyInfo pi1 in targetType.GetRuntimeProperties())
+                    {
+                        node.Children.Add(new PathNode
+                        {
+                            Name = pi1.Name,
+                        });
                     }
                 }
                 else

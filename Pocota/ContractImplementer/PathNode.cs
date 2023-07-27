@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -12,6 +13,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     private const int s_indentationStep = 4;
 
     private static int s_genId = 0;
+    private static Regex s_checkPathPart = new Regex("^([_a-zA-Z]\\w+|\\*|@)!?$");
 
     private ObservableCollection<PathNode>? _children = null;
     private PathNode? _parent = null;
@@ -101,6 +103,67 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     public PathNode? Parent 
     { 
         get => _parent; 
+    }
+
+    public static PathNode FromPaths(string[] paths)
+    {
+        Dictionary<string, PathNode> cache = new();
+        StringBuilder sb = new();
+
+        PathNode result = new();
+
+        cache.Add(result.Name, result);
+
+        foreach (string path in paths)
+        {
+            string[] parts = path.Split('.');
+            sb.Clear();
+            for (int i = -1; i < parts.Length - 1; ++i)
+            {
+                PathNode parent = cache[sb.ToString()];
+                if (i >= 0)
+                {
+                    sb.Append('.');
+                }
+                if(
+                    !s_checkPathPart.IsMatch(parts[i + 1])
+                    || ("*".Equals(parts[i + 1]) && i < parts.Length - 2)
+                    || (parts[i + 1].EndsWith("!") && i < parts.Length - 2)
+                )
+                {
+                    throw new ArgumentException($"Invalid path: {path}");
+                }
+                bool isMandatory = parts[i + 1].EndsWith("!");
+                if (isMandatory)
+                {
+                    parts[i + 1] = parts[i + 1].Substring(0, parts[i + 1].Length - 1);
+                }
+                sb.Append(parts[i + 1]);
+                if (!cache.TryGetValue(sb.ToString(), out PathNode? node))
+                {
+                    node = new()
+                    {
+                        Name = parts[i + 1],
+                    };
+                    if (isMandatory)
+                    {
+                        node.IsMandatory = true;
+                    }
+                    cache.Add(node.Name, node);
+                    if (parent.Children is null)
+                    {
+                        parent.Children = new ObservableCollection<PathNode>();
+                    }
+                    parent.Children.Add(node);
+                    if(parent.Children.Count > 1 && parent.Children.Any(c => "*".Equals(c.Name)))
+                    {
+                        throw new ArgumentException($"Invalid paths array: '*' can be only single child of it's parent node!");
+                    }
+                }
+            }
+        }
+
+        return result;
     }
 
     public void Graft(PathNode scion)
@@ -199,6 +262,12 @@ public class PathNode: ICloneable, INotifyPropertyChanged
                         node.PropagateAccessStuff();
                     }
                     node.PropertyChanged += Node_PropertyChanged;
+                }
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                foreach (PathNode node in e.OldItems!)
+                {
+                    node.PropertyChanged -= Node_PropertyChanged;
                 }
                 break;
             default:
