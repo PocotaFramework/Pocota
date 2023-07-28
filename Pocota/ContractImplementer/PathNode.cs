@@ -13,7 +13,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     private const int s_indentationStep = 4;
 
     private static int s_genId = 0;
-    private static Regex s_checkPathPart = new Regex("^([_a-zA-Z]\\w+|\\*|@)!?$");
+    private static Regex s_checkPathPart = new Regex("^(([_a-zA-Z]\\w*|@)!?|\\*)$");
 
     private ObservableCollection<PathNode>? _children = null;
     private PathNode? _parent = null;
@@ -28,14 +28,6 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     public string Name 
     { 
         get => _name; 
-        set 
-        {
-            if(string.IsNullOrEmpty(_name) && !string.IsNullOrEmpty(value))
-            {
-                _name = value;
-            }
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
-        } 
     }
 
     public string Path => BuildPath();
@@ -47,6 +39,10 @@ public class PathNode: ICloneable, INotifyPropertyChanged
         {
             if(_children is null && value is { })
             {
+                if(_isMandatory && !(bool)_isPropagatedMandatory)
+                {
+                    throw new InvalidOperationException($"Mandatory node can not have children!");
+                }
                 _children = value;
                 _children.CollectionChanged += _children_CollectionChanged;
                 foreach (var item in _children)
@@ -77,6 +73,10 @@ public class PathNode: ICloneable, INotifyPropertyChanged
         {
             if(!_isAccessStuff && value)
             {
+                if(_parent is { } || !string.IsNullOrEmpty(_name))
+                {
+                    throw new InvalidOperationException($"{nameof(IsAccessStuff)} can be set only to root node!");
+                }
                 PropagateAccessStuff();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsAccessStuff)));
             }
@@ -86,15 +86,6 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     public bool IsMandatory 
     { 
         get => _isMandatory;
-        set
-        {
-            if(!_isMandatory && value)
-            {
-                _isPropagatedMandatory = false;
-                PropagateMandatory();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMandatory)));
-            }
-        }
     }
     public bool? IsPropagatedMandatory
     {
@@ -105,12 +96,32 @@ public class PathNode: ICloneable, INotifyPropertyChanged
         get => _parent; 
     }
 
+    public PathNode(string name)
+    {
+        if (!string.IsNullOrEmpty(name))
+        {
+            if (!s_checkPathPart.IsMatch(name))
+            {
+                throw new ArgumentException($"{nameof(Name)} '{name}' does not fit requirement!");
+            }
+            _name = name;
+            if (_name.EndsWith("!"))
+            {
+                _name = _name.Substring(0, _name.Length - 1);
+                _isPropagatedMandatory = false;
+                _isMandatory = true;
+                PropagateMandatory();
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsMandatory)));
+            }
+        }
+    }
+
     public static PathNode FromPaths(string[] paths)
     {
         Dictionary<string, PathNode> cache = new();
         StringBuilder sb = new();
 
-        PathNode result = new();
+        PathNode result = new(string.Empty);
 
         cache.Add(result.Name, result);
 
@@ -125,30 +136,10 @@ public class PathNode: ICloneable, INotifyPropertyChanged
                 {
                     sb.Append('.');
                 }
-                if(
-                    !s_checkPathPart.IsMatch(parts[i + 1])
-                    || ("*".Equals(parts[i + 1]) && i < parts.Length - 2)
-                    || (parts[i + 1].EndsWith("!") && i < parts.Length - 2)
-                )
-                {
-                    throw new ArgumentException($"Invalid path: {path}");
-                }
-                bool isMandatory = parts[i + 1].EndsWith("!");
-                if (isMandatory)
-                {
-                    parts[i + 1] = parts[i + 1].Substring(0, parts[i + 1].Length - 1);
-                }
                 sb.Append(parts[i + 1]);
                 if (!cache.TryGetValue(sb.ToString(), out PathNode? node))
                 {
-                    node = new()
-                    {
-                        Name = parts[i + 1],
-                    };
-                    if (isMandatory)
-                    {
-                        node.IsMandatory = true;
-                    }
+                    node = new(parts[i + 1]);
                     cache.Add(node.Name, node);
                     if (parent.Children is null)
                     {
@@ -169,7 +160,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     public void Graft(PathNode scion)
     {
         Dictionary<string, PathNode> cache = new();
-        CollectBranch(cache);
+        CollectSubtree(cache);
         WalkGraft(cache, this, this, scion);
     }
 
@@ -180,8 +171,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
 
     public object Clone()
     {
-        PathNode result = new();
-        result._name = _name;
+        PathNode result = new(_name);
         result._isAccessStuff = _isAccessStuff;
         result._isMandatory = _isMandatory;
         result._isPropagatedMandatory = _isPropagatedMandatory;
@@ -198,14 +188,14 @@ public class PathNode: ICloneable, INotifyPropertyChanged
         return result;
     }
 
-    public void CollectBranch(Dictionary<string, PathNode> cache)
+    public void CollectSubtree(Dictionary<string, PathNode> cache)
     {
         cache.Add(Path, this);
         if (_children is { })
         {
             foreach (PathNode child in _children)
             {
-                child.CollectBranch(cache);
+                child.CollectSubtree(cache);
             }
         }
     }
@@ -267,6 +257,10 @@ public class PathNode: ICloneable, INotifyPropertyChanged
             case NotifyCollectionChangedAction.Remove:
                 foreach (PathNode node in e.OldItems!)
                 {
+                    if (!"*".Equals(node.Name))
+                    {
+                        throw new InvalidOperationException("Only '*' node can be removed!");
+                    }
                     node.PropertyChanged -= Node_PropertyChanged;
                 }
                 break;

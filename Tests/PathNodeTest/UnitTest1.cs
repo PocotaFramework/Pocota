@@ -1,441 +1,544 @@
-using Microsoft.AspNetCore.Http;
 using Net.Leksi.Pocota.Common;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection.Emit;
-using System.Text;
-using System.Xml.Linq;
 
-namespace PathNodeTest
+namespace PathNodeTest;
+
+public class PathNodeTests
 {
-    public class Tests
+    private const string s_alphabet = "abcdefghijklmnopqrstuvwxyz";
+    private const int s_numRandomTests = 100;
+    private const int s_scionDepth = 3;
+    private const int s_scionNumChildren = 3;
+    private const int s_treeMinDepth = 3;
+    private const int s_treeMaxDepth = 5;
+    private const int s_pushStockBase = 3;
+    private const int s_hasChildrenBase = 3;
+    private const int s_numChildrenParameter = 3;
+    private const int s_isMandatoryBase = 5;
+    private const int s_minLevelForMandatory = 2;
+
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
     {
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Trace.Listeners.Clear();
-            Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.AutoFlush = true;
-        }
+        Trace.Listeners.Clear();
+        Trace.Listeners.Add(new ConsoleTraceListener());
+        Trace.AutoFlush = true;
+    }
 
-        [Test]
-        public void Test1()
+    /// <summary>
+    /// Несколько циклов строим случайное дерево и в случайных местах прививаем
+    /// к нему случайные поддеревья, помеченные как AccessStuff,
+    /// проверяем, что всё прошло по плану
+    /// </summary>
+    [Test]
+    public void RandomTreeTest()
+    {
+        for (int i = 0; i < s_numRandomTests; ++i)
         {
-            PathNode stock;
-            PathNode stock1;
+            // Список Id узлов, назначенных обязательными непосредственно через присвоение
+            // свойства IsMandatory
+            List<PathNode> notPropagatedMandatories = new();
 
-            PathNode root = new()
+            // Ожидаемое соответствие родительских узлов детским по Id
+            // <ребёнок, ожидаемый родительский Id> 
+            Dictionary<PathNode, int> parents = new();
+
+            // Кэш использованных имен дестких узлов для родителя с Id
+            // нужен для генерации уникальных имен
+            Dictionary<int, HashSet<string>> usedNames = new();
+
+            // Генератор для всех случайных данных
+            Random rnd = new();
+
+            // Количество узлов в дереве
+            int count = 0;
+
+            // Количество узлов в дереве, назначенных обязательными непосредственно через присвоение
+            // свойства IsMandatory
+            int countMandatory = 0;
+
+            // Список узлов, на которые будут привиты деревья
+            List<StockHolder> stocks = new();
+
+            // Делегат вызываемый при выборе подвоя
+            Action<PathNode> pushStock = node =>
             {
-                Children = new ObservableCollection<PathNode>()
-                {
-                    new PathNode
-                    {
-                        Name = "a",
-                    },
-                    new PathNode
-                    {
-                        Name = "b",
-                    },
-                    (stock1 = new PathNode
-                    {
-                        Name = "c",
-                        Children = new ObservableCollection<PathNode>()
-                        {
-                            (stock = new PathNode
-                            {
-                                Name = "d",
-                                IsMandatory = true,
-                                Children = new ObservableCollection<PathNode>()
-                                {
-                                    new PathNode
-                                    {
-                                        Name = "e",
-                                    },
-                                },
-                            }),
-                        },
-                    }),
-                },
+                stocks.Add(new StockHolder { Stock = node, Stocks = stocks, Rnd = rnd });
             };
 
-            Console.WriteLine($"root: {root}");
+            Action incCount = () => ++count;
+            Action incCountMandatory = () => ++countMandatory;
+            Action decCount = () => --count;
+            Action decCountMandatory = () => --countMandatory;
 
-            PathNode scion = new PathNode
+            // Строим дерево, заполняем счётчики, выбираем подвои
+            PathNode root = CreateNode(
+                null, 0, rnd, notPropagatedMandatories, incCount, parents, incCountMandatory,
+                // В первом случае не прививаем на внутренние узлы
+                i == 0 ? null : pushStock,
+                usedNames
+            );
+            if (i == 0)
             {
-                IsMandatory = true,
-                IsAccessStuff = true,
-                Children = new ObservableCollection<PathNode>()
-                {
-                    new PathNode
-                    {
-                        Name = "e",
-                        Children = new ObservableCollection<PathNode>()
-                        {
-                            new PathNode
-                            {
-                                Name = "f",
-                            },
-                        },
-                    },
-                },
-            };
-            Console.WriteLine($"scion: {scion}");
+                // В одном из случаев прививаем на корень
+                stocks.Add(new StockHolder { Stock = root, Stocks = stocks, Rnd = rnd });
+            }
 
-            PathNode scion1 = new PathNode
+            // Запоминаем количество узлов
+            int numNodes = count;
+            int numMandatory = countMandatory;
+
+            // Проверяем, что начальное дерево без прививок вышло таким, как планировалось
+            Assert.That(countMandatory, Is.EqualTo(notPropagatedMandatories.Count));
+            WalkAssert(root, notPropagatedMandatories, decCount, parents, decCountMandatory);
+            Assert.That(count, Is.EqualTo(0));
+            Assert.That(countMandatory, Is.EqualTo(0));
+
+            // Пробуем установить IsAccessStuff не в корень, ждём исключение
+            InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
+                () => parents.Keys.ToArray()[parents.Count / 2].IsAccessStuff = true
+            );
+            Assert.That(ioex.Message, Is.EqualTo("IsAccessStuff can be set only to root node!"));
+
+            // Для всех правильных подвоев генерируем привой и прививаем
+            foreach (StockHolder stock in stocks)
             {
-                IsMandatory = true,
-                IsAccessStuff = true,
-                Children = new ObservableCollection<PathNode>()
-                {
-                    new PathNode
-                    {
-                        Name = "d",
-                        Children = new ObservableCollection<PathNode>()
-                        {
-                            new PathNode
-                            {
-                                Name = "e",
-                                Children = new ObservableCollection<PathNode>()
-                                {
-                                    new PathNode
-                                    {
-                                        Name = "f",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            };
-            Console.WriteLine($"scion: {scion}");
-            Console.WriteLine($"scion1: {scion1}");
+                stock.CreateScion();
+                stock.Stock.Graft(stock.Scion);
+            }
 
-            stock.Graft(scion);
-            stock1.Graft(scion1);
-
-            Console.WriteLine($"root: {root}");
-        }
-
-        [Test]
-        public void Test2()
-        {
-            for(int i = 0; i < 100; ++i)
+            // Пробуем привить к обязательному листу, ждём исключение
+            if(notPropagatedMandatories.Any())
             {
-                HashSet<int> notPropagatedMandatoryById = new();
-                Dictionary<int, int> parents = new();
-                Dictionary<int, HashSet<string>> names = new();
-                Random rnd = new();
-                int count = 0;
-                int countMandatory = 0;
-                List<StockHolder> stocks = new();
-
-                Action<PathNode> pushStock = node =>
-                {
-                    stocks.Add(new StockHolder { Stock = node, Stocks = stocks, Rnd = rnd });
+                StockHolder sh = new StockHolder 
+                { 
+                    Stock = notPropagatedMandatories[notPropagatedMandatories.Count / 2], 
+                    Stocks = stocks, 
+                    Rnd = rnd 
                 };
+                sh.CreateScion();
+                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                    () => sh.Stock.Graft(sh.Scion)
+                );
+                Assert.That(ioex1.Message, Is.EqualTo("Mandatory node can not have children!"));
+            }
 
-                PathNode root = CreatePathNode(null, 0, rnd, notPropagatedMandatoryById, ref count, parents, ref countMandatory, i == 0 ? null : pushStock, names);
-                if(i == 0)
-                {
-                    stocks.Add(new StockHolder { Stock = root, Stocks = stocks, Rnd = rnd });
-                }
+            int numAdded = stocks.Select(s => s.AddedNodes.Count).Sum();
+            int countAccessStuff = 0;
 
-                int numNodes = count;
-                int numMandatory = countMandatory;
+            // Проверяем, что прививка прошла успешно
+            WalkAssertAfterGraft(root, ref count, ref countMandatory, ref countAccessStuff);
+            Assert.That(count, Is.EqualTo(numNodes + numAdded));
+            Assert.That(countMandatory, Is.EqualTo(numMandatory));
+            Assert.That(countAccessStuff, Is.EqualTo(numAdded));
+        }
+    }
 
-                Assert.That(countMandatory, Is.EqualTo(notPropagatedMandatoryById.Count));
-
-                WalkAssert(root, root, notPropagatedMandatoryById, ref count, parents, ref countMandatory);
-                Assert.That(count, Is.EqualTo(0));
-                Assert.That(countMandatory, Is.EqualTo(0));
-
-                //root.PropertyChanged += Root_PropertyChanged;
-
-                foreach(StockHolder stock in stocks)
-                {
-                    stock.CreateScion();
-                    stock.Stock.Graft(stock.Scion);
-                }
-                int numAdded = stocks.Select(s => s.AddedNodes.Count).Sum();
-                int countAccessStuff = 0;
-
-                WalkAssertAfterGraft(root, ref count, ref countMandatory, ref countAccessStuff);
-
-                Assert.That(count, Is.EqualTo(numNodes + numAdded));
-                Assert.That(countMandatory, Is.EqualTo(numMandatory));
-                Assert.That(countAccessStuff, Is.EqualTo(numAdded));
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <param name="count"></param>
+    /// <param name="countMandatory"></param>
+    /// <param name="countAccessStuff"></param>
+    private void WalkAssertAfterGraft(PathNode tree, ref int count, ref int countMandatory, 
+        ref int countAccessStuff)
+    {
+        ++count;
+        if (tree.IsMandatory && !(bool)tree.IsPropagatedMandatory!)
+        {
+            ++countMandatory;
+            AssertPropagationMandatory(tree);
+        }
+        if (tree.IsAccessStuff)
+        {
+            ++countAccessStuff;
+        }
+        if (tree.Children is { })
+        {
+            foreach (PathNode child in tree.Children)
+            {
+                WalkAssertAfterGraft(child, ref count, ref countMandatory, ref countAccessStuff);
             }
         }
+    }
 
-        private void WalkAssertAfterGraft(PathNode tree, ref int count, ref int countMandatory, ref int countAccessStuff)
+    /// <summary>
+    /// Вспомогательный класс для организации прививки
+    /// </summary>
+    class StockHolder
+    {
+        /// <summary>
+        /// Подвой
+        /// </summary>
+        internal PathNode Stock { get; init; }
+        /// <summary>
+        /// Список всех точек привики
+        /// </summary>
+        internal List<StockHolder> Stocks { get; init; }
+        /// <summary>
+        /// Генератор случайностей
+        /// </summary>
+        internal Random Rnd { get; init; }
+        /// <summary>
+        /// Привой
+        /// </summary>
+        internal PathNode Scion { get; private set; }
+        /// <summary>
+        /// Список ожидаемых узлов, которые будут добавлены к исходномиу дереву
+        /// </summary>
+        internal List<PathNode> AddedNodes { get; init; } = new();
+        /// <summary>
+        /// Генерация привоя
+        /// </summary>
+        internal void CreateScion()
         {
-            ++count;
-            if (tree.IsMandatory && !(bool)tree.IsPropagatedMandatory!)
-            {
-                ++countMandatory;
-                AssertPropagationMandatory(tree);
-            }
-            if (tree.IsAccessStuff)
-            {
-                ++countAccessStuff;
-            }
-            if(tree.Children is { })
-            {
-                foreach(PathNode child in tree.Children)
-                {
-                    WalkAssertAfterGraft(child, ref count, ref countMandatory, ref countAccessStuff);
-                }
-            }
+            // Кэш использованных имен дестких узлов для родителя с Id
+            // нужен для генерации уникальных имен
+            Dictionary<int, HashSet<string>> usedNames = new();
+
+            Scion = CreateSubtree(null, Stock, 0, true, usedNames);
+            Scion.IsAccessStuff = true;
         }
 
-        private void Root_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        /// <summary>
+        /// Генерация поддерева привоя.
+        /// Строим дерево, которое сначала повторяет поддерево в узле подвоя, 
+        /// потом в некоторых узлах расходится с ним.
+        /// Поддеревья привоя генерируем однообразно:
+        /// <c>s_scionDepth</c> яруса по <c>s_scionNumChildren</c> ребёнка в узле
+        /// </summary>
+        /// <param name="parent">
+        /// Родительский узел привоя
+        /// </param>
+        /// <param name="stock">
+        /// Соответствующий родительский узел подвоя, когда родительский узел привоя повторяет его.
+        /// </param>
+        /// <param name="level">
+        /// Уровень рекурсии
+        /// </param>
+        /// <param name="copy">
+        /// Указание, будет ли узел копией узла исходного дерева (не учитывая детей)
+        /// </param>
+        /// <param name="usedNames">
+        /// Вспомогательный кэш для генерации уникальных имён
+        /// </param>
+        /// <returns>
+        /// Созданный узел
+        /// </returns>
+        private PathNode CreateSubtree(
+            PathNode? parent, PathNode stock, int level, bool copy, Dictionary<int, HashSet<string>> usedNames
+        )
         {
-            Console.WriteLine(e.PropertyName);
-        }
+            PathNode result;
 
-        class StockHolder
-        {
-            internal PathNode Stock { get; init; }
-            internal List<StockHolder> Stocks { get; init; }
-            internal Random Rnd { get; init; }
-            internal PathNode Scion { get; private set; }
-            internal List<PathNode> AddedNodes { get; init; } = new();
-            internal void CreateScion()
+            if (!usedNames.ContainsKey(parent?.Id ?? 0))
             {
-                Dictionary<int, HashSet<string>> names = new();
-                Scion = CreateLevel(null, Stock, 0, true, names);
-                Scion.IsAccessStuff = true;
+                usedNames.Add(parent?.Id ?? 0, new HashSet<string>());
             }
-
-            private PathNode CreateLevel(PathNode? parent, PathNode stock, int level, bool copy, Dictionary<int, HashSet<string>> names)
+            if (copy)
             {
-                string alphabet = "abcdefghijklmnopqrstuvwxyz";
-                PathNode result = new();
-
-                if (!names.ContainsKey(parent?.Id ?? 0))
+                if (level > 0)
                 {
-                    names.Add(parent?.Id ?? 0, new HashSet<string>());
-                }
-                if (copy)
-                {
-                    if(level > 0)
-                    {
-                        result.Name = stock.Name;
-                        names[parent?.Id ?? 0].Add(result.Name);
-                    }
-                    if (level < 3)
-                    {
-                        int cnt = 3;
-                        if (result.Children is null)
-                        {
-                            result.Children = new ObservableCollection<PathNode>();
-                        }
-                        if(stock.Children is { })
-                        {
-                            int take = Rnd.Next(3);
-                            foreach (PathNode node in stock.Children)
-                            {
-                                if(take > 0 && !Stocks.Any(h => h.Stock.Id == node.Id))
-                                {
-                                    result.Children.Add(CreateLevel(result, node, level + 1, true, names));
-                                    --cnt;
-                                    --take;
-                                }
-                            }
-                        }
-                        if(stock.Children is { })
-                        {
-                            if (!names.ContainsKey(result.Id))
-                            {
-                                names.Add(result.Id, new HashSet<string>());
-                            }
-                            foreach(PathNode child in stock.Children)
-                            {
-                                names[result.Id].Add(child.Name);
-                            }
-                        }
-                        for (int i = 0; i < cnt; ++i)
-                        {
-                            result.Children.Add(CreateLevel(result, stock, level + 1, false, names));
-                        }
-                    }
+                    // Корень имени не имеет
+                    result = new PathNode(stock.Name);
+                    usedNames[parent?.Id ?? 0].Add(result.Name);
                 }
                 else
                 {
-                    string name = string.Empty;
-                    if (level > 0)
+                    result = new PathNode(string.Empty);
+                }
+                if (level < s_scionDepth)
+                {
+                    // Копируем случайное число детей узла исходного дерева, остальные создаём новые.
+                    int cnt = s_scionNumChildren;
+                    if (result.Children is null)
                     {
-                        for (
-                            name = alphabet.Substring(Rnd.Next(alphabet.Length), 1);
-                            !names[parent?.Id ?? 0].Add(name);
-                            name = alphabet.Substring(Rnd.Next(alphabet.Length), 1)
-                        ) { }
+                        result.Children = new ObservableCollection<PathNode>();
                     }
-                    result.Name = name;
-                    AddedNodes.Add(result);
-                    if(level < 3)
+                    if (stock.Children is { })
                     {
-                        if (result.Children is null)
+                        int take = Rnd.Next(Math.Min(cnt, stock.Children.Count));
+                        // Копируем
+                        foreach (PathNode node in stock.Children)
                         {
-                            result.Children = new ObservableCollection<PathNode>();
-                        }
-                        for (int i = 0; i < 3; ++i)
-                        {
-                            result.Children.Add(CreateLevel(result, result, level + 1, false, names));
+                            if (
+                                take > 0
+                                // Избегаем пересечения с узлами других подвоев!
+                                && !Stocks.Any(h => h.Stock.Id == node.Id)
+                                // Избегаем обязательных листьев!
+                                && (!node.IsMandatory || (bool)node.IsPropagatedMandatory!)
+                            )
+                            {
+                                result.Children.Add(CreateSubtree(result, node, level + 1, true, usedNames));
+                                --cnt;
+                                --take;
+                            }
                         }
                     }
-                }
-
-                return result;
-            }
-        }
-
-        private void WalkAssert(PathNode root, PathNode node, HashSet<int> notPropagatedMandatoryById, ref int count, Dictionary<int, int> parents, ref int countMandatory)
-        {
-            Assert.That(node.IsPropagatedMandatory is { }, Is.EqualTo(node.IsMandatory == true));
-            if(node.IsPropagatedMandatory is { })
-            {
-                if (node.IsMandatory)
-                {
-                    if (!(bool)node.IsPropagatedMandatory)
+                    if (stock.Children is { })
                     {
-                        --countMandatory;
+                        if (!usedNames.ContainsKey(result.Id))
+                        {
+                            usedNames.Add(result.Id, new HashSet<string>());
+                        }
+                        foreach (PathNode child in stock.Children)
+                        {
+                            usedNames[result.Id].Add(child.Name);
+                        }
+                    }
+                    for (int i = 0; i < cnt; ++i)
+                    {
+                        // Тут создаём оригиналы
+                        result.Children.Add(CreateSubtree(result, stock, level + 1, false, usedNames));
                     }
                 }
-                AssertPropagationMandatory(node);
-                Assert.That(notPropagatedMandatoryById.Contains(node.Id), Is.EqualTo(!node.IsPropagatedMandatory));
-            }
-            if (node.Parent is null)
-            {
-                Assert.That(node.Name, Is.EqualTo(string.Empty));
             }
             else
             {
-                Assert.That(node.Name, Is.Not.EqualTo(string.Empty));
-            }
-            if (node.Parent is null || string.IsNullOrEmpty(node.Parent.Path))
-            {
-                Assert.That(node.Name, Is.EqualTo(node.Path));
-            }
-            else
-            {
-                Assert.That(node.Path, Is.EqualTo($"{node.Parent.Path}.{node.Name}"), root.ToString());
-            }
-            --count;
-            if(node.Children is { })
-            {
-                Assert.That(node.Children.GroupBy(ch => ch.Name).Count(), Is.EqualTo(node.Children.Count), node.ToString());
-                foreach(PathNode child in node.Children)
+                // Создаём оригинальный узел,
+                // Генерируем имя узла, уникальное среди сестёр и, если родитель - копия,
+                // то также среди детей копируемого родителем узла
+                string name = string.Empty;
+                if (level > 0)
                 {
-                    Assert.That(parents[child.Id], Is.EqualTo(node.Id));
-                    WalkAssert(root, child, notPropagatedMandatoryById, ref count, parents, ref countMandatory);
+                    for (
+                        name = s_alphabet.Substring(Rnd.Next(s_alphabet.Length), 1);
+                        !usedNames[parent?.Id ?? 0].Add(name);
+                        name = s_alphabet.Substring(Rnd.Next(s_alphabet.Length), 1)
+                    ) { }
+                }
+                result = new PathNode(name);
+                // Этот узел будет добавлен в исходное дерево
+                AddedNodes.Add(result);
+                if (level < s_scionDepth)
+                {
+                    // Дети оригинального узла - тоже оригинальные
+                    if (result.Children is null)
+                    {
+                        result.Children = new ObservableCollection<PathNode>();
+                    }
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        result.Children.Add(CreateSubtree(result, result, level + 1, false, usedNames));
+                    }
                 }
             }
-        }
 
-        private void AssertPropagationMandatory(PathNode node)
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Рекурсивно обходим дерево и проверяем
+    /// </summary>
+    /// <param name="node"></param>
+    /// <param name="notPropagatedMandatories"></param>
+    /// <param name="count"></param>
+    /// <param name="parents"></param>
+    /// <param name="countMandatory"></param>
+    private void WalkAssert(PathNode node, List<PathNode> notPropagatedMandatories,
+        Action decCount, Dictionary<PathNode, int> parents, Action decCountMandatory)
+    {
+        Assert.That(node.IsPropagatedMandatory is { }, Is.EqualTo(node.IsMandatory == true));
+        if (node.IsPropagatedMandatory is { })
         {
-            Assert.That(node.IsMandatory);
-            if (node.Parent is { })
+            if (!(bool)node.IsPropagatedMandatory)
             {
-                AssertPropagationMandatory(node.Parent);
+                decCountMandatory();
             }
+            AssertPropagationMandatory(node);
+            Assert.That(notPropagatedMandatories.Contains(node), Is.EqualTo(!node.IsPropagatedMandatory));
         }
-
-        private void PrintTree(PathNode tree, List<StockHolder> stocks, bool withStocks)
+        if (node.IsAccessStuff)
         {
-            if(withStocks)
+            AssertPropagationAccessStuff(node);
+        }
+        if (node.Parent is null)
+        {
+            Assert.That(node.Name, Is.EqualTo(string.Empty));
+        }
+        else
+        {
+            Assert.That(node.Name, Is.Not.EqualTo(string.Empty));
+        }
+        if (node.Parent is null || string.IsNullOrEmpty(node.Parent.Path))
+        {
+            Assert.That(node.Name, Is.EqualTo(node.Path));
+        }
+        else
+        {
+            Assert.That(node.Path, Is.EqualTo($"{node.Parent.Path}.{node.Name}"));
+        }
+        decCount();
+        if (node.Children is { })
+        {
+            Assert.That(node.Children.GroupBy(ch => ch.Name).Count(), Is.EqualTo(node.Children.Count), node.ToString());
+            foreach (PathNode child in node.Children)
             {
-                string[] path = tree.Path.Split('.');
-                foreach(StockHolder stock in stocks.Where(s => s.Stock.Path.Length > 0 && tree.Path.StartsWith(s.Stock.Path)))
-                {
-                    path[(stock.Stock.Path.Length + 1) / 2 - 1] = $"({stocks.IndexOf(stock)}:{path[(stock.Stock.Path.Length + 1) / 2 - 1]})";
-                }
-                Console.WriteLine($"{(stocks.Any() && string.IsNullOrEmpty(stocks[0].Stock.Path) ? $"(0)" : string.Empty)}{(path.Length <= 1 && string.IsNullOrEmpty(path[0]) ? "()" : string.Join('.', path))}");
-            }
-            else
-            {
-                Console.WriteLine(string.IsNullOrEmpty(tree.Path) ? "()" : tree.Path);
-            }
-            if (tree.Children is { })
-            {
-                foreach (PathNode child in tree.Children)
-                {
-                    PrintTree(child, stocks, withStocks);
-                }
+                Assert.That(parents[child], Is.EqualTo(node.Id));
+                WalkAssert(child, notPropagatedMandatories, decCount, parents, decCountMandatory);
             }
         }
+    }
 
-        private PathNode CreatePathNode(
-            PathNode? parent, int level, Random rnd, HashSet<int> notPropagatedMandatoryById, ref int count, Dictionary<int, int> parents, 
-            ref int countMandatory, Action<PathNode>? pushStock, Dictionary<int, HashSet<string>> names
+    /// <summary>
+    /// Проверяем, что свойство <c>IsAccessStuff</c> распространяется к листьям
+    /// </summary>
+    /// <param name="node"></param>
+    private void AssertPropagationAccessStuff(PathNode node)
+    {
+        Assert.That(node.IsMandatory);
+        if (node.Children is { })
+        {
+            foreach (PathNode child in node.Children)
+            {
+                AssertPropagationAccessStuff(child);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Проверяем, что свойство <c>IsMandatory</c> распространяется к корню
+    /// </summary>
+    /// <param name="node"></param>
+    private void AssertPropagationMandatory(PathNode node)
+    {
+        Assert.That(node.IsMandatory);
+        if (node.Parent is { })
+        {
+            AssertPropagationMandatory(node.Parent);
+        }
+    }
+
+    /// <summary>
+    /// Распечатка дерева, если нужно посмотреть
+    /// </summary>
+    /// <param name="tree"></param>
+    /// <param name="stocks">
+    /// Список узлов подвоя
+    /// </param>
+    /// <param name="withStocks">
+    /// Указывает, нужно ли показывать узлы подвоя.
+    /// </param>
+    private void PrintTree(PathNode tree, List<StockHolder> stocks, bool withStocks)
+    {
+        if (withStocks)
+        {
+            string[] path = tree.Path.Split('.');
+            foreach (StockHolder stock in stocks.Where(s => s.Stock.Path.Length > 0 && tree.Path.StartsWith(s.Stock.Path)))
+            {
+                path[(stock.Stock.Path.Length + 1) / 2 - 1] = $"({stocks.IndexOf(stock)}:{path[(stock.Stock.Path.Length + 1) / 2 - 1]})";
+            }
+            Console.WriteLine($"{(stocks.Any() && string.IsNullOrEmpty(stocks[0].Stock.Path) ? $"(0)" : string.Empty)}{(path.Length <= 1 && string.IsNullOrEmpty(path[0]) ? "()" : string.Join('.', path))}");
+        }
+        else
+        {
+            Console.WriteLine(string.IsNullOrEmpty(tree.Path) ? "()" : tree.Path);
+        }
+        if (tree.Children is { })
+        {
+            foreach (PathNode child in tree.Children)
+            {
+                PrintTree(child, stocks, withStocks);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Создание узла исходного дерева
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="level"></param>
+    /// <param name="rnd"></param>
+    /// <param name="notPropagatedMandatories"></param>
+    /// <param name="count"></param>
+    /// <param name="parents"></param>
+    /// <param name="countMandatory"></param>
+    /// <param name="pushStock"></param>
+    /// <param name="usedNames"></param>
+    /// <returns></returns>
+    private PathNode CreateNode(
+        PathNode? parent, int level, Random rnd, List<PathNode> notPropagatedMandatories,
+        Action incCount,
+        Dictionary<PathNode, int> parents,
+        Action incCountMandatory, Action<PathNode>? pushStock, Dictionary<int, HashSet<string>> usedNames
+    )
+    {
+        if (!usedNames.ContainsKey(parent?.Id ?? 0))
+        {
+            usedNames.Add(parent?.Id ?? 0, new HashSet<string>());
+        }
+
+        bool willHaveChildren = level < s_treeMinDepth
+            || (level < s_treeMaxDepth && rnd.Next() % s_hasChildrenBase != 0);
+
+        bool willBeMandatory = !willHaveChildren && level >= s_minLevelForMandatory 
+            && rnd.Next() % s_isMandatoryBase == 0;
+
+        // Количество детей, добавленных в список до его присвоения узлу
+        int numChildrenBefore = willHaveChildren ? rnd.Next(s_numChildrenParameter) : 0;
+
+        // Количество детей, добавленных в список после его присвоения узлу
+        int numChildrenAfter = willHaveChildren ?
+            (numChildrenBefore == 0 ? 1 : 0) + rnd.Next(s_numChildrenParameter) : 0;
+
+        // Генерируем уникальное имя среди сестёр
+        string name = string.Empty;
+        if (level > 0)
+        {
+            for (
+                name = s_alphabet.Substring(rnd.Next(s_alphabet.Length), 1);
+                !usedNames[parent?.Id ?? 0].Add(name);
+                name = s_alphabet.Substring(rnd.Next(s_alphabet.Length), 1)
+            ) { }
+            if (willBeMandatory)
+            {
+                name += "!";
+            }
+
+        }
+        PathNode node = new(name);
+
+        if (node.IsMandatory)
+        {
+            // Фиксируем, что данный узел был явно назначен обязательным
+            notPropagatedMandatories.Add(node);
+            incCountMandatory();
+        }
+        // С некоторой вероятностью назначаем этот узел узлом подвоя.
+        // Это не должен быть корень, с корнем разобрались отдельно
+        if (
+            level > 0 
+            && pushStock is { }
+            && (!node.IsMandatory || (bool)node.IsPropagatedMandatory!)
+            && rnd.Next() % s_pushStockBase == 0
         )
         {
-            if (!names.ContainsKey(parent?.Id ?? 0))
-            {
-                names.Add(parent?.Id ?? 0, new HashSet<string>());
-            }
-            int pushStockBase = 3;
-            string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            bool hasChildren = level == 0 || (level < 5 && rnd.Next() % 3 != 0);
-            bool isMandatory = rnd.Next() % 5 != 0;
-            int numChildrenBefore = hasChildren ? rnd.Next(3) : 0;
-            int numChildrenAfter = hasChildren ? (numChildrenBefore == 0 ? 1 : 0) + rnd.Next(3) : 0;
-            int nameSettingCase = rnd.Next(hasChildren ? 4 : 2);
-            string name = string.Empty;
-            if(level > 0)
-            {
-                for (
-                    name = alphabet.Substring(rnd.Next(alphabet.Length), 1);
-                    !names[parent?.Id ?? 0].Add(name);
-                    name = alphabet.Substring(rnd.Next(alphabet.Length), 1)
-                ) { }
-            }
-            PathNode node = nameSettingCase == 0 ? new()
-            {
-                Name = name,
-            } : new();
-            if(level > 0 && pushStock is { } && rnd.Next() % pushStockBase == 0)
-            {
-                pushStock(node);
-                //pushStock = null;
-            }
-            parents.Add(node.Id, parent is { } ? parent.Id : 0);
-            ++count;
-            if (isMandatory)
-            {
-                node.IsMandatory = true;
-                notPropagatedMandatoryById.Add(node.Id);
-                ++countMandatory;
-            }
-            if(nameSettingCase == 1)
-            {
-                node.Name = name;
-            }
-            if (hasChildren)
-            {
-                Action<PathNode>? pushStockNext = pushStock;// is { } && rnd.Next() % 3 == 0 ? pushStock : null;
-                ObservableCollection <PathNode> children = new();
-                for(int i = 0; i < numChildrenBefore; ++i)
-                {
-                    children.Add(CreatePathNode(node, level + 1, rnd, notPropagatedMandatoryById, ref count, parents, ref countMandatory, pushStockNext, names));
-                }
-                node.Children = children;
-                if (nameSettingCase == 2)
-                {
-                    node.Name = name;
-                }
-                for (int i = 0; i < numChildrenAfter; ++i)
-                {
-                    children.Add(CreatePathNode(node, level + 1, rnd, notPropagatedMandatoryById, ref count, parents, ref countMandatory, pushStockNext, names));
-                }
-                if (nameSettingCase == 3)
-                {
-                    node.Name = name;
-                }
-            }
-            return node;
+            pushStock(node);
         }
+
+        // Фиксируем родителя отдельно, для последующей проверки
+        parents.Add(node, parent is { } ? parent.Id : 0);
+
+        incCount();
+
+        if (willHaveChildren)
+        {
+            ObservableCollection<PathNode> children = new();
+            for (int i = 0; i < numChildrenBefore; ++i)
+            {
+                children.Add(CreateNode(node, level + 1, rnd, notPropagatedMandatories, 
+                    incCount, parents, incCountMandatory, pushStock, usedNames));
+            }
+            node.Children = children;
+            for (int i = 0; i < numChildrenAfter; ++i)
+            {
+                children.Add(CreateNode(node, level + 1, rnd, notPropagatedMandatories, 
+                    incCount, parents, incCountMandatory, pushStock, usedNames));
+            }
+        }
+        return node;
     }
 }

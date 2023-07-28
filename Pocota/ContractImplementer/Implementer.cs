@@ -1464,10 +1464,7 @@ public class Implementer : Runner
                     node.Children.RemoveAt(0);
                     foreach (PropertyInfo pi1 in targetType.GetRuntimeProperties())
                     {
-                        node.Children.Add(new PathNode
-                        {
-                            Name = pi1.Name,
-                        });
+                        node.Children.Add(new PathNode(pi1.Name));
                     }
                 }
                 else
