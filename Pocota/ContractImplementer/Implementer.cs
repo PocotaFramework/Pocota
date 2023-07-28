@@ -1422,7 +1422,7 @@ public class Implementer : Runner
                 {
                     if(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                     {
-                        child.IsList = true;
+                        //child.IsList = true;
 
                         if(child.Children is { })
                         {

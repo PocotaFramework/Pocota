@@ -22,6 +22,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     private bool _isAccessStuff = false;
     private bool _isPropagatedMandatory = true;
     private string _name = string.Empty;
+    private bool _internalRemovingChild = false;
 
     public int Id { get; init; } = Interlocked.Increment(ref s_genId);
 
@@ -39,9 +40,13 @@ public class PathNode: ICloneable, INotifyPropertyChanged
         {
             if(_children is null && value is { })
             {
-                if(_isMandatory && !(bool)_isPropagatedMandatory)
+                if (_isMandatory && !(bool)_isPropagatedMandatory)
                 {
                     throw new InvalidOperationException($"Mandatory node can not have children!");
+                }
+                if ("*".Equals(_name))
+                {
+                    throw new InvalidOperationException($"Node '*' can not have children!");
                 }
                 _children = value;
                 _children.CollectionChanged += _children_CollectionChanged;
@@ -57,14 +62,6 @@ public class PathNode: ICloneable, INotifyPropertyChanged
     public bool IsList 
     { 
         get => _isList;
-        set
-        {
-            if (!_isList && value)
-            {
-                _isList = true;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsList)));
-            }
-        }
     }
     public bool IsAccessStuff
     {
@@ -146,11 +143,7 @@ public class PathNode: ICloneable, INotifyPropertyChanged
                         parent.Children = new ObservableCollection<PathNode>();
                     }
                     parent.Children.Add(node);
-                    if(parent.Children.Count > 1 && parent.Children.Any(c => "*".Equals(c.Name)))
-                    {
-                        throw new ArgumentException($"Invalid paths array: '*' can be only single child of it's parent node!");
-                    }
-                }
+               }
             }
         }
 
@@ -242,6 +235,24 @@ public class PathNode: ICloneable, INotifyPropertyChanged
             case NotifyCollectionChangedAction.Add:
                 foreach (PathNode node in e.NewItems!)
                 {
+                    if (node.Parent is { })
+                    {
+                        _internalRemovingChild = true;
+                        _children!.Remove(node);
+                        throw new InvalidOperationException($"Node '{node.Path}' already has parent!");
+                    }
+                    if (string.IsNullOrEmpty(node.Name))
+                    {
+                        _internalRemovingChild = true;
+                        _children!.Remove(node);
+                        throw new InvalidOperationException($"Root node cannot be a child!");
+                    }
+                    if(_children!.Where(c => node.Name.Equals(c.Name)).Count() > 1)
+                    {
+                        _internalRemovingChild = true;
+                        _children!.Remove(node);
+                        throw new InvalidOperationException($"Cannot add duplicate node!");
+                    }
                     node._parent = this;
                     if (node._isMandatory)
                     {
@@ -251,16 +262,33 @@ public class PathNode: ICloneable, INotifyPropertyChanged
                     {
                         node.PropagateAccessStuff();
                     }
+                    if ("@".Equals(node._name))
+                    {
+                        _isList = true;
+                    }
+                    char ch;
+                    if (
+                        (
+                            _children!.Any(n => "*".Equals(n.Name)) && (ch = '*') == ch
+                            || _children!.Any(n => "@".Equals(n.Name)) && (ch = '@') == ch
+                        )
+                        && _children!.Count > 1
+                    ){
+                        _internalRemovingChild = true;
+                        _children.Remove(node);
+                        throw new InvalidOperationException($"Node '{ch}' can be the only child!");
+                    }
                     node.PropertyChanged += Node_PropertyChanged;
                 }
                 break;
             case NotifyCollectionChangedAction.Remove:
                 foreach (PathNode node in e.OldItems!)
                 {
-                    if (!"*".Equals(node.Name))
+                    if (!"*".Equals(node.Name) && !_internalRemovingChild)
                     {
                         throw new InvalidOperationException("Only '*' node can be removed!");
                     }
+                    _internalRemovingChild = false;
                     node.PropertyChanged -= Node_PropertyChanged;
                 }
                 break;
