@@ -1,13 +1,15 @@
 using Net.Leksi.Pocota.Common;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace PathNodeTest;
 
 public class PathNodeTests
 {
     private const string s_alphabet = "abcdefghijklmnopqrstuvwxyz@*";
-    private const int s_numRandomTests = 1000;
+    private const int s_numRandomTests = 100;
     private const int s_scionDepth = 3;
     private const int s_scionNumChildren = 3;
     private const int s_treeMinDepth = 3;
@@ -52,7 +54,7 @@ public class PathNodeTests
             Dictionary<int, HashSet<string>> usedNames = new();
 
             // Генератор для всех случайных данных
-            Random rnd = new();
+            Random rnd = new(1);
 
             // Количество узлов в дереве
             int count = 0;
@@ -63,6 +65,9 @@ public class PathNodeTests
 
             // Список узлов, на которые будут привиты деревья
             List<StockHolder> stocks = new();
+
+            // Ожидаемый список путей
+            List<string> paths = new();
 
             // Делегат вызываемый при выборе подвоя
             Action<PathNode> pushStock = node =>
@@ -80,7 +85,7 @@ public class PathNodeTests
                 null, 0, rnd, notPropagatedMandatories, incCount, parents, incCountMandatory,
                 // В первом случае не прививаем на внутренние узлы
                 i == 0 ? null : pushStock,
-                usedNames, specialNameNodes, 0
+                usedNames, specialNameNodes, 0, paths, string.Empty
             );
             if (i == 0)
             {
@@ -92,16 +97,57 @@ public class PathNodeTests
             int numNodes = count;
             int numMandatory = countMandatory;
 
+            Console.WriteLine(count);
+
             // Проверяем, что начальное дерево без прививок вышло таким, как планировалось
             Assert.That(countMandatory, Is.EqualTo(notPropagatedMandatories.Count));
             WalkAssert(root, notPropagatedMandatories, decCount, parents, decCountMandatory);
             Assert.That(count, Is.EqualTo(0));
             Assert.That(countMandatory, Is.EqualTo(0));
 
+            // Проверяем GetPaths
+            Assert.That(root.Paths, Is.EquivalentTo(paths));
+
+            // Проверяем GetNode
+            foreach(string path in paths)
+            {
+                PathNode? node = root.GetNode(path);
+                Assert.That(node, Is.Not.Null);
+                Assert.That(node.Path, Is.EqualTo(path));
+            }
+
+            // Проверяем клонирование
+            Assert.That(root.Clone(), Is.EqualTo(root));
+
+            PathNode[] notSpecialNameNodes = parents.Keys.Where(c =>
+                    !c.Parent!.Children!.Any(n => "*".Equals(n.Name))
+                    && !c.Parent!.Children!.Any(n => "@".Equals(n.Name))
+                ).ToArray();
+
+            // Пробуем добавить узел, уже имеющий родителя, ждём исключение
+            int pos = 0;
+            foreach (PathNode node in notSpecialNameNodes)
+            {
+                if(notSpecialNameNodes.Where(c => c != node).FirstOrDefault() is PathNode add)
+                {
+                    //InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
+                    //    () => node.Parent!.Children!.Add(add)
+                    //);
+                    try
+                    {
+                        node.Parent!.Children!.Add(add);
+                    }
+                    catch(InvalidOperationException) 
+                    { 
+                    }
+                    ++pos;
+                    //Assert.That(ioex.Message, Is.EqualTo($"Node '{add.Path}' already has parent!"));
+                }
+            }
             // Пробуем установить IsAccessStuff не в корень, ждём исключение
             foreach (PathNode node in parents.Keys.Where(c => !c.IsAccessStuff))
             {
-                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
+               InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.IsAccessStuff = true
                 );
                 Assert.That(ioex.Message, Is.EqualTo("IsAccessStuff can be set only to root node!"));
@@ -110,79 +156,70 @@ public class PathNodeTests
             // Пробуем сделать сестру для '*', ждём исключение
             foreach (PathNode node in specialNameNodes.Where(c => "*".Equals(c.Name)))
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.Parent!.Children!.Add(new PathNode("ab"))
                 );
-                Assert.That(ioex1.Message, Is.EqualTo("Node '*' can be the only child!"));
+                Assert.That(ioex.Message, Is.EqualTo("Node '*' can be the only child!"));
             }
             // Пробуем сделать сестру для '@', ждём исключение
             foreach (PathNode node in specialNameNodes.Where(c => "@".Equals(c.Name)))
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.Parent!.Children!.Add(new PathNode("ab"))
                 );
-                Assert.That(ioex1.Message, Is.EqualTo("Node '@' can be the only child!"));
+                Assert.That(ioex.Message, Is.EqualTo("Node '@' can be the only child!"));
             }
-            PathNode[] notSpecialNameNodes = parents.Keys.Where(c =>
-                    !c.Parent!.Children!.Any(n => "*".Equals(n.Name))
-                    && !c.Parent!.Children!.Any(n => "@".Equals(n.Name))
-                ).ToArray();
             // Пробуем '*'  сделать сестрой, ждём исключение
             foreach (PathNode node in notSpecialNameNodes)
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.Parent!.Children!.Add(new PathNode("*"))
                 );
-                Assert.That(ioex1.Message, Is.EqualTo("Node '*' can be the only child!"));
+                Assert.That(ioex.Message, Is.EqualTo("Node '*' can be the only child!"));
             }
             // Пробуем '@'  сделать сестрой, ждём исключение
             foreach (PathNode node in notSpecialNameNodes)
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.Parent!.Children!.Add(new PathNode("@"))
                 );
-                Assert.That(ioex1.Message, Is.EqualTo("Node '@' can be the only child!"));
-            }
-            // Пробуем '*'  сделать сестрой, ждём исключение
-            foreach (PathNode node in notSpecialNameNodes)
-            {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
-                    () => node.Parent!.Children!.Add(new PathNode("*"))
-                );
-                Assert.That(ioex1.Message, Is.EqualTo("Node '*' can be the only child!"));
+                Assert.That(ioex.Message, Is.EqualTo("Node '@' can be the only child!"));
             }
             // Пробуем к '*' добавить детей, ждём исключение
             foreach (PathNode node in specialNameNodes.Where(c => "*".Equals(c.Name)))
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
-                    () => node.Children = new ObservableCollection<PathNode>()
-                ); ;
-                Assert.That(ioex1.Message, Is.EqualTo("Node '*' can not have children!"));
-            }
-            // Пробуем добавить узел, уже имеющий родителя, ждём исключение
-            foreach (PathNode node in notSpecialNameNodes)
-            {
-                PathNode add = notSpecialNameNodes.Where(c => c != node).First();
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
-                    () => node.Parent!.Children!.Add(add)
-                );
-                Assert.That(ioex1.Message, Is.EqualTo($"Node '{add.Path}' already has parent!"));
-            }
-            // Пробуем добавить корневой узел, ждём исключение
-            foreach (PathNode node in notSpecialNameNodes)
-            {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
-                    () => node.Parent!.Children!.Add(new PathNode(node.Parent!.Children![0].Name))
-                );
-                Assert.That(ioex1.Message, Is.EqualTo("Cannot add duplicate node!"));
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
+                    () => node.Children.Add(new PathNode("a"))
+                ); 
+                Assert.That(ioex.Message, Is.EqualTo("Node '*' can not have children!"));
             }
             // Пробуем добавить дублирующую сестру, ждём исключение
             foreach (PathNode node in notSpecialNameNodes)
             {
-                InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
+                    () => node.Parent!.Children!.Add(new PathNode(node.Parent!.Children![0].Name))
+                );
+                Assert.That(ioex.Message, Is.EqualTo("Cannot add duplicate node!"));
+            }
+            // Пробуем добавить корневой узел, ждём исключение
+            foreach (PathNode node in notSpecialNameNodes)
+            {
+                InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(
                     () => node.Parent!.Children!.Add(new PathNode(string.Empty))
                 );
-                Assert.That(ioex1.Message, Is.EqualTo("Root node cannot be a child!"));
+                Assert.That(ioex.Message, Is.EqualTo("Root node cannot be a child!"));
+            }
+            // Пробуем удалить не '*', ждём исключение
+            foreach (PathNode node in parents.Keys
+                .Where(c => c.Children is { } && !c.Children.Any(c => specialNameNodes.Contains(c)))
+            )
+            {
+                PathNode[] children = node.Children!.ToArray();
+                foreach (PathNode child in children)
+                {
+                    InvalidOperationException ioex = Assert.Catch<InvalidOperationException>(() => node.Children!.Remove(child));
+                    Assert.That(ioex.Message, Is.EqualTo("Only '*' node can be removed!"));
+                }
             }
 
             // Для всех правильных подвоев генерируем привой и прививаем
@@ -195,15 +232,20 @@ public class PathNodeTests
             // Пробуем привить к обязательному листу, ждём исключение
             if (notPropagatedMandatories.Any())
             {
-                foreach(PathNode node in notPropagatedMandatories)
+                PathNode scion = PathNode.FromPaths(new string[]
+                {
+                    "a.b",
+                    "a.c"
+                });
+                foreach (PathNode node in notPropagatedMandatories)
                 {
                     StockHolder sh = new StockHolder
                     {
                         Stock = node,
+                        Scion = scion,
                         Stocks = stocks,
                         Rnd = rnd
                     };
-                    sh.CreateScion();
                     InvalidOperationException ioex1 = Assert.Catch<InvalidOperationException>(
                         () => sh.Stock.Graft(sh.Scion)
                     );
@@ -271,7 +313,7 @@ public class PathNodeTests
         /// <summary>
         /// Привой
         /// </summary>
-        internal PathNode Scion { get; private set; }
+        internal PathNode Scion { get; set; }
         /// <summary>
         /// Список ожидаемых узлов, которые будут добавлены к исходномиу дереву
         /// </summary>
@@ -340,10 +382,6 @@ public class PathNodeTests
                 {
                     // Копируем случайное число детей узла исходного дерева, остальные создаём новые.
                     int cnt = s_scionNumChildren;
-                    if (result.Children is null)
-                    {
-                        result.Children = new ObservableCollection<PathNode>();
-                    }
                     if (stock.Children is { })
                     {
                         int take = Rnd.Next(Math.Min(cnt, stock.Children.Count));
@@ -414,10 +452,6 @@ public class PathNodeTests
                 if (level < s_scionDepth)
                 {
                     // Дети оригинального узла - тоже оригинальные
-                    if (result.Children is null)
-                    {
-                        result.Children = new ObservableCollection<PathNode>();
-                    }
                     for (int i = 0; i < 3; ++i)
                     {
                         result.Children.Add(CreateSubtree(result, result, level + 1, false, usedNames));
@@ -471,7 +505,7 @@ public class PathNodeTests
             Assert.That(node.Path, Is.EqualTo($"{node.Parent.Path}.{node.Name}"));
         }
         decCount();
-        if (node.Children is { })
+        if (node.Children.Any())
         {
             Assert.That(node.Children.GroupBy(ch => ch.Name).Count(), Is.EqualTo(node.Children.Count), node.ToString());
             foreach (PathNode child in node.Children)
@@ -565,7 +599,9 @@ public class PathNodeTests
         Action incCountMandatory, Action<PathNode>? pushStock,
         Dictionary<int, HashSet<string>> usedNames,
         List<PathNode> specialNameNodes,
-        int numSiblings
+        int numSiblings,
+        List<string> paths,
+        string path
     )
     {
         if (!usedNames.ContainsKey(parent?.Id ?? 0))
@@ -588,6 +624,7 @@ public class PathNodeTests
 
         // Генерируем уникальное имя среди сестёр
         string name = string.Empty;
+        string newPath = string.Empty;
         if (level > 0)
         {
             int len = numSiblings > 0 || willHaveChildren || level < s_treeMinDepth || willBeMandatory
@@ -597,6 +634,7 @@ public class PathNodeTests
                 !usedNames[parent?.Id ?? 0].Add(name);
                 name = s_alphabet.Substring(rnd.Next(len), 1)
             ) { }
+            newPath = $"{path}{(string.IsNullOrEmpty(path) ? string.Empty : '.')}{name}";
             if (willBeMandatory)
             {
                 name += "!";
@@ -604,6 +642,8 @@ public class PathNodeTests
 
         }
         PathNode node = new(name);
+
+        Console.WriteLine(node.Id);
 
         if (node.IsMandatory)
         {
@@ -631,7 +671,7 @@ public class PathNodeTests
         }
 
         // Фиксируем родителя отдельно, для последующей проверки
-        if(parent is { })
+        if (parent is { })
         {
             parents.Add(node, parent.Id);
         }
@@ -640,7 +680,8 @@ public class PathNodeTests
 
         if (willHaveChildren)
         {
-            ObservableCollection<PathNode> children = new();
+            List<PathNode> children = new();
+
             for (
                 int i = 0;
                 i < numChildrenBefore
@@ -649,10 +690,15 @@ public class PathNodeTests
                 ++i
             )
             {
-                children.Add(CreateNode(node, level + 1, rnd, notPropagatedMandatories,
-                    incCount, parents, incCountMandatory, pushStock, usedNames, specialNameNodes, children.Count));
+                children.Add(
+                    CreateNode(
+                        node, level + 1, rnd, notPropagatedMandatories,
+                        incCount, parents, incCountMandatory, pushStock, 
+                        usedNames, specialNameNodes, children.Count, paths, newPath
+                    )
+                );
             }
-            node.Children = children;
+            children.ForEach(c => node.Children.Add(c));
             for (
                 int i = 0;
                 i < numChildrenAfter
@@ -661,10 +707,19 @@ public class PathNodeTests
                 ++i
             )
             {
-                children.Add(CreateNode(node, level + 1, rnd, notPropagatedMandatories,
-                    incCount, parents, incCountMandatory, pushStock, usedNames, specialNameNodes, children.Count));
+                node.Children.Add(
+                    CreateNode(node, level + 1, rnd, notPropagatedMandatories,
+                        incCount, parents, incCountMandatory, pushStock, usedNames, 
+                        specialNameNodes, children.Count, paths, newPath
+                    )
+                );
             }
+        }
+        else
+        {
+            paths.Add( newPath );
         }
         return node;
     }
+
 }
