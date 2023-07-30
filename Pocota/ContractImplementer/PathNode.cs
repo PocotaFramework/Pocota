@@ -452,7 +452,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                 {
                     if (node is null)
                     {
-                        throw new ArgumentNullException("Cannot remove null child!");
+                        throw new ArgumentNullException("Child");
                     }
                     if (!"*".Equals(node.Name))
                     {

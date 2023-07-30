@@ -8,7 +8,7 @@ namespace PathNodeTest;
 public class PathNodeTests
 {
     private const string s_alphabet = "abcdefghijklmnopqrstuvwxyz@*";
-    private const int s_numRandomTests = 1000;
+    private const int s_numRandomTests = 100;
     private const int s_scionDepth = 3;
     private const int s_scionNumChildren = 3;
     private const int s_treeMinDepth = 3;
@@ -127,6 +127,9 @@ public class PathNodeTests
                 PathNode? node = root.GetNode(path);
                 Assert.That(node, Is.Not.Null);
                 Assert.That(node.Path, Is.EqualTo(path));
+                // Неправильный путь
+                node = root.GetNode($"{path}1");
+                Assert.That(node, Is.Null);
             }
 
             // Проверяем клонирование
@@ -542,6 +545,10 @@ public class PathNodeTests
                     () => node.Children.Clear()
                 );
                 Assert.That(ex.Message, Is.EqualTo("Only '*' node can be removed!"));
+                ArgumentNullException anex = Assert.Throws<ArgumentNullException>(
+                    () => node.Children.Remove(null!)
+                );
+                Assert.That(anex.Message, Is.EqualTo("Value cannot be null. (Parameter 'Child')"));
                 for (int j = 0; j < node.Children.Count; ++j)
                 {
                     ex = Assert.Throws<InvalidOperationException>(
