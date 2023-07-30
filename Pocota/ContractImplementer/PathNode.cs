@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Reflection;
+﻿using System.Collections;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -392,7 +389,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                     Exception? exception = null;
                     if (node is null)
                     {
-                        exception = new ArgumentNullException("Cannot add null child!");
+                        exception = new ArgumentNullException("Child");
                     }
                     else if (node.Parent is { })
                     {
@@ -406,13 +403,13 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                     {
                         exception = new InvalidOperationException("Cannot add duplicate node!");
                     }
-                    else if (string.IsNullOrEmpty(node.Name))
-                    {
-                        exception = new InvalidOperationException("Root node cannot be a child!");
-                    }
-                    else if (_isMandatory)
+                    else if (_isMandatory && !(bool)_isPropagatedMandatory)
                     {
                         exception = new InvalidOperationException("Mandatory node can not have children!");
+                    }
+                    else if ("*".Equals(_name))
+                    {
+                        exception = new InvalidOperationException($"Node '*' can not have children!");
                     }
                     else
                     {
@@ -436,7 +433,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                     {
                         throw exception;
                     }
-                    node._parent = this;
+                    node!._parent = this;
                     if (node._isMandatory)
                     {
                         PropagateMandatory();
@@ -461,6 +458,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                     {
                         throw new InvalidOperationException("Only '*' node can be removed!");
                     }
+                    node._parent = null;
                 }
                 break;
             case ChildAction.Clear:
@@ -469,6 +467,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                     {
                         throw new InvalidOperationException("Only '*' node can be removed!");
                     }
+                    _children.ForEach(c => c._parent = null);
                 }
                 break;
         }
