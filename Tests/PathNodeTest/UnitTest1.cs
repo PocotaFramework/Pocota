@@ -128,12 +128,22 @@ public class PathNodeTests
             // Проверяем GetNode
             foreach(string path in paths)
             {
-                PathNode? node = root.GetNode(path);
+                // Неправильный путь
+                PathNode? node = root.GetNode($"{path}1");
+                Assert.That(node, Is.Null);
+                node = root.GetNode(path);
                 Assert.That(node, Is.Not.Null);
                 Assert.That(node.Path, Is.EqualTo(path));
-                // Неправильный путь
-                node = root.GetNode($"{path}1");
-                Assert.That(node, Is.Null);
+                string[] parts = path.Split('.');
+                for(int j = 1; j < parts.Length - 1; ++j)
+                {
+                    // Проверяем относительный путь
+                    string prefix = string.Join('.', parts.Take(j));
+                    string suffix = $".{string.Join('.', parts.Skip(j))}";
+                    PathNode node1 = root.GetNode(prefix)!;
+                    PathNode node2 = node1.GetNode(suffix);
+                    Assert.That(node2, Is.EqualTo(node));
+                }
             }
 
             // Проверяем клонирование
