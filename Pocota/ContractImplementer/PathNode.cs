@@ -463,7 +463,10 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                 break;
             case ChildAction.Clear:
                 {
-                    if (_children.Count > 1 || _children.Count == 1 && !"*".Equals(_children[0].Name))
+                    if (
+                        _children.Count > 1
+                        || (_children.Count == 1 && !"*".Equals(_children[0].Name))
+                    )
                     {
                         throw new InvalidOperationException("Only '*' node can be removed!");
                     }

@@ -2,6 +2,7 @@ using Net.Leksi.Pocota.Common;
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Text;
 
 namespace PathNodeTest;
 
@@ -46,6 +47,10 @@ public class PathNodeTests
             ) % int.MaxValue);
         }
         Console.WriteLine($"randomSeed: {randomSeed}");
+
+        // Генератор для всех случайных данных
+        Random rnd = new(randomSeed);
+
         for (int i = 0; i < s_numRandomTests; ++i)
         {
             if (showPass)
@@ -67,9 +72,6 @@ public class PathNodeTests
             // Кэш использованных имен дестких узлов для родителя с Id
             // нужен для генерации уникальных имен
             Dictionary<int, HashSet<string>> usedNames = new();
-
-            // Генератор для всех случайных данных
-            Random rnd = new(randomSeed);
 
             // Количество узлов в дереве
             int count = 0;
@@ -95,12 +97,16 @@ public class PathNodeTests
             Action decCount = () => --count;
             Action decCountMandatory = () => --countMandatory;
 
+            PathNode? oneChildNode = null;
+
+            Action<PathNode> pushOneChildNode = node => oneChildNode = node;
+
             // Строим дерево, заполняем счётчики, выбираем подвои
             PathNode root = CreateNode(
                 null, 0, rnd, notPropagatedMandatories, incCount, parents, incCountMandatory,
                 // В первом случае не прививаем на внутренние узлы
                 i == 0 ? null : pushStock,
-                usedNames, specialNameNodes, 0, paths, string.Empty, i
+                usedNames, specialNameNodes, 0, paths, string.Empty, i, pushOneChildNode
             );
             if (i == 0)
             {
@@ -114,7 +120,7 @@ public class PathNodeTests
 
             // Проверяем, что начальное дерево без прививок вышло таким, как планировалось
             Assert.That(countMandatory, Is.EqualTo(notPropagatedMandatories.Count));
-            WalkAssert(root, notPropagatedMandatories, decCount, parents, decCountMandatory);
+            WalkAssert(root, notPropagatedMandatories, decCount, parents, decCountMandatory, oneChildNode);
             Assert.That(count, Is.EqualTo(0));
             Assert.That(countMandatory, Is.EqualTo(0));
 
@@ -496,8 +502,15 @@ public class PathNodeTests
     /// <param name="parents"></param>
     /// <param name="countMandatory"></param>
     private void WalkAssert(PathNode node, List<PathNode> notPropagatedMandatories,
-        Action decCount, Dictionary<PathNode, int> parents, Action decCountMandatory)
+        Action decCount, Dictionary<PathNode, int> parents, Action decCountMandatory, PathNode? oneChildNode)
     {
+        if(node.Parent is null && oneChildNode is { })
+        {
+            InvalidOperationException ex = Assert.Throws<InvalidOperationException>(
+                    () => oneChildNode.Children.Clear()
+                );
+            Assert.That(ex.Message, Is.EqualTo("Only '*' node can be removed!"));
+        }
         Assert.That(node.IsPropagatedMandatory is { }, Is.EqualTo(node.IsMandatory == true));
         if (node.IsPropagatedMandatory is { })
         {
@@ -562,12 +575,19 @@ public class PathNodeTests
                 }
                 ex = Assert.Throws<InvalidOperationException>(
                     () => node.Children.Add(new PathNode(string.Empty))
-                ); ;
+                );
                 Assert.That(ex.Message, Is.EqualTo("Root node cannot be a child!"));
                 ArgumentNullException ex1 = Assert.Throws<ArgumentNullException>(
                     () => node.Children.Add(null!)
-                ); ;
+                );
                 Assert.That(ex1.Message, Is.EqualTo("Value cannot be null. (Parameter 'Child')"));
+                foreach(string wrongName in new string[] { "*!", "1abc", "ab&" })
+                {
+                    ArgumentException aex = Assert.Throws<ArgumentException>(
+                        () => node.Children.Add(new PathNode(wrongName))
+                    );
+                    Assert.That(aex.Message, Is.EqualTo($"Name '{wrongName}' does not fit requirement!"));
+                }
             }
             else
             {
@@ -606,7 +626,7 @@ public class PathNodeTests
                     Assert.That(parents[node.Children[j]], Is.EqualTo(node.Id));
                     Assert.That(node.Children.IndexOf(node.Children[j]), Is.EqualTo(j));
                 });
-                WalkAssert(node.Children[j], notPropagatedMandatories, decCount, parents, decCountMandatory);
+                WalkAssert(node.Children[j], notPropagatedMandatories, decCount, parents, decCountMandatory, oneChildNode);
             }
         }
     }
@@ -696,7 +716,7 @@ public class PathNodeTests
         List<PathNode> specialNameNodes,
         int numSiblings,
         List<string> paths,
-        string path, int pass
+        string path, int pass, Action<PathNode> pushOneChildNode
     )
     {
         if (!usedNames.ContainsKey(parent?.Id ?? 0))
@@ -792,7 +812,7 @@ public class PathNodeTests
                     CreateNode(
                         node, level + 1, rnd, notPropagatedMandatories,
                         incCount, parents, incCountMandatory, pushStock, 
-                        usedNames, specialNameNodes, children.Count, paths, newPath, pass
+                        usedNames, specialNameNodes, children.Count, paths, newPath, pass, pushOneChildNode
                     )
                 );
             }
@@ -808,7 +828,7 @@ public class PathNodeTests
                 node.Children.Add(
                     CreateNode(node, level + 1, rnd, notPropagatedMandatories,
                         incCount, parents, incCountMandatory, pushStock, usedNames, 
-                        specialNameNodes, node.Children.Count, paths, newPath, pass
+                        specialNameNodes, node.Children.Count, paths, newPath, pass, pushOneChildNode
                     )
                 );
             }
@@ -816,6 +836,20 @@ public class PathNodeTests
         else
         {
             paths.Add( newPath );
+        }
+        if(level == 0 && parents.Keys.Where(n => !n.Children.Any()).FirstOrDefault() is PathNode leaf && !leaf.IsMandatory && !"*".Equals(leaf.Name))
+        {
+            // Покрываем PropagateMandatory
+            PathNode mand = new PathNode("a!");
+            leaf.Children.Add(mand);
+            parents.Add(mand, leaf.Id);
+            notPropagatedMandatories.Add(mand);
+            incCountMandatory();
+            incCount();
+            paths.Remove(leaf.Path);
+            paths.Add($"{leaf.Path}.a");
+            //Покрываем ветку в case ChildAction.Clear
+            pushOneChildNode(leaf);
         }
         return node;
     }
