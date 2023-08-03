@@ -69,9 +69,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerDebug", "..\E6dWebApp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestApplicationDebug", "..\E6dWebApp\Demo\UnitTesting\TestApplication\TestApplicationDebug.csproj", "{65DA766A-E467-4ACF-807C-A0D5C598ECD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Common\Common.csproj", "{97ECC964-9353-4C20-A2EF-B23CF2270291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Common\Common.csproj", "{97ECC964-9353-4C20-A2EF-B23CF2270291}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starter", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Starter\Starter.csproj", "{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarterDebug", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Starter\StarterDebug.csproj", "{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -40,7 +40,7 @@ public class PathNodeTests
         {
             randomSeed = (int)(long.Parse(
                 new string(
-                    (DateTime.UtcNow.Ticks % int.MaxValue).ToString().Reverse().ToArray()
+                    DateTime.UtcNow.Ticks.ToString().Reverse().ToArray()
                 )
             ) % int.MaxValue);
         }
