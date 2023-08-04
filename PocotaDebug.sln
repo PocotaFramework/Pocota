@@ -49,6 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestRACAspDebug", "..\Runti
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{8681E796-A2B1-42D6-93A6-B446865FC714}"
 	ProjectSection(SolutionItems) = preProject
+		..\git_pull.py = ..\git_pull.py
 		..\git_status.py = ..\git_status.py
 		..\E6dWebApp\publish.py = ..\E6dWebApp\publish.py
 		pull.py = pull.py
@@ -72,6 +73,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Common\Common.csproj", "{97ECC964-9353-4C20-A2EF-B23CF2270291}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarterDebug", "..\RuntimeAssemblyCompiler\Demo\RACWebApp\Starter\StarterDebug.csproj", "{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp2", "..\RuntimeAssemblyCompiler\Test\ConsoleApp2\ConsoleApp2.csproj", "{458D18A9-16F7-4E0D-AC76-2AC94BFD783A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestingDebug", "..\RuntimeAssemblyCompiler\Test\UnitTesting\UnitTestingDebug.csproj", "{D78E2E11-DC54-497C-8A3B-C6678A6BECF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +176,14 @@ Global
 		{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{458D18A9-16F7-4E0D-AC76-2AC94BFD783A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{458D18A9-16F7-4E0D-AC76-2AC94BFD783A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{458D18A9-16F7-4E0D-AC76-2AC94BFD783A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{458D18A9-16F7-4E0D-AC76-2AC94BFD783A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D78E2E11-DC54-497C-8A3B-C6678A6BECF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D78E2E11-DC54-497C-8A3B-C6678A6BECF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D78E2E11-DC54-497C-8A3B-C6678A6BECF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D78E2E11-DC54-497C-8A3B-C6678A6BECF6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -203,6 +216,8 @@ Global
 		{65DA766A-E467-4ACF-807C-A0D5C598ECD0} = {394B9617-AB3D-4BF4-A8FD-1E1A859321F6}
 		{97ECC964-9353-4C20-A2EF-B23CF2270291} = {80F6A05F-CCB0-42F1-BDFF-51E3C35E21EA}
 		{FFAC8949-53E2-4C85-A310-F22FDAAA9BE9} = {80F6A05F-CCB0-42F1-BDFF-51E3C35E21EA}
+		{458D18A9-16F7-4E0D-AC76-2AC94BFD783A} = {73D02B9A-3C85-4249-903A-45F843EE57B7}
+		{D78E2E11-DC54-497C-8A3B-C6678A6BECF6} = {73D02B9A-3C85-4249-903A-45F843EE57B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA5EDFDC-26C8-46B1-9271-A4CCC5A758D6}
