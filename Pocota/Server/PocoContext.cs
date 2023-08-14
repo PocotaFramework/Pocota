@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.Pocota.Common;
 using System.Collections;
-using System.Diagnostics;
 using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
