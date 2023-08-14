@@ -10,9 +10,4 @@
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\Demo\Cats\Common\CommonDebug.csproj" />
-    <ProjectReference Include="..\Common\CommonDebug.csproj" />
-  </ItemGroup>
-
 </Project>
