@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Reflection.Metadata;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
@@ -11,18 +12,41 @@ public class Builder
     private const int s_baseCycleReferenced = 3;
     private const int s_basePkFk = 2;
     private const int s_baseManyToMany = 10;
+    private const int s_maxKeyParts = 2;
+    private const int s_maxEntitiesAtEnvelop = 2;
 
     public static Universe Build(Random random)
     {
         Universe result = new();
 
-        CreateNodes(result, random);
+        CreateNodes(result.Entities, random);
 
         CreateDataSet(result, random);
 
         CreateSql(result);
 
+        CreateNodes(result.Envelopes, random);
+
+        CompleteEnvelopes(result, random);
+
         return result;
+    }
+
+    private static void CompleteEnvelopes(Universe universe, Random random)
+    {
+        foreach (Node node in universe.Envelopes)
+        {
+            int numEntities = 1 + random.Next(s_maxEntitiesAtEnvelop);
+            for(int i =  0; i < numEntities; ++i)
+            {
+                Node entity = universe.Entities[random.Next(universe.Entities.Count)];
+                if (!node.References.Contains(entity))
+                {
+                    node.References.Add(entity);
+                }
+            }
+            node.NodeType = NodeType.Envelope;
+        }
     }
 
     private static void CreateSql(Universe universe)
@@ -78,23 +102,23 @@ public class Builder
         return dataType.ToString();
     }
 
-    private static void CreateNodes(Universe universe, Random random)
+    private static void CreateNodes(List<Node> nodes, Random random)
     {
         for (int i = 0; i < s_numNodes; ++i)
         {
-            universe.Nodes.Add(new Node { });
+            nodes.Add(new Node { });
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)
         {
-            List<Node> list = universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
+            List<Node> list = nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
             for (int j = 0; j < numReferences; ++j)
             {
                 int pos = random.Next(list.Count);
                 if (
-                    universe.Nodes[i] != list[pos]
-                    && !universe.Nodes[i].References.Any(n => list[pos].References.Contains(n))
+                    nodes[i] != list[pos]
+                    && !nodes[i].References.Any(n => list[pos].References.Contains(n))
                     && random.Next(s_baseManyToMany) == 0
                 )
                 {
@@ -102,16 +126,16 @@ public class Builder
                     {
                         NodeType = NodeType.ManyToManyLink,
                     };
-                    link.References.Add(universe.Nodes[i]);
-                    universe.Nodes[i].Referencers.Add(link);
+                    link.References.Add(nodes[i]);
+                    nodes[i].Referencers.Add(link);
                     link.References.Add(list[pos]);
                     list[pos].Referencers.Add(link);
-                    universe.Nodes.Add(link);
+                    nodes.Add(link);
                 }
                 else
                 {
-                    universe.Nodes[i].References.Add(list[pos]);
-                    list[pos].Referencers.Add(universe.Nodes[i]);
+                    nodes[i].References.Add(list[pos]);
+                    list[pos].Referencers.Add(nodes[i]);
                 }
                 list.RemoveAt(pos);
             }
@@ -119,14 +143,14 @@ public class Builder
         for (int i = 0; i < s_numNodes; ++i)
         {
             HashSet<Node> set = new();
-            if (!IsLooped(universe.Nodes[i], universe.Nodes[i], string.Empty, set) && random.Next(s_baseCycleReferenced) == 0)
+            if (!IsLooped(nodes[i], nodes[i], string.Empty, set) && random.Next(s_baseCycleReferenced) == 0)
             {
-                foreach (Node probe in universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink && !set.Contains(n)))
+                foreach (Node probe in nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink && !set.Contains(n)))
                 {
-                    if (IsLooped(universe.Nodes[i], probe, $"/{universe.Nodes[i].Id}", null))
+                    if (IsLooped(nodes[i], probe, $"/{nodes[i].Id}", null))
                     {
-                        universe.Nodes[i].References.Add(probe);
-                        probe.Referencers.Add(universe.Nodes[i]);
+                        nodes[i].References.Add(probe);
+                        probe.Referencers.Add(nodes[i]);
                         break;
                     }
                 }
@@ -151,13 +175,13 @@ public class Builder
     private static void CreateDataSet(Universe universe, Random random)
     {
         // Для каждого узла создаём таблицу и задаём 1-2 первичных ключа
-        foreach (Node node in universe.Nodes)
+        foreach (Node node in universe.Entities)
         {
             DataTable table = new DataTable($"Table{node.Id}");
             universe.DataSet.Tables.Add(table);
             if (node.NodeType is not NodeType.ManyToManyLink)
             {
-                int pkCount = 1 + random.Next(2);
+                int pkCount = 1 + random.Next(s_maxKeyParts);
                 List<DataColumn> pk = new();
                 for (int i = 0; i < pkCount; ++i)
                 {
@@ -165,6 +189,7 @@ public class Builder
                     {
                         DataType = typeof(int),
                         ColumnName = $"Id{i}",
+                        AllowDBNull = false,
                     };
                     pk.Add(part);
                     table.Columns.Add(part);
@@ -173,7 +198,7 @@ public class Builder
             }
         }
         // Для каждой таблицы задаём ссылочные ключи
-        foreach (Node node in universe.Nodes)
+        foreach (Node node in universe.Entities)
         {
             //Console.WriteLine($"{node.Id}: {node.NodeType}");
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
@@ -188,6 +213,7 @@ public class Builder
                     {
                         DataType = part.DataType,
                         ColumnName = $"{relatedTable.TableName}{part.ColumnName}",
+                        AllowDBNull = true,
                     };
                     fk.Add(fkPart);
                     table.Columns.Add(fkPart);
@@ -196,28 +222,28 @@ public class Builder
             }
         }
         // в некоторые таблицы добавляем ещё первичный ключ из числа ссылок
-        foreach (Node node in universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink))
+        foreach (Node node in universe.Entities.Where(n => n.NodeType is not NodeType.ManyToManyLink))
         {
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
-            List<DataColumn> allFkParts = new();
+            List<ForeignKeyConstraint> allFks = new();
             foreach (Constraint constraint in table.Constraints)
             {
-                if (constraint is ForeignKeyConstraint fk)
+                if (constraint is ForeignKeyConstraint fk && fk.RelatedTable != table)
                 {
-                    allFkParts.AddRange(fk.Columns);
+                    allFks.Add(fk);
                 }
             }
 
-            if (allFkParts.Any() && random.Next(s_basePkFk) == 0)
+            if (allFks.Any() && random.Next(s_basePkFk) == 0)
             {
-                DataColumn chosen = allFkParts[random.Next(allFkParts.Count)];
+                ForeignKeyConstraint constraint = allFks[random.Next(allFks.Count)];
                 foreach (Node referring in node.Referencers)
                 {
                     DataTable referringTable = universe.DataSet.Tables[$"Table{referring.Id}"]!;
                     ForeignKeyConstraint fk = (referringTable.Constraints[$"fk_{referringTable.TableName}_{table.TableName}"] as ForeignKeyConstraint)!;
                     referringTable.Constraints.Remove(fk);
                 }
-                table.PrimaryKey = table.PrimaryKey.Concat(new DataColumn[] { chosen }).ToArray();
+                table.PrimaryKey = table.PrimaryKey.Concat(constraint.Columns).ToArray();
                 foreach (Node referring in node.Referencers)
                 {
                     DataTable referringTable = universe.DataSet.Tables[$"Table{referring.Id}"]!;
@@ -239,7 +265,8 @@ public class Builder
                 }
             }
         }
-        foreach (Node node in universe.Nodes.Where(n => n.NodeType is NodeType.ManyToManyLink))
+        // добавляем таблицы для связей ∞-∞
+        foreach (Node node in universe.Entities.Where(n => n.NodeType is NodeType.ManyToManyLink))
         {
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
             List<DataColumn> allFkParts = new();

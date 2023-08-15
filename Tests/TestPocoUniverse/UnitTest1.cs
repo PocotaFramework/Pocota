@@ -30,11 +30,11 @@ namespace TestPocoUniverse
             Random rnd = new Random(seed);
             Universe universe = Builder.Build(rnd);
 
-            Assert.That(universe.Nodes.Select(n => n.References.Count).Sum(), Is.EqualTo(universe.Nodes.Select(n => n.Referencers.Count).Sum()));
+            Assert.That(universe.Entities.Select(n => n.References.Count).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
 
-            Console.WriteLine($"Nodes: {universe.Nodes.Count}, edges: {universe.Nodes.Select(n => n.References.Count).Sum()}");
+            Console.WriteLine($"Nodes: {universe.Entities.Count}, edges: {universe.Entities.Select(n => n.References.Count).Sum()}");
 
-            Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Nodes.Count));
+            Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
 
             //Console.WriteLine(universe.DataSet.GetXmlSchema());
             Console.WriteLine(universe.Sql);
