@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
@@ -10,26 +9,129 @@ public class Builder
     private const int s_minReferences = 3;
     private const int s_maxReferences = 10;
     private const int s_baseCycleReferenced = 3;
-    private const int s_basePkFk = 2;
-    private const int s_baseManyToMany = 10;
+    private const double s_fraqManyToMany = .2;
     private const int s_maxKeyParts = 2;
     private const int s_maxEntitiesAtEnvelop = 2;
+    private const int s_baseCollection = 5;
+    private const int s_baseReadonly = 7;
+    private const int s_baseNullable = 3;
+    private const int s_basePrimaryKeyPart = 11;
+    private const int s_minOtherProperties = 3;
+    private const int s_maxOtherProperties = 10;
+    private const int s_maxFkPk = 3;
 
     public static Universe Build(Random random)
     {
         Universe result = new();
 
-        CreateNodes(result.Entities, random);
+        CreateNodes(result.Entities, random, true);
+
+        CreateKeys(result, random);
+
+        //Console.WriteLine(string.Join('\n', result.Entities));
 
         CreateDataSet(result, random);
 
         CreateSql(result);
 
-        CreateNodes(result.Envelopes, random);
+        CreateNodes(result.Envelopes, random, false);
 
         CompleteEnvelopes(result, random);
 
         return result;
+    }
+
+    private static void CreateKeys(Universe universe, Random random)
+    {
+        foreach (EntityNode node in universe.Entities)
+        {
+            CreatePrimaryKey(node, random);
+        }
+        foreach (EntityNode node in universe.Entities)
+        {
+            CreateForeignKeys(node, random);
+        }
+        foreach (EntityNode node in universe.Entities.Where(n => n.NodeType is not NodeType.ManyToManyLink))
+        {
+            CreateFkPk(node, random);
+        }
+    }
+
+    private static void CreateFkPk(EntityNode node, Random random)
+    {
+        int numAddPk = (node.PrimaryKey.Any() ? 0 : 1) + random.Next(s_maxFkPk + (node.PrimaryKey.Any() ? 1 : 0));
+        if(numAddPk > 0)
+        {
+            List<PropertyDescriptor> candidates = node.Properties.Where(p => p.Node is { } && p.Node != node && !p.IsCollection).SelectMany(p => p.References!).ToList();
+            for(int i = 0; i < numAddPk && candidates.Any(); ++i)
+            {
+                int pos = random.Next(candidates.Count);
+                candidates[pos].IsPrimaryKeyPart = true;
+                node.PrimaryKey!.Add(candidates[pos]);
+                candidates.RemoveAt(pos);
+            }
+            foreach(EntityNode referenser in node.Referencers)
+            {
+                foreach(PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
+                {
+                    for(int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
+                    {
+                        pd.References.Add(new PropertyDescriptor
+                        {
+                            Name = $"{pd.Name}{node.PrimaryKey[i].Name}",
+                            Type = node.PrimaryKey[i].Type,
+                            IsReadOnly = pd.IsReadOnly,
+                            IsNullable = pd.IsNullable,
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    private static void CreateForeignKeys(EntityNode node, Random random)
+    {
+        foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
+        {
+            if (pd.Node is EntityNode entityNode)
+            {
+                pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
+                {
+                    Name = $"{pd.Name}{p.Name}",
+                    Type = p.Type,
+                    IsReadOnly = pd.IsReadOnly,
+                    IsNullable = pd.IsNullable,
+                }));
+                if (node.NodeType is NodeType.ManyToManyLink)
+                {
+                    node.PrimaryKey!.AddRange(pd.References);
+                }
+            }
+        }
+    }
+
+    private static void CreatePrimaryKey(EntityNode node, Random random)
+    {
+        if(node.NodeType is NodeType.Entity)
+        {
+            int pkCount = random.Next(s_maxKeyParts + 1);
+            foreach (PropertyDescriptor pd in node.Properties.Where(p => p.IsPrimaryKeyPart))
+            {
+                node.PrimaryKey.Add(pd);
+            }
+            for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
+            {
+                node.PrimaryKey.Add(new PropertyDescriptor
+                {
+                    Name = $"Id{i}",
+                    Type = typeof(int),
+                    IsNullable = false,
+                    IsCollection = false,
+                    IsReadOnly = true,
+                    IsPrimaryKeyPart = true,
+                });
+            }
+        }
     }
 
     private static void CompleteEnvelopes(Universe universe, Random random)
@@ -99,30 +201,32 @@ public class Builder
     private static string DbDataType(Type dataType)
     {
         if (dataType == typeof(int)) return "int";
+        if (dataType == typeof(string)) return "varchar(50)";
         return dataType.ToString();
     }
 
-    private static void CreateNodes(List<Node> nodes, Random random)
+    private static void CreateNodes<T>(List<T> nodes, Random random, bool areEntities) where T : Node, new()
     {
         for (int i = 0; i < s_numNodes; ++i)
         {
-            nodes.Add(new Node { });
+            nodes.Add(new T());
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)
         {
-            List<Node> list = nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
+            List<T> list = nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
             for (int j = 0; j < numReferences; ++j)
             {
                 int pos = random.Next(list.Count);
                 if (
-                    nodes[i] != list[pos]
+                    areEntities
+                    && nodes[i] != list[pos]
                     && !nodes[i].References.Any(n => list[pos].References.Contains(n))
-                    && random.Next(s_baseManyToMany) == 0
+                    && random.Next(1 + (int)Math.Ceiling(s_fraqManyToMany * s_numNodes * (s_maxReferences + s_minReferences) * .25)) == 0
                 )
                 {
-                    Node link = new()
+                    T link = new()
                     {
                         NodeType = NodeType.ManyToManyLink,
                     };
@@ -131,13 +235,94 @@ public class Builder
                     link.References.Add(list[pos]);
                     list[pos].Referencers.Add(link);
                     nodes.Add(link);
+                    if(random.Next(s_baseCollection) == 0)
+                    {
+                        PropertyDescriptor pd1 = new()
+                        {
+                            Name = $"P{list[pos].Properties.Count}",
+                            Node = nodes[i],
+                            IsReadOnly = random.Next(s_baseReadonly) == 0,
+                            IsCollection = true,
+                            IsNullable = random.Next(s_baseNullable) == 0,
+                        };
+                        list[pos].Properties.Add(pd1);
+                    }
+                    if (random.Next(s_baseCollection) == 0)
+                    {
+                        PropertyDescriptor pd1 = new()
+                        {
+                            Name = $"P{nodes[i].Properties.Count}",
+                            Node = list[pos],
+                            IsReadOnly = random.Next(s_baseReadonly) == 0,
+                            IsCollection = true,
+                            IsNullable = random.Next(s_baseNullable) == 0,
+                        };
+                        nodes[i].Properties.Add(pd1);
+                    }
+                    link.Properties.Add(new PropertyDescriptor
+                    {
+                        Name = $"P{link.Properties.Count}",
+                        Node = nodes[i],
+                        IsReadOnly = true,
+                        IsNullable = false,
+                        IsCollection = false,
+                    });
+                    link.Properties.Add(new PropertyDescriptor
+                    {
+                        Name = $"P{link.Properties.Count}",
+                        Node = list[pos],
+                        IsReadOnly = true,
+                        IsNullable = false,
+                        IsCollection = false,
+                    });
                 }
                 else
                 {
                     nodes[i].References.Add(list[pos]);
                     list[pos].Referencers.Add(nodes[i]);
+                    PropertyDescriptor pd = new()
+                    {
+                        Name = $"P{nodes[i].Properties.Count}",
+                        Node = list[pos],
+                        IsReadOnly = random.Next(s_baseReadonly) == 0,
+                        IsNullable = random.Next(s_baseNullable) == 0,
+                    };
+                    nodes[i].Properties.Add(pd);
+                    if (random.Next(s_baseCollection) == 0)
+                    {
+                        if (!areEntities)
+                        {
+                            pd.IsCollection = true;
+                        }
+                        else
+                        {
+                            PropertyDescriptor pd1 = new()
+                            {
+                                Name = $"P{list[pos].Properties.Count}",
+                                Node = nodes[i],
+                                IsReadOnly = random.Next(s_baseReadonly) == 0,
+                                IsCollection = true,
+                                IsNullable = random.Next(s_baseNullable) == 0,
+                            };
+                            list[pos].Properties.Add(pd1);
+                        }
+                    }
                 }
-                list.RemoveAt(pos);
+            }
+            int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
+            for(int j = 0; j < numOtherProperties; ++j)
+            {
+                bool isPrimaryKeyPart = areEntities && random.Next(s_basePrimaryKeyPart) == 0;
+                PropertyDescriptor pd = new()
+                {
+                    Name = $"P{nodes[i].Properties.Count}",
+                    Type = typeof(string),
+                    IsReadOnly = random.Next(s_baseReadonly) == 0,
+                    IsCollection = false,
+                    IsNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0,
+                    IsPrimaryKeyPart = isPrimaryKeyPart,
+                };
+                nodes[i].Properties.Add(pd);
             }
         }
         for (int i = 0; i < s_numNodes; ++i)
@@ -151,11 +336,39 @@ public class Builder
                     {
                         nodes[i].References.Add(probe);
                         probe.Referencers.Add(nodes[i]);
+                        PropertyDescriptor pd = new()
+                        {
+                            Name = $"P{nodes[i].Properties.Count}",
+                            Node = probe,
+                            IsReadOnly = random.Next(s_baseReadonly) == 0,
+                            IsNullable = random.Next(s_baseNullable) == 0,
+                        };
+                        nodes[i].Properties.Add(pd);
+                        if (random.Next(s_baseCollection) == 0)
+                        {
+                            if (!areEntities)
+                            {
+                                pd.IsCollection = true;
+                            }
+                            else
+                            {
+                                PropertyDescriptor pd1 = new()
+                                {
+                                    Name = $"P{probe.Properties.Count}",
+                                    Node = nodes[i],
+                                    IsReadOnly = random.Next(s_baseReadonly) == 0,
+                                    IsCollection = true,
+                                    IsNullable = random.Next(s_baseNullable) == 0,
+                                };
+                                probe.Properties.Add(pd1);
+                            }
+                        }
                         break;
                     }
                 }
             }
         }
+
     }
 
     private static bool IsLooped(Node node, Node currentNode, string path, HashSet<Node>? set)
@@ -174,118 +387,74 @@ public class Builder
 
     private static void CreateDataSet(Universe universe, Random random)
     {
-        // Для каждого узла создаём таблицу и задаём 1-2 первичных ключа
-        foreach (Node node in universe.Entities)
+        foreach (EntityNode node in universe.Entities)
         {
             DataTable table = new DataTable($"Table{node.Id}");
             universe.DataSet.Tables.Add(table);
-            if (node.NodeType is not NodeType.ManyToManyLink)
+            List<DataColumn> pk = new();
+            foreach(PropertyDescriptor pd in node.PrimaryKey!)
             {
-                int pkCount = 1 + random.Next(s_maxKeyParts);
-                List<DataColumn> pk = new();
-                for (int i = 0; i < pkCount; ++i)
+                DataColumn col = new DataColumn
                 {
-                    DataColumn part = new()
-                    {
-                        DataType = typeof(int),
-                        ColumnName = $"Id{i}",
-                        AllowDBNull = false,
-                    };
-                    pk.Add(part);
-                    table.Columns.Add(part);
-                }
-                table.PrimaryKey = pk.ToArray();
+                    ColumnName = pd.Name,
+                    DataType = pd.Type,
+                    AllowDBNull = false,
+                };
+                pk.Add(col);
+                table.Columns.Add(col);
             }
-        }
-        // Для каждой таблицы задаём ссылочные ключи
-        foreach (Node node in universe.Entities)
-        {
-            //Console.WriteLine($"{node.Id}: {node.NodeType}");
-            DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
-            foreach (Node reference in node.References)
+
+            foreach(PropertyDescriptor pd in node.Properties.Where(p => !p.IsCollection && !node.PrimaryKey!.Contains(p)))
             {
-                //Console.WriteLine($"    {reference.Id}: {reference.NodeType}");
-                DataTable relatedTable = universe.DataSet.Tables[$"Table{reference.Id}"]!;
-                List<DataColumn> fk = new();
-                foreach (DataColumn part in relatedTable.PrimaryKey)
+                if(pd.Node is EntityNode entityNode)
                 {
-                    DataColumn fkPart = new()
+                    foreach (PropertyDescriptor reference in pd.References!.Where(p => !node.PrimaryKey.Contains(p)))
                     {
-                        DataType = part.DataType,
-                        ColumnName = $"{relatedTable.TableName}{part.ColumnName}",
-                        AllowDBNull = true,
-                    };
-                    fk.Add(fkPart);
-                    table.Columns.Add(fkPart);
+                        DataColumn col = new DataColumn
+                        {
+                            ColumnName = reference.Name,
+                            DataType = reference.Type,
+                            AllowDBNull = reference.IsNullable,
+                        };
+                        table.Columns.Add(col);
+                        if (reference.IsPrimaryKeyPart)
+                        {
+                            pk.Add(col);
+                        }
+                    }
                 }
-                table.Constraints.Add($"fk_{table.TableName}_{relatedTable.TableName}", relatedTable.PrimaryKey, fk.ToArray());
-            }
-        }
-        // в некоторые таблицы добавляем ещё первичный ключ из числа ссылок
-        foreach (Node node in universe.Entities.Where(n => n.NodeType is not NodeType.ManyToManyLink))
-        {
-            DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
-            List<ForeignKeyConstraint> allFks = new();
-            foreach (Constraint constraint in table.Constraints)
-            {
-                if (constraint is ForeignKeyConstraint fk && fk.RelatedTable != table)
+                else
                 {
-                    allFks.Add(fk);
+                    DataColumn col = new DataColumn
+                    {
+                        ColumnName = pd.Name,
+                        DataType = pd.Type,
+                        AllowDBNull = pd.IsNullable,
+                    };
+                    table.Columns.Add(col);
+                    if (pd.IsPrimaryKeyPart)
+                    {
+                        pk.Add(col);
+                    }
                 }
             }
 
-            if (allFks.Any() && random.Next(s_basePkFk) == 0)
-            {
-                ForeignKeyConstraint constraint = allFks[random.Next(allFks.Count)];
-                foreach (Node referring in node.Referencers)
-                {
-                    DataTable referringTable = universe.DataSet.Tables[$"Table{referring.Id}"]!;
-                    ForeignKeyConstraint fk = (referringTable.Constraints[$"fk_{referringTable.TableName}_{table.TableName}"] as ForeignKeyConstraint)!;
-                    referringTable.Constraints.Remove(fk);
-                }
-                table.PrimaryKey = table.PrimaryKey.Concat(constraint.Columns).ToArray();
-                foreach (Node referring in node.Referencers)
-                {
-                    DataTable referringTable = universe.DataSet.Tables[$"Table{referring.Id}"]!;
-                    List<DataColumn> fk = new();
-                    foreach (DataColumn part in table.PrimaryKey)
-                    {
-                        if (!(referringTable.Columns[$"{table.TableName}{part.ColumnName}"] is DataColumn fkPart))
-                        {
-                            fkPart = new()
-                            {
-                                DataType = part.DataType,
-                                ColumnName = $"{table.TableName}{part.ColumnName}",
-                            };
-                            referringTable.Columns.Add(fkPart);
-                        }
-                        fk.Add(fkPart);
-                    }
-                    referringTable.Constraints.Add($"fk_{referringTable.TableName}_{table.TableName}", table.PrimaryKey, fk.ToArray());
-                }
-            }
+            table.PrimaryKey = pk.ToArray();
         }
-        // добавляем таблицы для связей ∞-∞
-        foreach (Node node in universe.Entities.Where(n => n.NodeType is NodeType.ManyToManyLink))
+        foreach (EntityNode node in universe.Entities)
         {
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
-            List<DataColumn> allFkParts = new();
-            foreach (Constraint constraint in table.Constraints)
+            foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
             {
-                if (constraint is ForeignKeyConstraint fk)
-                {
-                    foreach(DataColumn col in fk.Columns)
-                    {
-                        if (!allFkParts.Contains(col))
-                        {
-                            allFkParts.Add(col);
-                        }
-                    }
-                }
-            }
-            if (allFkParts.Any())
-            {
-                table.PrimaryKey = allFkParts.ToArray();
+                DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
+                //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
+                table.Constraints.Add(
+                    new ForeignKeyConstraint(
+                        $"fk_{table.TableName}_{pd.Name}_{relatedTable.TableName}",
+                        relatedTable.PrimaryKey,
+                        pd.References!.Select(p => table.Columns[p.Name]!).ToArray()
+                    )
+                );
             }
         }
     }
