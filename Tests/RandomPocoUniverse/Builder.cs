@@ -28,7 +28,7 @@ public class Builder
 
         CreateKeys(result, random);
 
-        //Console.WriteLine(string.Join('\n', result.Entities));
+        Console.WriteLine(string.Join('\n', result.Entities));
 
         CreateDataSet(result, random);
 
@@ -59,21 +59,35 @@ public class Builder
 
     private static void CreateFkPk(EntityNode node, Random random)
     {
-        int numAddPk = (node.PrimaryKey.Any() ? 0 : 1) + random.Next(s_maxFkPk + (node.PrimaryKey.Any() ? 1 : 0));
+        int numAddPk = random.Next(s_maxFkPk + 1);
         if(numAddPk > 0)
         {
             List<PropertyDescriptor> candidates = node.Properties.Where(p => p.Node is { } && p.Node != node && !p.IsCollection).SelectMany(p => p.References!).ToList();
-            for(int i = 0; i < numAddPk && candidates.Any(); ++i)
+            int initialPkCount = node.PrimaryKey.Count;
+            for (int i = 0; i < numAddPk && candidates.Any(); ++i)
             {
                 int pos = random.Next(candidates.Count);
                 candidates[pos].IsPrimaryKeyPart = true;
                 node.PrimaryKey!.Add(candidates[pos]);
                 candidates.RemoveAt(pos);
             }
-            foreach(EntityNode referenser in node.Referencers)
+            int deletePkCount = 0;
+            if(node.PrimaryKey.Count > initialPkCount)
+            {
+                deletePkCount = random.Next(initialPkCount);
+                for (int i = 0; i < deletePkCount; ++i)
+                {
+                    node.PrimaryKey.RemoveAt(0);
+                }
+            }
+            foreach (EntityNode referenser in node.Referencers)
             {
                 foreach(PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
                 {
+                    for(int i = 0; i < deletePkCount; ++i)
+                    {
+                        pd.References!.RemoveAt(0);
+                    }
                     for(int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
                     {
                         pd.References.Add(new PropertyDescriptor
@@ -114,7 +128,7 @@ public class Builder
     {
         if(node.NodeType is NodeType.Entity)
         {
-            int pkCount = random.Next(s_maxKeyParts + 1);
+            int pkCount = 1 + random.Next(s_maxKeyParts);
             foreach (PropertyDescriptor pd in node.Properties.Where(p => p.IsPrimaryKeyPart))
             {
                 node.PrimaryKey.Add(pd);
@@ -447,7 +461,7 @@ public class Builder
             foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
             {
                 DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
-                //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
+                Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
                 table.Constraints.Add(
                     new ForeignKeyConstraint(
                         $"fk_{table.TableName}_{pd.Name}_{relatedTable.TableName}",

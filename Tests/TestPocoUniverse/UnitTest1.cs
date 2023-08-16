@@ -19,7 +19,7 @@ namespace TestPocoUniverse
         }
 
         [Test]
-        [TestCase(-1)]
+        [TestCase(1779968048)]
         public void Test1(int seed)
         {
             if (seed == -1)
