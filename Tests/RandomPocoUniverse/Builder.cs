@@ -28,7 +28,7 @@ public class Builder
 
         CreateKeys(result, random);
 
-        Console.WriteLine(string.Join('\n', result.Entities));
+        //Console.WriteLine(string.Join('\n', result.Entities));
 
         CreateDataSet(result, random);
 
@@ -77,6 +77,7 @@ public class Builder
                 deletePkCount = random.Next(initialPkCount);
                 for (int i = 0; i < deletePkCount; ++i)
                 {
+                    node.PrimaryKey[0].IsPrimaryKeyPart = false;
                     node.PrimaryKey.RemoveAt(0);
                 }
             }
@@ -431,10 +432,6 @@ public class Builder
                             AllowDBNull = reference.IsNullable,
                         };
                         table.Columns.Add(col);
-                        if (reference.IsPrimaryKeyPart)
-                        {
-                            pk.Add(col);
-                        }
                     }
                 }
                 else
@@ -446,10 +443,6 @@ public class Builder
                         AllowDBNull = pd.IsNullable,
                     };
                     table.Columns.Add(col);
-                    if (pd.IsPrimaryKeyPart)
-                    {
-                        pk.Add(col);
-                    }
                 }
             }
 
@@ -461,7 +454,7 @@ public class Builder
             foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
             {
                 DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
-                Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
+                //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
                 table.Constraints.Add(
                     new ForeignKeyConstraint(
                         $"fk_{table.TableName}_{pd.Name}_{relatedTable.TableName}",

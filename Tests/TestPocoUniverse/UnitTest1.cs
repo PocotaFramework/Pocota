@@ -19,7 +19,7 @@ namespace TestPocoUniverse
         }
 
         [Test]
-        [TestCase(1779968048)]
+        [TestCase(-1)]
         public void Test1(int seed)
         {
             if (seed == -1)
@@ -44,7 +44,7 @@ namespace TestPocoUniverse
 
             using SqlConnection conn = new SqlConnection("Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;");
 
-            string[] commands = $@"drop database qq
+            string[] commands = $@"drop database if exists qq
 go
 create database qq
 go
