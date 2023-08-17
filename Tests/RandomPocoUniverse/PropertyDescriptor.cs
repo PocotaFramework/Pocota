@@ -11,7 +11,6 @@ public class PropertyDescriptor
     public bool IsCollection { get; set; } = false;
     public bool IsReadOnly { get; set; } = false;
     public bool IsNullable { get; set; } = true;
-    public bool IsPrimaryKeyPart { get; set; } = false;
     public List<PropertyDescriptor>? References { get; set; } = null;
     public string? PrimaryKeyPartAlias { get; set; } = null;
     public bool IsAccess { get; set; } = false;
@@ -22,10 +21,6 @@ public class PropertyDescriptor
     {
         StringBuilder sb = new();
         sb.Append("{pd");
-        if (IsPrimaryKeyPart)
-        {
-            sb.Append("!");
-        }
         sb.Append(" ").Append(Name).Append(" ");
         if(Node is { })
         {

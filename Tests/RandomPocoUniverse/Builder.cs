@@ -100,18 +100,21 @@ go
 
     private static void ClearProjectDir(string projectDir)
     {
-        foreach (string file in Directory.EnumerateFiles(projectDir))
+        if(Directory.Exists(projectDir))
         {
-            if (File.Exists(file))
+            foreach (string file in Directory.EnumerateFiles(projectDir))
             {
-                File.Delete(file);
+                if (File.Exists(file))
+                {
+                    File.Delete(file);
+                }
             }
-        }
-        foreach (string dir in Directory.EnumerateDirectories(projectDir))
-        {
-            if (Directory.Exists(dir))
+            foreach (string dir in Directory.EnumerateDirectories(projectDir))
             {
-                Directory.Delete(dir, true);
+                if (Directory.Exists(dir))
+                {
+                    Directory.Delete(dir, true);
+                }
             }
         }
     }
@@ -162,35 +165,13 @@ go
             for (int i = 0; i < numAddPk && candidates.Any(); ++i)
             {
                 int pos = random.Next(candidates.Count);
-                candidates[pos].IsPrimaryKeyPart = true;
                 node.PrimaryKey!.Add(candidates[pos]);
                 candidates.RemoveAt(pos);
             }
-            int deletePkCount = 0;
-            //if(node.PrimaryKey.Count > initialPkCount)
-            //{
-            //    deletePkCount = random.Next(initialPkCount);
-            //    for (int i = 0; i < deletePkCount; ++i)
-            //    {
-            //        node.PrimaryKey[0].IsPrimaryKeyPart = false;
-            //        node.PrimaryKey.RemoveAt(0);
-            //    }
-            //}
             foreach (EntityNode referenser in node.Referencers)
             {
                 foreach(PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
                 {
-                    int deletedPks = 0;
-                    for(int i = 0; i < deletePkCount; ++i)
-                    {
-                        if (referenser.PrimaryKey.Contains(pd.References![0]))
-                        {
-                            pd.References![0].IsPrimaryKeyPart = false;
-                            referenser.PrimaryKey.Remove(pd.References![0]);
-                            ++deletedPks;
-                        }
-                        pd.References!.RemoveAt(0);
-                    }
                     for(int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
                     {
                         pd.References.Add(new PropertyDescriptor
@@ -199,13 +180,7 @@ go
                             Type = node.PrimaryKey[i].Type,
                             IsReadOnly = pd.IsReadOnly,
                             IsNullable = pd.IsNullable,
-                            IsPrimaryKeyPart = deletedPks > 0,
                         });
-                        if(deletedPks > 0)
-                        {
-                            referenser.PrimaryKey.Add(pd.References.Last());
-                            --deletedPks;
-                        }
                     }
                 }
             }
@@ -238,10 +213,6 @@ go
         if(node.NodeType is NodeType.Entity)
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
-            foreach (PropertyDescriptor pd in node.Properties.Where(p => p.IsPrimaryKeyPart))
-            {
-                node.PrimaryKey.Add(pd);
-            }
             for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
             {
                 node.PrimaryKey.Add(new PropertyDescriptor
@@ -251,7 +222,6 @@ go
                     IsNullable = false,
                     IsCollection = false,
                     IsReadOnly = true,
-                    IsPrimaryKeyPart = true,
                 });
             }
         }
@@ -456,10 +426,13 @@ go
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
                     IsCollection = false,
                     IsNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0,
-                    IsPrimaryKeyPart = isPrimaryKeyPart,
                     IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                 };
                 nodes[i].Properties.Add(pd);
+                if (isPrimaryKeyPart)
+                {
+                    (nodes[i] as EntityNode)?.PrimaryKey.Add(pd);
+                }
             }
         }
         for (int i = 0; i < s_numNodes; ++i)

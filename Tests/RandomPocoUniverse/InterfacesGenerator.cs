@@ -22,6 +22,15 @@ public class InterfacesGenerator: Runner
 
         IConnector connector = GetConnector();
 
+        if (!Directory.Exists(options.GeneratedContractProjectDir))
+        {
+            Directory.CreateDirectory(options.GeneratedContractProjectDir);
+        }
+        if (!Directory.Exists(options.GeneratedModelProjectDir))
+        {
+            Directory.CreateDirectory(options.GeneratedModelProjectDir);
+        }
+
         Project contract = Project.Create(new ProjectOptions
         {
             Name = "Contract",
