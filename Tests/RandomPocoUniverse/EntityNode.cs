@@ -1,10 +1,42 @@
-﻿using System.Text;
+﻿using Net.Leksi.Pocota.Common;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
 public class EntityNode: Node
 {
     public List<PropertyDescriptor> PrimaryKey { get; internal set; } = new();
+    public override string InterfaceName => $"IEntity{Id}";
+    public string[] KeyDefinition => PrimaryKey.SelectMany(pk =>
+    {
+        Match match = Regex.Match(pk.Name, "^((?:P|Id)\\d+)+$");
+        string[] parts = match.Groups[1].Captures.Select(c => c.Value).ToArray();
+        if (parts.Length == 1)
+        {
+            if (parts[0].StartsWith("Id"))
+            {
+                return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"typeof({Util.MakeTypeName(pk.Type!)})" };
+            }
+            return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}\"" };
+        }
+        if (parts[1].StartsWith("Id"))
+        {
+            return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}.{parts[1]}\"" };
+        }
+        EntityNode node = (Properties.Where(p => parts[0].Equals(p.Name)).First().Node as EntityNode)!;
+
+        string search = string.Join(string.Empty, parts.Skip(1));
+        PropertyDescriptor pd = node.PrimaryKey.Where(p => search.Equals(p.Name)).First()!;
+        return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}.{pd.PrimaryKeyPartAlias}\"" };
+    }).ToArray();
+
+    public string[] AccessProperties => Properties.Where(p => p.IsAccess).Select(p => p.Name).ToArray();
+
+    public EntityNode() 
+    {
+        NodeType = NodeType.Entity;
+    }
     public override string ToString()
     {
         StringBuilder sb = new(base.ToString());

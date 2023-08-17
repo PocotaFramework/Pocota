@@ -8,8 +8,11 @@ public class Node
     public int Id { get; private init; } = Interlocked.Increment(ref s_genId);
     public List<Node> References { get; private init; } = new();
     public HashSet<Node> Referencers { get; private init; } = new();
-    public NodeType NodeType { get; internal set; } = NodeType.Entity;
+    public NodeType NodeType { get; internal set; } = NodeType.Envelope;
     public List<PropertyDescriptor> Properties { get; internal init; } = new();
+
+    public virtual string InterfaceName => $"IEnvelope{Id}";
+
     public override string ToString()
     {
         StringBuilder sb = new();

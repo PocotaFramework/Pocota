@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.Data.SqlClient;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
-using System.Data.Common;
+using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Diagnostics;
-using System.Windows.Input;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace TestPocoUniverse
 {
@@ -32,38 +32,79 @@ namespace TestPocoUniverse
             }
             Console.WriteLine($"seed: {seed}");
             Random rnd = new Random(seed);
+
+            string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
+
+            Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
+            Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
+            Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
+            Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+
+            Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
+            Builder.UniverseOptions.DatabaseName = "qq";
+            Builder.UniverseOptions.ModelAndContractTelemetry = ModelAndContractTelemetry;
+
             Universe universe = Builder.Build(rnd);
 
             Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
 
-            Console.WriteLine($"Nodes: {universe.Entities.Count}, edges: {universe.Entities.Select(n => n.References.Count).Sum()}");
-
             Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
 
-            //Console.WriteLine(universe.DataSet.GetXmlSchema());
+        }
 
-            using SqlConnection conn = new SqlConnection("Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;");
+        private void ModelAndContractTelemetry(Universe universe, Project contract)
+        {
+            Assembly model = Assembly.LoadFile(contract.GetLibraryFile("Model.dll")!);
+            Assert.That(model, Is.Not.Null);
 
-            string[] commands = $@"drop database if exists qq
-go
-create database qq
-go
-use qq
-go
-{universe.Sql}
-use master
-go
-".Split("go", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            Node[] allNodes = universe.Entities.Concat(universe.Envelopes).ToArray();
 
-            SqlCommand cmd = new SqlCommand(string.Empty, conn);
-            conn.Open();
-            foreach(string sql in commands)
+            foreach (Node node in allNodes)
             {
-                cmd.CommandText = sql;
-                cmd.ExecuteNonQuery();
+                Type? type = model.GetType($"{UniverseOptions.Namespace}.{node.InterfaceName}");
+                Assert.That(type, Is.Not.Null);
+                foreach (PropertyInfo pi in type.GetProperties())
+                {
+                    PropertyDescriptor? pd = node.Properties.Where(p => pi.Name.Equals(p.Name)).FirstOrDefault();
+                    Assert.That(pd, Is.Not.Null);
+                }
+                NullabilityInfoContext nullability = new();
+                foreach (PropertyDescriptor pd in node.Properties)
+                {
+                    PropertyInfo? pi = type.GetProperty(pd.Name);
+                    Assert.That(pi, Is.Not.Null);
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(pi.CanWrite, Is.EqualTo(!pd.IsReadOnly));
+                        Assert.That(pi.CanRead, Is.True);
+                        Assert.That(nullability.Create(pi).ReadState is NullabilityState.Nullable, Is.EqualTo(pd.IsNullable));
+                        Assert.That(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()), Is.EqualTo(pd.IsCollection));
+                    });
+                }
             }
 
-            //Console.WriteLine(universe.Sql);
+            Assembly contractAssembly = Assembly.LoadFile(contract.LibraryFile!);
+            Assert.That(contractAssembly, Is.Not.Null);
+
+            Type? conractType = contractAssembly.GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}");
+            Assert.That(conractType, Is.Not.Null);
+            IEnumerator<PocoContractAttribute> pca = conractType.GetCustomAttributes<PocoContractAttribute>().GetEnumerator();
+
+            Assert.That(pca.MoveNext(), Is.True);
+            Assert.That(pca.MoveNext(), Is.False);
+            IEnumerator<PocoAttribute> pa = conractType.GetCustomAttributes<PocoAttribute>().GetEnumerator();
+            
+            int i = 0;
+            for (; i < allNodes.Length && pa.MoveNext(); ++i)
+            {
+                Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(UniverseOptions.Namespace));
+                Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
+                Assert.That(node, Is.Not.Null);
+                Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
+                Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
+            }
+            Assert.That(pa.MoveNext(), Is.False);
+            Assert.That(i, Is.EqualTo(allNodes.Length));
         }
     }
 }

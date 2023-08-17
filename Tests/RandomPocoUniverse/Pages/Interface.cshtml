@@ -1,0 +1,18 @@
+﻿@page
+@using Net.Leksi.Pocota.Test.RandomPocoUniverse;
+@model InterfaceModel
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+namespace @UniverseOptions.Namespace;
+
+public interface @Model.Node.InterfaceName
+{
+@foreach(PropertyDescriptor pd in Model.Node.Properties)
+{
+    <text>    @Html.Raw(pd.TypeString) @pd.Name { get; @if(!pd.IsReadOnly){<text>set;</text>}}
+</text>
+}
+}

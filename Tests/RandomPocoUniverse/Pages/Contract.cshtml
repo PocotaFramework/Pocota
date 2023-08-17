@@ -1,0 +1,29 @@
+﻿@page
+@using Net.Leksi.Pocota.Test.RandomPocoUniverse;
+@model ContractModel
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+using  Net.Leksi.Pocota.Common;
+
+
+namespace @UniverseOptions.Namespace;
+
+[PocoContract("Random", Version = "v1.0", RoutePrefix = "/api")]
+@foreach(EntityNode entity in Model.Universe.Entities)
+{
+    <text>[Poco(typeof(@entity.InterfaceName), PrimaryKey = new object[] { @Html.Raw(string.Join(", ", entity.KeyDefinition)) }@if(entity.AccessProperties.Any()){<text>, 
+        AccessProperties = new string[] { @Html.Raw(string.Join(", ", entity.AccessProperties.Select(s => $"\"{s}\""))) }</text>})]
+</text>
+}
+@foreach(Node envelope in Model.Universe.Envelopes)
+{
+    <text>[Poco(typeof(@envelope.InterfaceName))]
+</text>
+}
+public interface @UniverseOptions.ContractName
+{
+
+}

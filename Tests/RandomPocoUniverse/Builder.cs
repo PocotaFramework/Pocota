@@ -1,5 +1,8 @@
-﻿using System.Data;
+﻿using Microsoft.Data.SqlClient;
+using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Data;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -19,6 +22,10 @@ public class Builder
     private const int s_minOtherProperties = 3;
     private const int s_maxOtherProperties = 10;
     private const int s_maxFkPk = 3;
+    private const int s_baseAccessProperty = 2;
+    private const int s_maxAccessProperties = 3;
+
+    public static UniverseOptions UniverseOptions { get; private set; } = new();
 
     public static Universe Build(Random random)
     {
@@ -28,17 +35,85 @@ public class Builder
 
         CreateKeys(result, random);
 
-        //Console.WriteLine(string.Join('\n', result.Entities));
+        CompleteEntities(result, random);
 
         CreateDataSet(result, random);
 
         CreateSql(result);
 
+        CreateDatabase(result);
+
+        //Console.WriteLine(string.Join('\n', result.Entities));
+
         CreateNodes(result.Envelopes, random, false);
 
         CompleteEnvelopes(result, random);
 
+        GenerateModelAndContract(result);
+
+        //GenerateServerStuff();
+
         return result;
+    }
+
+    private static void CompleteEntities(Universe universe, Random random)
+    {
+    }
+
+    private static void GenerateServerStuff()
+    {
+        throw new NotImplementedException();
+    }
+
+    private static void CreateDatabase(Universe universe)
+    {
+        using SqlConnection conn = new SqlConnection(UniverseOptions.ConnectionString);
+
+        string[] commands = $@"drop database if exists {UniverseOptions.DatabaseName}
+go
+create database {UniverseOptions.DatabaseName}
+go
+use {UniverseOptions.DatabaseName}
+go
+{universe.Sql}
+use master
+go
+".Split("go", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+
+        SqlCommand cmd = new SqlCommand(string.Empty, conn);
+        conn.Open();
+        foreach (string sql in commands)
+        {
+            cmd.CommandText = sql;
+            cmd.ExecuteNonQuery();
+        }
+    }
+
+    private static void GenerateModelAndContract(Universe universe)
+    {
+        ClearProjectDir(UniverseOptions.GeneratedModelProjectDir);
+        ClearProjectDir(UniverseOptions.GeneratedContractProjectDir);
+        Project contract = new InterfacesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions);
+
+        UniverseOptions.ModelAndContractTelemetry?.Invoke(universe, contract);
+    }
+
+    private static void ClearProjectDir(string projectDir)
+    {
+        foreach (string file in Directory.EnumerateFiles(projectDir))
+        {
+            if (File.Exists(file))
+            {
+                File.Delete(file);
+            }
+        }
+        foreach (string dir in Directory.EnumerateDirectories(projectDir))
+        {
+            if (Directory.Exists(dir))
+            {
+                Directory.Delete(dir, true);
+            }
+        }
     }
 
     private static void CreateKeys(Universe universe, Random random)
@@ -54,6 +129,26 @@ public class Builder
         foreach (EntityNode node in universe.Entities.Where(n => n.NodeType is not NodeType.ManyToManyLink))
         {
             CreateFkPk(node, random);
+        }
+        foreach (EntityNode node in universe.Entities)
+        {
+            CompletePrimaryKey(node);
+        }
+    }
+
+    private static void CompletePrimaryKey(EntityNode node)
+    {
+        int numIds = node.PrimaryKey.Select(pk => pk.Name).Where(n => n.StartsWith("Id")).Count();
+        foreach(PropertyDescriptor pd in node.PrimaryKey)
+        {
+            if (pd.Name.StartsWith("Id"))
+            {
+                pd.PrimaryKeyPartAlias = pd.Name;
+            }
+            else
+            {
+                pd.PrimaryKeyPartAlias = $"Id{numIds++}";
+            }
         }
     }
 
@@ -72,21 +167,28 @@ public class Builder
                 candidates.RemoveAt(pos);
             }
             int deletePkCount = 0;
-            if(node.PrimaryKey.Count > initialPkCount)
-            {
-                deletePkCount = random.Next(initialPkCount);
-                for (int i = 0; i < deletePkCount; ++i)
-                {
-                    node.PrimaryKey[0].IsPrimaryKeyPart = false;
-                    node.PrimaryKey.RemoveAt(0);
-                }
-            }
+            //if(node.PrimaryKey.Count > initialPkCount)
+            //{
+            //    deletePkCount = random.Next(initialPkCount);
+            //    for (int i = 0; i < deletePkCount; ++i)
+            //    {
+            //        node.PrimaryKey[0].IsPrimaryKeyPart = false;
+            //        node.PrimaryKey.RemoveAt(0);
+            //    }
+            //}
             foreach (EntityNode referenser in node.Referencers)
             {
                 foreach(PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
                 {
+                    int deletedPks = 0;
                     for(int i = 0; i < deletePkCount; ++i)
                     {
+                        if (referenser.PrimaryKey.Contains(pd.References![0]))
+                        {
+                            pd.References![0].IsPrimaryKeyPart = false;
+                            referenser.PrimaryKey.Remove(pd.References![0]);
+                            ++deletedPks;
+                        }
                         pd.References!.RemoveAt(0);
                     }
                     for(int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
@@ -97,7 +199,13 @@ public class Builder
                             Type = node.PrimaryKey[i].Type,
                             IsReadOnly = pd.IsReadOnly,
                             IsNullable = pd.IsNullable,
+                            IsPrimaryKeyPart = deletedPks > 0,
                         });
+                        if(deletedPks > 0)
+                        {
+                            referenser.PrimaryKey.Add(pd.References.Last());
+                            --deletedPks;
+                        }
                     }
                 }
             }
@@ -157,12 +265,16 @@ public class Builder
             for(int i =  0; i < numEntities; ++i)
             {
                 Node entity = universe.Entities[random.Next(universe.Entities.Count)];
-                if (!node.References.Contains(entity))
+                node.References.Add(entity);
+                node.Properties.Add(new PropertyDescriptor
                 {
-                    node.References.Add(entity);
-                }
+                    Name = $"P{node.Properties.Count}",
+                    Node = entity,
+                    IsReadOnly = random.Next(s_baseReadonly) == 0,
+                    IsNullable = random.Next(s_baseNullable) == 0,
+                    IsCollection = random.Next(s_baseCollection) == 0,
+                });
             }
-            node.NodeType = NodeType.Envelope;
         }
     }
 
@@ -325,9 +437,18 @@ public class Builder
                 }
             }
             int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
-            for(int j = 0; j < numOtherProperties; ++j)
+            int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
+            int baseAccessProperty = numAccessProperties > 0 ? (int)Math.Ceiling(1.0 * numOtherProperties / numAccessProperties) : 0;
+            for (int j = 0; j < numOtherProperties; ++j)
             {
-                bool isPrimaryKeyPart = areEntities && random.Next(s_basePrimaryKeyPart) == 0;
+                bool isPrimaryKeyPart = 
+                    areEntities 
+                    && (
+                        random.Next(s_basePrimaryKeyPart) == 0 
+                        || (
+                            j == numOtherProperties - 1 && !nodes[i].Properties.Any()
+                        )
+                    );
                 PropertyDescriptor pd = new()
                 {
                     Name = $"P{nodes[i].Properties.Count}",
@@ -336,6 +457,7 @@ public class Builder
                     IsCollection = false,
                     IsNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0,
                     IsPrimaryKeyPart = isPrimaryKeyPart,
+                    IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                 };
                 nodes[i].Properties.Add(pd);
             }

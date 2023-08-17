@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Net.Leksi.Pocota.Common;
+using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -12,6 +13,11 @@ public class PropertyDescriptor
     public bool IsNullable { get; set; } = true;
     public bool IsPrimaryKeyPart { get; set; } = false;
     public List<PropertyDescriptor>? References { get; set; } = null;
+    public string? PrimaryKeyPartAlias { get; set; } = null;
+    public bool IsAccess { get; set; } = false;
+
+    public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.InterfaceName)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
+
     public override string ToString()
     {
         StringBuilder sb = new();
