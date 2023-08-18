@@ -23,6 +23,11 @@ namespace @UniverseOptions.Namespace;
     <text>[Poco(typeof(@envelope.InterfaceName))]
 </text>
 }
+@foreach(Node envelope in Model.Universe.Extenders)
+{
+    <text>[Poco(typeof(@envelope.InterfaceName))]
+</text>
+}
 public interface @UniverseOptions.ContractName
 {
 

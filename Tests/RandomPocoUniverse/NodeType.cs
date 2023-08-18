@@ -4,5 +4,6 @@ public enum NodeType
 {
     Entity,
     ManyToManyLink,
-    Envelope
+    Envelope, 
+    Extender
 }

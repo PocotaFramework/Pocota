@@ -6,8 +6,9 @@ public class UniverseOptions
 {
     public string GeneratedModelProjectDir { get; set; } = null!;
     public string GeneratedContractProjectDir { get; set; } = null!;
-    public string ContractProjectFile { get; set; } = null!;
     public string GeneratedServerStuffProjectDir { get; set; } = null!;
+    public string ContractProjectFile { get; set; } = null!;
+    public string CommonProjectFile { get; set; } = null!;
     public string ConnectionString { get; set; } = null!;
     public string DatabaseName { get; set; } = null!;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;

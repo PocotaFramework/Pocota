@@ -39,17 +39,19 @@ namespace TestPocoUniverse
             Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
             Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
             Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+            Builder.UniverseOptions.CommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
 
             Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
             Builder.UniverseOptions.DatabaseName = "qq";
             Builder.UniverseOptions.ModelAndContractTelemetry = ModelAndContractTelemetry;
 
             Universe universe = Builder.Build(rnd);
+            Assert.Multiple(() =>
+            {
+                Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
 
-            Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
-
-            Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
-
+                Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+            });
         }
 
         private void ModelAndContractTelemetry(Universe universe, Project contract)
@@ -57,7 +59,7 @@ namespace TestPocoUniverse
             Assembly model = Assembly.LoadFile(contract.GetLibraryFile("Model.dll")!);
             Assert.That(model, Is.Not.Null);
 
-            Node[] allNodes = universe.Entities.Concat(universe.Envelopes).ToArray();
+            Node[] allNodes = universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).ToArray();
 
             foreach (Node node in allNodes)
             {
@@ -81,6 +83,27 @@ namespace TestPocoUniverse
                         Assert.That(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()), Is.EqualTo(pd.IsCollection));
                     });
                 }
+                if(node.NodeType is NodeType.Extender)
+                {
+                    Type[]? interfaces = type.GetInterfaces();
+                    Assert.That(interfaces.Length, Is.EqualTo(1));
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(interfaces[0].IsGenericType, Is.True);
+                        Assert.That(interfaces[0].GetGenericTypeDefinition(), Is.EqualTo(typeof(IExtender<>)));
+                        Type? ownerType = model.GetType(
+                            $"{UniverseOptions.Namespace}.{interfaces[0].GetGenericArguments()[0].Name}"
+                        );
+                        Assert.That(
+                            ownerType,
+                            Is.Not.Null
+                        );
+                        Node owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
+                        Assert.That(owner, Is.Not.Null);
+                        Assert.That(owner!.GetType(), Is.EqualTo(typeof(EntityNode)));
+                        Assert.That(owner.NodeType == NodeType.Entity || owner.NodeType == NodeType.ManyToManyLink, Is.True);
+                    });
+                }
             }
 
             Assembly contractAssembly = Assembly.LoadFile(contract.LibraryFile!);
@@ -100,11 +123,18 @@ namespace TestPocoUniverse
                 Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(UniverseOptions.Namespace));
                 Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
                 Assert.That(node, Is.Not.Null);
-                Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
-                Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
+                    Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
+                });
             }
-            Assert.That(pa.MoveNext(), Is.False);
-            Assert.That(i, Is.EqualTo(allNodes.Length));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(pa.MoveNext(), Is.False);
+                Assert.That(i, Is.EqualTo(allNodes.Length));
+            });
         }
     }
 }

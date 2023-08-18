@@ -8,7 +8,8 @@
 }
 namespace @UniverseOptions.Namespace;
 
-public interface @Model.Node.InterfaceName
+public interface @Model.Node.InterfaceName@if (Model.Interface is { }) { <text>: @Html.Raw(Model.Interface)</text> }
+
 {
 @foreach(PropertyDescriptor pd in Model.Node.Properties)
 {

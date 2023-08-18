@@ -15,10 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Pages\Header.cshtml" />
+    <None Include="Pages\ServerImplementation.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.10" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Contract\ContractDebug.csproj" />
     <ProjectReference Include="..\Server\ServerDebug.csproj" />
   </ItemGroup>
 

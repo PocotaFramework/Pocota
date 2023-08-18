@@ -24,6 +24,8 @@ public class Builder
     private const int s_maxFkPk = 3;
     private const int s_baseAccessProperty = 2;
     private const int s_maxAccessProperties = 3;
+    private const int s_maxExtenders = 3;
+    private const int s_maxExtenderAdditionalProperties = 3;
 
     public static UniverseOptions UniverseOptions { get; private set; } = new();
 
@@ -36,6 +38,8 @@ public class Builder
         CreateKeys(result, random);
 
         CompleteEntities(result, random);
+
+        CreateExtenders(result, random);
 
         CreateDataSet(result, random);
 
@@ -54,6 +58,28 @@ public class Builder
         //GenerateServerStuff();
 
         return result;
+    }
+
+    private static void CreateExtenders(Universe universe, Random random)
+    {
+        foreach(EntityNode entity in universe.Entities)
+        {
+            int numExtenders = random.Next(s_maxExtenders + 1);
+            for (int i = 0; i < numExtenders; ++i)
+            {
+                ExtenderNode extender = new() { NodeType = NodeType.Extender, Owner = entity };
+                int numProperties = 1 + random.Next(s_maxExtenderAdditionalProperties);
+                for(int j = 0; j < numProperties; ++j)
+                {
+                    extender.Properties.Add(new PropertyDescriptor
+                    {
+                        Name = $"P{extender.Properties.Count}",
+                        Type = typeof(string),
+                    });
+                }
+                universe.Extenders.Add(extender);
+            }
+        }
     }
 
     private static void CompleteEntities(Universe universe, Random random)
