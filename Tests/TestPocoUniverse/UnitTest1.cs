@@ -45,6 +45,7 @@ namespace TestPocoUniverse
             Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
             Builder.UniverseOptions.DatabaseName = "qq";
             Builder.UniverseOptions.ModelAndContractTelemetry = ModelAndContractTelemetry;
+            Builder.UniverseOptions.OnGenerateClassesResponse = OnGenerateClassesResponse;
 
             Universe universe = Builder.Build(rnd);
             Assert.Multiple(() =>
@@ -53,6 +54,17 @@ namespace TestPocoUniverse
 
                 Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
             });
+        }
+
+        private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception)
+        {
+            Assert.That(
+                requestKind is 
+            );
+            if (!"/ServerImplementation".Equals(path))
+            {
+
+            }
         }
 
         private void ModelAndContractTelemetry(Universe universe, Project contract)
@@ -99,7 +111,7 @@ namespace TestPocoUniverse
                             ownerType,
                             Is.Not.Null
                         );
-                        Node owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
+                        Node? owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
                         Assert.That(owner, Is.Not.Null);
                         Assert.That(owner!.GetType(), Is.EqualTo(typeof(EntityNode)));
                         Assert.That(owner.NodeType == NodeType.Entity || owner.NodeType == NodeType.ManyToManyLink, Is.True);

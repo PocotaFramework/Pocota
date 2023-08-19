@@ -20,6 +20,9 @@ public class Generator : Runner
     public string? ServerGeneratedDirectory { get; set; } = null;
     public string? ClientGeneratedDirectory { get; set; } = null;
 
+    public Action<RequestKind, Type, string,  Exception?>? OnResponse { get; set; } = null;
+    public bool Verbose { get; set; } = true;
+
     public Type? Contract
     {
         get => _contract;
@@ -68,7 +71,217 @@ public class Generator : Runner
 
     public void Generate()
     {
+        if(_contract is null)
+        {
+            throw new InvalidOperationException($"Contract is not set!");
+        }
 
+        int fails = 0;
+        int done = 0;
+
+        if (ClientGeneratedDirectory is { } && Directory.Exists(ClientGeneratedDirectory))
+        {
+            foreach (string path in Directory.EnumerateFiles(
+                ClientGeneratedDirectory,
+                "*.cs",
+                new EnumerationOptions { RecurseSubdirectories = true }
+            ))
+            {
+                File.Delete(path);
+            }
+        }
+        if (ServerGeneratedDirectory is { } && Directory.Exists(ServerGeneratedDirectory))
+        {
+            foreach (string path in Directory.EnumerateFiles(
+                ServerGeneratedDirectory,
+                "*.cs",
+                new EnumerationOptions { RecurseSubdirectories = true }
+            ))
+            {
+                File.Delete(path);
+            }
+        }
+
+        Start();
+
+        IConnector connector = GetConnector();
+
+        foreach (Type @interface in _queue)
+        {
+            if (_contract == @interface)
+            {
+                if (
+                    @interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0
+                )
+                {
+                    if (ClientGeneratedDirectory is { })
+                    {
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/{ClientLanguage}/Connector", RequestKind.ClientImplementation, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/{ClientLanguage}/ClientContractConfigurator", RequestKind.ClientImplementation, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                    }
+                    if (ServerGeneratedDirectory is { })
+                    {
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/Controller", RequestKind.Controller, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/ServerContractConfigurator", RequestKind.ServerImplementation, @interface
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                    }
+                }
+            }
+            else if (_interfaceHoldersByType.TryGetValue(@interface, out InterfaceHolder? target))
+            {
+                if (target.BaseInterface == target.Interface)
+                {
+                    if (ClientGeneratedDirectory is { })
+                    {
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/{ClientLanguage}/ClientImplementation", RequestKind.ClientImplementation,
+                                _contract!
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                    }
+                    if (
+                        ServerGeneratedDirectory is { }
+                    )
+                    {
+                        if (
+                            ProcessInterface(
+                                connector, @interface,
+                                $"/ServerImplementation", RequestKind.ServerImplementation,
+                                _contract!
+                            )
+                        )
+                        {
+                            ++done;
+                        }
+                        else
+                        {
+                            ++fails;
+                        }
+                        if (target.KeysDefinitions.Count > 0)
+                        {
+                            if (
+                                ProcessInterface(
+                                    connector, @interface,
+                                    $"/PrimaryKey", RequestKind.ServerImplementation,
+                                    _contract!
+                                )
+                            )
+                            {
+                                ++done;
+                            }
+                            else
+                            {
+                                ++fails;
+                            }
+                        }
+                        if (target.KeysDefinitions.Count > 0)
+                        {
+                            if (
+                                ProcessInterface(
+                                    connector, @interface,
+                                    $"/AccessManagerInterface", RequestKind.ServerImplementation,
+                                    _contract!
+                                )
+                            )
+                            {
+                                ++done;
+                            }
+                            else
+                            {
+                                ++fails;
+                            }
+                            if (
+                                ProcessInterface(
+                                    connector, @interface,
+                                    $"/AllowAccessManager", RequestKind.ServerImplementation,
+                                    _contract!
+                                )
+                            )
+                            {
+                                ++done;
+                            }
+                            else
+                            {
+                                ++fails;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
+        if (Verbose)
+        {
+            Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
+        }
+    }
+
+    protected override void ConfigureBuilder(WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton(this);
+        builder.Services.AddRazorPages();
+    }
+
+    protected override void ConfigureApplication(WebApplication app)
+    {
+        app.MapRazorPages();
     }
 
     internal void BuildAccessManagerInterface(ClassModel classModel)
@@ -392,6 +605,55 @@ public class Generator : Runner
             {
                 throw new InvalidOperationException($"{targetType} at path {node.Path} has not property {child.Name}!");
             }
+        }
+    }
+
+    private bool ProcessInterface(IConnector connector, Type @interface, string path, RequestKind requestKind, Type contract)
+    {
+        GeneratingRequest request = new()
+        {
+            Interface = @interface,
+            Kind = requestKind,
+            Contract = contract
+        };
+        string outputDirectory = requestKind switch
+        {
+            RequestKind.Controller => Path.Combine(ServerGeneratedDirectory!, "Controllers"),
+            RequestKind.ClientImplementation => ClientGeneratedDirectory!,
+            _ => ServerGeneratedDirectory!
+        };
+        string ext = ClientLanguage switch { _ => ".cs" };
+        if (!Directory.Exists(outputDirectory))
+        {
+            Directory.CreateDirectory(outputDirectory);
+        }
+        try
+        {
+            TextReader reader = connector.Get(path, request);
+            string outputPath = Path.Combine(outputDirectory, request.ResultName + ext);
+            File.WriteAllText(outputPath, reader.ReadToEnd());
+            if (OnResponse is { })
+            {
+                OnResponse(requestKind, @interface, path, null);
+            }
+            if (Verbose)
+            {
+                Console.WriteLine($"{path} for {@interface} generated: {outputPath}");
+            }
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            if(OnResponse is { })
+            {
+                OnResponse(requestKind, @interface, path, ex);
+            }
+            if(Verbose) 
+            {
+                Console.WriteLine($"exception: {requestKind}, {@interface}, {path}, {ex.Message}\n{ex.StackTrace}\n");
+            }
+            return false;
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using Net.Leksi.RuntimeAssemblyCompiler;
+﻿using Net.Leksi.Pocota.Common;
+using Net.Leksi.RuntimeAssemblyCompiler;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -13,6 +14,7 @@ public class UniverseOptions
     public string ConnectionString { get; set; } = null!;
     public string DatabaseName { get; set; } = null!;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
+    public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";
     public static string ContractName => "IContract";
 }
