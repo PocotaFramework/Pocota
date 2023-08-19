@@ -1,6 +1,8 @@
 ﻿using Microsoft.Data.SqlClient;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Data;
+using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 
@@ -55,7 +57,7 @@ public class Builder
 
         GenerateModelAndContract(result);
 
-        //GenerateServerStuff();
+        GenerateClasses(result);
 
         return result;
     }
@@ -86,9 +88,14 @@ public class Builder
     {
     }
 
-    private static void GenerateServerStuff()
+    private static void GenerateClasses(Universe universe)
     {
-        throw new NotImplementedException();
+        new Generator
+        {
+            ServerGeneratedDirectory = UniverseOptions.GeneratedServerStuffProjectDir,
+            ClientGeneratedDirectory = UniverseOptions.GeneratedClientStuffProjectDir,
+            Contract = universe.Contract,
+        }.Generate();
     }
 
     private static void CreateDatabase(Universe universe)
@@ -120,8 +127,11 @@ go
         ClearProjectDir(UniverseOptions.GeneratedModelProjectDir);
         ClearProjectDir(UniverseOptions.GeneratedContractProjectDir);
         Project contract = new InterfacesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions);
+        universe.Contract = Assembly.LoadFile(contract.LibraryFile!)!
+            .GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}")!;
 
         UniverseOptions.ModelAndContractTelemetry?.Invoke(universe, contract);
+
     }
 
     private static void ClearProjectDir(string projectDir)
@@ -167,7 +177,7 @@ go
 
     private static void CompletePrimaryKey(EntityNode node)
     {
-        int numIds = node.PrimaryKey.Select(pk => pk.Name).Where(n => n.StartsWith("Id")).Count();
+        int nextId = 0;
         foreach(PropertyDescriptor pd in node.PrimaryKey)
         {
             if (pd.Name.StartsWith("Id"))
@@ -176,7 +186,12 @@ go
             }
             else
             {
-                pd.PrimaryKeyPartAlias = $"Id{numIds++}";
+                while(node.PrimaryKey.Any(p => p.Name.Equals($"Id{nextId}")))
+                {
+                    ++nextId;
+                }
+                pd.PrimaryKeyPartAlias = $"Id{nextId}";
+                ++nextId;
             }
         }
     }
@@ -186,7 +201,9 @@ go
         int numAddPk = random.Next(s_maxFkPk + 1);
         if(numAddPk > 0)
         {
-            List<PropertyDescriptor> candidates = node.Properties.Where(p => p.Node is { } && p.Node != node && !p.IsCollection).SelectMany(p => p.References!).ToList();
+            List<PropertyDescriptor> candidates = node.Properties
+                .Where(p => p.Node is { } && p.Node != node && !p.IsNullable && !p.IsCollection)
+                .SelectMany(p => p.References!).ToList();
             int initialPkCount = node.PrimaryKey.Count;
             for (int i = 0; i < numAddPk && candidates.Any(); ++i)
             {

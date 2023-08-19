@@ -2,5 +2,4 @@
 
 public interface IExtender<T> where T : class
 {
-    T Owner { get; }
 }

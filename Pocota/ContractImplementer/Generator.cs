@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Common;
 
-public class Generator: Runner
+public class Generator : Runner
 {
     private const string s_update = "Update";
 
@@ -29,7 +29,7 @@ public class Generator: Runner
             {
                 throw new ArgumentNullException(nameof(value));
             }
-            if(_contract != value)
+            if (_contract != value)
             {
                 _queue.Clear();
 
@@ -56,7 +56,7 @@ public class Generator: Runner
                     CheckPrimaryKeys();
                     CheckAccessProperties();
                 }
-                catch (Exception) 
+                catch (Exception)
                 {
                     _contract = null;
                     throw;
@@ -64,6 +64,11 @@ public class Generator: Runner
 
             }
         }
+    }
+
+    public void Generate()
+    {
+
     }
 
     internal void BuildAccessManagerInterface(ClassModel classModel)
@@ -278,7 +283,7 @@ public class Generator: Runner
             }
         }
     }
-    
+
     private void SetAbsentTypes(Type targetType, PrimaryKeyDefinition key)
     {
         Stack<KeyValuePair<Type, string>> stack = new();
@@ -327,68 +332,65 @@ public class Generator: Runner
 
     private void CheckPathNode(Type targetType, PathNode node, bool starsAllowed, bool claimAllowed)
     {
-        if (node.Children is { })
+        foreach (PathNode child in node.Children)
         {
-            foreach (PathNode child in node.Children)
+            if (child.IsMandatory && !(bool)child.IsPropagatedMandatory!)
             {
-                if (child.IsMandatory && !(bool)child.IsPropagatedMandatory!)
+                if (!claimAllowed)
                 {
-                    if (!claimAllowed)
-                    {
-                        throw new InvalidOperationException($"'!' is not allowed here!");
-                    }
+                    throw new InvalidOperationException($"'!' is not allowed here!");
                 }
-                if (targetType.GetProperty(child.Name) is PropertyInfo pi)
-                {
-                    if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
-                    {
-                        if (child.Children is { })
-                        {
-                            if (child.Children.Count != 1 || !"@".Equals(child.Children[0].Name))
-                            {
-                                throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have either no children or single child '@'!");
-                            }
-                            if (_interfaceHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
-                            {
-                                CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed);
-                            }
-                        }
-                    }
-                    else if (_interfaceHoldersByType.ContainsKey(pi.PropertyType))
-                    {
-                        CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed);
-                    }
-                    else
-                    {
-                        if (child.Children is { })
-                        {
-                            throw new InvalidOperationException($"Property {child.Name} of {targetType} at path {node.Path} must have no children!");
-                        }
-                    }
-                }
-                else if (_interfaceHoldersByType[targetType].KeysDefinitions.ContainsKey(child.Name))
+            }
+            if (targetType.GetProperty(child.Name) is PropertyInfo pi)
+            {
+                if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                 {
                     if (child.Children is { })
                     {
-                        throw new InvalidOperationException($"Key part {child.Name} of {targetType} at path {node.Path} must have no children!");
+                        if (child.Children.Count != 1 || !"@".Equals(child.Children[0].Name))
+                        {
+                            throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have either no children or single child '@'!");
+                        }
+                        if (_interfaceHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
+                        {
+                            CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed);
+                        }
                     }
                 }
-                else if ("*".Equals(child.Name))
+                else if (_interfaceHoldersByType.ContainsKey(pi.PropertyType))
                 {
-                    if (!starsAllowed)
-                    {
-                        throw new InvalidOperationException($"'*' is not allowed here!");
-                    }
-                    node.Children.RemoveAt(0);
-                    foreach (PropertyInfo pi1 in targetType.GetRuntimeProperties())
-                    {
-                        node.Children.Add(new PathNode(pi1.Name));
-                    }
+                    CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed);
                 }
                 else
                 {
-                    throw new InvalidOperationException($"{targetType} at path {node.Path} has not property {child.Name}!");
+                    if (child.Children!.Any())
+                    {
+                        throw new InvalidOperationException($"Property {child.Name} of {targetType} at path {node.Path} must have no children!");
+                    }
                 }
+            }
+            else if (_interfaceHoldersByType[targetType].KeysDefinitions.ContainsKey(child.Name))
+            {
+                if (child.Children!.Any())
+                {
+                    throw new InvalidOperationException($"Key part {child.Name} of {targetType} at path {node.Path} must have no children!");
+                }
+            }
+            else if ("*".Equals(child.Name))
+            {
+                if (!starsAllowed)
+                {
+                    throw new InvalidOperationException($"'*' is not allowed here!");
+                }
+                node.Children.RemoveAt(0);
+                foreach (PropertyInfo pi1 in targetType.GetRuntimeProperties())
+                {
+                    node.Children.Add(new PathNode(pi1.Name));
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"{targetType} at path {node.Path} has not property {child.Name}!");
             }
         }
     }

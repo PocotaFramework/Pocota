@@ -9,4 +9,5 @@ public class Universe
     public List<Node> Extenders { get; private init; } = new();
     public DataSet DataSet { get; private init; } = new();
     public string Sql { get; internal set; } = string.Empty;
+    public Type Contract { get; internal set;} = null!;
 }
