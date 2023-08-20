@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\Contract\ContractDebug.csproj" />
     <ProjectReference Include="..\Server\ServerDebug.csproj" />
   </ItemGroup>

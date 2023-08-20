@@ -10,6 +10,8 @@ public class ClassModel: PageModel
     internal string NamespaceValue { get; set; } = null!;
     internal HashSet<string> Usings { get; init; } = new();
     internal List<string> Interfaces { get; init; } = new();
+    internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
+    internal string? Interface { get; set; } = null;
 
     public void OnGet([FromServices] Generator generator)
     {
@@ -36,10 +38,6 @@ public class ClassModel: PageModel
         else if (HttpContext.Request.Path.Equals("/ServerContractConfigurator"))
         {
             generator.BuildServerContractConfigurator(this);
-        }
-        else if (HttpContext.Request.Path.Equals("/AccessManagerInterface"))
-        {
-            generator.BuildAccessManagerInterface(this);
         }
         else if (HttpContext.Request.Path.Equals("/AllowAccessManager"))
         {

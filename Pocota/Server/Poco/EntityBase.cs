@@ -1,5 +1,5 @@
 ﻿namespace Net.Leksi.Pocota.Server.Poco;
 
-public class EntityBase: PocoBase, IEntity
+public abstract class EntityBase: PocoBase, IEntity
 {
 }

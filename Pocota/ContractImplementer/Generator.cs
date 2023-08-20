@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.Server;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -7,12 +8,16 @@ namespace Net.Leksi.Pocota.Common;
 public class Generator : Runner
 {
     private const string s_update = "Update";
+    private const string s_primaryKey = "PrimaryKey";
+    private const string s_ask = "?";
+    private const string s_allowAccessManager = "AllowAccessManager";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, InterfaceHolder> _interfaceHoldersByType = new();
+    private readonly HashSet<string> _variables = new();
 
     private Type? _contract = null;
 
@@ -20,7 +25,7 @@ public class Generator : Runner
     public string? ServerGeneratedDirectory { get; set; } = null;
     public string? ClientGeneratedDirectory { get; set; } = null;
 
-    public Action<RequestKind, Type, string,  Exception?>? OnResponse { get; set; } = null;
+    public Action<RequestKind, Type, string, Exception?>? OnResponse { get; set; } = null;
     public bool Verbose { get; set; } = true;
 
     public Type? Contract
@@ -71,7 +76,7 @@ public class Generator : Runner
 
     public void Generate()
     {
-        if(_contract is null)
+        if (_contract is null)
         {
             throw new InvalidOperationException($"Contract is not set!");
         }
@@ -229,23 +234,6 @@ public class Generator : Runner
                             {
                                 ++fails;
                             }
-                        }
-                        if (target.KeysDefinitions.Count > 0)
-                        {
-                            if (
-                                ProcessInterface(
-                                    connector, @interface,
-                                    $"/AccessManagerInterface", RequestKind.ServerImplementation,
-                                    _contract!
-                                )
-                            )
-                            {
-                                ++done;
-                            }
-                            else
-                            {
-                                ++fails;
-                            }
                             if (
                                 ProcessInterface(
                                     connector, @interface,
@@ -284,14 +272,37 @@ public class Generator : Runner
         app.MapRazorPages();
     }
 
-    internal void BuildAccessManagerInterface(ClassModel classModel)
+    internal void BuildAllowAccessManager(ClassModel model)
     {
-        throw new NotImplementedException();
-    }
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+            && @interface.KeysDefinitions.Any()
+        )
+        {
+            _variables.Clear();
 
-    internal void BuildAllowAccessManager(ClassModel classModel)
-    {
-        throw new NotImplementedException();
+            InitClassModel(model, request);
+
+            AddUsings(model, typeof(IAccessManager<>));
+
+            model.ClassName = MakeAllowAccessManager(request.Interface);
+            model.Interfaces.Add(
+                Util.MakeTypeName(
+                    typeof(IAccessManager<>).MakeGenericType(new Type[] { request.Interface })
+                )
+            );
+
+            model.Interface = Util.MakeTypeName(request.Interface);
+
+            request.ResultName = model.ClassName;
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     internal void BuildClientImplementation(ClassModel classModel)
@@ -309,9 +320,33 @@ public class Generator : Runner
         throw new NotImplementedException();
     }
 
-    internal void BuildPrimaryKey(ClassModel classModel)
+    internal void BuildPrimaryKey(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+            && @interface.KeysDefinitions.Any())
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            model.ClassName = MakePrimaryKeyName(request.Interface);
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IPrimaryKey));
+            AddUsings(model, typeof(KeyDefinition));
+
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey)));
+
+            FillPrimaryKeyModel(model, @interface);
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     internal void BuildServerContractConfigurator(ClassModel classModel)
@@ -322,6 +357,82 @@ public class Generator : Runner
     internal void BuildServerImplementation(ClassModel classModel)
     {
         throw new NotImplementedException();
+    }
+
+    private static string MakeAllowAccessManager(Type @interface)
+    {
+        return $"{@interface.Name}{s_allowAccessManager}";
+    }
+
+    private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)
+    {
+        if (@interface.KeysDefinitions.Any())
+        {
+            model.PrimaryKey = new PrimaryKeyModel
+            {
+                Name = MakePrimaryKeyName(@interface.Interface)
+            };
+
+            foreach (KeyValuePair<string, PrimaryKeyDefinition> partDefinition in @interface.KeysDefinitions)
+            {
+                PrimaryKeyPartModel partModel = new()
+                {
+                    Name = partDefinition.Key,
+                    FieldName = $"_{partDefinition.Key.Substring(0, 1).ToLower()}{partDefinition.Key.Substring(1)}",
+                    Type = Util.MakeTypeName(partDefinition.Value.Type),
+                    AsTypeAsk = partDefinition.Value.Type.IsClass ? string.Empty : s_ask,
+                };
+                if (partDefinition.Value.KeyReference is { })
+                {
+                    partModel.PropertyName = partDefinition.Value.Property!.Name!;
+                    partModel.Property = $"{partModel.PropertyName}.{s_primaryKey}";
+                    partModel.KeyReference = partDefinition.Value.KeyReference!;
+                    partModel.PrimaryKeyClassName = MakePrimaryKeyName(partDefinition.Value.Property.PropertyType);
+                }
+                else if (partDefinition.Value.Property is { })
+                {
+                    partModel.IsProperty = true;
+                    partModel.PropertyName = partDefinition.Value.Property!.Name!;
+                    partModel.Property = partModel.PropertyName;
+                }
+                if (partModel.Property is { })
+                {
+                    partModel.PropertyField = $"_{partModel.Property.Substring(0, 1).ToLower()}{partModel.Property.Substring(1)}";
+                }
+                model.PrimaryKey.Parts.Add(partModel);
+            }
+        }
+    }
+
+    private void AddUsings(ClassModel? model, Type type)
+    {
+        if (model is { })
+        {
+            if (!type.IsGenericType || type.IsGenericTypeDefinition)
+            {
+                if (model.NamespaceValue is null || !model.NamespaceValue.Equals(type.Namespace))
+                {
+                    model.Usings.Add(type.Namespace!);
+                }
+                return;
+            }
+            AddUsings(model, type.GetGenericTypeDefinition());
+            foreach (Type arg in type.GetGenericArguments())
+            {
+                AddUsings(model, arg);
+            }
+        }
+    }
+
+    private string MakePrimaryKeyName(Type @interface)
+    {
+        return $"{_interfaceHoldersByType[@interface].Name}{s_primaryKey}";
+    }
+
+    private void InitClassModel(ClassModel model, GeneratingRequest request)
+    {
+        model.Contract = request.Contract;
+        model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
     }
 
     private void ProcessPocoAttribute(PocoAttribute attr)
@@ -645,11 +756,11 @@ public class Generator : Runner
         }
         catch (Exception ex)
         {
-            if(OnResponse is { })
+            if (OnResponse is { })
             {
                 OnResponse(requestKind, @interface, path, ex);
             }
-            if(Verbose) 
+            if (Verbose)
             {
                 Console.WriteLine($"exception: {requestKind}, {@interface}, {path}, {ex.Message}\n{ex.StackTrace}\n");
             }

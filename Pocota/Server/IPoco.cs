@@ -2,4 +2,5 @@
 
 public interface IPoco
 {
+    void CheckAccess();
 }

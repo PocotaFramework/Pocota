@@ -17,7 +17,6 @@ public class Tests
         internal List<Node> _allNodesClientImplementation = new();
         internal List<Node> _allNodesServerImplementation = new();
         internal List<Node> _allNodesPrimaryKey = new();
-        internal List<Node> _allNodesAccessManagerInterface = new();
         internal List<Node> _allNodesAllowAccessManager = new();
     }
 
@@ -71,7 +70,6 @@ public class Tests
         Assert.That(dataHolder._allNodesClientImplementation.Any(), Is.False);
         Assert.That(dataHolder._allNodesServerImplementation.Any(), Is.False);
         Assert.That(dataHolder._allNodesPrimaryKey.Any(), Is.False);
-        Assert.That(dataHolder._allNodesAccessManagerInterface.Any(), Is.False);
         Assert.That(dataHolder._allNodesAllowAccessManager.Any(), Is.False);
     }
 
@@ -124,13 +122,6 @@ public class Tests
                         ) == 1
                     )
                     || (
-                        $"/AccessManagerInterface".Equals(path)
-                        && dataHolder._allNodesAccessManagerInterface.RemoveAll(
-                            n => @interface.Name.Equals(n.InterfaceName)
-                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
-                        ) == 1
-                    )
-                    || (
                         $"/AllowAccessManager".Equals(path)
                         && dataHolder._allNodesAllowAccessManager.RemoveAll(
                             n => @interface.Name.Equals(n.InterfaceName)
@@ -143,11 +134,13 @@ public class Tests
             $"{requestKind}, {@interface}, {path}, {exception}"
 
         );
-        if ("/ServerImplementation".Equals(path))
+        if (
+            "/ServerImplementation".Equals(path)
+        )
         {
-            //Assert.That(exception, Is.Null);
             Assert.That(exception, Is.Not.Null);
-            AggregateException? aex = Assert.Throws<AggregateException>(() => throw exception!);
+            Assert.That(exception, Is.TypeOf<AggregateException>());
+            AggregateException aex = (exception as AggregateException)!;
             Assert.That(aex.InnerExceptions, Has.Count.EqualTo(2));
             Assert.Multiple(() =>
             {
@@ -155,10 +148,16 @@ public class Tests
                 Assert.That(aex.InnerExceptions[1].Message, Does.StartWith("The method or operation is not implemented.\n"));
             });
         }
+        else if (
+            "/PrimaryKey".Equals(path)
+            || "/AllowAccessManager".Equals(path)
+        )
+        {
+            Assert.That(exception, Is.Null);
+        }
         else
         {
-            Assert.That(exception, Is.Not.Null);
-            Assert.Throws<HttpRequestException>(() => throw exception!);
+            Assert.That(exception, Is.TypeOf<HttpRequestException>());
             Assert.That(exception.Message, Is.EqualTo("Response status code does not indicate success: 404 (Not Found)."));
         }
     }
@@ -254,8 +253,6 @@ public class Tests
         dataHolder._allNodesPrimaryKey.AddRange(universe.Entities);
         dataHolder._allNodesAllowAccessManager.Clear();
         dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities);
-        dataHolder._allNodesAccessManagerInterface.Clear();
-        dataHolder._allNodesAccessManagerInterface.AddRange(universe.Entities);
     }
 }
 
