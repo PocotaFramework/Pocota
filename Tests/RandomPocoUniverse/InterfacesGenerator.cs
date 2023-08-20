@@ -35,7 +35,7 @@ public class InterfacesGenerator: Runner
         Project contract = Project.Create(new ProjectOptions
         {
             Name = "Contract",
-            TargetFramework = "net6.0-windows",
+            TargetFramework = options.TargetFramework,
             ProjectDir = options.GeneratedContractProjectDir,
         });
 
@@ -45,7 +45,7 @@ public class InterfacesGenerator: Runner
             ProjectDir = options.GeneratedModelProjectDir,
         });
 
-        model.AddProject(options.CommonProjectFile);
+        model.AddProject(options.PocotaCommonProjectFile);
 
         contract.AddProject(model);
         contract.AddProject(options.ContractProjectFile);

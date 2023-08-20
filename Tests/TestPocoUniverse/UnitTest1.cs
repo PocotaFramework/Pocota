@@ -53,7 +53,8 @@ public class Tests
         Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
         Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
-        Builder.UniverseOptions.CommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
+        Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
+        Builder.UniverseOptions.PocotaServerProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Server", "ServerDebug.csproj");
 
         Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
         Builder.UniverseOptions.DatabaseName = "qq";
@@ -135,7 +136,7 @@ public class Tests
 
         );
         if (
-            "/ServerImplementation".Equals(path)
+            false
         )
         {
             Assert.That(exception, Is.Not.Null);
@@ -151,6 +152,7 @@ public class Tests
         else if (
             "/PrimaryKey".Equals(path)
             || "/AllowAccessManager".Equals(path)
+            || "/ServerImplementation".Equals(path)
         )
         {
             Assert.That(exception, Is.Null);
@@ -252,7 +254,7 @@ public class Tests
         dataHolder._allNodesPrimaryKey.Clear();
         dataHolder._allNodesPrimaryKey.AddRange(universe.Entities);
         dataHolder._allNodesAllowAccessManager.Clear();
-        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities);
+        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities.Where(n => n.AccessProperties.Any()));
     }
 }
 

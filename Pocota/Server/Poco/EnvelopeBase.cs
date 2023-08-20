@@ -2,4 +2,5 @@
 
 public abstract class EnvelopeBase: PocoBase, IEnvelope
 {
+    void IPoco.CheckAccess() { }
 }

@@ -12,6 +12,7 @@ public class ClassModel: PageModel
     internal List<string> Interfaces { get; init; } = new();
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
     internal string? Interface { get; set; } = null;
+    internal PocoKind? PocoKind { get; set; } = null;
 
     public void OnGet([FromServices] Generator generator)
     {

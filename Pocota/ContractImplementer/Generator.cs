@@ -11,6 +11,7 @@ public class Generator : Runner
     private const string s_primaryKey = "PrimaryKey";
     private const string s_ask = "?";
     private const string s_allowAccessManager = "AllowAccessManager";
+    private const string s_poco = "Poco";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
@@ -218,7 +219,7 @@ public class Generator : Runner
                         {
                             ++fails;
                         }
-                        if (target.KeysDefinitions.Count > 0)
+                        if (target.KeysDefinitions.Any())
                         {
                             if (
                                 ProcessInterface(
@@ -234,19 +235,22 @@ public class Generator : Runner
                             {
                                 ++fails;
                             }
-                            if (
-                                ProcessInterface(
-                                    connector, @interface,
-                                    $"/AllowAccessManager", RequestKind.ServerImplementation,
-                                    _contract!
+                            if (target.AccessProperties?.Any() ?? false)
+                            {
+                                if (
+                                    ProcessInterface(
+                                        connector, @interface,
+                                        $"/AllowAccessManager", RequestKind.ServerImplementation,
+                                        _contract!
+                                    )
                                 )
-                            )
-                            {
-                                ++done;
-                            }
-                            else
-                            {
-                                ++fails;
+                                {
+                                    ++done;
+                                }
+                                else
+                                {
+                                    ++fails;
+                                }
                             }
                         }
                     }
@@ -354,14 +358,64 @@ public class Generator : Runner
         throw new NotImplementedException();
     }
 
-    internal void BuildServerImplementation(ClassModel classModel)
+    internal void BuildServerImplementation(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+        )
+        {
+            _variables.Clear();
+
+            InitClassModel(model, request);
+
+            model.ClassName = MakePocoClassName(request.Interface);
+            request.ResultName = model.ClassName;
+
+            if (@interface.KeysDefinitions.Any())
+            {
+                AddUsings(model, typeof(IEntity));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
+                model.PocoKind = PocoKind.Entity;
+            }
+            else if (
+                @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
+                &&  baseInterface.IsGenericType
+                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+                && baseInterface.GetGenericArguments()[0] is Type entityType
+            )
+            {
+                AddUsings(model, typeof(IExtender<>));
+                AddUsings(model, baseInterface);
+                AddUsings(model, entityType);
+                model.Interfaces.Add(MakePocoClassName(entityType));
+                model.Interfaces.Add(Util.MakeTypeName(baseInterface));
+                model.PocoKind = PocoKind.Extender;
+            }
+            else
+            {
+                AddUsings(model, typeof(IEnvelope));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(IEnvelope)));
+                model.PocoKind = PocoKind.Envelope;
+            }
+
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
-    private static string MakeAllowAccessManager(Type @interface)
+    private string MakePocoClassName(Type @interface)
     {
-        return $"{@interface.Name}{s_allowAccessManager}";
+        return $"{_interfaceHoldersByType[@interface].Name}{s_poco}";
+    }
+
+    private string MakeAllowAccessManager(Type @interface)
+    {
+        return $"{_interfaceHoldersByType[@interface].Name}{s_allowAccessManager}";
     }
 
     private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)

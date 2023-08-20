@@ -90,6 +90,8 @@ public class Builder
 
     private static void GenerateClasses(Universe universe)
     {
+        ClearProjectDir(UniverseOptions.GeneratedServerStuffProjectDir);
+        ClearProjectDir(UniverseOptions.GeneratedClientStuffProjectDir);
         new Generator
         {
             ServerGeneratedDirectory = UniverseOptions.GeneratedServerStuffProjectDir,
@@ -99,6 +101,19 @@ public class Builder
             ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
         }.Generate();
+
+        Project generatedServerStuff = Project.Create(new ProjectOptions
+        {
+            Name = "GeneratedServerStuff",
+            TargetFramework = UniverseOptions.TargetFramework,
+            ProjectDir = UniverseOptions.GeneratedServerStuffProjectDir,
+        });
+
+        generatedServerStuff.AddProject(UniverseOptions.PocotaCommonProjectFile);
+        generatedServerStuff.AddProject(UniverseOptions.PocotaServerProjectFile);
+        generatedServerStuff.AddProject(Path.Combine(UniverseOptions.GeneratedModelProjectDir, "Model.csproj"));
+
+        generatedServerStuff.Compile();
     }
 
     private static void CreateDatabase(Universe universe)
