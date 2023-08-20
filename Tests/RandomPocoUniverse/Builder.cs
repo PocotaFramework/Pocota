@@ -96,6 +96,7 @@ public class Builder
             ClientGeneratedDirectory = UniverseOptions.GeneratedClientStuffProjectDir,
             Contract = universe.Contract,
             Verbose = false,
+            ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
         }.Generate();
     }

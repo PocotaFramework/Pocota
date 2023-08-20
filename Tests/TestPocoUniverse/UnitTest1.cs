@@ -1,153 +1,261 @@
+using Azure;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using NUnit.Framework;
+using System;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
-namespace TestPocoUniverse
+namespace TestPocoUniverse;
+
+public class Tests
 {
-    public class Tests
+    private class Test1DataHolder
     {
-        [OneTimeSetUp]
-        public void OneTimeSetUp()
-        {
-            Trace.Listeners.Clear();
-            Trace.Listeners.Add(new ConsoleTraceListener());
-            Trace.AutoFlush = true;
+        internal Universe _universe = null!;
+        internal List<Node> _allNodesClientImplementation = new();
+        internal List<Node> _allNodesServerImplementation = new();
+        internal List<Node> _allNodesPrimaryKey = new();
+        internal List<Node> _allNodesAccessManagerInterface = new();
+        internal List<Node> _allNodesAllowAccessManager = new();
+    }
 
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        Trace.Listeners.Clear();
+        Trace.Listeners.Add(new ConsoleTraceListener());
+        Trace.AutoFlush = true;
+
+    }
+
+    [Test]
+    [TestCase(136648442)]
+    public void Test1(int seed)
+    {
+        if (seed == -1)
+        {
+            seed = (int)(long.Parse(
+                new string(
+                    DateTime.UtcNow.Ticks.ToString().Reverse().ToArray()
+                )
+            ) % int.MaxValue);
         }
+        Console.WriteLine($"seed: {seed}");
+        Random rnd = new Random(seed);
 
-        [Test]
-        [TestCase(-1)]
-        public void Test1(int seed)
+        Test1DataHolder dataHolder = new();
+
+        string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
+
+        Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
+        Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
+        Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
+        Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
+        Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+        Builder.UniverseOptions.CommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
+
+        Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
+        Builder.UniverseOptions.DatabaseName = "qq";
+        Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
+        Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
+
+        Universe universe = Builder.Build(rnd);
+        Assert.Multiple(() =>
         {
-            if (seed == -1)
-            {
-                seed = (int)(long.Parse(
-                    new string(
-                        DateTime.UtcNow.Ticks.ToString().Reverse().ToArray()
+            Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
+
+            Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+        });
+        Assert.That(dataHolder._allNodesClientImplementation.Any(), Is.False);
+        Assert.That(dataHolder._allNodesServerImplementation.Any(), Is.False);
+        Assert.That(dataHolder._allNodesPrimaryKey.Any(), Is.False);
+        Assert.That(dataHolder._allNodesAccessManagerInterface.Any(), Is.False);
+        Assert.That(dataHolder._allNodesAllowAccessManager.Any(), Is.False);
+    }
+
+    private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception, Test1DataHolder dataHolder)
+    {
+        Assert.That(
+            (
+                requestKind is RequestKind.ClientImplementation 
+                && (
+                    (
+                        $"/{Builder.UniverseOptions.ClientLanguage}/Connector".Equals(path) 
+                        && @interface == dataHolder._universe.Contract
                     )
-                ) % int.MaxValue);
-            }
-            Console.WriteLine($"seed: {seed}");
-            Random rnd = new Random(seed);
+                    || (
+                        $"/{Builder.UniverseOptions.ClientLanguage}/ClientContractConfigurator".Equals(path) 
+                        && @interface == dataHolder._universe.Contract
+                    )
+                    || (
+                        $"/{Builder.UniverseOptions.ClientLanguage}/ClientImplementation".Equals(path)
+                        && dataHolder._allNodesClientImplementation.RemoveAll(
+                            n => @interface.Name.Equals(n.InterfaceName) 
+                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                        ) == 1
+                    )
+                )
+            )
+            || (
+                requestKind is RequestKind.Controller
+                && $"/Controller".Equals(path) && @interface == dataHolder._universe.Contract
+            )
+            || (
+                requestKind is RequestKind.ServerImplementation
+                && (
+                    (
+                        $"/ServerContractConfigurator".Equals(path)
+                        && @interface == dataHolder._universe.Contract
+                    )
+                    || (
+                        $"/ServerImplementation".Equals(path)
+                        && dataHolder._allNodesServerImplementation.RemoveAll(
+                            n => @interface.Name.Equals(n.InterfaceName)
+                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                        ) == 1
+                    )
+                    || (
+                        $"/PrimaryKey".Equals(path)
+                        && dataHolder._allNodesPrimaryKey.RemoveAll(
+                            n => @interface.Name.Equals(n.InterfaceName)
+                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                        ) == 1
+                    )
+                    || (
+                        $"/AccessManagerInterface".Equals(path)
+                        && dataHolder._allNodesAccessManagerInterface.RemoveAll(
+                            n => @interface.Name.Equals(n.InterfaceName)
+                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                        ) == 1
+                    )
+                    || (
+                        $"/AllowAccessManager".Equals(path)
+                        && dataHolder._allNodesAllowAccessManager.RemoveAll(
+                            n => @interface.Name.Equals(n.InterfaceName)
+                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                        ) == 1
+                    )
+                )
+            ),
+            Is.True,
+            $"{requestKind}, {@interface}, {path}, {exception}"
 
-            string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
-
-            Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
-            Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
-            Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
-            Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
-            Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
-            Builder.UniverseOptions.CommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
-
-            Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
-            Builder.UniverseOptions.DatabaseName = "qq";
-            Builder.UniverseOptions.ModelAndContractTelemetry = ModelAndContractTelemetry;
-            Builder.UniverseOptions.OnGenerateClassesResponse = OnGenerateClassesResponse;
-
-            Universe universe = Builder.Build(rnd);
+        );
+        if ("/ServerImplementation".Equals(path))
+        {
+            //Assert.That(exception, Is.Null);
+            Assert.That(exception, Is.Not.Null);
+            AggregateException? aex = Assert.Throws<AggregateException>(() => throw exception!);
+            Assert.That(aex.InnerExceptions, Has.Count.EqualTo(2));
             Assert.Multiple(() =>
             {
-                Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
-
-                Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+                Assert.That(aex.InnerExceptions[0].Message, Is.EqualTo("Response status code does not indicate success: 500 (Internal Server Error)."));
+                Assert.That(aex.InnerExceptions[1].Message, Does.StartWith("The method or operation is not implemented.\n"));
             });
         }
-
-        private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception)
+        else
         {
-            Assert.That(
-                requestKind is 
-            );
-            if (!"/ServerImplementation".Equals(path))
-            {
-
-            }
-        }
-
-        private void ModelAndContractTelemetry(Universe universe, Project contract)
-        {
-            Assembly model = Assembly.LoadFile(contract.GetLibraryFile("Model.dll")!);
-            Assert.That(model, Is.Not.Null);
-
-            Node[] allNodes = universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).ToArray();
-
-            foreach (Node node in allNodes)
-            {
-                Type? type = model.GetType($"{UniverseOptions.Namespace}.{node.InterfaceName}");
-                Assert.That(type, Is.Not.Null);
-                foreach (PropertyInfo pi in type.GetProperties())
-                {
-                    PropertyDescriptor? pd = node.Properties.Where(p => pi.Name.Equals(p.Name)).FirstOrDefault();
-                    Assert.That(pd, Is.Not.Null);
-                }
-                NullabilityInfoContext nullability = new();
-                foreach (PropertyDescriptor pd in node.Properties)
-                {
-                    PropertyInfo? pi = type.GetProperty(pd.Name);
-                    Assert.That(pi, Is.Not.Null);
-                    Assert.Multiple(() =>
-                    {
-                        Assert.That(pi.CanWrite, Is.EqualTo(!pd.IsReadOnly));
-                        Assert.That(pi.CanRead, Is.True);
-                        Assert.That(nullability.Create(pi).ReadState is NullabilityState.Nullable, Is.EqualTo(pd.IsNullable));
-                        Assert.That(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()), Is.EqualTo(pd.IsCollection));
-                    });
-                }
-                if(node.NodeType is NodeType.Extender)
-                {
-                    Type[]? interfaces = type.GetInterfaces();
-                    Assert.That(interfaces.Length, Is.EqualTo(1));
-                    Assert.Multiple(() =>
-                    {
-                        Assert.That(interfaces[0].IsGenericType, Is.True);
-                        Assert.That(interfaces[0].GetGenericTypeDefinition(), Is.EqualTo(typeof(IExtender<>)));
-                        Type? ownerType = model.GetType(
-                            $"{UniverseOptions.Namespace}.{interfaces[0].GetGenericArguments()[0].Name}"
-                        );
-                        Assert.That(
-                            ownerType,
-                            Is.Not.Null
-                        );
-                        Node? owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
-                        Assert.That(owner, Is.Not.Null);
-                        Assert.That(owner!.GetType(), Is.EqualTo(typeof(EntityNode)));
-                        Assert.That(owner.NodeType == NodeType.Entity || owner.NodeType == NodeType.ManyToManyLink, Is.True);
-                    });
-                }
-            }
-
-            Assembly contractAssembly = Assembly.LoadFile(contract.LibraryFile!);
-            Assert.That(contractAssembly, Is.Not.Null);
-
-            Type? conractType = contractAssembly.GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}");
-            Assert.That(conractType, Is.Not.Null);
-            IEnumerator<PocoContractAttribute> pca = conractType.GetCustomAttributes<PocoContractAttribute>().GetEnumerator();
-
-            Assert.That(pca.MoveNext(), Is.True);
-            Assert.That(pca.MoveNext(), Is.False);
-            IEnumerator<PocoAttribute> pa = conractType.GetCustomAttributes<PocoAttribute>().GetEnumerator();
-            
-            int i = 0;
-            for (; i < allNodes.Length && pa.MoveNext(); ++i)
-            {
-                Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(UniverseOptions.Namespace));
-                Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
-                Assert.That(node, Is.Not.Null);
-                Assert.Multiple(() =>
-                {
-                    Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
-                    Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
-                });
-            }
-
-            Assert.Multiple(() =>
-            {
-                Assert.That(pa.MoveNext(), Is.False);
-                Assert.That(i, Is.EqualTo(allNodes.Length));
-            });
+            Assert.That(exception, Is.Not.Null);
+            Assert.Throws<HttpRequestException>(() => throw exception!);
+            Assert.That(exception.Message, Is.EqualTo("Response status code does not indicate success: 404 (Not Found)."));
         }
     }
+
+    private void ModelAndContractTelemetry(Universe universe, Project contract, Test1DataHolder dataHolder)
+    {
+        Assembly model = Assembly.LoadFile(contract.GetLibraryFile("Model.dll")!);
+        Assert.That(model, Is.Not.Null);
+
+        Node[] allNodes = universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).ToArray();
+
+        foreach (Node node in allNodes)
+        {
+            Type? type = model.GetType($"{UniverseOptions.Namespace}.{node.InterfaceName}");
+            Assert.That(type, Is.Not.Null);
+            foreach (PropertyInfo pi in type.GetProperties())
+            {
+                PropertyDescriptor? pd = node.Properties.Where(p => pi.Name.Equals(p.Name)).FirstOrDefault();
+                Assert.That(pd, Is.Not.Null);
+            }
+            NullabilityInfoContext nullability = new();
+            foreach (PropertyDescriptor pd in node.Properties)
+            {
+                PropertyInfo? pi = type.GetProperty(pd.Name);
+                Assert.That(pi, Is.Not.Null);
+                Assert.Multiple(() =>
+                {
+                    Assert.That(pi.CanWrite, Is.EqualTo(!pd.IsReadOnly));
+                    Assert.That(pi.CanRead, Is.True);
+                    Assert.That(nullability.Create(pi).ReadState is NullabilityState.Nullable, Is.EqualTo(pd.IsNullable));
+                    Assert.That(pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()), Is.EqualTo(pd.IsCollection));
+                });
+            }
+            if(node.NodeType is NodeType.Extender)
+            {
+                Type[]? interfaces = type.GetInterfaces();
+                Assert.That(interfaces.Length, Is.EqualTo(1));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(interfaces[0].IsGenericType, Is.True);
+                    Assert.That(interfaces[0].GetGenericTypeDefinition(), Is.EqualTo(typeof(IExtender<>)));
+                    Type? ownerType = model.GetType(
+                        $"{UniverseOptions.Namespace}.{interfaces[0].GetGenericArguments()[0].Name}"
+                    );
+                    Assert.That(
+                        ownerType,
+                        Is.Not.Null
+                    );
+                    Node? owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
+                    Assert.That(owner, Is.Not.Null);
+                    Assert.That(owner!.GetType(), Is.EqualTo(typeof(EntityNode)));
+                    Assert.That(owner.NodeType == NodeType.Entity || owner.NodeType == NodeType.ManyToManyLink, Is.True);
+                });
+            }
+        }
+
+        Assembly contractAssembly = Assembly.LoadFile(contract.LibraryFile!);
+        Assert.That(contractAssembly, Is.Not.Null);
+
+        Type? conractType = contractAssembly.GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}");
+        Assert.That(conractType, Is.Not.Null);
+        IEnumerator<PocoContractAttribute> pca = conractType.GetCustomAttributes<PocoContractAttribute>().GetEnumerator();
+
+        Assert.That(pca.MoveNext(), Is.True);
+        Assert.That(pca.MoveNext(), Is.False);
+        IEnumerator<PocoAttribute> pa = conractType.GetCustomAttributes<PocoAttribute>().GetEnumerator();
+        
+        int i = 0;
+        for (; i < allNodes.Length && pa.MoveNext(); ++i)
+        {
+            Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(UniverseOptions.Namespace));
+            Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
+            Assert.That(node, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
+                Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
+            });
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(pa.MoveNext(), Is.False);
+            Assert.That(i, Is.EqualTo(allNodes.Length));
+        });
+
+        dataHolder._universe = universe;
+        dataHolder._allNodesClientImplementation.Clear();
+        dataHolder._allNodesClientImplementation.AddRange(universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders));
+        dataHolder._allNodesServerImplementation.Clear();
+        dataHolder._allNodesServerImplementation.AddRange(universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders));
+        dataHolder._allNodesPrimaryKey.Clear();
+        dataHolder._allNodesPrimaryKey.AddRange(universe.Entities);
+        dataHolder._allNodesAllowAccessManager.Clear();
+        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities);
+        dataHolder._allNodesAccessManagerInterface.Clear();
+        dataHolder._allNodesAccessManagerInterface.AddRange(universe.Entities);
+    }
 }
+

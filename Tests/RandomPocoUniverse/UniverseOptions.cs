@@ -13,6 +13,7 @@ public class UniverseOptions
     public string CommonProjectFile { get; set; } = null!;
     public string ConnectionString { get; set; } = null!;
     public string DatabaseName { get; set; } = null!;
+    public Language ClientLanguage { get; set; } = Language.CSharp;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
     public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";
