@@ -14,6 +14,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 }
 
     private const string s_alreadyDelivered = "The property {0}.{1} is already delivered!";
+    private bool _isAccessChecked = false;
 
 @foreach(PropertyModel pm in Model.Properties)
 {
@@ -38,7 +39,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         <text>        set 
         {
-
+            Set@{}@pm.Name@{}(value);
         }
 </text>
     }
@@ -54,26 +55,31 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
     @if(Model.AccessProperties.Any())
     {
-        <text>        if(@string.Join(" || ", Model.AccessProperties.Select(p => $"!{p.FieldName}IsSet")))
+        <text>        if(!_isAccessChecked)
         {
-            throw new @nameof(InvalidOperationException)@{}("Not all access properties are set!");
-        }
-                @foreach (PropertyModel ap in Model.AccessProperties.Where(p => p.PocoKind is PocoKind.Entity || p.PocoKind is PocoKind.Extender))
+            if(@string.Join(" || ", Model.AccessProperties.Select(p => $"!{p.FieldName}IsSet")))
+            {
+                throw new @nameof(InvalidOperationException)@{}("Not all access properties are set!");
+            }
+        @foreach (PropertyModel ap in Model.AccessProperties.Where(p => p.PocoKind is PocoKind.Entity || p.PocoKind is PocoKind.Extender))
         {
-            @if(ap.IsCollection){
-                <text>        foreach(@Html.Raw(ap.ItemType) item in @ap.FieldName@{})
-        {
-            item.CheckAccess();
-        }
+            @if(ap.IsCollection)
+            {
+                <text>            foreach(@Html.Raw(ap.ItemType) item in @ap.FieldName@{})
+            {
+                item.CheckAccess();
+            }
 </text>
             }
             else
             {
-                <text>        ((@Html.Raw(ap.ItemType))@ap.FieldName).CheckAccess();
+                <text>            ((@Html.Raw(ap.ItemType))@ap.FieldName).CheckAccess();
 </text>
             }
         }
-        _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Interface}>>")@{}().CheckAccess(this);
+            _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Interface}>>")@{}().CheckAccess(this);
+            _isAccessChecked = true;
+        }
 </text>
     }
     }
@@ -81,7 +87,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 }
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    private void Set@{}@pm.Name@{}(@Html.Raw(pm.Type) value)
+    <text>    private void Set@{}@pm.Name@{}(@Html.Raw(pm.Type)@pm.Nullable value)
     {
         if(@pm.FieldName@{}IsDelivered)
         {
@@ -108,6 +114,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             else
             {
                 <text>            PropertyChanged?.Invoke(this, IEntity.AccessPropertyChangedEventArgs);
+            _isAccessChecked = false;
 </text>
             }
         }
@@ -132,7 +139,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         <text>    private void @pm.Name@{}Changed@{}(object? sender, PropertyChangedEventArgs args)
     {
-
+        _isAccessChecked = false;
     }
 </text>
     }

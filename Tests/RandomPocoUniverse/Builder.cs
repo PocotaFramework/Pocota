@@ -258,18 +258,6 @@ go
         {
             CreateFkPk(node, random);
         }
-        List<EntityNode> nodesWithoutKeys = universe.Entities.Where(n => !n.PrimaryKey.Any()).ToList();
-        if (nodesWithoutKeys.Any())
-        {
-            foreach (EntityNode node in nodesWithoutKeys)
-            {
-                CreatePrimaryKey(node, random);
-            }
-            foreach (EntityNode node in universe.Entities)
-            {
-                CreateForeignKeys(node, random);
-            }
-        }
         foreach (EntityNode node in universe.Entities)
         {
             CompletePrimaryKey(node);
@@ -326,31 +314,6 @@ go
                             IsNullable = pd.IsNullable,
                         });
                     }
-                }
-            }
-            int numDeletePk = random.Next(initialPkCount + 1);
-            for (int i = 0; i < numDeletePk; ++i)
-            {
-                //DeletePk(node, 0);
-            }
-        }
-    }
-
-    private static void DeletePk(EntityNode node, int pos)
-    {
-        PropertyDescriptor pk = node.PrimaryKey[pos];
-        node.PrimaryKey.RemoveAt(pos);
-
-        foreach (EntityNode referenser in node.Referencers)
-        {
-            foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
-            {
-                PropertyDescriptor pdToRemove = pd.References![pos];
-                pd.References!.RemoveAt(pos);
-                int pos1 = referenser.PrimaryKey.IndexOf(pdToRemove);
-                if (pos1 >= 0)
-                {
-                    DeletePk(referenser, pos1);
                 }
             }
         }

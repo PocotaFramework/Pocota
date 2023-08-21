@@ -381,6 +381,7 @@ public class Generator : Runner
             AddUsings(model, typeof(IServiceCollection));
             AddUsings(model, typeof(IServiceProvider));
             _ = GetUniqueVariable("_serviceProvider");
+            _ = GetUniqueVariable("_isAccessChecked");
 
             if (@interface.KeysDefinitions.Any())
             {
