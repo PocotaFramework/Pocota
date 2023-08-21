@@ -15,7 +15,7 @@ public class PropertyDescriptor
     public string? PrimaryKeyPartAlias { get; set; } = null;
     public bool IsAccess { get; set; } = false;
 
-    public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.InterfaceName)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
+    public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  (Type == typeof(Enum) ? "TestEnum" : Util.MakeTypeName(Type)) : Node!.InterfaceName)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
 
     public override string ToString()
     {

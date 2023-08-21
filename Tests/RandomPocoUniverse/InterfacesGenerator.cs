@@ -45,6 +45,15 @@ public class InterfacesGenerator: Runner
             ProjectDir = options.GeneratedModelProjectDir,
         });
 
+        File.WriteAllText(Path.Combine(model.ProjectDir, "TestEnum.cs"), @$"namespace {UniverseOptions.Namespace};
+public enum TestEnum
+{{
+    Ready,
+    Steady,
+    Go,
+}}
+");
+
         model.AddProject(options.PocotaCommonProjectFile);
 
         contract.AddProject(model);

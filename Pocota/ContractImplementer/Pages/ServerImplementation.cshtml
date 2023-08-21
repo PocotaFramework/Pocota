@@ -7,11 +7,89 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+    private const string s_alreadyDelivered = "The property {0}.{1} is already delivered!";
+
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    private @Html.Raw(pm.Type)@pm.Nullable @pm.FieldName = @if(pm.IsClass || pm.PocoKind is not PocoKind.NotAPoco || pm.IsCollection || !string.IsNullOrEmpty(@pm.Nullable))
+    {
+        <text>null@{}@if(string.IsNullOrEmpty(@pm.Nullable)){<text>!</text>}</text>
+    } 
+    else 
+    {
+        <text>default</text>
+    };
+    private bool @pm.FieldName@{}IsSet = false;
+    private bool @pm.FieldName@{}IsDelivered = false;
+</text>
+}
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public @Html.Raw(pm.Type)@pm.Nullable @pm.Name 
+    {
+        get => @pm.FieldName;
+    @if(!pm.IsReadonly)
+    {
+        <text>        set 
+        {
+
+        }
+</text>
+    }
+    }
+</text>
+}
+    public @Model.ClassName (IServiceProvider serviceProvider): base(serviceProvider)
+    {
+    }
 @if(Model.PocoKind is PocoKind.Entity)
 {
-    <text>    void IPoco.CheckAccess()
+    <text>    public override void CheckAccess()
     {
-
+    @if(Model.AccessProperties.Any())
+    {
+        <text>        if(@string.Join(" || ", Model.AccessProperties.Select(p => $"!{p.FieldName}IsSet")))
+        {
+            throw new @nameof(InvalidOperationException)@{}("Not all access properties are set!");
+        }
+                @foreach (PropertyModel ap in Model.AccessProperties.Where(p => p.PocoKind is PocoKind.Entity || p.PocoKind is PocoKind.Extender))
+        {
+            @if(ap.IsCollection){
+                <text>        foreach(@Html.Raw(ap.ItemType) item in @ap.FieldName@{})
+        {
+            item.CheckAccess();
+        }
+</text>
+            }
+            else
+            {
+                <text>        ((@Html.Raw(ap.ItemType))@ap.FieldName).CheckAccess();
+</text>
+            }
+        }
+        _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Interface}>>")@{}().CheckAccess(this);
+</text>
+    }
+    }
+</text>
+}
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    private void Set@{}@pm.Name@{}(@Html.Raw(pm.Type) value)
+    {
+        if(@pm.FieldName@{}IsDelivered)
+        {
+            throw new @nameof(InvalidOperationException)@{}(string.Format(s_alreadyDelivered, typeof(@Model.ClassName), nameof(@pm.Name)));
+        }
+        @pm.FieldName = value;
+        @pm.FieldName@{}IsSet = @if(string.IsNullOrEmpty(pm.Nullable) && (pm.IsClass || pm.PocoKind is not PocoKind.NotAPoco || pm.IsCollection))
+        {
+            <text>value is not null</text>
+        } 
+        else 
+        {
+            <text>true</text>
+        };
     }
 </text>
 }

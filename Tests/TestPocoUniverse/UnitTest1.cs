@@ -30,7 +30,7 @@ public class Tests
     }
 
     [Test]
-    [TestCase(136648442)]
+    [TestCase(412445141)]
     public void Test1(int seed)
     {
         if (seed == -1)

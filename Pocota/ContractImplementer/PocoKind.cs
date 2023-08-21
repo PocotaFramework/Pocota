@@ -2,6 +2,7 @@
 
 public enum PocoKind
 {
+    NotAPoco,
     Envelope, 
     Entity,
     Extender

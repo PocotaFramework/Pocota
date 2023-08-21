@@ -1,6 +1,10 @@
-﻿namespace Net.Leksi.Pocota.Server.Poco;
+﻿namespace Net.Leksi.Pocota.Server;
 
 public abstract class EnvelopeBase: PocoBase, IEnvelope
 {
-    void IPoco.CheckAccess() { }
+    protected EnvelopeBase(IServiceProvider serviceProvider) : base(serviceProvider)
+    {
+    }
+
+    public override void CheckAccess() { }
 }

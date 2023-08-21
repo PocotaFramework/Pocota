@@ -61,6 +61,7 @@ public class Generator : Runner
                     {
                         ProcessPocoAttribute(attr);
                     }
+                    CheckEntityProperties();
                     CheckBaseInterfaces();
                     CheckPrimaryKeys();
                     CheckAccessProperties();
@@ -374,11 +375,23 @@ public class Generator : Runner
             model.ClassName = MakePocoClassName(request.Interface);
             request.ResultName = model.ClassName;
 
+            model.Interface = Util.MakeTypeName(request.Interface);
+
+            AddUsings(model, typeof(IServiceCollection));
+            AddUsings(model, typeof(IServiceProvider));
+            _ = GetUniqueVariable("_serviceProvider");
+
             if (@interface.KeysDefinitions.Any())
             {
-                AddUsings(model, typeof(IEntity));
-                model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
+                AddUsings(model, typeof(EntityBase));
+                AddUsings(model, request.Interface);
+                model.Interfaces.Add(Util.MakeTypeName(typeof(EntityBase)));
+                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Entity;
+                if(@interface.AccessProperties is { } && @interface.AccessProperties.Any())
+                {
+                    AddUsings(model, typeof(IAccessManager<>));
+                }
             }
             else if (
                 @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
@@ -396,9 +409,41 @@ public class Generator : Runner
             }
             else
             {
-                AddUsings(model, typeof(IEnvelope));
-                model.Interfaces.Add(Util.MakeTypeName(typeof(IEnvelope)));
+                AddUsings(model, typeof(EnvelopeBase));
+                AddUsings(model, request.Interface);
+                model.Interfaces.Add(Util.MakeTypeName(typeof(EnvelopeBase)));
+                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Envelope;
+            }
+            NullabilityInfoContext nic = new();
+            foreach(PropertyInfo pi in request.Interface.GetProperties())
+            {
+                PropertyModel pm = new()
+                {
+                    Name = pi.Name,
+                    FieldName = GetUniqueVariable($"_{pi.Name.Substring(0, 1).ToLower()}{pi.Name.Substring(1)}"),
+                    Type = Util.MakeTypeName(pi.PropertyType),
+                    Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
+                    IsReadonly = !pi.CanWrite,
+                    IsClass = pi.PropertyType.IsClass,
+                };
+                Type itemType = pi.PropertyType;
+                if(
+                    pi.PropertyType.IsGenericType 
+                    && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()) 
+                    && pi.PropertyType.GetGenericArguments()[0] is Type type
+                )
+                {
+                    pm.IsCollection = true;
+                    itemType = type;
+                }
+                pm.PocoKind = GetPocoKind(itemType);
+                pm.ItemType = pm.PocoKind is PocoKind.NotAPoco ? Util.MakeTypeName(itemType) : MakePocoClassName(itemType);
+                model.Properties.Add(pm);
+                if(@interface.AccessProperties?.Contains($"{pm.Name}{(pm.IsCollection ? ".@" : string.Empty)}") ?? false)
+                {
+                    model.AccessProperties.Add(pm);
+                }
             }
 
         }
@@ -406,6 +451,46 @@ public class Generator : Runner
         {
             throw new InvalidOperationException();
         }
+    }
+
+    private PocoKind GetPocoKind(Type type)
+    {
+        if(_interfaceHoldersByType.TryGetValue(type, out InterfaceHolder? @interface))
+        {
+            if (@interface.KeysDefinitions.Any())
+            {
+                return PocoKind.Entity;
+            }
+            if (
+                @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
+                && baseInterface.IsGenericType
+                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+            )
+            {
+                return PocoKind.Extender;
+            }
+            return PocoKind.Envelope;
+        }
+        return PocoKind.NotAPoco;
+    }
+
+    private string GetUniqueVariable(string initial)
+    {
+        if (!_variables.Contains(initial))
+        {
+            _variables.Add(initial);
+            return initial;
+        }
+        for (int i = 1; ; ++i)
+        {
+            if (!_variables.Contains(initial + i.ToString()))
+            {
+                initial += i.ToString();
+                _variables.Add(initial);
+                return initial;
+            }
+        }
+
     }
 
     private string MakePocoClassName(Type @interface)
@@ -487,6 +572,32 @@ public class Generator : Runner
     {
         model.Contract = request.Contract;
         model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+    }
+
+    private void CheckEntityProperties()
+    {
+        foreach(KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
+        {
+            if (entry.Value.KeysDefinitions.Any())
+            {
+                foreach(PropertyInfo pi in entry.Key.GetProperties())
+                {
+                    Type itemType = pi.PropertyType;
+                    if(
+                        itemType.IsGenericType 
+                        && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) 
+                        && itemType.GetGenericArguments()[0] is Type type
+                    )
+                    {
+                        itemType = type;
+                    }
+                    if (_interfaceHoldersByType.TryGetValue(itemType, out InterfaceHolder? ih) && !ih.KeysDefinitions.Any())
+                    {
+                        throw new InvalidOperationException($"Entity {entry.Key} cannot have any property with item type IPoco but not IEntity (but {pi.Name} item type is {itemType})!");
+                    }
+                }
+            }
+        }
     }
 
     private void ProcessPocoAttribute(PocoAttribute attr)
@@ -701,49 +812,61 @@ public class Generator : Runner
             InterfaceHolder ih = _interfaceHoldersByType[targetType];
             if (ih.AccessProperties is { })
             {
-                ih.AccessPropertiesTree = PathNode.FromPaths(ih.AccessProperties);
-                ih.AccessPropertiesTree.IsAccessStuff = true;
-                CheckPathNode(targetType, ih.AccessPropertiesTree, false, false);
+                try
+                {
+                    ih.AccessPropertiesTree = PathNode.FromPaths(ih.AccessProperties);
+                    ih.AccessPropertiesTree.IsAccessStuff = true;
+                    CheckPathNode(targetType, ih.AccessPropertiesTree, false, false, false, targetType);
+                }
+                catch(Exception  ex)
+                {
+                    throw new InvalidOperationException($"At target type {targetType}", ex);
+                }
             }
         }
     }
 
-    private void CheckPathNode(Type targetType, PathNode node, bool starsAllowed, bool claimAllowed)
+    private void CheckPathNode(Type targetType, PathNode node, bool starsAllowed, bool claimAllowed, bool nullableAllowed, Type rootTargetType)
     {
+        NullabilityInfoContext nic = new();
         foreach (PathNode child in node.Children)
         {
             if (child.IsMandatory && !(bool)child.IsPropagatedMandatory!)
             {
                 if (!claimAllowed)
                 {
-                    throw new InvalidOperationException($"'!' is not allowed here!");
+                    throw new InvalidOperationException($"'!' is not allowed here (root: {rootTargetType})!");
                 }
             }
             if (targetType.GetProperty(child.Name) is PropertyInfo pi)
             {
+                if(!nullableAllowed && nic.Create(pi).ReadState is NullabilityState.Nullable)
+                {
+                    throw new InvalidOperationException($"Property {child.Name} at path {node.Path} cannot be nullable (root: {rootTargetType})!");
+                }
                 if (pi.PropertyType.IsGenericType && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()))
                 {
                     if (child.Children is { })
                     {
                         if (child.Children.Count != 1 || !"@".Equals(child.Children[0].Name))
                         {
-                            throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have either no children or single child '@'!");
+                            throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have single child '@' (root: {rootTargetType})!");
                         }
                         if (_interfaceHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
                         {
-                            CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed);
+                            CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed, nullableAllowed, rootTargetType);
                         }
                     }
                 }
                 else if (_interfaceHoldersByType.ContainsKey(pi.PropertyType))
                 {
-                    CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed);
+                    CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed, nullableAllowed, rootTargetType);
                 }
                 else
                 {
                     if (child.Children!.Any())
                     {
-                        throw new InvalidOperationException($"Property {child.Name} of {targetType} at path {node.Path} must have no children!");
+                        throw new InvalidOperationException($"Property {child.Name} of {targetType} at path {node.Path} must have no children (root: {rootTargetType})!");
                     }
                 }
             }
@@ -751,14 +874,14 @@ public class Generator : Runner
             {
                 if (child.Children!.Any())
                 {
-                    throw new InvalidOperationException($"Key part {child.Name} of {targetType} at path {node.Path} must have no children!");
+                    throw new InvalidOperationException($"Key part {child.Name} of {targetType} at path {node.Path} must have no children (root: {rootTargetType})!");
                 }
             }
             else if ("*".Equals(child.Name))
             {
                 if (!starsAllowed)
                 {
-                    throw new InvalidOperationException($"'*' is not allowed here!");
+                    throw new InvalidOperationException($"'*' is not allowed here (root: {rootTargetType})!");
                 }
                 node.Children.RemoveAt(0);
                 foreach (PropertyInfo pi1 in targetType.GetRuntimeProperties())
@@ -768,7 +891,7 @@ public class Generator : Runner
             }
             else
             {
-                throw new InvalidOperationException($"{targetType} at path {node.Path} has not property {child.Name}!");
+                throw new InvalidOperationException($"{targetType} at path {node.Path} has not property {child.Name} (root: {rootTargetType})!");
             }
         }
     }

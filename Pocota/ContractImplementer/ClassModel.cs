@@ -8,11 +8,13 @@ public class ClassModel: PageModel
     internal Type Contract { get; set; } = null!;
     internal string ClassName { get; set; } = null!;
     internal string NamespaceValue { get; set; } = null!;
-    internal HashSet<string> Usings { get; init; } = new();
-    internal List<string> Interfaces { get; init; } = new();
+    internal HashSet<string> Usings { get; private init; } = new();
+    internal List<string> Interfaces { get; private init; } = new();
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
     internal string? Interface { get; set; } = null;
     internal PocoKind? PocoKind { get; set; } = null;
+    internal List<PropertyModel> Properties { get; private init; } = new();
+    internal List<PropertyModel> AccessProperties { get; private init; } = new();
 
     public void OnGet([FromServices] Generator generator)
     {

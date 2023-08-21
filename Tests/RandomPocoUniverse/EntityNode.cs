@@ -31,7 +31,7 @@ public class EntityNode: Node
         return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}.{pd.PrimaryKeyPartAlias}\"" };
     }).ToArray();
 
-    public string[] AccessProperties => Properties.Where(p => p.IsAccess).Select(p => p.Name).ToArray();
+    public string[] AccessProperties => Properties.Where(p => p.IsAccess).Select(p => $"{p.Name}{(p.IsCollection ? ".@" : string.Empty)}").ToArray();
 
     public EntityNode() 
     {

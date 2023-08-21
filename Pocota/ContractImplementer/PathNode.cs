@@ -210,7 +210,7 @@ public class PathNode : ICloneable, IEquatable<PathNode>
 
         PathNode result = new(string.Empty);
 
-        cache.Add(result.Name, result);
+        cache.Add(string.Empty, result);
 
         foreach (string path in paths)
         {
@@ -227,8 +227,8 @@ public class PathNode : ICloneable, IEquatable<PathNode>
                 if (!cache.TryGetValue(sb.ToString(), out PathNode? node))
                 {
                     node = new(parts[i + 1]);
-                    cache.Add(node.Name, node);
                     parent.Children.Add(node);
+                    cache.Add(node.Path, node);
                 }
             }
         }

@@ -4,7 +4,6 @@ using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Data;
 using System.Reflection;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -25,9 +24,18 @@ public class Builder
     private const int s_maxOtherProperties = 10;
     private const int s_maxFkPk = 3;
     private const int s_baseAccessProperty = 2;
-    private const int s_maxAccessProperties = 3;
+    private const int s_maxAccessProperties = 10;
     private const int s_maxExtenders = 3;
     private const int s_maxExtenderAdditionalProperties = 3;
+
+    private readonly static Type[] s_terminalTypes = new Type[]
+    {
+        typeof(int),
+        typeof(string),
+        typeof(bool),
+        typeof(DateTime),
+        typeof(Enum),
+    };
 
     public static UniverseOptions UniverseOptions { get; private set; } = new();
 
@@ -75,8 +83,11 @@ public class Builder
                 {
                     extender.Properties.Add(new PropertyDescriptor
                     {
-                        Name = $"P{extender.Properties.Count}",
-                        Type = typeof(string),
+                        Name = $"P{entity.Properties.Count + extender.Properties.Count}",
+                        Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
+                        IsCollection = random.Next(s_baseCollection) == 0,
+                        IsNullable = random.Next(s_baseNullable) == 0,
+                        IsReadOnly = random.Next(s_baseReadonly) == 0,
                     });
                 }
                 universe.Extenders.Add(extender);
@@ -86,6 +97,28 @@ public class Builder
 
     private static void CompleteEntities(Universe universe, Random random)
     {
+        foreach(EntityNode entity in universe.Entities.Where(e => e.AccessProperties.Any()))
+        {
+            HashSet<EntityNode> used = new();
+            _ = TestAndFixAccessLoop(entity, used);
+        }
+    }
+
+    private static bool TestAndFixAccessLoop(EntityNode entity, HashSet<EntityNode> used)
+    {
+        if (!used.Add(entity))
+        {
+            return true;
+        }
+        foreach (PropertyDescriptor pd in entity.Properties.Where(p => p.IsAccess && p.Node is { }))
+        {
+            if(TestAndFixAccessLoop((pd.Node as EntityNode)!, used))
+            {
+                pd.IsAccess = false;
+            }
+        }
+        used.Remove(entity);
+        return false;
     }
 
     private static void GenerateClasses(Universe universe)
@@ -360,6 +393,9 @@ go
     {
         if (dataType == typeof(int)) return "int";
         if (dataType == typeof(string)) return "varchar(50)";
+        if (dataType == typeof(bool)) return "bit";
+        if (dataType == typeof(DateTime)) return "datetime";
+        if (dataType == typeof(Enum)) return "char(10)";
         return dataType.ToString();
     }
 
@@ -374,6 +410,9 @@ go
         {
             List<T> list = nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
+            int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
+            int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
+            int baseAccessProperty = numAccessProperties > 0 ? (int)Math.Ceiling(1.0 * numOtherProperties / numAccessProperties) : 0;
             for (int j = 0; j < numReferences; ++j)
             {
                 int pos = random.Next(list.Count);
@@ -395,27 +434,39 @@ go
                     nodes.Add(link);
                     if(random.Next(s_baseCollection) == 0)
                     {
+                        bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
                             Name = $"P{list[pos].Properties.Count}",
                             Node = nodes[i],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
-                            IsNullable = random.Next(s_baseNullable) == 0,
+                            IsNullable = isNullable,
+                            IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         };
                         list[pos].Properties.Add(pd1);
+                        if (pd1.IsAccess)
+                        {
+                            Console.WriteLine($"{list[pos].InterfaceName}.{pd1.Name} is access");
+                        }
                     }
                     if (random.Next(s_baseCollection) == 0)
                     {
+                        bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
                             Name = $"P{nodes[i].Properties.Count}",
                             Node = list[pos],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
-                            IsNullable = random.Next(s_baseNullable) == 0,
+                            IsNullable = isNullable,
+                            IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         };
                         nodes[i].Properties.Add(pd1);
+                        if (pd1.IsAccess)
+                        {
+                            Console.WriteLine($"{nodes[i].InterfaceName}.{pd1.Name} is access");
+                        }
                     }
                     link.Properties.Add(new PropertyDescriptor
                     {
@@ -438,12 +489,14 @@ go
                 {
                     nodes[i].References.Add(list[pos]);
                     list[pos].Referencers.Add(nodes[i]);
+                    bool isNullable = random.Next(s_baseNullable) == 0;
                     PropertyDescriptor pd = new()
                     {
                         Name = $"P{nodes[i].Properties.Count}",
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
-                        IsNullable = random.Next(s_baseNullable) == 0,
+                        IsNullable = isNullable,
+                        IsAccess = areEntities && !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                     };
                     nodes[i].Properties.Add(pd);
                     if (random.Next(s_baseCollection) == 0)
@@ -467,27 +520,28 @@ go
                     }
                 }
             }
-            int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
-            int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
-            int baseAccessProperty = numAccessProperties > 0 ? (int)Math.Ceiling(1.0 * numOtherProperties / numAccessProperties) : 0;
             for (int j = 0; j < numOtherProperties; ++j)
             {
+                Type type = s_terminalTypes[random.Next(s_terminalTypes.Length)];
                 bool isPrimaryKeyPart = 
                     areEntities 
+                    && (type == typeof(int) || type == typeof(string))
                     && (
                         random.Next(s_basePrimaryKeyPart) == 0 
                         || (
                             j == numOtherProperties - 1 && !nodes[i].Properties.Any()
                         )
                     );
+                bool isCollection = !isPrimaryKeyPart && random.Next(s_baseCollection) == 0;
+                bool isNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0;
                 PropertyDescriptor pd = new()
                 {
                     Name = $"P{nodes[i].Properties.Count}",
-                    Type = typeof(string),
+                    Type = type,
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
-                    IsCollection = false,
-                    IsNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0,
-                    IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
+                    IsCollection = isCollection,
+                    IsNullable = isNullable,
+                    IsAccess = areEntities && !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                 };
                 nodes[i].Properties.Add(pd);
                 if (isPrimaryKeyPart)
