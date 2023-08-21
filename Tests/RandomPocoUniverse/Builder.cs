@@ -72,14 +72,14 @@ public class Builder
 
     private static void CreateExtenders(Universe universe, Random random)
     {
-        foreach(EntityNode entity in universe.Entities)
+        foreach (EntityNode entity in universe.Entities)
         {
             int numExtenders = random.Next(s_maxExtenders + 1);
             for (int i = 0; i < numExtenders; ++i)
             {
                 ExtenderNode extender = new() { NodeType = NodeType.Extender, Owner = entity };
                 int numProperties = 1 + random.Next(s_maxExtenderAdditionalProperties);
-                for(int j = 0; j < numProperties; ++j)
+                for (int j = 0; j < numProperties; ++j)
                 {
                     extender.Properties.Add(new PropertyDescriptor
                     {
@@ -97,10 +97,48 @@ public class Builder
 
     private static void CompleteEntities(Universe universe, Random random)
     {
-        foreach(EntityNode entity in universe.Entities.Where(e => e.AccessProperties.Any()))
+        foreach (EntityNode entity in universe.Entities)
         {
-            HashSet<EntityNode> used = new();
-            _ = TestAndFixAccessLoop(entity, used);
+            if (entity.AccessProperties.Any())
+            {
+                HashSet<EntityNode> used = new();
+                _ = TestAndFixAccessLoop(entity, used);
+            }
+        }
+        bool changed = true;
+        while (changed)
+        {
+            changed = false;
+            foreach (EntityNode entity in universe.Entities)
+            {
+                foreach (EntityNode node in entity.Properties.Where(p => p.IsAccess && p.Node is { }).Select(p => p.Node!))
+                {
+                    if (!node.Properties.Any(p => p.IsAccess))
+                    {
+                        bool done = false;
+                        foreach (PropertyDescriptor pd in node.Properties.Where(p => !p.IsNullable))
+                        {
+                            pd.IsAccess = true;
+                            done = true;
+                            break;
+                        }
+                        if (!done)
+                        {
+                            PropertyDescriptor pd = new()
+                            {
+                                Name = $"P{node.Properties.Count}",
+                                Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
+                                IsReadOnly = random.Next(s_baseReadonly) == 0,
+                                IsCollection = random.Next(s_baseCollection) == 0,
+                                IsNullable = false,
+                                IsAccess = true,
+                            };
+                            node.Properties.Add(pd);
+                        }
+                        changed = true;
+                    }
+                }
+            }
         }
     }
 
@@ -112,7 +150,7 @@ public class Builder
         }
         foreach (PropertyDescriptor pd in entity.Properties.Where(p => p.IsAccess && p.Node is { }))
         {
-            if(TestAndFixAccessLoop((pd.Node as EntityNode)!, used))
+            if (TestAndFixAccessLoop((pd.Node as EntityNode)!, used))
             {
                 pd.IsAccess = false;
             }
@@ -187,7 +225,7 @@ go
 
     private static void ClearProjectDir(string projectDir)
     {
-        if(Directory.Exists(projectDir))
+        if (Directory.Exists(projectDir))
         {
             foreach (string file in Directory.EnumerateFiles(projectDir))
             {
@@ -220,6 +258,18 @@ go
         {
             CreateFkPk(node, random);
         }
+        List<EntityNode> nodesWithoutKeys = universe.Entities.Where(n => !n.PrimaryKey.Any()).ToList();
+        if (nodesWithoutKeys.Any())
+        {
+            foreach (EntityNode node in nodesWithoutKeys)
+            {
+                CreatePrimaryKey(node, random);
+            }
+            foreach (EntityNode node in universe.Entities)
+            {
+                CreateForeignKeys(node, random);
+            }
+        }
         foreach (EntityNode node in universe.Entities)
         {
             CompletePrimaryKey(node);
@@ -229,7 +279,7 @@ go
     private static void CompletePrimaryKey(EntityNode node)
     {
         int nextId = 0;
-        foreach(PropertyDescriptor pd in node.PrimaryKey)
+        foreach (PropertyDescriptor pd in node.PrimaryKey)
         {
             if (pd.Name.StartsWith("Id"))
             {
@@ -237,7 +287,7 @@ go
             }
             else
             {
-                while(node.PrimaryKey.Any(p => p.Name.Equals($"Id{nextId}")))
+                while (node.PrimaryKey.Any(p => p.Name.Equals($"Id{nextId}")))
                 {
                     ++nextId;
                 }
@@ -250,7 +300,7 @@ go
     private static void CreateFkPk(EntityNode node, Random random)
     {
         int numAddPk = random.Next(s_maxFkPk + 1);
-        if(numAddPk > 0)
+        if (numAddPk > 0)
         {
             List<PropertyDescriptor> candidates = node.Properties
                 .Where(p => p.Node is { } && p.Node != node && !p.IsNullable && !p.IsCollection)
@@ -264,9 +314,9 @@ go
             }
             foreach (EntityNode referenser in node.Referencers)
             {
-                foreach(PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
+                foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
                 {
-                    for(int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
+                    for (int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
                     {
                         pd.References.Add(new PropertyDescriptor
                         {
@@ -278,6 +328,31 @@ go
                     }
                 }
             }
+            int numDeletePk = random.Next(initialPkCount + 1);
+            for (int i = 0; i < numDeletePk; ++i)
+            {
+                //DeletePk(node, 0);
+            }
+        }
+    }
+
+    private static void DeletePk(EntityNode node, int pos)
+    {
+        PropertyDescriptor pk = node.PrimaryKey[pos];
+        node.PrimaryKey.RemoveAt(pos);
+
+        foreach (EntityNode referenser in node.Referencers)
+        {
+            foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
+            {
+                PropertyDescriptor pdToRemove = pd.References![pos];
+                pd.References!.RemoveAt(pos);
+                int pos1 = referenser.PrimaryKey.IndexOf(pdToRemove);
+                if (pos1 >= 0)
+                {
+                    DeletePk(referenser, pos1);
+                }
+            }
         }
     }
 
@@ -287,16 +362,40 @@ go
         {
             if (pd.Node is EntityNode entityNode)
             {
-                pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
+                if(pd.References is null)
                 {
-                    Name = $"{pd.Name}{p.Name}",
-                    Type = p.Type,
-                    IsReadOnly = pd.IsReadOnly,
-                    IsNullable = pd.IsNullable,
-                }));
-                if (node.NodeType is NodeType.ManyToManyLink)
+                    pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
+                    {
+                        Name = $"{pd.Name}{p.Name}",
+                        Type = p.Type,
+                        IsReadOnly = pd.IsReadOnly,
+                        IsNullable = pd.IsNullable,
+                    }));
+                    if (node.NodeType is NodeType.ManyToManyLink)
+                    {
+                        node.PrimaryKey!.AddRange(pd.References);
+                    }
+                }
+                else
                 {
-                    node.PrimaryKey!.AddRange(pd.References);
+                    foreach(PropertyDescriptor pd1 in entityNode.PrimaryKey!)
+                    {
+                        if(pd.References.Where(p => p.Name.Equals($"{pd.Name}{pd1.Name}")).FirstOrDefault() is not PropertyDescriptor pd2)
+                        {
+                            pd2 = new PropertyDescriptor
+                            {
+                                Name = $"{pd.Name}{pd1.Name}",
+                                Type = pd1.Type,
+                                IsReadOnly = pd.IsReadOnly,
+                                IsNullable = pd.IsNullable,
+                            };
+                            pd.References.Add(pd2);
+                        }
+                        if (node.NodeType is NodeType.ManyToManyLink && !node.PrimaryKey!.Contains(pd2))
+                        {
+                            node.PrimaryKey!.Add(pd2);
+                        }
+                    }
                 }
             }
         }
@@ -304,7 +403,7 @@ go
 
     private static void CreatePrimaryKey(EntityNode node, Random random)
     {
-        if(node.NodeType is NodeType.Entity)
+        if (node.NodeType is NodeType.Entity)
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
             for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
@@ -326,7 +425,7 @@ go
         foreach (Node node in universe.Envelopes)
         {
             int numEntities = 1 + random.Next(s_maxEntitiesAtEnvelop);
-            for(int i =  0; i < numEntities; ++i)
+            for (int i = 0; i < numEntities; ++i)
             {
                 Node entity = universe.Entities[random.Next(universe.Entities.Count)];
                 node.References.Add(entity);
@@ -432,7 +531,7 @@ go
                     link.References.Add(list[pos]);
                     list[pos].Referencers.Add(link);
                     nodes.Add(link);
-                    if(random.Next(s_baseCollection) == 0)
+                    if (random.Next(s_baseCollection) == 0)
                     {
                         bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
@@ -445,10 +544,6 @@ go
                             IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         };
                         list[pos].Properties.Add(pd1);
-                        if (pd1.IsAccess)
-                        {
-                            Console.WriteLine($"{list[pos].InterfaceName}.{pd1.Name} is access");
-                        }
                     }
                     if (random.Next(s_baseCollection) == 0)
                     {
@@ -463,10 +558,6 @@ go
                             IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         };
                         nodes[i].Properties.Add(pd1);
-                        if (pd1.IsAccess)
-                        {
-                            Console.WriteLine($"{nodes[i].InterfaceName}.{pd1.Name} is access");
-                        }
                     }
                     link.Properties.Add(new PropertyDescriptor
                     {
@@ -523,11 +614,11 @@ go
             for (int j = 0; j < numOtherProperties; ++j)
             {
                 Type type = s_terminalTypes[random.Next(s_terminalTypes.Length)];
-                bool isPrimaryKeyPart = 
-                    areEntities 
+                bool isPrimaryKeyPart =
+                    areEntities
                     && (type == typeof(int) || type == typeof(string))
                     && (
-                        random.Next(s_basePrimaryKeyPart) == 0 
+                        random.Next(s_basePrimaryKeyPart) == 0
                         || (
                             j == numOtherProperties - 1 && !nodes[i].Properties.Any()
                         )
@@ -617,7 +708,7 @@ go
             DataTable table = new DataTable($"Table{node.Id}");
             universe.DataSet.Tables.Add(table);
             List<DataColumn> pk = new();
-            foreach(PropertyDescriptor pd in node.PrimaryKey!)
+            foreach (PropertyDescriptor pd in node.PrimaryKey!)
             {
                 DataColumn col = new DataColumn
                 {
@@ -629,9 +720,9 @@ go
                 table.Columns.Add(col);
             }
 
-            foreach(PropertyDescriptor pd in node.Properties.Where(p => !p.IsCollection && !node.PrimaryKey!.Contains(p)))
+            foreach (PropertyDescriptor pd in node.Properties.Where(p => !p.IsCollection && !node.PrimaryKey!.Contains(p)))
             {
-                if(pd.Node is EntityNode entityNode)
+                if (pd.Node is EntityNode entityNode)
                 {
                     foreach (PropertyDescriptor reference in pd.References!.Where(p => !node.PrimaryKey.Contains(p)))
                     {
@@ -657,6 +748,10 @@ go
             }
 
             table.PrimaryKey = pk.ToArray();
+            if (!table.PrimaryKey.Any())
+            {
+                Console.WriteLine($"no pk: {table.TableName}");
+            }
         }
         foreach (EntityNode node in universe.Entities)
         {
@@ -665,13 +760,20 @@ go
             {
                 DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
                 //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
-                table.Constraints.Add(
-                    new ForeignKeyConstraint(
-                        $"fk_{table.TableName}_{pd.Name}_{relatedTable.TableName}",
-                        relatedTable.PrimaryKey,
-                        pd.References!.Select(p => table.Columns[p.Name]!).ToArray()
-                    )
-                );
+                try
+                {
+                    table.Constraints.Add(
+                        new ForeignKeyConstraint(
+                            $"fk_{table.TableName}_{pd.Name}_{relatedTable.TableName}",
+                            relatedTable.PrimaryKey,
+                            pd.References!.Select(p => table.Columns[p.Name]!).ToArray()
+                        )
+                    );
+                }
+                catch(Exception ex)
+                {
+                    throw new InvalidOperationException($"at {node}", ex);
+                }
             }
         }
     }

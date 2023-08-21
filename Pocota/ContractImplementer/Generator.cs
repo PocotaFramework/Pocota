@@ -1,5 +1,6 @@
 ﻿using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Server;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -385,8 +386,12 @@ public class Generator : Runner
             {
                 AddUsings(model, typeof(EntityBase));
                 AddUsings(model, request.Interface);
+                AddUsings(model, typeof(INotifyPropertyChanged));
+                AddUsings(model, typeof(PropertyChangedEventHandler));
+                AddUsings(model, typeof(PropertyChangedEventArgs));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(EntityBase)));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(INotifyPropertyChanged)));
                 model.PocoKind = PocoKind.Entity;
                 if(@interface.AccessProperties is { } && @interface.AccessProperties.Any())
                 {
@@ -442,6 +447,7 @@ public class Generator : Runner
                 model.Properties.Add(pm);
                 if(@interface.AccessProperties?.Contains($"{pm.Name}{(pm.IsCollection ? ".@" : string.Empty)}") ?? false)
                 {
+                    pm.IsAccess = true;
                     model.AccessProperties.Add(pm);
                 }
             }
@@ -822,6 +828,22 @@ public class Generator : Runner
                 {
                     throw new InvalidOperationException($"At target type {targetType}", ex);
                 }
+            }
+        }
+        foreach (Type targetType in _interfaceHoldersByType.Keys)
+        {
+            InterfaceHolder ih = _interfaceHoldersByType[targetType];
+            if(
+                ih.AccessPropertiesTree is { } 
+                && ih.AccessPropertiesTree.Children.Where(c => 
+                    {
+                        PropertyInfo p = targetType.GetProperty(c.Name)!;
+                        return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _interfaceHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
+                    })
+                    .FirstOrDefault() is PathNode bad
+            )
+            {
+                throw new InvalidOperationException($"Access property {targetType}.{bad.Name} must be or not Poco either Entity with defined access properties!");
             }
         }
     }

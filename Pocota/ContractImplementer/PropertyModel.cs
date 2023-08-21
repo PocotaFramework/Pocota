@@ -11,4 +11,5 @@ internal class PropertyModel
     internal bool IsCollection { get; set; } = false;
     internal string ItemType { get; set; } = null!;
     internal PocoKind PocoKind { get; set; } = PocoKind.NotAPoco;
+    internal bool IsAccess { get; set; } = false;
 }

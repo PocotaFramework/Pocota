@@ -7,6 +7,12 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+@if (Model.PocoKind is PocoKind.Entity)
+{
+    <text>    public event PropertyChangedEventHandler? PropertyChanged;
+</text>
+}
+
     private const string s_alreadyDelivered = "The property {0}.{1} is already delivered!";
 
 @foreach(PropertyModel pm in Model.Properties)
@@ -81,6 +87,37 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             throw new @nameof(InvalidOperationException)@{}(string.Format(s_alreadyDelivered, typeof(@Model.ClassName), nameof(@pm.Name)));
         }
+    @if(pm.IsAccess)
+    {
+        <text>        if(value != @pm.FieldName)
+        {
+        @if(!pm.IsCollection)
+        {
+            if(pm.PocoKind is PocoKind.Entity)
+            {
+                <text>            if(@pm.FieldName is {})
+            {
+                ((@Html.Raw(pm.ItemType))@pm.FieldName).PropertyChanged -= @pm.Name@{}Changed;
+            }
+            if(value is {})
+            {
+                ((@Html.Raw(pm.ItemType))value).PropertyChanged += @pm.Name@{}Changed;
+            }
+</text>
+            }
+            else
+            {
+                <text>            PropertyChanged?.Invoke(this, IEntity.AccessPropertyChangedEventArgs);
+</text>
+            }
+        }
+        else
+        {
+
+        }
+        }
+</text>
+    }
         @pm.FieldName = value;
         @pm.FieldName@{}IsSet = @if(string.IsNullOrEmpty(pm.Nullable) && (pm.IsClass || pm.PocoKind is not PocoKind.NotAPoco || pm.IsCollection))
         {
@@ -90,6 +127,14 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             <text>true</text>
         };
+    }
+    @if(pm.IsAccess && !pm.IsCollection && pm.PocoKind is PocoKind.Entity)
+    {
+        <text>    private void @pm.Name@{}Changed@{}(object? sender, PropertyChangedEventArgs args)
+    {
+
+    }
+</text>
     }
 </text>
 }
