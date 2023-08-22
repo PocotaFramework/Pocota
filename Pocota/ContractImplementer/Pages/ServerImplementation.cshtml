@@ -7,15 +7,246 @@
 
 public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+@if(Model.PrimaryKey is { })
+{
+    <text>    #region PrimaryKey    
+    public class PrimaryKeyClass: @Model.PrimaryKey.Name
+    {
+        private readonly @Model.ClassName _owner;
+        public override object? this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @i:
+            @if(!Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                 <text>                       return ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)((@nameof(IEntity))_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference;
+</text>
+            }
+            else
+            {
+                 <text>                       return _owner.@Model.PrimaryKey!.Parts[i].PropertyField;
+</text>
+            }
+</text>
+        }
+    }
+                    default:
+                        return base[index];
+                }
+            }
+            set
+            {
+                switch (index)
+                {
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @i:
+            @if(Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if (value is null || value@{}@i is null)
+                        {
+                            throw new @nameof(InvalidCastException)@{}();
+                        }
+                        _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+            }
+            else
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if (value is null || value@{}@i is null)
+                        {
+                            throw new @nameof(InvalidCastException)@{}();
+                        }
+                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)((@nameof(IEntity))_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+            }
+</text>
+        }
+    }
+                    default:
+                        base[index] = value;
+                        break;
+                }
+            }
+        }
+        public override object? this[string name]
+        {
+            get
+            {
+                switch (name)
+                {
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+            @if(!Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                        <text>
+                            return ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)((@nameof(IEntity))_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference;
+</text>
+            }
+            else
+            {
+                        <text>
+                            return _owner.@Model.PrimaryKey!.Parts[i].PropertyField;
+</text>
+            }
+</text>
+        }
+    }
+                    default:
+                        return base[name];
+                }
+            }
+            set
+            {
+                switch(name)
+                {
+    @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+            <text>                    case @Html.Raw($"\"{@Model.PrimaryKey!.Parts[i].Name}\""):
+            @if(Model.PrimaryKey!.Parts[i].IsProperty)
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if (value is null || value@{}@i is null)
+                        {
+                            throw new @nameof(InvalidCastException)@{}();
+                        }   
+                        _owner.@Model.PrimaryKey!.Parts[i].Property = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+            }
+            else
+            {
+                <text>                        @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk value@{}@i = value as @Model.PrimaryKey!.Parts[i].Type@Model.PrimaryKey!.Parts[i].AsTypeAsk;
+                        if (value is null || value@{}@i is null)
+                        {
+                            throw new @nameof(InvalidCastException)@{}();
+                        }
+                        ((@Model.PrimaryKey!.Parts[i].PrimaryKeyClassName)((@nameof(IEntity))_owner.@Model.PrimaryKey!.Parts[i].Property).@Model.PrimaryKey!.Parts[i].KeyReference = (@Model.PrimaryKey!.Parts[i].Type)value@{}@i!;
+                        break;
+</text>
+            }
+</text>
+        }
+    }
+                    default:
+                        base[name] = value;
+                        break;
+                }
+            }
+        }
+    @foreach (PrimaryKeyPartModel pkpm in Model.PrimaryKey!.Parts.Where(p => p.KeyReference is {}))
+    {
+        <text>        public override @Html.Raw(pkpm.Type)? @pkpm.Name 
+        {
+            get
+            {
+        @if(!@pkpm.IsProperty)
+        {
+                    <text>
+                        return ((@pkpm.PrimaryKeyClassName)((@nameof(IEntity))_owner.@pkpm.Property).@pkpm.KeyReference;
+</text>
+        }
+        else
+        {
+            <text>                       return _owner.@pkpm.Property;
+</text>
+        }
+            }
+            set
+            {
+        @if(pkpm.IsProperty)
+        {
+            <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
+                if (value is null || value1 is null)
+                {
+                    throw new @nameof(InvalidCastException)@{}();
+                }
+                _owner.@pkpm.Property = (@pkpm.Type)value1!;
+</text>
+        }
+        else
+        {
+            <text>                @pkpm.Type@pkpm.AsTypeAsk value1 = value as @pkpm.Type@pkpm.AsTypeAsk;
+                if (value is null || value1 is null)
+                {
+                    throw new @nameof(InvalidCastException)@{}();
+                }
+                ((@pkpm.PrimaryKeyClassName)((@nameof(IEntity))_owner.@pkpm.Property).@pkpm.KeyReference = (@pkpm.Type)value1!;
+</text>
+        }
+            }
+        }
+</text>
+    }
+        
+        public override bool IsAssigned 
+        {
+            get
+            {
+                return @for (int i = 0; i < Model.PrimaryKey!.Parts.Count; ++i)
+    {       
+        if(Model.PrimaryKey!.Parts[i].Property is {})
+        {
+                <text>s_@{}@Model.PrimaryKey!.Parts[@i].PropertyName@{}Property.GetAccess(_owner) is not @nameof(PropertyAccessMode).@nameof(PropertyAccessMode.Denied) 
+                    && </text>
+        }
+    }base.IsAssigned;
+            }
+        }
+        
+        internal PrimaryKeyClass(@Model.ClassName owner)
+        {
+            _owner = owner;
+        }
+    }
+    #endregion PrimaryKey  
+</text>
+}
+
 @if (Model.PocoKind is PocoKind.Entity)
 {
-    <text>    public event PropertyChangedEventHandler? PropertyChanged;
+    <text>    event @nameof(AccessPropertyChangedEventHandler)? @nameof(IEntity)@{}.AccessPropertyChanged
+    {
+        add
+        {
+            _accessPropertyChanged += value;
+        }
+        remove
+        {
+            _accessPropertyChanged -= value;
+        }
+    }
 </text>
 }
 
     private const string s_alreadyDelivered = "The property {0}.{1} is already delivered!";
+    private const string s_isNotSet = "The property {0}.{1} is not set!";
+#region Fields
+    private readonly @nameof(IServiceProvider) _serviceProvider;
+@if (Model.PocoKind is PocoKind.Entity)
+{
+    <text>    private @nameof(PropertyAccessMode) _accessMode = PropertyAccessMode.ReadOnly;
     private bool _isAccessChecked = false;
-
+    private event @nameof(AccessPropertyChangedEventHandler)? _accessPropertyChanged;
+</text>
+}
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    private @Html.Raw(pm.Type)@pm.Nullable @pm.FieldName = @if(pm.IsClass || pm.PocoKind is not PocoKind.NotAPoco || pm.IsCollection || !string.IsNullOrEmpty(@pm.Nullable))
@@ -26,32 +257,60 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         <text>default</text>
     };
+    @if (Model.PocoKind is PocoKind.Entity)
+    {
+        <text>    private PropertyAccessMode @pm.FieldName@{}AccessMode = PropertyAccessMode.Full;
+</text>
+    }
     private bool @pm.FieldName@{}IsSet = false;
     private bool @pm.FieldName@{}IsDelivered = false;
 </text>
 }
+@if(Model.PrimaryKey is { })
+{
+    <text>    private readonly PrimaryKeyClass _primaryKey;
+</text>
+
+}
+#endregion Fields
+#region Properties
+@if (Model.PrimaryKey is { })
+{
+    <text>    @nameof(IPrimaryKey) @nameof(IEntity)@{}.PrimaryKey => _primaryKey;
+</text>
+
+}
+@if (Model.PocoKind is PocoKind.Entity)
+{
+    <text>    @nameof(PropertyAccessMode) @nameof(IEntity)@{}.AccessMode => _accessMode;
+</text>
+}
+   
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    public @Html.Raw(pm.Type)@pm.Nullable @pm.Name 
     {
-        get => @pm.FieldName;
+        get => Get@{}@pm.Name@{}();
     @if(!pm.IsReadonly)
     {
-        <text>        set 
-        {
-            Set@{}@pm.Name@{}(value);
-        }
+        <text>        set => Set@{}@pm.Name@{}(value);
 </text>
     }
     }
 </text>
 }
-    public @Model.ClassName (IServiceProvider serviceProvider): base(serviceProvider)
+#endregion Properties
+    public @Model.ClassName (@nameof(IServiceProvider) serviceProvider)@if (Model.PocoKind is PocoKind.Extender)
+{
+    <text>: base(serviceProvider)</text>
+}
     {
+        _serviceProvider = serviceProvider;
     }
+#region Methods
 @if(Model.PocoKind is PocoKind.Entity)
 {
-    <text>    public override void CheckAccess()
+    <text>    void @nameof(IEntity)@{}.CheckAccess()
     {
     @if(Model.AccessProperties.Any())
     {
@@ -67,19 +326,19 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 <text>            foreach(@Html.Raw(ap.ItemType) item in @ap.FieldName@{})
             {
-                item.CheckAccess();
+                ((@nameof(IEntity))item).CheckAccess();
             }
 </text>
             }
             else
             {
-                <text>            ((@Html.Raw(ap.ItemType))@ap.FieldName).CheckAccess();
+                <text>            ((@nameof(IEntity))@ap.FieldName).CheckAccess();
 </text>
             }
         }
             _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Interface}>>")@{}().CheckAccess(this);
-            _isAccessChecked = true;
         }
+        _isAccessChecked = true;
 </text>
     }
     }
@@ -103,17 +362,17 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 <text>            if(@pm.FieldName is {})
             {
-                ((@Html.Raw(pm.ItemType))@pm.FieldName).PropertyChanged -= @pm.Name@{}Changed;
+                ((@Html.Raw(pm.ItemType))@pm.FieldName).AccessPropertyChanged -= @pm.Name@{}Changed;
             }
             if(value is {})
             {
-                ((@Html.Raw(pm.ItemType))value).PropertyChanged += @pm.Name@{}Changed;
+                ((@Html.Raw(pm.ItemType))value).AccessPropertyChanged += @pm.Name@{}Changed;
             }
 </text>
             }
             else
             {
-                <text>            PropertyChanged?.Invoke(this, IEntity.AccessPropertyChangedEventArgs);
+                <text>            AccessPropertyChanged?.Invoke();
             _isAccessChecked = false;
 </text>
             }
@@ -128,7 +387,7 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
         @pm.FieldName = value;
         @pm.FieldName@{}IsSet = @if(string.IsNullOrEmpty(pm.Nullable) && (pm.IsClass || pm.PocoKind is not PocoKind.NotAPoco || pm.IsCollection))
         {
-            <text>value is not null</text>
+            <text>value is {}</text>
         } 
         else 
         {
@@ -137,13 +396,22 @@ public class @Model.ClassName : @Html.Raw(string.Join(", ", Model.Interfaces))
     }
     @if(pm.IsAccess && !pm.IsCollection && pm.PocoKind is PocoKind.Entity)
     {
-        <text>    private void @pm.Name@{}Changed@{}(object? sender, PropertyChangedEventArgs args)
+        <text>    private void @pm.Name@{}Changed@{}()
     {
         _isAccessChecked = false;
     }
 </text>
     }
+    private @Html.Raw(pm.Type)@pm.Nullable Get@{}@pm.Name@{}()
+    {
+        if(!@pm.FieldName@{}IsSet)
+        {
+            throw new @nameof(InvalidOperationException)@{}(string.Format(s_isNotSet, typeof(@Model.ClassName), nameof(@pm.Name)));
+        }
+        return @pm.FieldName;
+    }
 </text>
 }
+#endregion Methods
 
 }

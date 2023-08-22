@@ -1,8 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Net.Leksi.Pocota.Common;
 
 namespace Net.Leksi.Pocota.Server;
 
 public interface IEntity: IPoco
 {
-    public static PropertyChangedEventArgs AccessPropertyChangedEventArgs { get; private set; } = new(string.Empty);
+    event AccessPropertyChangedEventHandler? AccessPropertyChanged;
+    PropertyAccessMode AccessMode { get; }
+    void CheckAccess();
+    IPrimaryKey PrimaryKey { get; }
 }

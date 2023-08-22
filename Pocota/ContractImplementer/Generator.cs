@@ -381,18 +381,18 @@ public class Generator : Runner
             AddUsings(model, typeof(IServiceCollection));
             AddUsings(model, typeof(IServiceProvider));
             _ = GetUniqueVariable("_serviceProvider");
-            _ = GetUniqueVariable("_isAccessChecked");
 
             if (@interface.KeysDefinitions.Any())
             {
-                AddUsings(model, typeof(EntityBase));
+                _ = GetUniqueVariable("_isAccessChecked");
+                _ = GetUniqueVariable("_accessMode");
+                _ = GetUniqueVariable("_primaryKey");
+                AddUsings(model, typeof(IEntity));
                 AddUsings(model, request.Interface);
-                AddUsings(model, typeof(INotifyPropertyChanged));
-                AddUsings(model, typeof(PropertyChangedEventHandler));
-                AddUsings(model, typeof(PropertyChangedEventArgs));
-                model.Interfaces.Add(Util.MakeTypeName(typeof(EntityBase)));
+                AddUsings(model, typeof(AccessPropertyChangedEventHandler));
+                AddUsings(model, typeof(PropertyAccessMode));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
-                model.Interfaces.Add(Util.MakeTypeName(typeof(INotifyPropertyChanged)));
                 model.PocoKind = PocoKind.Entity;
                 if(@interface.AccessProperties is { } && @interface.AccessProperties.Any())
                 {
@@ -415,9 +415,9 @@ public class Generator : Runner
             }
             else
             {
-                AddUsings(model, typeof(EnvelopeBase));
+                AddUsings(model, typeof(IEnvelope));
                 AddUsings(model, request.Interface);
-                model.Interfaces.Add(Util.MakeTypeName(typeof(EnvelopeBase)));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(IEnvelope)));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Envelope;
             }
@@ -452,7 +452,7 @@ public class Generator : Runner
                     model.AccessProperties.Add(pm);
                 }
             }
-
+            FillPrimaryKeyModel(model, @interface);
         }
         else
         {
@@ -531,7 +531,7 @@ public class Generator : Runner
                 if (partDefinition.Value.KeyReference is { })
                 {
                     partModel.PropertyName = partDefinition.Value.Property!.Name!;
-                    partModel.Property = $"{partModel.PropertyName}.{s_primaryKey}";
+                    partModel.Property = $"{partModel.PropertyName}).{s_primaryKey}";
                     partModel.KeyReference = partDefinition.Value.KeyReference!;
                     partModel.PrimaryKeyClassName = MakePrimaryKeyName(partDefinition.Value.Property.PropertyType);
                 }
