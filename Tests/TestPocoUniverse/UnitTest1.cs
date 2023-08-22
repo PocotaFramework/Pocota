@@ -1,5 +1,6 @@
 using Azure;
 using Net.Leksi.Pocota.Common;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using NUnit.Framework;
@@ -196,7 +197,7 @@ public class Tests
             if(node.NodeType is NodeType.Extender)
             {
                 Type[]? interfaces = type.GetInterfaces();
-                Assert.That(interfaces.Length, Is.EqualTo(1));
+                Assert.That(interfaces.Length, Is.EqualTo(2));
                 Assert.Multiple(() =>
                 {
                     Assert.That(interfaces[0].IsGenericType, Is.True);

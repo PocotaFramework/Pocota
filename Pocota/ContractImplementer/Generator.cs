@@ -1,6 +1,6 @@
 ﻿using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
-using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -385,6 +385,7 @@ public class Generator : Runner
             if (@interface.KeysDefinitions.Any())
             {
                 _ = GetUniqueVariable("_isAccessChecked");
+                _ = GetUniqueVariable("_isAccessChecking");
                 _ = GetUniqueVariable("_accessMode");
                 _ = GetUniqueVariable("_primaryKey");
                 AddUsings(model, typeof(IEntity));

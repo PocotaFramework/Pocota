@@ -592,7 +592,7 @@ go
                 {
                     Name = $"P{nodes[i].Properties.Count}",
                     Type = type,
-                    IsReadOnly = random.Next(s_baseReadonly) == 0,
+                    IsReadOnly = !isPrimaryKeyPart && random.Next(s_baseReadonly) == 0,
                     IsCollection = isCollection,
                     IsNullable = isNullable,
                     IsAccess = areEntities && !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
