@@ -1,10 +1,7 @@
-using Azure;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
-using NUnit.Framework;
-using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -19,13 +16,26 @@ public class Tests
         internal List<Node> _allNodesServerImplementation = new();
         internal List<Node> _allNodesPrimaryKey = new();
         internal List<Node> _allNodesAllowAccessManager = new();
+        internal int _contractConfiguratorsCount = 0;
     }
 
     public class Test1Options
     {
         public int Seed { get; internal init; }
         public bool DoCreateDatabase { get; internal init; }
-        public bool GenerateModelAndContract { get; internal init; }
+        public bool DoGenerateModelAndContract { get; internal init; }
+        public bool DoGenerateClasses { get; internal init; }
+        public bool GenerateClassesVerbose { get; internal init; } = false;
+        public override string ToString()
+        {
+            return string.Join('\n', new string[] {
+                $"{nameof(Seed)}: {Seed}",
+                $"{nameof(DoGenerateModelAndContract)}: {DoGenerateModelAndContract}",
+                $"{nameof(DoGenerateClasses)}: {DoGenerateClasses}",
+                $"{nameof(GenerateClassesVerbose)}: {GenerateClassesVerbose}",
+                $"{nameof(DoCreateDatabase)}: {DoCreateDatabase}",
+            });
+        }
     }
 
     [OneTimeSetUp]
@@ -42,7 +52,9 @@ public class Tests
         return new Test1Options[] { new Test1Options
         {
             Seed = -1,
-            DoCreateDatabase = true,
+            DoCreateDatabase = false,
+            DoGenerateModelAndContract = true,
+            DoGenerateClasses = true,
         } };
     }
 
@@ -59,7 +71,9 @@ public class Tests
                 )
             ) % int.MaxValue);
         }
-        Console.WriteLine($"seed: {seed}");
+
+        Console.WriteLine($"Seed: {seed}");
+
         Random rnd = new Random(seed);
 
         Test1DataHolder dataHolder = new();
@@ -76,22 +90,49 @@ public class Tests
 
         Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
         Builder.UniverseOptions.DatabaseName = "qq";
+        Builder.UniverseOptions.NodesTelemetry = un => NodesTelemetry(un, dataHolder);
         Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
+        Builder.UniverseOptions.GenerateClassesTelemetry = (un, ssproj) => GenerateClassesTelemetry(un, ssproj, dataHolder);
+        Builder.UniverseOptions.CreateDatabaseTelemetry = un => CreateDatabaseTelemetry(un, dataHolder);
 
         Builder.UniverseOptions.DoCreateDatabase = options.DoCreateDatabase;
+        Builder.UniverseOptions.DoGenerateClasses = options.DoGenerateClasses;
+        Builder.UniverseOptions.DoGenerateModelAndContract = options.DoGenerateModelAndContract;
+        Builder.UniverseOptions.GenerateClassesNoWarn = "0067;0414";
+        Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
 
         Universe universe = Builder.Build(rnd);
+
+    }
+
+    private void CreateDatabaseTelemetry(Universe universe, Test1DataHolder dataHolder)
+    {
+        Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+    }
+
+    private void GenerateClassesTelemetry(Universe un, Project ssproj, Test1DataHolder dataHolder)
+    {
         Assert.Multiple(() =>
         {
-            Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
-
-            Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+            Assert.That(dataHolder._allNodesClientImplementation.Any(), Is.False);
+            Assert.That(dataHolder._allNodesServerImplementation.Any(), Is.False);
+            Assert.That(dataHolder._allNodesPrimaryKey.Any(), Is.False);
+            Assert.That(dataHolder._allNodesAllowAccessManager.Any(), Is.False);
+            Assert.That(dataHolder._contractConfiguratorsCount, Is.EqualTo(0));
         });
-        Assert.That(dataHolder._allNodesClientImplementation.Any(), Is.False);
-        Assert.That(dataHolder._allNodesServerImplementation.Any(), Is.False);
-        Assert.That(dataHolder._allNodesPrimaryKey.Any(), Is.False);
-        Assert.That(dataHolder._allNodesAllowAccessManager.Any(), Is.False);
+    }
+
+    private void NodesTelemetry(Universe universe, Test1DataHolder dataHolder)
+    {
+        Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
+        Assert.Multiple(() =>
+        {
+            universe.Entities.ForEach(e =>
+            {
+                Assert.That(e.PrimaryKey.GroupBy(p => p.Name).Count(), Is.EqualTo(e.PrimaryKey.Count), e.ToString());
+            });
+        });
     }
 
     private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception, Test1DataHolder dataHolder)
@@ -127,6 +168,7 @@ public class Tests
                     (
                         $"/ServerContractConfigurator".Equals(path)
                         && @interface == dataHolder._universe.Contract
+                        && --dataHolder._contractConfiguratorsCount == 0
                     )
                     || (
                         $"/ServerImplementation".Equals(path)
@@ -173,6 +215,7 @@ public class Tests
             "/PrimaryKey".Equals(path)
             || "/AllowAccessManager".Equals(path)
             || "/ServerImplementation".Equals(path)
+            || "/ServerContractConfigurator".Equals(path)
         )
         {
             Assert.That(exception, Is.Null);
@@ -274,7 +317,8 @@ public class Tests
         dataHolder._allNodesPrimaryKey.Clear();
         dataHolder._allNodesPrimaryKey.AddRange(universe.Entities);
         dataHolder._allNodesAllowAccessManager.Clear();
-        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities.Where(n => n.AccessProperties.Any()));
+        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities);
+        dataHolder._contractConfiguratorsCount = 1;
     }
 }
 

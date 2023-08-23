@@ -13,6 +13,10 @@ public class Generator : Runner
     private const string s_ask = "?";
     private const string s_allowAccessManager = "AllowAccessManager";
     private const string s_poco = "Poco";
+    private const string s_staticPrefix = "s_";
+    private const string s_property = "Property";
+    private const string s_class = "Class";
+    private const string s_configurator = "Configurator";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
@@ -62,7 +66,7 @@ public class Generator : Runner
                     {
                         ProcessPocoAttribute(attr);
                     }
-                    CheckEntityProperties();
+                    CheckConsistence();
                     CheckBaseInterfaces();
                     CheckPrimaryKeys();
                     CheckAccessProperties();
@@ -166,19 +170,22 @@ public class Generator : Runner
                         {
                             ++fails;
                         }
-                        if (
-                            ProcessInterface(
-                                connector, @interface,
-                                $"/ServerContractConfigurator", RequestKind.ServerImplementation, @interface
-                            )
+                    }
+                }
+                if (ServerGeneratedDirectory is { })
+                {
+                    if (
+                        ProcessInterface(
+                            connector, @interface,
+                            $"/ServerContractConfigurator", RequestKind.ServerImplementation, @interface
                         )
-                        {
-                            ++done;
-                        }
-                        else
-                        {
-                            ++fails;
-                        }
+                    )
+                    {
+                        ++done;
+                    }
+                    else
+                    {
+                        ++fails;
                     }
                 }
             }
@@ -237,22 +244,19 @@ public class Generator : Runner
                             {
                                 ++fails;
                             }
-                            if (target.AccessProperties?.Any() ?? false)
-                            {
-                                if (
-                                    ProcessInterface(
-                                        connector, @interface,
-                                        $"/AllowAccessManager", RequestKind.ServerImplementation,
-                                        _contract!
-                                    )
+                            if (
+                                ProcessInterface(
+                                    connector, @interface,
+                                    $"/AllowAccessManager", RequestKind.ServerImplementation,
+                                    _contract!
                                 )
-                                {
-                                    ++done;
-                                }
-                                else
-                                {
-                                    ++fails;
-                                }
+                            )
+                            {
+                                ++done;
+                            }
+                            else
+                            {
+                                ++fails;
                             }
                         }
                     }
@@ -343,9 +347,11 @@ public class Generator : Runner
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IPrimaryKey));
+            AddUsings(model, typeof(IPrimaryKey<>));
             AddUsings(model, typeof(KeyDefinition));
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey)));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
 
             FillPrimaryKeyModel(model, @interface);
         }
@@ -355,9 +361,51 @@ public class Generator : Runner
         }
     }
 
-    internal void BuildServerContractConfigurator(ClassModel classModel)
+    internal void BuildServerContractConfigurator(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && request.Interface == _contract
+        )
+        {
+            InitClassModel(model, request);
+
+            model.ClassName = MakeContractConfiguratorName(request.Contract);
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IServiceCollection));
+
+            foreach (KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
+            {
+                AddUsings(model, entry.Key);
+                model.Services.Add(new ServiceModel
+                {
+                    ServiceType = Util.MakeTypeName(entry.Key),
+                    ImplementationType = MakePocoClassName(entry.Key),
+                });
+                if (entry.Value.KeysDefinitions.Any())
+                {
+                    AddUsings(model, typeof(IAccessManager<>));
+                    AddUsings(model, typeof(IPrimaryKey<>));
+                    model.Services.Add(new ServiceModel
+                    {
+                        ServiceType = Util.MakeTypeName(typeof(IAccessManager<>).MakeGenericType(new Type[] { entry.Key })),
+                        ImplementationType = MakeAllowAccessManager(entry.Key),
+                    });
+                    model.Services.Add(new ServiceModel
+                    {
+                        ServiceType = Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { entry.Key })),
+                        ImplementationType = MakePrimaryKeyName(entry.Key),
+                    });
+                }
+            }
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     internal void BuildServerImplementation(ClassModel model)
@@ -380,6 +428,8 @@ public class Generator : Runner
 
             AddUsings(model, typeof(IServiceCollection));
             AddUsings(model, typeof(IServiceProvider));
+            AddUsings(model, typeof(PocoKind));
+
             _ = GetUniqueVariable("_serviceProvider");
 
             if (@interface.KeysDefinitions.Any())
@@ -389,20 +439,20 @@ public class Generator : Runner
                 _ = GetUniqueVariable("_accessMode");
                 _ = GetUniqueVariable("_primaryKey");
                 AddUsings(model, typeof(IEntity));
+                AddUsings(model, typeof(IEntityProperty));
                 AddUsings(model, request.Interface);
-                AddUsings(model, typeof(AccessPropertyChangedEventHandler));
                 AddUsings(model, typeof(PropertyAccessMode));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Entity;
-                if(@interface.AccessProperties is { } && @interface.AccessProperties.Any())
+                if (@interface.AccessProperties is { } && @interface.AccessProperties.Any())
                 {
                     AddUsings(model, typeof(IAccessManager<>));
                 }
             }
             else if (
                 @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                &&  baseInterface.IsGenericType
+                && baseInterface.IsGenericType
                 && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
                 && baseInterface.GetGenericArguments()[0] is Type entityType
             )
@@ -410,20 +460,23 @@ public class Generator : Runner
                 AddUsings(model, typeof(IExtender<>));
                 AddUsings(model, baseInterface);
                 AddUsings(model, entityType);
+                AddUsings(model, typeof(IEntityProperty));
+                AddUsings(model, typeof(PropertyAccessMode));
                 model.Interfaces.Add(MakePocoClassName(entityType));
-                model.Interfaces.Add(Util.MakeTypeName(baseInterface));
+                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Extender;
             }
             else
             {
                 AddUsings(model, typeof(IEnvelope));
                 AddUsings(model, request.Interface);
+                AddUsings(model, typeof(IProperty));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEnvelope)));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Envelope;
             }
             NullabilityInfoContext nic = new();
-            foreach(PropertyInfo pi in request.Interface.GetProperties())
+            foreach (PropertyInfo pi in request.Interface.GetProperties())
             {
                 PropertyModel pm = new()
                 {
@@ -432,12 +485,14 @@ public class Generator : Runner
                     Type = Util.MakeTypeName(pi.PropertyType),
                     Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
                     IsReadonly = !pi.CanWrite,
-                    IsClass = pi.PropertyType.IsClass,
+                    IsClass = pi.PropertyType.IsClass || pi.PropertyType.IsInterface,
+                    PropertyClass = $"{pi.Name}{s_property}{s_class}",
+                    PropertyField = $"{s_staticPrefix}{pi.Name}{s_property}",
                 };
                 Type itemType = pi.PropertyType;
-                if(
-                    pi.PropertyType.IsGenericType 
-                    && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition()) 
+                if (
+                    pi.PropertyType.IsGenericType
+                    && typeof(IList<>).IsAssignableFrom(pi.PropertyType.GetGenericTypeDefinition())
                     && pi.PropertyType.GetGenericArguments()[0] is Type type
                 )
                 {
@@ -447,7 +502,7 @@ public class Generator : Runner
                 pm.PocoKind = GetPocoKind(itemType);
                 pm.ItemType = pm.PocoKind is PocoKind.NotAPoco ? Util.MakeTypeName(itemType) : MakePocoClassName(itemType);
                 model.Properties.Add(pm);
-                if(@interface.AccessProperties?.Contains($"{pm.Name}{(pm.IsCollection ? ".@" : string.Empty)}") ?? false)
+                if (@interface.AccessProperties?.Contains($"{pm.Name}{(pm.IsCollection ? ".@" : string.Empty)}") ?? false)
                 {
                     pm.IsAccess = true;
                     model.AccessProperties.Add(pm);
@@ -461,9 +516,14 @@ public class Generator : Runner
         }
     }
 
+    private string MakeContractConfiguratorName(Type @interface)
+    {
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_configurator}";
+    }
+
     private PocoKind GetPocoKind(Type type)
     {
-        if(_interfaceHoldersByType.TryGetValue(type, out InterfaceHolder? @interface))
+        if (_interfaceHoldersByType.TryGetValue(type, out InterfaceHolder? @interface))
         {
             if (@interface.KeysDefinitions.Any())
             {
@@ -582,18 +642,18 @@ public class Generator : Runner
         model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
     }
 
-    private void CheckEntityProperties()
+    private void CheckConsistence()
     {
-        foreach(KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
+        foreach (KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
         {
             if (entry.Value.KeysDefinitions.Any())
             {
-                foreach(PropertyInfo pi in entry.Key.GetProperties())
+                foreach (PropertyInfo pi in entry.Key.GetProperties())
                 {
                     Type itemType = pi.PropertyType;
-                    if(
-                        itemType.IsGenericType 
-                        && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) 
+                    if (
+                        itemType.IsGenericType
+                        && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition())
                         && itemType.GetGenericArguments()[0] is Type type
                     )
                     {
@@ -601,8 +661,20 @@ public class Generator : Runner
                     }
                     if (_interfaceHoldersByType.TryGetValue(itemType, out InterfaceHolder? ih) && !ih.KeysDefinitions.Any())
                     {
-                        throw new InvalidOperationException($"Entity {entry.Key} cannot have any property with item type IPoco but not IEntity (but {pi.Name} item type is {itemType})!");
+                        throw new InvalidOperationException($"Entity {entry.Key} cannot have any property with item type Poco but not Entity (but {pi.Name} item type is {itemType})!");
                     }
+                }
+            }
+            else if(
+                entry.Key.GetInterfaces().FirstOrDefault() is Type baseInterface
+                && baseInterface.IsGenericType
+                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+                && baseInterface.GetGenericArguments()[0] is Type entityType
+            )
+            {
+                if(!_interfaceHoldersByType.TryGetValue(entityType, out InterfaceHolder? ih) || !ih.KeysDefinitions.Any())
+                {
+                    throw new InvalidOperationException($"Extender {entry.Key} must have Entity generic argument, but has {entityType}!");
                 }
             }
         }
@@ -624,7 +696,7 @@ public class Generator : Runner
             Match match = _interfaceNameCheck.Match(attr.Interface.Name);
             if (!match.Success)
             {
-                throw new InvalidOperationException($"Projector {attr.Interface} has not assigned Name and does not meet name condition: I{{Name}}!");
+                throw new InvalidOperationException($"Interface {attr.Interface} does not meet name condition: I{{Name}}!");
             }
             interfaceHolder.Name = match.Groups[1].Captures[0].Value;
             _interfaceHoldersByType.Add(attr.Interface, interfaceHolder);
@@ -636,6 +708,14 @@ public class Generator : Runner
         }
         if (attr.PrimaryKey is { })
         {
+            if (
+                attr.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
+                && baseInterface.IsGenericType
+                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+            )
+            {
+                throw new InvalidOperationException($"Extender {attr.Interface} cannot have own PrimaryKey!");
+            }
             PrimaryKeyDefinition? keyDefinition = null;
             for (int i = 0; i < attr.PrimaryKey.Length; ++i)
             {
@@ -826,7 +906,7 @@ public class Generator : Runner
                     ih.AccessPropertiesTree.IsAccessStuff = true;
                     CheckPathNode(targetType, ih.AccessPropertiesTree, false, false, false, targetType);
                 }
-                catch(Exception  ex)
+                catch (Exception ex)
                 {
                     throw new InvalidOperationException($"At target type {targetType}", ex);
                 }
@@ -835,9 +915,9 @@ public class Generator : Runner
         foreach (Type targetType in _interfaceHoldersByType.Keys)
         {
             InterfaceHolder ih = _interfaceHoldersByType[targetType];
-            if(
-                ih.AccessPropertiesTree is { } 
-                && ih.AccessPropertiesTree.Children.Where(c => 
+            if (
+                ih.AccessPropertiesTree is { }
+                && ih.AccessPropertiesTree.Children.Where(c =>
                     {
                         PropertyInfo p = targetType.GetProperty(c.Name)!;
                         return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _interfaceHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
@@ -864,7 +944,7 @@ public class Generator : Runner
             }
             if (targetType.GetProperty(child.Name) is PropertyInfo pi)
             {
-                if(!nullableAllowed && nic.Create(pi).ReadState is NullabilityState.Nullable)
+                if (!nullableAllowed && nic.Create(pi).ReadState is NullabilityState.Nullable)
                 {
                     throw new InvalidOperationException($"Property {child.Name} at path {node.Path} cannot be nullable (root: {rootTargetType})!");
                 }

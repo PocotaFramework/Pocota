@@ -4,8 +4,7 @@ namespace Net.Leksi.Pocota.Server;
 
 public interface IEntity: IPoco
 {
-    event AccessPropertyChangedEventHandler? AccessPropertyChanged;
-    PropertyAccessMode AccessMode { get; }
+    PropertyAccessMode AccessMode { get; set; }
     void CheckAccess();
     IPrimaryKey PrimaryKey { get; }
 }

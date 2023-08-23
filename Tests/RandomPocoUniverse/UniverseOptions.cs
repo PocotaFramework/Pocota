@@ -16,10 +16,16 @@ public class UniverseOptions
     public string DatabaseName { get; set; } = null!;
     public string TargetFramework { get; set; } = "net6.0-windows";
     public Language ClientLanguage { get; set; } = Language.CSharp;
+    public Action<Universe>? NodesTelemetry { get; set; } = null;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
     public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;
+    public Action<Universe, Project>? GenerateClassesTelemetry { get; set; } = null;
+    public Action<Universe>? CreateDatabaseTelemetry { get; set; } = null;
     public bool DoCreateDatabase { get; set; } = true;
-    public bool GenerateModelAndContract { get; set; } = true;
+    public bool DoGenerateModelAndContract { get; set; } = true;
+    public bool DoGenerateClasses { get; set; } = true;
+    public string GenerateClassesNoWarn { get; set; } = string.Empty;
+    public bool GenerateClassesVerbose { get; set; } = false;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";
     public static string ContractName => "IContract";
 }

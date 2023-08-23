@@ -8,7 +8,6 @@ public interface IProperty
     bool IsReadonly { get; }
     PocoKind PocoKind { get; }
     bool IsCollection { get; }
-    bool IsKeyPart { get; }
     Type? ItemType { get; }
 
     bool IsSet(object target);

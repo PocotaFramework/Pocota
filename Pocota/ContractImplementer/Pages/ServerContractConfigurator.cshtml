@@ -1,0 +1,18 @@
+﻿@page
+@using Net.Leksi.Pocota.Common;
+@using Core = Net.Leksi.Pocota.Server.Core;
+@model ClassModel
+
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName
+{
+    public void Configure(@nameof(IServiceCollection) services)
+    {
+@foreach(var service in Model.Services)
+{
+    <text>        services.@nameof(IServiceCollection.Add)@{}@service.LifeTime@{}@Html.Raw($"<{service.ServiceType}, {service.ImplementationType}>")@{}();
+</text>
+}
+    }
+}

@@ -44,31 +44,31 @@ public class Builder
         Universe result = new();
 
         CreateNodes(result.Entities, random, true);
-
         CreateKeys(result, random);
-
         CompleteEntities(result, random);
-
         CreateExtenders(result, random);
-
         CreateNodes(result.Envelopes, random, false);
-
         CompleteEnvelopes(result, random);
+
+        UniverseOptions.NodesTelemetry?.Invoke(result);
 
         if (UniverseOptions.DoCreateDatabase)
         {
             CreateDataSet(result, random);
-
             CreateSql(result);
-
             CreateDatabase(result);
-
+            UniverseOptions.CreateDatabaseTelemetry?.Invoke(result);
         }
-        //Console.WriteLine(string.Join('\n', result.Entities));
 
-        GenerateModelAndContract(result);
+        if (UniverseOptions.DoGenerateModelAndContract)
+        {
+            GenerateModelAndContract(result);
+        }
 
-        GenerateClasses(result);
+        if (UniverseOptions.DoGenerateClasses)
+        {
+            GenerateClasses(result);
+        }
 
         return result;
     }
@@ -171,7 +171,7 @@ public class Builder
             ServerGeneratedDirectory = UniverseOptions.GeneratedServerStuffProjectDir,
             ClientGeneratedDirectory = UniverseOptions.GeneratedClientStuffProjectDir,
             Contract = universe.Contract,
-            Verbose = false,
+            Verbose = UniverseOptions.GenerateClassesVerbose,
             ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
         }.Generate();
@@ -183,11 +183,18 @@ public class Builder
             ProjectDir = UniverseOptions.GeneratedServerStuffProjectDir,
         });
 
+        generatedServerStuff.NoWarn = UniverseOptions.GenerateClassesNoWarn;
+        generatedServerStuff.ThrowAtBuildWarnings = true;
+
         generatedServerStuff.AddProject(UniverseOptions.PocotaCommonProjectFile);
         generatedServerStuff.AddProject(UniverseOptions.PocotaServerProjectFile);
         generatedServerStuff.AddProject(Path.Combine(UniverseOptions.GeneratedModelProjectDir, "Model.csproj"));
 
         generatedServerStuff.Compile();
+
+        //Console.WriteLine(generatedServerStuff.LastBuildLog);
+
+        UniverseOptions.GenerateClassesTelemetry?.Invoke(universe, generatedServerStuff);
     }
 
     private static void CreateDatabase(Universe universe)
