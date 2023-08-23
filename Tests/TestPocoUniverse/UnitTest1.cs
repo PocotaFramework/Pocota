@@ -21,6 +21,13 @@ public class Tests
         internal List<Node> _allNodesAllowAccessManager = new();
     }
 
+    public class Test1Options
+    {
+        public int Seed { get; internal init; }
+        public bool DoCreateDatabase { get; internal init; }
+        public bool GenerateModelAndContract { get; internal init; }
+    }
+
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
@@ -30,10 +37,20 @@ public class Tests
 
     }
 
-    [Test]
-    [TestCase(-1)]
-    public void Test1(int seed)
+    public static IEnumerable<Test1Options> Test1OptionsSource()
     {
+        return new Test1Options[] { new Test1Options
+        {
+            Seed = -1,
+            DoCreateDatabase = true,
+        } };
+    }
+
+    [Test]
+    [TestCaseSource(nameof(Test1OptionsSource))]
+    public void Test1(Test1Options options)
+    {
+        int seed = options.Seed;
         if (seed == -1)
         {
             seed = (int)(long.Parse(
@@ -61,6 +78,8 @@ public class Tests
         Builder.UniverseOptions.DatabaseName = "qq";
         Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
+
+        Builder.UniverseOptions.DoCreateDatabase = options.DoCreateDatabase;
 
         Universe universe = Builder.Build(rnd);
         Assert.Multiple(() =>

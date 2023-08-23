@@ -51,17 +51,20 @@ public class Builder
 
         CreateExtenders(result, random);
 
-        CreateDataSet(result, random);
-
-        CreateSql(result);
-
-        CreateDatabase(result);
-
-        //Console.WriteLine(string.Join('\n', result.Entities));
-
         CreateNodes(result.Envelopes, random, false);
 
         CompleteEnvelopes(result, random);
+
+        if (UniverseOptions.DoCreateDatabase)
+        {
+            CreateDataSet(result, random);
+
+            CreateSql(result);
+
+            CreateDatabase(result);
+
+        }
+        //Console.WriteLine(string.Join('\n', result.Entities));
 
         GenerateModelAndContract(result);
 

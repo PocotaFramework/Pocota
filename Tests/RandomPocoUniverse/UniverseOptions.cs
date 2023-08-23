@@ -18,6 +18,8 @@ public class UniverseOptions
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
     public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;
+    public bool DoCreateDatabase { get; set; } = true;
+    public bool GenerateModelAndContract { get; set; } = true;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";
     public static string ContractName => "IContract";
 }
