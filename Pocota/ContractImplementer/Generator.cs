@@ -376,6 +376,9 @@ public class Generator : Runner
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IServiceCollection));
+            AddUsings(model, typeof(IConfigurator));
+
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IConfigurator)));
 
             foreach (KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
             {

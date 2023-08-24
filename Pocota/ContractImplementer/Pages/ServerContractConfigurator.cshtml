@@ -5,7 +5,7 @@
 
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName
+public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
     public void Configure(@nameof(IServiceCollection) services)
     {

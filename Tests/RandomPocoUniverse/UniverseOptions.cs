@@ -8,6 +8,7 @@ public class UniverseOptions
     public string GeneratedModelProjectDir { get; set; } = null!;
     public string GeneratedContractProjectDir { get; set; } = null!;
     public string GeneratedServerStuffProjectDir { get; set; } = null!;
+    public string GeneratedServerProjectDir { get; set; } = null!;
     public string GeneratedClientStuffProjectDir { get; set; } = null!;
     public string ContractProjectFile { get; set; } = null!;
     public string PocotaCommonProjectFile { get; set; } = null!;
@@ -19,11 +20,12 @@ public class UniverseOptions
     public Action<Universe>? NodesTelemetry { get; set; } = null;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
     public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;
-    public Action<Universe, Project>? GenerateClassesTelemetry { get; set; } = null;
+    public Action<Universe>? GenerateClassesTelemetry { get; set; } = null;
     public Action<Universe>? CreateDatabaseTelemetry { get; set; } = null;
     public bool DoCreateDatabase { get; set; } = true;
     public bool DoGenerateModelAndContract { get; set; } = true;
     public bool DoGenerateClasses { get; set; } = true;
+    public bool DoCompileServer { get; set; } = true;
     public string GenerateClassesNoWarn { get; set; } = string.Empty;
     public bool GenerateClassesVerbose { get; set; } = false;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";

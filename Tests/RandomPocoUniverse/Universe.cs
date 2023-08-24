@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Data;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -10,4 +11,5 @@ public class Universe
     public DataSet DataSet { get; private init; } = new();
     public string Sql { get; internal set; } = string.Empty;
     public Type Contract { get; internal set;} = null!;
+    public Project? ServerStaffProject { get; internal set; } = null;
 }

@@ -21,11 +21,12 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; }
-        public bool DoCreateDatabase { get; internal init; }
-        public bool DoGenerateModelAndContract { get; internal init; }
-        public bool DoGenerateClasses { get; internal init; }
+        public int Seed { get; internal init; } = -1;
+        public bool DoCreateDatabase { get; internal init; } = true;
+        public bool DoGenerateModelAndContract { get; internal init; } = true;
+        public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
+        public bool DoCompileServer { get; internal init; } = true;
         public override string ToString()
         {
             return string.Join('\n', new string[] {
@@ -34,6 +35,7 @@ public class Tests
                 $"{nameof(DoGenerateClasses)}: {DoGenerateClasses}",
                 $"{nameof(GenerateClassesVerbose)}: {GenerateClassesVerbose}",
                 $"{nameof(DoCreateDatabase)}: {DoCreateDatabase}",
+                $"{nameof(DoCompileServer)}: {DoCompileServer}",
             });
         }
     }
@@ -51,10 +53,6 @@ public class Tests
     {
         return new Test1Options[] { new Test1Options
         {
-            Seed = -1,
-            DoCreateDatabase = false,
-            DoGenerateModelAndContract = true,
-            DoGenerateClasses = true,
         } };
     }
 
@@ -83,6 +81,7 @@ public class Tests
         Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
         Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
         Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
+        Builder.UniverseOptions.GeneratedServerProjectDir = Path.Combine(projectDir, "..", "GeneratedServer");
         Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
         Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
@@ -93,7 +92,7 @@ public class Tests
         Builder.UniverseOptions.NodesTelemetry = un => NodesTelemetry(un, dataHolder);
         Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
-        Builder.UniverseOptions.GenerateClassesTelemetry = (un, ssproj) => GenerateClassesTelemetry(un, ssproj, dataHolder);
+        Builder.UniverseOptions.GenerateClassesTelemetry = un => GenerateClassesTelemetry(un, dataHolder);
         Builder.UniverseOptions.CreateDatabaseTelemetry = un => CreateDatabaseTelemetry(un, dataHolder);
 
         Builder.UniverseOptions.DoCreateDatabase = options.DoCreateDatabase;
@@ -101,6 +100,7 @@ public class Tests
         Builder.UniverseOptions.DoGenerateModelAndContract = options.DoGenerateModelAndContract;
         Builder.UniverseOptions.GenerateClassesNoWarn = "0067;0414";
         Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
+        Builder.UniverseOptions.DoCompileServer = options.DoCompileServer;
 
         Universe universe = Builder.Build(rnd);
 
@@ -111,7 +111,7 @@ public class Tests
         Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
     }
 
-    private void GenerateClassesTelemetry(Universe un, Project ssproj, Test1DataHolder dataHolder)
+    private void GenerateClassesTelemetry(Universe un, Test1DataHolder dataHolder)
     {
         Assert.Multiple(() =>
         {

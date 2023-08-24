@@ -52,14 +52,6 @@ public class Builder
 
         UniverseOptions.NodesTelemetry?.Invoke(result);
 
-        if (UniverseOptions.DoCreateDatabase)
-        {
-            CreateDataSet(result, random);
-            CreateSql(result);
-            CreateDatabase(result);
-            UniverseOptions.CreateDatabaseTelemetry?.Invoke(result);
-        }
-
         if (UniverseOptions.DoGenerateModelAndContract)
         {
             GenerateModelAndContract(result);
@@ -70,7 +62,25 @@ public class Builder
             GenerateClasses(result);
         }
 
+        if (UniverseOptions.DoCompileServer)
+        {
+            CompileServer(result);
+        }
+
+        if (UniverseOptions.DoCreateDatabase)
+        {
+            CreateDataSet(result, random);
+            CreateSql(result);
+            CreateDatabase(result);
+            UniverseOptions.CreateDatabaseTelemetry?.Invoke(result);
+        }
+
         return result;
+    }
+
+    private static void CompileServer(Universe result)
+    {
+        Project server = Project.;
     }
 
     private static void CreateExtenders(Universe universe, Random random)
@@ -181,6 +191,7 @@ public class Builder
             Name = "GeneratedServerStuff",
             TargetFramework = UniverseOptions.TargetFramework,
             ProjectDir = UniverseOptions.GeneratedServerStuffProjectDir,
+            GeneratePackage = true,
         });
 
         generatedServerStuff.NoWarn = UniverseOptions.GenerateClassesNoWarn;
@@ -192,9 +203,9 @@ public class Builder
 
         generatedServerStuff.Compile();
 
-        //Console.WriteLine(generatedServerStuff.LastBuildLog);
+        universe.ServerStaffProject = generatedServerStuff;
 
-        UniverseOptions.GenerateClassesTelemetry?.Invoke(universe, generatedServerStuff);
+        UniverseOptions.GenerateClassesTelemetry?.Invoke(universe);
     }
 
     private static void CreateDatabase(Universe universe)
