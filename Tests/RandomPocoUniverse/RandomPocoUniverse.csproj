@@ -7,6 +7,7 @@
     <AssemblyName>Net.Leksi.Pocota.Test.$(MSBuildProjectName)</AssemblyName>
     <RootNamespace>Net.Leksi.Pocota.Test.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <OutputType>Library</OutputType>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,10 @@
     <ProjectReference Include="..\..\..\RuntimeAssemblyCompiler\Library\RuntimeAssemblyCompiler.csproj" />
     <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\ContractImplementer\ContractImplementerDebug.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
