@@ -26,7 +26,8 @@ public class Tests
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
-        public bool DoCompileServer { get; internal init; } = true;
+        public bool DoCompilePocoUniverseServer { get; internal init; } = true;
+        public bool DoRunPocoUniverseServer { get; internal init; } = true;
         public override string ToString()
         {
             return string.Join('\n', new string[] {
@@ -35,7 +36,8 @@ public class Tests
                 $"{nameof(DoGenerateClasses)}: {DoGenerateClasses}",
                 $"{nameof(GenerateClassesVerbose)}: {GenerateClassesVerbose}",
                 $"{nameof(DoCreateDatabase)}: {DoCreateDatabase}",
-                $"{nameof(DoCompileServer)}: {DoCompileServer}",
+                $"{nameof(DoCompilePocoUniverseServer)}: {DoCompilePocoUniverseServer}",
+                $"{nameof(DoRunPocoUniverseServer)}: {DoRunPocoUniverseServer}",
             });
         }
     }
@@ -81,11 +83,13 @@ public class Tests
         Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
         Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
         Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
-        Builder.UniverseOptions.GeneratedServerProjectDir = Path.Combine(projectDir, "..", "GeneratedServer");
         Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
+        Builder.UniverseOptions.PocoUniverseServerProjectDir = Path.Combine(projectDir, "..", "PocoUniverseServer");
+
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
         Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
         Builder.UniverseOptions.PocotaServerProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Server", "ServerDebug.csproj");
+        Builder.UniverseOptions.PocoUniverseCommonProjectFile = Path.Combine(projectDir, "..", "PocoUniverseCommon", "PocoUniverseCommon.csproj");
 
         Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
         Builder.UniverseOptions.DatabaseName = "qq";
@@ -100,9 +104,14 @@ public class Tests
         Builder.UniverseOptions.DoGenerateModelAndContract = options.DoGenerateModelAndContract;
         Builder.UniverseOptions.GenerateClassesNoWarn = "0067;0414";
         Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
-        Builder.UniverseOptions.DoCompileServer = options.DoCompileServer;
+        Builder.UniverseOptions.DoCompilePocoUniverseServer = options.DoCompilePocoUniverseServer;
 
         Universe universe = Builder.Build(rnd);
+
+        if (options.DoRunPocoUniverseServer && universe.PocoServer is { })
+        {
+            universe.PocoServer.Run();
+        }
 
     }
 

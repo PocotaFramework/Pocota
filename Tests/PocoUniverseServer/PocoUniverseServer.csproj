@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
@@ -11,22 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.10" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GeneratedServerStuff" Version="1.0.0" />
-    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.9" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\Server\ServerDebug.csproj" />
-    <ProjectReference Include="..\..\Pocota\Server\ServerDebug.csproj" />
+    <ProjectReference Include="..\GeneratedServerStuff\GeneratedServerStuff.csproj" />
+    <ProjectReference Include="..\PocoUniverseCommon\PocoUniverseCommon.csproj" />
   </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet remove $(ProjectPath) package GeneratedServerStuff" IgnoreExitCode="True" />
-    <Exec Command="dotnet add $(ProjectPath) package GeneratedServerStuff --version 1.0.0 --source ..\GeneratedServerStuff\bin\RAC" />
-  </Target>
   
 </Project>

@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\..\RuntimeAssemblyCompiler\Library\RuntimeAssemblyCompiler.csproj" />
     <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\ContractImplementer\ContractImplementerDebug.csproj" />
+    <ProjectReference Include="..\PocoUniverseCommon\PocoUniverseCommon.csproj" />
   </ItemGroup>
 
   <ItemGroup>

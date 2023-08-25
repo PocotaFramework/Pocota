@@ -42,7 +42,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Tests\GeneratedMod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Tests\GeneratedContract\Contract.csproj", "{84BA7EC7-BACD-4A74-B1DC-A11BD6E7E33B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocoUniverseServer", "Tests\PocoUniverseServer\PocoUniverseServer.csproj", "{26D4A437-B443-40AB-8828-C552C666E250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoUniverseServer", "Tests\PocoUniverseServer\PocoUniverseServer.csproj", "{26D4A437-B443-40AB-8828-C552C666E250}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocoUniverseCommon", "Tests\PocoUniverseCommon\PocoUniverseCommon.csproj", "{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{26D4A437-B443-40AB-8828-C552C666E250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26D4A437-B443-40AB-8828-C552C666E250}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26D4A437-B443-40AB-8828-C552C666E250}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,6 +121,7 @@ Global
 		{C73B3BB3-02C6-4CAB-B70F-9FEEAF67F01C} = {FAAADCDC-3539-4C50-A1AF-F764856EADFB}
 		{84BA7EC7-BACD-4A74-B1DC-A11BD6E7E33B} = {FAAADCDC-3539-4C50-A1AF-F764856EADFB}
 		{26D4A437-B443-40AB-8828-C552C666E250} = {73D02B9A-3C85-4249-903A-45F843EE57B7}
+		{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C} = {73D02B9A-3C85-4249-903A-45F843EE57B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA5EDFDC-26C8-46B1-9271-A4CCC5A758D6}

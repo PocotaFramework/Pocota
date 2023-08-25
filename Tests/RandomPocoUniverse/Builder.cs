@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
 using System.Text;
@@ -62,11 +63,6 @@ public class Builder
             GenerateClasses(result);
         }
 
-        if (UniverseOptions.DoCompileServer)
-        {
-            CompileServer(result);
-        }
-
         if (UniverseOptions.DoCreateDatabase)
         {
             CreateDataSet(result, random);
@@ -75,12 +71,37 @@ public class Builder
             UniverseOptions.CreateDatabaseTelemetry?.Invoke(result);
         }
 
+        if (UniverseOptions.DoCompilePocoUniverseServer)
+        {
+            CompilePocoUniverseServer(result);
+        }
+
         return result;
     }
 
-    private static void CompileServer(Universe result)
+    private static void CompilePocoUniverseServer(Universe universe)
     {
-        Project server = Project.;
+        Project server = Project.Create(new ProjectOptions
+        {
+            Namespace = UniverseOptions.Namespace,
+            Name = "PocoUniverseServerRuntime",
+            ProjectDir = UniverseOptions.PocoUniverseServerProjectDir,
+            Sdk = "Microsoft.NET.Sdk.Web",
+            TargetFramework = "net6.0-windows7.0",
+        });
+        server.AddPackage("Net.Leksi.E6dWebApp", "1.1.10");
+        server.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
+        server.AddProject(UniverseOptions.PocotaCommonProjectFile);
+        server.AddProject(UniverseOptions.PocotaServerProjectFile);
+        server.AddProject(universe.ServerStuffProject!.ProjectPath);
+
+        server.OnProjectFileGenerated = p => Console.WriteLine(p.ProjectPath);
+
+        server.Compile();
+
+        universe.PocoServer = (IPocoServer)Activator.CreateInstance(
+            Assembly.LoadFile(server.LibraryFile!).GetType($"{UniverseOptions.Namespace}.Server")!
+        )!;
     }
 
     private static void CreateExtenders(Universe universe, Random random)
@@ -203,7 +224,7 @@ public class Builder
 
         generatedServerStuff.Compile();
 
-        universe.ServerStaffProject = generatedServerStuff;
+        universe.ServerStuffProject = generatedServerStuff;
 
         UniverseOptions.GenerateClassesTelemetry?.Invoke(universe);
     }
