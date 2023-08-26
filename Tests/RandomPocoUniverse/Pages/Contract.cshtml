@@ -30,5 +30,19 @@ namespace @UniverseOptions.Namespace;
 }
 public interface @UniverseOptions.ContractName
 {
-
+@foreach(MethodModel mm in Model.Methods)
+{
+    if (mm.Properties.Any()) {
+        <text>    [Properties(new string[] {
+        @foreach(string path in mm.Properties)
+        {
+            <text>        "@path",
+</text>
+        }
+    })]
+</text>
+    }
+    <text>    @Html.Raw(mm.ReturnType) @mm.Name@{}(string.Join(", ", mm.Parameters));
+</text>
+}
 }

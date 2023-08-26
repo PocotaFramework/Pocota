@@ -9,7 +9,8 @@ public class Node
     public List<Node> References { get; private init; } = new();
     public HashSet<Node> Referencers { get; private init; } = new();
     public NodeType NodeType { get; internal set; } = NodeType.Envelope;
-    public List<PropertyDescriptor> Properties { get; internal init; } = new();
+    public List<PropertyDescriptor> Properties { get; private init; } = new();
+    public List<MethodHolder> Methods { get; private init; } = new();
 
     public virtual string InterfaceName => $"IEnvelope{Id}";
 
