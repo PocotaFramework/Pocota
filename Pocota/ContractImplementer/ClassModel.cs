@@ -15,7 +15,9 @@ public class ClassModel: PageModel
     internal PocoKind? PocoKind { get; set; } = null;
     internal List<PropertyModel> Properties { get; private init; } = new();
     internal List<PropertyModel> AccessProperties { get; private init; } = new();
-    internal List<ServiceModel> Services { get; init; } = new();
+    internal List<ServiceModel> Services { get; private init; } = new();
+    internal List<MethodModel> Methods { get; private init; } = new();
+    internal AttributeModel? UpdateRouteAttribute { get; set; } = null;
 
     public void OnGet([FromServices] Generator generator)
     {

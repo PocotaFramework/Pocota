@@ -33,6 +33,7 @@ public class Builder
     private const int s_baseMethodSingle = 3;
     private const int s_maxPathLength = 4;
     private const int s_baseAsteriskPath = 3;
+    private const int s_baseOtherArgs = 3;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -115,7 +116,7 @@ public class Builder
                     mh.Parameters.Add(new MethodParameterModel
                     {
                         Name = $"arg{j}",
-                        Type = universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName,
+                        Type = random.Next(s_baseOtherArgs) == 0 ? "string" : universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName,
                     });
                 }
                 node.Methods.Add(mh);

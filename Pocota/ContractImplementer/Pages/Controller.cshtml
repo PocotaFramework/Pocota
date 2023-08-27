@@ -1,0 +1,17 @@
+﻿@page
+@using Net.Leksi.Pocota.Common
+@using Net.Leksi.Pocota.Server;
+@model ClassModel
+@Html.Partial("Header", Model)
+
+#region DataProviderFactoryInterface
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>public interface @mm.DataProviderFactoryInterface: @nameof(IDataProviderFactory)
+{
+    @nameof(DataProvider) Create(@string.Join(", ", mm.Arguments.Select(arg => $"{Html.Raw(arg.Type)} {arg.Name}")));
+}
+
+</text>
+}
+#endregion DataProviderFactoryInterface

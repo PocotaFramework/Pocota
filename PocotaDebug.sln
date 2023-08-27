@@ -44,7 +44,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract", "Tests\Generated
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoUniverseServer", "Tests\PocoUniverseServer\PocoUniverseServer.csproj", "{26D4A437-B443-40AB-8828-C552C666E250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocoUniverseCommon", "Tests\PocoUniverseCommon\PocoUniverseCommon.csproj", "{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoUniverseCommon", "Tests\PocoUniverseCommon\PocoUniverseCommon.csproj", "{ED3EE342-3C0F-44D2-980F-0D9D50CE3A6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

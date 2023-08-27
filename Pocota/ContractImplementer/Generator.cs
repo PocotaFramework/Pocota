@@ -1,7 +1,11 @@
-﻿using Net.Leksi.E6dWebApp;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Common;
@@ -17,6 +21,13 @@ public class Generator : Runner
     private const string s_property = "Property";
     private const string s_class = "Class";
     private const string s_configurator = "Configurator";
+    private const string s_controller = "Controller";
+    private const string s_void = "void";
+    private const string s_template = "!Template";
+    private const string s_propertyUse = "PropertyUse";
+    private const string s_dataProviderFactory = "DataProviderFactory";
+    private const string s_processorFactory = "ProcessorFactory";
+    private const string s_string = "string";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
@@ -325,9 +336,118 @@ public class Generator : Runner
         throw new NotImplementedException();
     }
 
-    internal void BuildController(ClassModel classModel)
+    internal void BuildController(ClassModel model)
     {
-        throw new NotImplementedException();
+        GeneratingRequest? request = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter
+             as GeneratingRequest;
+        if (
+            request is { }
+            && request.Interface == _contract
+        )
+        {
+            InitClassModel(model, request);
+
+            model.ClassName = MakeControllerName(request.Contract);
+            request.ResultName = model.ClassName;
+
+            AddUsings(model, typeof(IDataProviderFactory));
+            AddUsings(model, typeof(DataProvider));
+
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                _variables.Clear();
+                AddUsings(model, method.ReturnType);
+
+                Type propertyUseType = method.ReturnType;
+
+                MethodModel mm = new MethodModel
+                {
+                    ReturnType = s_void,
+                    Name = method.Name,
+                    OutputType = Util.MakeTypeName(method.ReturnType),
+                };
+                Type returnItemType = method.ReturnType;
+                if (
+                    method.ReturnType.IsGenericType
+                    && typeof(IList<>).MakeGenericType(new Type[] { method.ReturnType.GetGenericArguments()[0] }).IsAssignableFrom(method.ReturnType)
+                )
+                {
+                    returnItemType = method.ReturnType.GetGenericArguments()[0];
+                    propertyUseType = returnItemType;
+                    mm.IsListOutput = true;
+                }
+
+                AttributeModel route = new()
+                {
+                    Name = nameof(RouteAttribute)
+                };
+                route.Properties.Add(s_template, $"\"/{MakeRoute(model.Contract, method.Name)}\"");
+
+                mm.Attributes.Add(route);
+
+                if (returnItemType != typeof(void))
+                {
+                    mm.PropertyUseVariable = GetUniqueVariable($"{s_staticPrefix}{mm.Name.Substring(0, 1).ToLower()}{mm.Name.Substring(1)}{s_propertyUse}");
+                    StringBuilder sb = new();
+                    string[]? paths = null;
+                    if (method.GetCustomAttribute<PropertiesAttribute>() is PropertiesAttribute pa)
+                    {
+                        paths = pa.Properties;
+                    }
+                    mm.PropertyUse = BuildPropertyUseModel(propertyUseType, method.GetCustomAttribute<PropertiesAttribute>()?.Properties, model);
+                }
+
+                mm.OutputItemType = Util.MakeTypeName(returnItemType);
+                mm.DataProviderFactoryInterface = MakeDataProviderFactoryInterfaceName(method.Name);
+                mm.ProcessorFactoryInterface = MakeProcessorFactoryInterfaceName(method.Name);
+                mm.ProcessorInterface = $"IProcessor<{mm.OutputItemType}>";
+                mm.DefaultDataProviderFactoryName = MakeDefaultDataProviderFactoryName(method.Name);
+                mm.DefaultProcessorFactoryName = MakeDefaultProcessorFactoryName(method.Name);
+
+                foreach (ParameterInfo parameter in method.GetParameters())
+                {
+                    _variables.Add(parameter.Name!);
+
+                    AddUsings(model, parameter.ParameterType);
+
+                    bool isNullable = new NullabilityInfoContext().Create(parameter).WriteState is NullabilityState.Nullable;
+
+                    route.Properties[s_template] =
+                        $"{route.Properties[s_template].Substring(0, route.Properties[s_template].Length - 1)}/{{{parameter.Name!}{(isNullable ? "?" : String.Empty)}}}\"";
+
+                    ArgumentModel fm = new()
+                    {
+                        Name = parameter.Name!,
+                        Type = $"{Util.MakeTypeName(parameter.ParameterType)}{(isNullable ? "?" : String.Empty)}",
+                        Variable = GetUniqueVariable(parameter.Name!),
+                        IsNullable = isNullable,
+                        IsConvertible = typeof(IConvertible).IsAssignableFrom(parameter.ParameterType)
+                    };
+                    mm.Arguments.Add(fm);
+                    mm.CallParameters.Add(fm.Variable);
+                }
+                route.Properties[s_template] = Regex.Replace(route.Properties[s_template], "/+", "/");
+                if (mm.Arguments.Count > 0)
+                {
+                    AddUsings(model, typeof(JsonSerializerOptions));
+                    AddUsings(model, typeof(JsonSerializer));
+                }
+                mm.PocoContextVariable = GetUniqueVariable(mm.PocoContextVariable);
+                model.Methods.Add(mm);
+            }
+            model.UpdateRouteAttribute = new() { Name = nameof(RouteAttribute) };
+            model.UpdateRouteAttribute.Properties
+                .Add(
+                    s_template,
+                    $"\"/{MakeRoute(model.Contract, $"/{s_update}")}\""
+                );
+            model.UpdateRouteAttribute.Properties[s_template] =
+                Regex.Replace(model.UpdateRouteAttribute.Properties[s_template], "/+", "/");
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     internal void BuildPrimaryKey(ClassModel model)
@@ -519,6 +639,64 @@ public class Generator : Runner
         }
     }
 
+    private string MakeDefaultProcessorFactoryName(string methodName)
+    {
+        return $"{methodName}Default{s_processorFactory}";
+    }
+
+    private string MakeDefaultDataProviderFactoryName(string methodName)
+    {
+        return $"{methodName}Default{s_dataProviderFactory}";
+    }
+
+    private string MakeProcessorFactoryInterfaceName(string methodName)
+    {
+        return $"I{methodName}{s_processorFactory}";
+    }
+
+    private static string MakeDataProviderFactoryInterfaceName(string methodName)
+    {
+        return $"I{methodName}{s_dataProviderFactory}";
+    }
+
+    private PropertyUseModel? BuildPropertyUseModel(Type propertyUseType, string[]? properties, ClassModel model)
+    {
+        return null;
+    }
+
+    private string MakeRoute(Type contract, string name)
+    {
+        string? routePrefix = null;
+        string? version = null;
+        if (contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute ca)
+        {
+            routePrefix = ca.RoutePrefix;
+            version = ca.Version;
+        }
+
+        StringBuilder routeValue = new();
+        if (!string.IsNullOrEmpty(routePrefix))
+        {
+            routeValue.Append('/').Append(routePrefix);
+        }
+        if (!string.IsNullOrEmpty(version))
+        {
+            routeValue.Append('/').Append(version);
+        }
+        if (!string.IsNullOrEmpty(contract.Namespace))
+        {
+            routeValue.Append('/').Append(contract.Namespace.Replace('.', '/'));
+        }
+        routeValue.Append('/').Append(contract.Name);
+        routeValue.Append('/').Append(name);
+        return routeValue.ToString();
+    }
+
+    private static string MakeControllerName(Type @interface)
+    {
+        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
+    }
+
     private string MakeContractConfiguratorName(Type @interface)
     {
         return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_configurator}";
@@ -668,14 +846,14 @@ public class Generator : Runner
                     }
                 }
             }
-            else if(
+            else if (
                 entry.Key.GetInterfaces().FirstOrDefault() is Type baseInterface
                 && baseInterface.IsGenericType
                 && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
                 && baseInterface.GetGenericArguments()[0] is Type entityType
             )
             {
-                if(!_interfaceHoldersByType.TryGetValue(entityType, out InterfaceHolder? ih) || !ih.KeysDefinitions.Any())
+                if (!_interfaceHoldersByType.TryGetValue(entityType, out InterfaceHolder? ih) || !ih.KeysDefinitions.Any())
                 {
                     throw new InvalidOperationException($"Extender {entry.Key} must have Entity generic argument, but has {entityType}!");
                 }

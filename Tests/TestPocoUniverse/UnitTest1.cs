@@ -221,7 +221,8 @@ public class Tests
             });
         }
         else if (
-            "/PrimaryKey".Equals(path)
+            "/Controller".Equals(path)
+            || "/PrimaryKey".Equals(path)
             || "/AllowAccessManager".Equals(path)
             || "/ServerImplementation".Equals(path)
             || "/ServerContractConfigurator".Equals(path)
