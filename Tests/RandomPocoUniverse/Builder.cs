@@ -29,7 +29,7 @@ public class Builder
     private const int s_maxExtenders = 3;
     private const int s_maxExtenderAdditionalProperties = 3;
     private const int s_maxMethods = 3;
-    private const int s_maxMethodArgs = 2;
+    private const int s_maxMethodArgs = 3;
     private const int s_baseMethodSingle = 3;
     private const int s_maxPathLength = 4;
     private const int s_baseAsteriskPath = 3;
@@ -113,10 +113,21 @@ public class Builder
                 int numArgs = random.Next(s_maxMethodArgs + 1);
                 for(int j = 0; j < numArgs; ++j)
                 {
+                    string type;
+                    
+                    if( random.Next(s_baseOtherArgs) == 0)
+                    {
+                        Type t = s_terminalTypes[random.Next(s_terminalTypes.Length)];
+                        type = t == typeof(Enum) ? "TestEnum" : Util.MakeTypeName(t);
+                    }
+                    else
+                    {
+                        type = universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName;
+                    }
                     mh.Parameters.Add(new MethodParameterModel
                     {
                         Name = $"arg{j}",
-                        Type = random.Next(s_baseOtherArgs) == 0 ? "string" : universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName,
+                        Type = type,
                     });
                 }
                 node.Methods.Add(mh);
