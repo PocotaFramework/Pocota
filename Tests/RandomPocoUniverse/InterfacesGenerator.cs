@@ -66,8 +66,8 @@ public enum TestEnum
             File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.InterfaceName}.cs"), interfaceSource.ReadToEnd());
         }
 
-        TextReader contractSource = connector.Get("/Contract", universe);
-        File.WriteAllText(Path.Combine(contract.ProjectDir, $"IContract.cs"), contractSource.ReadToEnd());
+        TextReader contractSource = connector.Get("Contract", universe);
+        File.WriteAllText(Path.Combine(contract.ProjectDir, $"{UniverseOptions.ContractName}.cs"), contractSource.ReadToEnd());
 
         Stop();
 
@@ -98,11 +98,26 @@ public enum TestEnum
                 model.Usings.Add(pd.Type.Namespace!);
             }
         }
-
     }
 
     internal void GenerateContract(ContractModel model)
     {
         model.Universe = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Universe)!;
+        foreach(Node node in model.Universe.Entities.Concat(model.Universe.Extenders))
+        {
+            model.Methods.AddRange(
+                node.Methods.Select(
+                    mh => {
+                        MethodModel mm = new MethodModel
+                        {
+                            Name = mh.Name,
+                            ReturnType = mh.IsCollection ? $"IList<{node.InterfaceName}>" : node.InterfaceName,
+                        };
+                        mm.Parameters.AddRange(mh.Parameters);
+                        mm.Properties.AddRange(mh.Properties);
+                        return mm;
+                    })
+                );;
+        }
     }
 }

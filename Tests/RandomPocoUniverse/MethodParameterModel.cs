@@ -1,7 +1,7 @@
 ﻿namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
-internal class MethodParameterModel
+public class MethodParameterModel
 {
-    internal string Name { get; set; } = null!;
-    internal string Type { get; set; } = null!;
+    public string Name { get; set; } = null!;
+    public string Type { get; set; } = null!;
 }

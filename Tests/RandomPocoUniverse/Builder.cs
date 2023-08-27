@@ -28,6 +28,11 @@ public class Builder
     private const int s_maxAccessProperties = 10;
     private const int s_maxExtenders = 3;
     private const int s_maxExtenderAdditionalProperties = 3;
+    private const int s_maxMethods = 3;
+    private const int s_maxMethodArgs = 2;
+    private const int s_baseMethodSingle = 3;
+    private const int s_maxPathLength = 4;
+    private const int s_baseAsteriskPath = 3;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -42,41 +47,102 @@ public class Builder
 
     public static Universe Build(Random random)
     {
-        Universe result = new();
+        Universe universe = new();
 
-        CreateNodes(result.Entities, random, true);
-        CreateKeys(result, random);
-        CompleteEntities(result, random);
-        CreateExtenders(result, random);
-        CreateNodes(result.Envelopes, random, false);
-        CompleteEnvelopes(result, random);
+        CreateNodes(universe.Entities, random, true);
+        CreateKeys(universe, random);
+        CompleteEntities(universe, random);
+        CreateExtenders(universe, random);
+        CreateNodes(universe.Envelopes, random, false);
+        CompleteEnvelopes(universe, random);
+        CreateContractMethods(universe, random);
 
-        UniverseOptions.NodesTelemetry?.Invoke(result);
+        UniverseOptions.NodesTelemetry?.Invoke(universe);
 
         if (UniverseOptions.DoGenerateModelAndContract)
         {
-            GenerateModelAndContract(result);
+            GenerateModelAndContract(universe);
         }
 
         if (UniverseOptions.DoGenerateClasses)
         {
-            GenerateClasses(result);
+            GenerateClasses(universe);
         }
 
         if (UniverseOptions.DoCreateDatabase)
         {
-            CreateDataSet(result, random);
-            CreateSql(result);
-            CreateDatabase(result);
-            UniverseOptions.CreateDatabaseTelemetry?.Invoke(result);
+            CreateDataSet(universe);
+            CreateSql(universe);
+            CreateDatabase(universe);
+            UniverseOptions.CreateDatabaseTelemetry?.Invoke(universe);
         }
 
         if (UniverseOptions.DoCompilePocoUniverseServer)
         {
-            CompilePocoUniverseServer(result);
+            CompilePocoUniverseServer(universe);
         }
 
-        return result;
+        return universe;
+    }
+
+    private static void CreateContractMethods(Universe universe, Random random)
+    {
+        foreach(Node node in universe.Entities.Concat(universe.Extenders))
+        {
+            node.Methods.Add(new MethodHolder
+            {
+                Name = $"Get{node.InterfaceName}"
+            });
+            string getArg = (node is EntityNode ? node : ((ExtenderNode)node).Owner).InterfaceName;
+            node.Methods.First().Parameters.Add(new MethodParameterModel
+            {
+                Name = "arg",
+                Type = getArg,
+            });
+            CreatePropertyPaths(node.Methods.First().Properties, node, random, string.Empty, 0);
+            int numMethods = random.Next(s_maxMethods + 1);
+            for(int i = 0; i < numMethods; ++i)
+            {
+                bool isCollection = random.Next(s_baseMethodSingle) == 0;
+                MethodHolder mh = new MethodHolder
+                {
+                    Name = $"{node.InterfaceName}Method{i}",
+                    IsCollection = isCollection,
+                };
+                int numArgs = random.Next(s_maxMethodArgs + 1);
+                for(int j = 0; j < numArgs; ++j)
+                {
+                    mh.Parameters.Add(new MethodParameterModel
+                    {
+                        Name = $"arg{j}",
+                        Type = universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName,
+                    });
+                }
+                node.Methods.Add(mh);
+                CreatePropertyPaths(mh.Properties, node, random, string.Empty, 0);
+            }
+        }
+    }
+
+    private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
+    {
+        if (random.Next(s_baseAsteriskPath) == 0)
+        {
+            path += $"{(level > 0 ? "." : string.Empty)}*";
+            properties.Add(path);
+            return;
+        }
+        foreach (PropertyDescriptor prop in node.Properties)
+        {
+            if(prop.Node is { } && level < s_maxPathLength)
+            {
+                CreatePropertyPaths(properties, prop.Node, random, $"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}", level + 1);
+            }
+            else
+            {
+                properties.Add($"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}");
+            }
+        }
     }
 
     private static void CompilePocoUniverseServer(Universe universe)
@@ -706,7 +772,7 @@ go
         return currentNode.References.Any(n => IsLooped(node, n, $"{path}/{currentNode.Id}", set));
     }
 
-    private static void CreateDataSet(Universe universe, Random random)
+    private static void CreateDataSet(Universe universe)
     {
         foreach (EntityNode node in universe.Entities)
         {

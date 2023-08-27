@@ -42,7 +42,7 @@ public interface @UniverseOptions.ContractName
     })]
 </text>
     }
-    <text>    @Html.Raw(mm.ReturnType) @mm.Name@{}(string.Join(", ", mm.Parameters));
+    <text>    @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")));
 </text>
 }
 }
