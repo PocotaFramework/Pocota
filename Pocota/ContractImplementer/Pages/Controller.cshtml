@@ -15,3 +15,46 @@
 </text>
 }
 #endregion DataProviderFactoryInterface
+
+#region DefaultDataProviderFactory
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>public class @mm.DefaultDataProviderFactoryName: @mm.DataProviderFactoryInterface
+{
+    public @Html.Raw(nameof(DataProvider)) Create(@string.Join(", ", mm.Arguments.Select(arg => $"{Html.Raw(arg.Type)} {arg.Name}")))
+    {
+        return new @Html.Raw(nameof(DataProviderStub))@{}();
+    }
+}
+
+</text>
+}
+#endregion DefaultDataProviderFactory
+
+#region ProcessorFactoryInterface
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>public interface @mm.ProcessorFactoryInterface: @nameof(IProcessorFactory)
+    {
+        @Html.Raw(mm.ProcessorInterface) Create(@string.Join(", ", mm.Arguments.Select(arg => $"{Html.Raw(arg.Type)} {arg.Name}")));
+    }
+
+</text>
+}
+#endregion ProcessorFactoryInterface
+
+#region DefaultProcessorFactory
+@foreach (MethodModel mm in Model.Methods)
+{
+    <text>public class @mm.DefaultProcessorFactoryName: @mm.ProcessorFactoryInterface
+{
+    public @Html.Raw(mm.ProcessorInterface) Create(@string.Join(", ", mm.Arguments.Select(arg => $"{Html.Raw(arg.Type)} {arg.Name}")))
+    {
+        return new @Html.Raw($"{nameof(ProcessorStub<object>)}<{mm.OutputItemType}>")@{}();
+    }
+}
+
+</text>
+}
+#endregion DefaultProcessorFactory
+

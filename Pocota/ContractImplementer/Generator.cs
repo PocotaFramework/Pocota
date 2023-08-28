@@ -524,6 +524,25 @@ public class Generator : Runner
                     });
                 }
             }
+            foreach (MethodInfo method in request.Interface.GetMethods())
+            {
+                model.Services.Add(
+                    new ServiceModel
+                    {
+                        ServiceType = MakeDataProviderFactoryInterfaceName(method.Name),
+                        ImplementationType = MakeDefaultDataProviderFactoryName(method.Name),
+                        LifeTime = nameof(ServiceLifetime.Singleton),
+                    }
+                );
+                model.Services.Add(
+                    new ServiceModel
+                    {
+                        ServiceType = MakeProcessorFactoryInterfaceName(method.Name),
+                        ImplementationType = MakeDefaultProcessorFactoryName(method.Name),
+                        LifeTime = nameof(ServiceLifetime.Singleton),
+                    }
+                );
+            }
         }
         else
         {
