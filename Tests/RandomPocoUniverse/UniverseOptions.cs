@@ -36,4 +36,6 @@ public class UniverseOptions
     public bool GenerateClassesVerbose { get; set; } = false;
     public static string Namespace => "Net.Leksi.Test.RandomPocoUniverse";
     public static string ContractName => "IRandomContract";
+
+    public string Configuration { get; set; }
 }

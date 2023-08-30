@@ -1,5 +1,6 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common;
+@using Net.Leksi.Pocota.Common.Generic;
 @using Net.Leksi.Pocota.Server;
 @model ClassModel
 
@@ -220,7 +221,12 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender){<text>Entity</text>}Property
+    if(!string.IsNullOrEmpty(pm.Name) || Model.PocoKind is not PocoKind.Extender)
+    {
+        <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+            {
+            if(Model.PocoKind is PocoKind.Entity && string.IsNullOrEmpty(pm.Name)){<text>Self</text>}<text>Entity</text>
+            }Property
     {
         public string Name => "@pm.Name";
 
@@ -240,18 +246,18 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             if(target is @Model.ClassName obj)
             {
-                return obj.Get@{}@pm.Name@{}();
+                return obj@{}@if(!string.IsNullOrEmpty(pm.Name)){<text>.Get@{}@pm.Name@{}()</text>};
             }
-            throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
+            throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
         }
 
         public bool IsSet(object target)
         {
             if(target is @Model.ClassName obj)
             {
-                return obj.@pm.FieldName@{}IsSet;
+                return @if(!string.IsNullOrEmpty(pm.Name)){<text>obj.@pm.FieldName@{}IsSet</text>}else{<text>true</text>};
             }
-            throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
+            throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
         }
 
         public void SetValue(object target, object? value)
@@ -260,27 +266,31 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
             {
                 if(value is @Html.Raw(pm.Type)@if(!string.IsNullOrEmpty(pm.Nullable)){<text> || value is null</text>})
                 {
-                    obj.Set@{}@pm.Name@{}((@Html.Raw(pm.Type)@pm.Nullable)value);
+    @if(!string.IsNullOrEmpty(pm.Name))
+    {
+        <text>                    obj.Set@{}@pm.Name@{}((@Html.Raw(pm.Type)@pm.Nullable)value);
+</text>
+    }
                 }
                 else
                 {
-                    throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidValue, value is null ? "null" : value.GetType(), typeof(@Html.Raw(pm.Type))));
+                    throw new @nameof(ArgumentException)@{}(string.Format(s_invalidValue, value is null ? "null" : value.GetType(), typeof(@Html.Raw(pm.Type))));
                 }
             }
             else
             {
-                throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
+                throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
             }
         }
-    @if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
-    {
-        <text>        public @nameof(PropertyAccessMode) GetAccess(object target)
+        @if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+        {
+            <text>        public @nameof(PropertyAccessMode) GetAccess(object target)
         {
             if(target is @Model.ClassName obj)
             {
-                return obj.@pm.FieldName@{}AccessMode;
+                return obj.@if(!string.IsNullOrEmpty(pm.Name)){<text>@pm.FieldName@{}AccessMode</text>}else{<text>_accessMode</text>};
             }
-            throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
+            throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
         }
 
         public void SetAccess(object target, @nameof(PropertyAccessMode) value)
@@ -288,16 +298,25 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
             if(target is @Model.ClassName obj)
             {
                 if(!obj._isAccessChecking){
-                    throw new @nameof(InvalidOperationException)@{}(s_cannotSetAccess);
+                    throw new @nameof(ArgumentException)@{}(s_cannotSetAccess);
                 }
-                obj.@pm.FieldName@{}AccessMode = value;
+                obj.@if(!string.IsNullOrEmpty(pm.Name)){<text>@pm.FieldName@{}AccessMode</text>}else{<text>_accessMode</text>} = value;
             }
-            throw new @nameof(InvalidOperationException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
+            throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
         }
 </text>
-}
+        }
+        @if(string.IsNullOrEmpty(pm.Name) && pm.PocoKind is PocoKind.Entity)
+        {
+            <text>        public @nameof(IPrimaryKey) CreatePrimaryKey(@nameof(IServiceProvider) serviceProvider)
+        {
+            return (@Model.PrimaryKey.Name)serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IPrimaryKey<object>)}<{Model.Interface}>>")@{}();
+        }
+</text>
+        }
     }
 </text>
+    }
 }
 
 #endregion Property classes
@@ -391,7 +410,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
 </text>
 }
    
-@foreach(PropertyModel pm in Model.Properties)
+@foreach(PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
     <text>    public @Html.Raw(pm.Type)@pm.Nullable @pm.Name 
     {
@@ -468,7 +487,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
     }
 </text>
 }
-@foreach(PropertyModel pm in Model.Properties)
+@foreach(PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
     <text>    private void Set@{}@pm.Name@{}(@Html.Raw(pm.Type)@pm.Nullable value)
     {

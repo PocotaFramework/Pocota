@@ -166,6 +166,8 @@ public class Builder
             ProjectDir = UniverseOptions.PocoUniverseServerProjectDir,
             Sdk = "Microsoft.NET.Sdk.Web",
             TargetFramework = "net6.0-windows7.0",
+            IsVerbose = true,
+            Configuration = UniverseOptions.Configuration,
         });
         server.AddPackage("Net.Leksi.E6dWebApp", "1.1.10");
         server.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
@@ -173,7 +175,7 @@ public class Builder
         server.AddProject(UniverseOptions.PocotaServerProjectFile);
         server.AddProject(universe.ServerStuffProject!.ProjectPath);
 
-        server.OnProjectFileGenerated = p => Console.WriteLine(p.ProjectPath);
+       server.OnProjectFileGenerated = p => Console.WriteLine(p.ProjectPath);
 
         server.Compile();
 

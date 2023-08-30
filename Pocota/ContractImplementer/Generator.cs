@@ -28,6 +28,7 @@ public class Generator : Runner
     private const string s_dataProviderFactory = "DataProviderFactory";
     private const string s_processorFactory = "ProcessorFactory";
     private const string s_string = "string";
+    private const string s_self = "Self";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
@@ -581,7 +582,10 @@ public class Generator : Runner
                 _ = GetUniqueVariable("_accessMode");
                 _ = GetUniqueVariable("_primaryKey");
                 AddUsings(model, typeof(IEntity));
+                AddUsings(model, typeof(IPrimaryKey));
+                AddUsings(model, typeof(IPrimaryKey<>));
                 AddUsings(model, typeof(IEntityProperty));
+                AddUsings(model, typeof(ISelfEntityProperty));
                 AddUsings(model, request.Interface);
                 AddUsings(model, typeof(PropertyAccessMode));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
@@ -618,9 +622,25 @@ public class Generator : Runner
                 model.PocoKind = PocoKind.Envelope;
             }
             NullabilityInfoContext nic = new();
+            PropertyModel pm = new()
+            {
+                Name = string.Empty,
+                FieldName = GetUniqueVariable($"_{s_self.ToLower()}{s_property}"),
+                Type = Util.MakeTypeName(@interface.Interface),
+                Nullable = string.Empty,
+                IsReadonly = false,
+                IsClass = true,
+                PropertyClass = $"{s_self}{s_property}{s_class}",
+                PropertyField = $"{s_staticPrefix}{s_self}{s_property}",
+                ItemType = Util.MakeTypeName(@interface.Interface),
+                IsCollection = false,
+                PocoKind = GetPocoKind(@interface.Interface),
+                IsAccess = false,
+            };
+            model.Properties.Add(pm);
             foreach (PropertyInfo pi in request.Interface.GetProperties())
             {
-                PropertyModel pm = new()
+                pm = new()
                 {
                     Name = pi.Name,
                     FieldName = GetUniqueVariable($"_{pi.Name.Substring(0, 1).ToLower()}{pi.Name.Substring(1)}"),

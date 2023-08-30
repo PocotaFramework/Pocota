@@ -1,5 +1,7 @@
+using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
+using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Diagnostics;
@@ -17,6 +19,7 @@ public class Tests
         internal List<Node> _allNodesPrimaryKey = new();
         internal List<Node> _allNodesAllowAccessManager = new();
         internal int _contractConfiguratorsCount = 0;
+        internal bool AddPocotaTelemetryCalled = false;
     }
 
     public class Test1Options
@@ -80,6 +83,15 @@ public class Tests
 
         string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
 
+        if(
+            Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties.TryGetValue(
+                "Configuration", out string? configuration
+            )
+        )
+        {
+            Builder.UniverseOptions.Configuration = configuration;
+        }
+
         Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
         Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
         Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
@@ -110,9 +122,17 @@ public class Tests
 
         if (options.DoRunPocoUniverseServer && universe.PocoServer is { })
         {
+            IPocota.AddPocotaTelemetry = serv => AddPocotaTelemetry(universe, serv, dataHolder);
             universe.PocoServer.Run();
+            Assert.That(dataHolder.AddPocotaTelemetryCalled, Is.True, "AddPocotaTelemetry is not called!");
         }
 
+    }
+
+    private void AddPocotaTelemetry(Universe universe, IServiceCollection services, Test1DataHolder dataHolder)
+    {
+        dataHolder.AddPocotaTelemetryCalled = true;
+        Console.WriteLine("AddPocotaTelemetry");
     }
 
     private void CreateDatabaseTelemetry(Universe universe, Test1DataHolder dataHolder)
