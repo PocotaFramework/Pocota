@@ -34,6 +34,7 @@ public class Builder
     private const int s_maxPathLength = 4;
     private const int s_baseAsteriskPath = 3;
     private const int s_baseOtherArgs = 3;
+    private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -48,6 +49,8 @@ public class Builder
 
     public static Universe Build(Random random)
     {
+        UniverseOptions.E6dWebAppVersion = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["E6dWebAppVersion"];
+
         Universe universe = new();
 
         CreateNodes(universe.Entities, random, true);
@@ -166,16 +169,13 @@ public class Builder
             ProjectDir = UniverseOptions.PocoUniverseServerProjectDir,
             Sdk = "Microsoft.NET.Sdk.Web",
             TargetFramework = "net6.0-windows7.0",
-            IsVerbose = true,
             Configuration = UniverseOptions.Configuration,
         });
-        server.AddPackage("Net.Leksi.E6dWebApp", "1.1.10");
+        server.AddPackage(s_e6dWebApp, UniverseOptions.E6dWebAppVersion);
         server.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
         server.AddProject(UniverseOptions.PocotaCommonProjectFile);
         server.AddProject(UniverseOptions.PocotaServerProjectFile);
         server.AddProject(universe.ServerStuffProject!.ProjectPath);
-
-       server.OnProjectFileGenerated = p => Console.WriteLine(p.ProjectPath);
 
         server.Compile();
 

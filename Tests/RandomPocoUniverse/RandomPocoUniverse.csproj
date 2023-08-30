@@ -8,11 +8,12 @@
     <RootNamespace>Net.Leksi.Pocota.Test.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <OutputType>Library</OutputType>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <E6dWebAppVersion>1.1.10</E6dWebAppVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
-    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.10" />
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="$(E6dWebAppVersion)" />
     <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="1.3.4" />
   </ItemGroup>
 
@@ -25,5 +26,13 @@
   <ItemGroup>
     <Folder Include="Properties\" />
   </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <ItemGroup>
+      <AssemblyAttribute Include="Net.Leksi.Pocota.Common.BuilderPropertiesAttribute">
+        <_Parameter1>E6dWebAppVersion=$(E6dWebAppVersion)</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
+  </Target>
 
 </Project>

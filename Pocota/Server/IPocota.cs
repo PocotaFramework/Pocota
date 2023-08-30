@@ -11,9 +11,7 @@ public interface IPocota
         services.AddSingleton<IPocota>(core);
         configurator.Configure(descriptors);
         tuning?.Invoke(descriptors);
-        Console.WriteLine("HERE");
 #if TELEMETRY
-        Console.WriteLine("TELEMETRY");
         AddPocotaTelemetry?.Invoke(services);
 #endif
     }

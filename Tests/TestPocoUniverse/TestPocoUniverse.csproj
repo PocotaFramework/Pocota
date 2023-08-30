@@ -21,7 +21,7 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <ItemGroup>
-      <AssemblyAttribute Include="Net.Leksi.Pocota.Test.RandomPocoUniverse.BuilderPropertiesAttribute">
+      <AssemblyAttribute Include="Net.Leksi.Pocota.Common.BuilderPropertiesAttribute">
         <_Parameter1>ProjectDir=$(ProjectDir)</_Parameter1>
         <_Parameter2>Configuration=$(Configuration)</_Parameter2>
       </AssemblyAttribute>

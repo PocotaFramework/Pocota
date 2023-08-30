@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
+﻿namespace Net.Leksi.Pocota.Common;
 
 [AttributeUsage(AttributeTargets.Assembly)]
 public class BuilderPropertiesAttribute: Attribute

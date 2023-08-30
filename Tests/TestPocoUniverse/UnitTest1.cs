@@ -124,7 +124,7 @@ public class Tests
         {
             IPocota.AddPocotaTelemetry = serv => AddPocotaTelemetry(universe, serv, dataHolder);
             universe.PocoServer.Run();
-            Assert.That(dataHolder.AddPocotaTelemetryCalled, Is.True, "AddPocotaTelemetry is not called!");
+            Assert.That(dataHolder.AddPocotaTelemetryCalled, Is.True, "AddPocotaTelemetry is not called! Select RAC as a configuration.");
         }
 
     }
