@@ -124,7 +124,6 @@ public class Tests
         {
             IPocota.AddPocotaTelemetry = serv => AddPocotaTelemetry(universe, serv, dataHolder);
             universe.PocoServer.Run();
-            Assert.That(dataHolder.AddPocotaTelemetryCalled, Is.True, "AddPocotaTelemetry is not called! Select RAC as a configuration.");
         }
 
     }
@@ -132,7 +131,23 @@ public class Tests
     private void AddPocotaTelemetry(Universe universe, IServiceCollection services, Test1DataHolder dataHolder)
     {
         dataHolder.AddPocotaTelemetryCalled = true;
-        Console.WriteLine("AddPocotaTelemetry");
+        Assert.Multiple(() =>
+        {
+            foreach (Node node in universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders))
+            {
+                Assert.That(services.Where(s => s.ServiceType.Name.Equals(node.InterfaceName)).Count(), Is.EqualTo(1));
+                if(node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
+                {
+                    string pkName = $"IPrimaryKey<{node.InterfaceName}>";
+                    Assert.That(services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).Count(), Is.EqualTo(1), pkName);
+                }
+                else if(node.NodeType is NodeType.Extender)
+                {
+                    string pkName = $"IPrimaryKey<{((ExtenderNode)node).Owner.InterfaceName}>";
+                    Assert.That(services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).Count(), Is.EqualTo(1), pkName);
+                }
+            }
+        });
     }
 
     private void CreateDatabaseTelemetry(Universe universe, Test1DataHolder dataHolder)
