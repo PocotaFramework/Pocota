@@ -35,6 +35,7 @@ public class Builder
     private const int s_baseAsteriskPath = 3;
     private const int s_baseOtherArgs = 3;
     private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
+    private const int s_baseWillBeInherited = 10;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -588,6 +589,10 @@ go
         for (int i = 0; i < s_numNodes; ++i)
         {
             nodes.Add(new T());
+            if(random.Next(s_baseWillBeInherited) == 0)
+            {
+                nodes.Last().WillBeInherited = true;
+            }
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)

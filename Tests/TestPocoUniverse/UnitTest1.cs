@@ -139,13 +139,29 @@ public class Tests
                 if(node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
                 {
                     string pkName = $"IPrimaryKey<{node.InterfaceName}>";
-                    Assert.That(services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).Count(), Is.EqualTo(1), pkName);
+                    ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
+                    Assert.That(sds.Length, Is.EqualTo(1), pkName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    string amName = $"IAccessManager<{node.InterfaceName}>";
+                    sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
+                    Assert.That(sds.Length, Is.EqualTo(1), amName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
                 }
                 else if(node.NodeType is NodeType.Extender)
                 {
                     string pkName = $"IPrimaryKey<{((ExtenderNode)node).Owner.InterfaceName}>";
-                    Assert.That(services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).Count(), Is.EqualTo(1), pkName);
+                    ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
+                    Assert.That(sds.Length, Is.EqualTo(1), pkName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    string amName = $"IAccessManager<{((ExtenderNode)node).Owner.InterfaceName}>";
+                    sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
+                    Assert.That(sds.Length, Is.EqualTo(1), amName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
                 }
+            }
+            foreach (MethodInfo mi in universe.Controller.GetMethods())
+            {
+
             }
         });
     }

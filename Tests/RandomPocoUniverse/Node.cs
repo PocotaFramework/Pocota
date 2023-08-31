@@ -11,6 +11,7 @@ public class Node
     public NodeType NodeType { get; internal set; } = NodeType.Envelope;
     public List<PropertyDescriptor> Properties { get; private init; } = new();
     public List<MethodHolder> Methods { get; private init; } = new();
+    public bool WillBeInherited { get; internal set; } = false;
 
     public virtual string InterfaceName => $"IEnvelope{Id}";
 
