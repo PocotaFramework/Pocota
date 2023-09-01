@@ -1,11 +1,11 @@
 ﻿using Net.Leksi.E6dWebApp;
-using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Reflection;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
-public class InterfacesGenerator: Runner
+public class SourcesGenerator: Runner
 {
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
@@ -16,6 +16,20 @@ public class InterfacesGenerator: Runner
     protected override void ConfigureApplication(WebApplication app)
     {
         app.MapRazorPages();
+    }
+
+    internal void GenerateInherits(string dir, IEnumerable<InheritHolder> holders)
+    {
+        Start();
+        IConnector connector = GetConnector();
+
+        foreach(InheritHolder holder in holders)
+        {
+            TextReader reader = connector.Get("/Inherit", holder);
+            File.WriteAllText(Path.Combine(dir, holder.FileName), reader.ReadToEnd());
+        }
+
+        Stop();
     }
 
     internal Project GenerateAndCompileModelAndContract(Universe universe, UniverseOptions options)
@@ -119,5 +133,11 @@ public enum TestEnum
                     })
                 );;
         }
+    }
+
+    internal void GenerateInherit(InheritModel model)
+    {
+        InheritHolder holder = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as InheritHolder)!;
+
     }
 }

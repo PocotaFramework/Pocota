@@ -12,6 +12,7 @@ public class Node
     public List<PropertyDescriptor> Properties { get; private init; } = new();
     public List<MethodHolder> Methods { get; private init; } = new();
     public bool WillBeInherited { get; internal set; } = false;
+    public string Namespace { get; internal set; } = string.Empty;
 
     public virtual string InterfaceName => $"IEnvelope{Id}";
 

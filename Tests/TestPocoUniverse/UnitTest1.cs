@@ -4,8 +4,10 @@ using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using NUnit.Framework.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace TestPocoUniverse;
 
@@ -135,33 +137,57 @@ public class Tests
         {
             foreach (Node node in universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders))
             {
-                Assert.That(services.Where(s => s.ServiceType.Name.Equals(node.InterfaceName)).Count(), Is.EqualTo(1));
-                if(node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
+                ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(node.InterfaceName)).ToArray();
+                Assert.That(sds, Has.Length.EqualTo(1), node.InterfaceName);
+                Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), node.InterfaceName);
+                Assert.That(sds[0].ImplementationType, Is.Not.Null, node.InterfaceName);
+                Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}Poco"), node.InterfaceName);
+
+                if (node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
                 {
                     string pkName = $"IPrimaryKey<{node.InterfaceName}>";
-                    ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
-                    Assert.That(sds.Length, Is.EqualTo(1), pkName);
-                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
+                    Assert.That(sds, Has.Length.EqualTo(1), pkName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
+                    Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
                     string amName = $"IAccessManager<{node.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
-                    Assert.That(sds.Length, Is.EqualTo(1), amName);
-                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    Assert.That(sds, Has.Length.EqualTo(1), amName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
+                    Assert.That(sds[0].ImplementationType, Is.Not.Null, amName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}AllowAccessManager"), amName);
                 }
                 else if(node.NodeType is NodeType.Extender)
                 {
                     string pkName = $"IPrimaryKey<{((ExtenderNode)node).Owner.InterfaceName}>";
-                    ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
-                    Assert.That(sds.Length, Is.EqualTo(1), pkName);
-                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
+                    Assert.That(sds, Has.Length.EqualTo(1), pkName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
+                    Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
                     string amName = $"IAccessManager<{((ExtenderNode)node).Owner.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
-                    Assert.That(sds.Length, Is.EqualTo(1), amName);
-                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient));
+                    Assert.That(sds, Has.Length.EqualTo(1), amName);
+                    Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
+                    Assert.That(sds[0].ImplementationType, Is.Not.Null, amName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}AllowAccessManager"), amName);
                 }
             }
             foreach (MethodInfo mi in universe.Controller.GetMethods())
             {
-
+                string dpfName = $"I{mi.Name}DataProviderFactory";
+                ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(dpfName)).ToArray();
+                Assert.That(sds, Has.Length.EqualTo(1), dpfName);
+                Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Singleton), dpfName);
+                Assert.That(sds[0].ImplementationType, Is.Not.Null, dpfName);
+                Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{mi.Name}DefaultDataProviderFactory"), dpfName);
+                string pfName = $"I{mi.Name}ProcessorFactory";
+                sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pfName)).ToArray();
+                Assert.That(sds, Has.Length.EqualTo(1), pfName);
+                Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Singleton), pfName);
+                Assert.That(sds[0].ImplementationType, Is.Not.Null, pfName);
+                Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{mi.Name}DefaultProcessorFactory"), pfName);
             }
         });
     }

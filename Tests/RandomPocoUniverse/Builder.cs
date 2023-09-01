@@ -36,6 +36,7 @@ public class Builder
     private const int s_baseOtherArgs = 3;
     private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
     private const int s_baseWillBeInherited = 10;
+    private const int s_maxNamespaces = 5;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -60,6 +61,7 @@ public class Builder
         CreateExtenders(universe, random);
         CreateNodes(universe.Envelopes, random, false);
         CompleteEnvelopes(universe, random);
+        CompleteNodes(universe, random);
         CreateContractMethods(universe, random);
 
         UniverseOptions.NodesTelemetry?.Invoke(universe);
@@ -88,6 +90,17 @@ public class Builder
         }
 
         return universe;
+    }
+
+    private static void CompleteNodes(Universe universe, Random random)
+    {
+        foreach(Node node in universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes))
+        {
+            if (random.Next(s_baseWillBeInherited) == 0)
+            {
+                node.WillBeInherited = true;
+            }
+        }
     }
 
     private static void CreateContractMethods(Universe universe, Random random)
@@ -148,7 +161,8 @@ public class Builder
             properties.Add(path);
             return;
         }
-        foreach (PropertyDescriptor prop in node.Properties)
+        IEnumerable<PropertyDescriptor> props = node.NodeType is NodeType.Extender ? ((ExtenderNode)node).Owner.Properties.Concat(node.Properties) : node.Properties;
+        foreach (PropertyDescriptor prop in props)
         {
             if(prop.Node is { } && level < s_maxPathLength)
             {
@@ -178,11 +192,34 @@ public class Builder
         server.AddProject(UniverseOptions.PocotaServerProjectFile);
         server.AddProject(universe.ServerStuffProject!.ProjectPath);
 
+        string inheritsDir = Path.Combine(server.ProjectDir, "Generated");
+        if (!Directory.Exists(inheritsDir))
+        {
+            Directory.CreateDirectory(inheritsDir);
+        }
+        else
+        {
+            ClearProjectDir(inheritsDir);
+        }
+        new SourcesGenerator().GenerateInherits(
+            inheritsDir, 
+            universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).Where(n => n.WillBeInherited).Select(node => InheritNode(node))
+        );
+
         server.Compile();
 
         universe.PocoServer = (IPocoServer)Activator.CreateInstance(
             Assembly.LoadFile(server.LibraryFile!).GetType($"{UniverseOptions.Namespace}.Server")!
         )!;
+    }
+
+    private static InheritHolder InheritNode(Node node)
+    {
+        InheritHolder holder = new()
+        {
+            FileName = $"{node.InterfaceName.Substring(1)}.cs",
+        };
+        return holder;
     }
 
     private static void CreateExtenders(Universe universe, Random random)
@@ -338,7 +375,7 @@ go
     {
         ClearProjectDir(UniverseOptions.GeneratedModelProjectDir);
         ClearProjectDir(UniverseOptions.GeneratedContractProjectDir);
-        Project contract = new InterfacesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions);
+        Project contract = new SourcesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions);
         universe.Contract = Assembly.LoadFile(contract.LibraryFile!)!
             .GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}")!;
 
@@ -589,10 +626,6 @@ go
         for (int i = 0; i < s_numNodes; ++i)
         {
             nodes.Add(new T());
-            if(random.Next(s_baseWillBeInherited) == 0)
-            {
-                nodes.Last().WillBeInherited = true;
-            }
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)
@@ -612,9 +645,11 @@ go
                     && random.Next(1 + (int)Math.Ceiling(s_fraqManyToMany * s_numNodes * (s_maxReferences + s_minReferences) * .25)) == 0
                 )
                 {
+                    int ns = random.Next(s_maxNamespaces)!;
                     T link = new()
                     {
                         NodeType = NodeType.ManyToManyLink,
+                        Namespace = ns switch { 0 => string.Empty, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
                     };
                     link.References.Add(nodes[i]);
                     nodes[i].Referencers.Add(link);

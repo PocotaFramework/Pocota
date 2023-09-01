@@ -1,0 +1,13 @@
+﻿@page
+@using Net.Leksi.Pocota.Test.RandomPocoUniverse;
+@model InheritModel
+
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+
+namespace @Model.Holder.Namespace;
+
+public class @Model.Holder.ClassName: @Html.Raw(string.Join(", ", Model.Holder.Base))
