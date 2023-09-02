@@ -26,7 +26,7 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = -1;
+        public int Seed { get; internal init; } = 1471570481;
         public bool DoCreateDatabase { get; internal init; } = true;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
@@ -223,6 +223,7 @@ public class Tests
 
     private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception, Test1DataHolder dataHolder)
     {
+        int selector = 0;
         Assert.That(
             (
                 requestKind is RequestKind.ClientImplementation 
@@ -230,16 +231,28 @@ public class Tests
                     (
                         $"/{Builder.UniverseOptions.ClientLanguage}/Connector".Equals(path) 
                         && @interface == dataHolder._universe.Contract
+                        && (selector = 1) == selector
                     )
                     || (
                         $"/{Builder.UniverseOptions.ClientLanguage}/ClientContractConfigurator".Equals(path) 
                         && @interface == dataHolder._universe.Contract
+                        && (selector = 2) == selector
                     )
                     || (
                         $"/{Builder.UniverseOptions.ClientLanguage}/ClientImplementation".Equals(path)
+                        && (selector = 3) == selector
                         && dataHolder._allNodesClientImplementation.RemoveAll(
                             n => @interface.Name.Equals(n.InterfaceName) 
-                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                                && (
+                                    (
+                                        n.Namespace is null 
+                                        && @interface.Namespace is null
+                                    ) 
+                                    || (
+                                        n.Namespace is { } 
+                                        && n.Namespace.Equals(@interface.Namespace)
+                                    )
+                                )
                         ) == 1
                     )
                 )
@@ -247,6 +260,7 @@ public class Tests
             || (
                 requestKind is RequestKind.Controller
                 && $"/Controller".Equals(path) && @interface == dataHolder._universe.Contract
+                && (selector = 4) == selector
             )
             || (
                 requestKind is RequestKind.ServerImplementation
@@ -254,33 +268,64 @@ public class Tests
                     (
                         $"/ServerContractConfigurator".Equals(path)
                         && @interface == dataHolder._universe.Contract
+                        && (selector = 5) == selector
                         && --dataHolder._contractConfiguratorsCount == 0
                     )
                     || (
                         $"/ServerImplementation".Equals(path)
+                        && (selector = 6) == selector
                         && dataHolder._allNodesServerImplementation.RemoveAll(
                             n => @interface.Name.Equals(n.InterfaceName)
-                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                                && (
+                                    (
+                                        n.Namespace is null
+                                        && @interface.Namespace is null
+                                    )
+                                    || (
+                                        n.Namespace is { }
+                                        && n.Namespace.Equals(@interface.Namespace)
+                                    )
+                                )
                         ) == 1
                     )
                     || (
                         $"/PrimaryKey".Equals(path)
+                        && (selector = 7) == selector
                         && dataHolder._allNodesPrimaryKey.RemoveAll(
                             n => @interface.Name.Equals(n.InterfaceName)
-                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                                && (
+                                    (
+                                        n.Namespace is null
+                                        && @interface.Namespace is null
+                                    )
+                                    || (
+                                        n.Namespace is { }
+                                        && n.Namespace.Equals(@interface.Namespace)
+                                    )
+                                )
                         ) == 1
                     )
                     || (
                         $"/AllowAccessManager".Equals(path)
+                        && (selector = 8) == selector
                         && dataHolder._allNodesAllowAccessManager.RemoveAll(
                             n => @interface.Name.Equals(n.InterfaceName)
-                                && UniverseOptions.Namespace.Equals(@interface.Namespace)
+                                && (
+                                    (
+                                        n.Namespace is null
+                                        && @interface.Namespace is null
+                                    )
+                                    || (
+                                        n.Namespace is { }
+                                        && n.Namespace.Equals(@interface.Namespace)
+                                    )
+                                )
                         ) == 1
                     )
                 )
             ),
             Is.True,
-            $"{requestKind}, {@interface}, {path}, {exception}"
+            $"{requestKind}, {@interface}, {path}, {exception}, {selector}"
 
         );
         if (
@@ -323,7 +368,7 @@ public class Tests
 
         foreach (Node node in allNodes)
         {
-            Type? type = model.GetType($"{UniverseOptions.Namespace}.{node.InterfaceName}");
+            Type? type = model.GetType($"{(node.Namespace is { } ? $"{node.Namespace}." : string.Empty)}{node.InterfaceName}");
             Assert.That(type, Is.Not.Null);
             foreach (PropertyInfo pi in type.GetProperties())
             {
@@ -347,16 +392,23 @@ public class Tests
             {
                 Type[]? interfaces = type.GetInterfaces();
                 Assert.That(interfaces.Length, Is.EqualTo(1));
+                Type baseType = interfaces[0];
                 Assert.Multiple(() =>
                 {
-                    Type? baseType = model.GetType(
-                        $"{UniverseOptions.Namespace}.{interfaces[0].GetGenericArguments()[0].Name}"
-                    );
-                    Assert.That(
-                        baseType,
-                        Is.Not.Null
-                    );
-                    Node? baseNode = allNodes.Where(n => n.InterfaceName.Equals(baseType!.Name)).FirstOrDefault();
+                    Node? baseNode = allNodes.Where(
+                        n => (
+                            (
+                                n.Namespace is null 
+                                && baseType.Namespace is null
+                            ) 
+                            || (
+                                n.Namespace is { } 
+                                && baseType.Namespace is { } 
+                                && n.Namespace.Equals(baseType.Namespace)
+                            )
+                        ) 
+                        && n.InterfaceName.Equals(baseType!.Name)
+                    ).FirstOrDefault();
                     Assert.That(baseNode, Is.Not.Null);
                     Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
                     Assert.That(baseNode.NodeType == NodeType.Entity || baseNode.NodeType == NodeType.ManyToManyLink, Is.True);
@@ -378,13 +430,21 @@ public class Tests
         int i = 0;
         for (; i < allNodes.Length && pa.MoveNext(); ++i)
         {
-            Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(UniverseOptions.Namespace));
             Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
             Assert.That(node, Is.Not.Null);
+            Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(node.Namespace));
             Assert.Multiple(() =>
             {
-                Assert.That(node is not EntityNode, Is.EqualTo(pa.Current.PrimaryKey is null));
-                Assert.That(node is EntityNode, Is.EqualTo(pa.Current.PrimaryKey is { }));
+                Assert.That(
+                    node.NodeType is NodeType.Envelope || node.NodeType is NodeType.Extender, 
+                    Is.EqualTo(pa.Current.PrimaryKey is null), 
+                    node.FullName
+                );
+                Assert.That(
+                    node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink, 
+                    Is.EqualTo(pa.Current.PrimaryKey is { }), 
+                    node.FullName
+                );
             });
         }
 

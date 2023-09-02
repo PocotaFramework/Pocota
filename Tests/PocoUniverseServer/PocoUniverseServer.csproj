@@ -8,6 +8,7 @@
     <RootNamespace>Net.Leksi.Test.RandomPocoUniverse</RootNamespace>
     <AssemblyName>Net.Leksi.Test.RandomPocoUniverse.Server</AssemblyName>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <Configurations>Debug;Release;RAC</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

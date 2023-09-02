@@ -60,16 +60,8 @@ public class SourcesGenerator: Runner
             ProjectDir = options.GeneratedModelProjectDir,
         });
 
-        File.WriteAllText(Path.Combine(model.ProjectDir, "TestEnum.cs"), @$"namespace {UniverseOptions.Namespace};
-public enum TestEnum
-{{
-    Ready,
-    Steady,
-    Go,
-}}
-");
-
         model.AddProject(options.PocotaCommonProjectFile);
+        model.AddProject(options.PocoUniverseCommonProjectFile);
 
         contract.AddProject(model);
         contract.AddProject(options.ContractProjectFile);
@@ -97,7 +89,7 @@ public enum TestEnum
 
         if(model.Node.NodeType is NodeType.Extender)
         {
-            if((model.Node as ExtenderNode)!.Base.Namespace is { })
+            if((model.Node as ExtenderNode)!.Base.Namespace is { } && !(model.Node as ExtenderNode)!.Base.Namespace!.Equals(model.Node!.Namespace))
             {
                 model.Usings.Add((model.Node as ExtenderNode)!.Base.Namespace!);
             }
@@ -106,20 +98,21 @@ public enum TestEnum
 
         foreach(PropertyDescriptor pd in model.Node.Properties) 
         {
+            Console.WriteLine($"{model.Node.InterfaceName}: {pd}");
             if (pd.IsCollection)
             {
                 model.Usings.Add(typeof(IList<>).Namespace!);
             }
             if(pd.Type is { })
             {
-                if(pd.Type.Namespace is { })
+                if(pd.Type.Namespace is { } && !pd.Type.Namespace.Equals(model.Node.Namespace))
                 {
                     model.Usings.Add(pd.Type.Namespace);
                 }
             }
             else
             {
-                if(pd.Node!.Namespace is { })
+                if(pd.Node!.Namespace is { } && !pd.Node!.Namespace.Equals(model.Node.Namespace))
                 {
                     model.Usings.Add(pd.Node.Namespace);
                 }
@@ -132,6 +125,10 @@ public enum TestEnum
         model.Universe = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Universe)!;
         foreach(Node node in model.Universe.Entities.Concat(model.Universe.Extenders))
         {
+            if(node.Namespace is { })
+            {
+                model.Usings.Add(node.Namespace);
+            }
             model.Methods.AddRange(
                 node.Methods.Select(
                     mh => {

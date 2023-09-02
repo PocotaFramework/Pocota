@@ -8,8 +8,7 @@ public class InterfaceModel: PageModel
     internal Node Node { get; set; } = null!;
     internal HashSet<string> Usings { get; init; } = new();
     internal string? Interface { get; set; } = null;
-    internal string Namespace { get; set; } = null!;
-
+ 
     public void OnGet([FromServices] SourcesGenerator generator)
     {
         generator.GenerateInterface(this);

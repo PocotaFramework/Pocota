@@ -9,12 +9,14 @@
     <OutputType>Library</OutputType>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <E6dWebAppVersion>1.1.10</E6dWebAppVersion>
+    <Configurations>Debug;Release;RAC</Configurations>
+    <Configuration>RAC</Configuration>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
     <PackageReference Include="Net.Leksi.E6dWebApp" Version="$(E6dWebAppVersion)" />
-    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="1.3.4" />
+    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="1.3.6" />
   </ItemGroup>
 
   <ItemGroup>

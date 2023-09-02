@@ -44,7 +44,7 @@ public class Builder
         typeof(string),
         typeof(bool),
         typeof(DateTime),
-        typeof(Enum),
+        typeof(TestEnum),
     };
 
     public static UniverseOptions UniverseOptions { get; private set; } = new();
@@ -135,7 +135,7 @@ public class Builder
                     if( random.Next(s_baseOtherArgs) == 0)
                     {
                         Type t = s_terminalTypes[random.Next(s_terminalTypes.Length)];
-                        type = t == typeof(Enum) ? "TestEnum" : Util.MakeTypeName(t);
+                        type = Util.MakeTypeName(t);
                     }
                     else
                     {

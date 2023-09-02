@@ -13,6 +13,7 @@ public class Node
     public List<MethodHolder> Methods { get; private init; } = new();
     public bool WillBeInherited { get; internal set; } = false;
     public string? Namespace { get; internal set; } = null;
+    public string FullName => Namespace is { } ? $"{Namespace}.{InterfaceName}" : InterfaceName;
 
     public virtual string InterfaceName => $"IEnvelope{Id}";
 
