@@ -160,13 +160,13 @@ public class Tests
                 }
                 else if(node.NodeType is NodeType.Extender)
                 {
-                    string pkName = $"IPrimaryKey<{((ExtenderNode)node).Owner.InterfaceName}>";
+                    string pkName = $"IPrimaryKey<{((ExtenderNode)node).Base.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), pkName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
                     Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
-                    string amName = $"IAccessManager<{((ExtenderNode)node).Owner.InterfaceName}>";
+                    string amName = $"IAccessManager<{((ExtenderNode)node).Base.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), amName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
@@ -346,22 +346,20 @@ public class Tests
             if(node.NodeType is NodeType.Extender)
             {
                 Type[]? interfaces = type.GetInterfaces();
-                Assert.That(interfaces.Length, Is.EqualTo(2));
+                Assert.That(interfaces.Length, Is.EqualTo(1));
                 Assert.Multiple(() =>
                 {
-                    Assert.That(interfaces[0].IsGenericType, Is.True);
-                    Assert.That(interfaces[0].GetGenericTypeDefinition(), Is.EqualTo(typeof(IExtender<>)));
-                    Type? ownerType = model.GetType(
+                    Type? baseType = model.GetType(
                         $"{UniverseOptions.Namespace}.{interfaces[0].GetGenericArguments()[0].Name}"
                     );
                     Assert.That(
-                        ownerType,
+                        baseType,
                         Is.Not.Null
                     );
-                    Node? owner = allNodes.Where(n => n.InterfaceName.Equals(ownerType!.Name)).FirstOrDefault();
-                    Assert.That(owner, Is.Not.Null);
-                    Assert.That(owner!.GetType(), Is.EqualTo(typeof(EntityNode)));
-                    Assert.That(owner.NodeType == NodeType.Entity || owner.NodeType == NodeType.ManyToManyLink, Is.True);
+                    Node? baseNode = allNodes.Where(n => n.InterfaceName.Equals(baseType!.Name)).FirstOrDefault();
+                    Assert.That(baseNode, Is.Not.Null);
+                    Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
+                    Assert.That(baseNode.NodeType == NodeType.Entity || baseNode.NodeType == NodeType.ManyToManyLink, Is.True);
                 });
             }
         }

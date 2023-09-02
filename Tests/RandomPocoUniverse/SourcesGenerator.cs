@@ -26,7 +26,7 @@ public class SourcesGenerator: Runner
         foreach(InheritHolder holder in holders)
         {
             TextReader reader = connector.Get("/Inherit", holder);
-            File.WriteAllText(Path.Combine(dir, holder.FileName), reader.ReadToEnd());
+            File.WriteAllText(Path.Combine(dir, $"{holder.ClassName}.cs"), reader.ReadToEnd());
         }
 
         Stop();
@@ -97,8 +97,11 @@ public enum TestEnum
 
         if(model.Node.NodeType is NodeType.Extender)
         {
-            model.Usings.Add(typeof(IExtender<>).Namespace!);
-            model.Interface = $"IExtender<{(model.Node as ExtenderNode)!.Owner.InterfaceName}>";
+            if((model.Node as ExtenderNode)!.Base.Namespace is { })
+            {
+                model.Usings.Add((model.Node as ExtenderNode)!.Base.Namespace!);
+            }
+            model.Interface = (model.Node as ExtenderNode)!.Base.InterfaceName;
         }
 
         foreach(PropertyDescriptor pd in model.Node.Properties) 
@@ -109,7 +112,17 @@ public enum TestEnum
             }
             if(pd.Type is { })
             {
-                model.Usings.Add(pd.Type.Namespace!);
+                if(pd.Type.Namespace is { })
+                {
+                    model.Usings.Add(pd.Type.Namespace);
+                }
+            }
+            else
+            {
+                if(pd.Node!.Namespace is { })
+                {
+                    model.Usings.Add(pd.Node.Namespace);
+                }
             }
         }
     }

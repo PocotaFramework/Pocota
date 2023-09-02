@@ -1,7 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
-public class ExtenderNode: Node
+public class ExtenderNode: EntityNode
 {
-    public override string InterfaceName => $"IExtender{Id}";
-    public EntityNode Owner { get; internal init; } = null!;
+    public EntityNode Base { get; internal init; } = null!;
 }

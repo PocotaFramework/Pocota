@@ -598,17 +598,13 @@ public class Generator : Runner
             }
             else if (
                 @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && baseInterface.IsGenericType
-                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
-                && baseInterface.GetGenericArguments()[0] is Type entityType
+                && _interfaceHoldersByType.ContainsKey(baseInterface)
             )
             {
-                AddUsings(model, typeof(IExtender<>));
                 AddUsings(model, baseInterface);
-                AddUsings(model, entityType);
                 AddUsings(model, typeof(IEntityProperty));
                 AddUsings(model, typeof(PropertyAccessMode));
-                model.Interfaces.Add(MakePocoClassName(entityType));
+                model.Interfaces.Add(MakePocoClassName(baseInterface));
                 model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Extender;
             }
@@ -751,8 +747,7 @@ public class Generator : Runner
             }
             if (
                 @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && baseInterface.IsGenericType
-                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+                && _interfaceHoldersByType.ContainsKey(baseInterface)
             )
             {
                 return PocoKind.Extender;
@@ -885,18 +880,6 @@ public class Generator : Runner
                     }
                 }
             }
-            else if (
-                entry.Key.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && baseInterface.IsGenericType
-                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
-                && baseInterface.GetGenericArguments()[0] is Type entityType
-            )
-            {
-                if (!_interfaceHoldersByType.TryGetValue(entityType, out InterfaceHolder? ih) || !ih.KeysDefinitions.Any())
-                {
-                    throw new InvalidOperationException($"Extender {entry.Key} must have Entity generic argument, but has {entityType}!");
-                }
-            }
         }
     }
 
@@ -929,9 +912,7 @@ public class Generator : Runner
         if (attr.PrimaryKey is { })
         {
             if (
-                attr.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && baseInterface.IsGenericType
-                && typeof(IExtender<>).IsAssignableFrom(baseInterface.GetGenericTypeDefinition())
+                attr.Interface.GetInterfaces().Any()
             )
             {
                 throw new InvalidOperationException($"Extender {attr.Interface} cannot have own PrimaryKey!");

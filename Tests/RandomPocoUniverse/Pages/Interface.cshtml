@@ -6,9 +6,14 @@
     <text>using @usng;
 </text>
 }
-namespace @Model.Namespace;
+@if (Model.Node.Namespace is { })
+{
+    <text>namespace @Model.Node.Namespace;
+</text>
+}
 
-public interface @Model.Node.InterfaceName@if (Model.Interface is { }) { <text>: @Html.Raw(Model.Interface)</text> }
+public interface @Model.Node.InterfaceName@if (Model.Interface is 
+{ }) { <text>: @Html.Raw(Model.Interface)</text> }
 
 {
 @foreach(PropertyDescriptor pd in Model.Node.Properties)

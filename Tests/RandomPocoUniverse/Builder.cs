@@ -111,7 +111,7 @@ public class Builder
             {
                 Name = $"Get{node.InterfaceName}"
             });
-            string getArg = (node is EntityNode ? node : ((ExtenderNode)node).Owner).InterfaceName;
+            string getArg = (node is EntityNode ? node : ((ExtenderNode)node).Base).InterfaceName;
             node.Methods.First().Parameters.Add(new MethodParameterModel
             {
                 Name = "arg",
@@ -161,7 +161,7 @@ public class Builder
             properties.Add(path);
             return;
         }
-        IEnumerable<PropertyDescriptor> props = node.NodeType is NodeType.Extender ? ((ExtenderNode)node).Owner.Properties.Concat(node.Properties) : node.Properties;
+        IEnumerable<PropertyDescriptor> props = node.NodeType is NodeType.Extender ? ((ExtenderNode)node).Base.Properties.Concat(node.Properties) : node.Properties;
         foreach (PropertyDescriptor prop in props)
         {
             if(prop.Node is { } && level < s_maxPathLength)
@@ -217,7 +217,7 @@ public class Builder
     {
         InheritHolder holder = new()
         {
-            FileName = $"{node.InterfaceName.Substring(1)}.cs",
+            ClassName = node.InterfaceName.Substring(1),
         };
         return holder;
     }
@@ -229,7 +229,13 @@ public class Builder
             int numExtenders = random.Next(s_maxExtenders + 1);
             for (int i = 0; i < numExtenders; ++i)
             {
-                ExtenderNode extender = new() { NodeType = NodeType.Extender, Owner = entity };
+                int ns = random.Next(s_maxNamespaces)!;
+                ExtenderNode extender = new() 
+                { 
+                    NodeType = NodeType.Extender, 
+                    Base = entity,
+                    Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
+                };
                 int numProperties = 1 + random.Next(s_maxExtenderAdditionalProperties);
                 for (int j = 0; j < numProperties; ++j)
                 {
@@ -625,7 +631,11 @@ go
     {
         for (int i = 0; i < s_numNodes; ++i)
         {
-            nodes.Add(new T());
+            int ns = random.Next(s_maxNamespaces)!;
+            nodes.Add(new T()
+            {
+                Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
+            });
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)
@@ -649,7 +659,7 @@ go
                     T link = new()
                     {
                         NodeType = NodeType.ManyToManyLink,
-                        Namespace = ns switch { 0 => string.Empty, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
+                        Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
                     };
                     link.References.Add(nodes[i]);
                     nodes[i].Referencers.Add(link);
