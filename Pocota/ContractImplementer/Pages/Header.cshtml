@@ -26,4 +26,8 @@
 </text>
 }
 
-namespace @Model.NamespaceValue;
+@if (Model.NamespaceValue is { })
+{
+    <text>namespace @Model.NamespaceValue;
+</text>
+}

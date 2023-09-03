@@ -11,6 +11,7 @@ namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 public class Builder
 {
     private const int s_numNodes = 20;
+    private const int s_numEnvelopes = 5;
     private const int s_minReferences = 3;
     private const int s_maxReferences = 10;
     private const int s_baseCycleReferenced = 3;
@@ -37,6 +38,7 @@ public class Builder
     private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
     private const int s_baseWillBeInherited = 10;
     private const int s_maxNamespaces = 5;
+    private const int s_maxNumInherited = 2;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -55,13 +57,14 @@ public class Builder
 
         Universe universe = new();
 
-        CreateNodes(universe.Entities, random, true);
+        CreateNodes(universe, random);
         CreateKeys(universe, random);
         CompleteEntities(universe, random);
         CreateExtenders(universe, random);
-        CreateNodes(universe.Envelopes, random, false);
         CompleteEnvelopes(universe, random);
         CompleteNodes(universe, random);
+        CreateInheritNodes(universe, random);
+
         CreateContractMethods(universe, random);
 
         UniverseOptions.NodesTelemetry?.Invoke(universe);
@@ -92,13 +95,18 @@ public class Builder
         return universe;
     }
 
+    private static void CreateInheritNodes(Universe universe, Random random)
+    {
+        //throw new NotImplementedException();
+    }
+
     private static void CompleteNodes(Universe universe, Random random)
     {
         foreach(Node node in universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes))
         {
             if (random.Next(s_baseWillBeInherited) == 0)
             {
-                node.WillBeInherited = true;
+                node.NumInherited = random.Next(s_maxNumInherited);
             }
         }
     }
@@ -201,10 +209,6 @@ public class Builder
         {
             ClearProjectDir(inheritsDir);
         }
-        new SourcesGenerator().GenerateInherits(
-            inheritsDir, 
-            universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).Where(n => n.WillBeInherited).Select(node => InheritNode(node))
-        );
 
         server.Compile();
 
@@ -224,9 +228,11 @@ public class Builder
 
     private static void CreateExtenders(Universe universe, Random random)
     {
-        foreach (EntityNode entity in universe.Entities)
+        foreach (EntityNode node in universe.Entities)
         {
+            EntityNode entity = node;
             int numExtenders = random.Next(s_maxExtenders + 1);
+            int allPropsCnt = entity.Properties.Count;
             for (int i = 0; i < numExtenders; ++i)
             {
                 int ns = random.Next(s_maxNamespaces)!;
@@ -241,14 +247,16 @@ public class Builder
                 {
                     extender.Properties.Add(new PropertyDescriptor
                     {
-                        Name = $"P{entity.Properties.Count + extender.Properties.Count}",
+                        Name = $"P{allPropsCnt}",
                         Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
                         IsCollection = random.Next(s_baseCollection) == 0,
                         IsNullable = random.Next(s_baseNullable) == 0,
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                     });
+                    ++allPropsCnt;
                 }
                 universe.Extenders.Add(extender);
+                entity = extender;
             }
         }
     }
@@ -344,6 +352,7 @@ public class Builder
 
         generatedServerStuff.AddProject(UniverseOptions.PocotaCommonProjectFile);
         generatedServerStuff.AddProject(UniverseOptions.PocotaServerProjectFile);
+        generatedServerStuff.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
         generatedServerStuff.AddProject(Path.Combine(UniverseOptions.GeneratedModelProjectDir, "Model.csproj"));
 
         generatedServerStuff.Compile();
@@ -627,20 +636,20 @@ go
         return dataType.ToString();
     }
 
-    private static void CreateNodes<T>(List<T> nodes, Random random, bool areEntities) where T : Node, new()
+    private static void CreateNodes(Universe universe, Random random, bool areEntities)
     {
         for (int i = 0; i < s_numNodes; ++i)
         {
+            bool isEnvelope = random.Next(s_numNodes) < s_numEnvelopes;
             int ns = random.Next(s_maxNamespaces)!;
-            nodes.Add(new T()
-            {
-                Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
-            });
+            Node node = isEnvelope ? new Node() : new EntityNode();
+            node.Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" };
+            universe.Nodes.Add(node);
         }
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < s_numNodes; ++i)
         {
-            List<T> list = nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
+            List<T> list = universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
             int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
             int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);

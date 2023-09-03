@@ -203,7 +203,7 @@ public class Generator : Runner
             }
             else if (_interfaceHoldersByType.TryGetValue(@interface, out InterfaceHolder? target))
             {
-                if (target.BaseInterface == target.Interface)
+                if (true/*target.BaseInterface == target.Interface*/)
                 {
                     if (ClientGeneratedDirectory is { })
                     {
@@ -665,6 +665,8 @@ public class Generator : Runner
                     pm.IsAccess = true;
                     model.AccessProperties.Add(pm);
                 }
+                AddUsings(model, pi.PropertyType);
+                AddUsings(model, itemType);
             }
             FillPrimaryKeyModel(model, @interface);
         }
@@ -832,7 +834,13 @@ public class Generator : Runner
         {
             if (!type.IsGenericType || type.IsGenericTypeDefinition)
             {
-                if (model.NamespaceValue is null || !model.NamespaceValue.Equals(type.Namespace))
+                if (
+                    type.Namespace is { }
+                    && (
+                        model.NamespaceValue is null 
+                        || !model.NamespaceValue.Equals(type.Namespace)
+                    )
+                )
                 {
                     model.Usings.Add(type.Namespace!);
                 }
@@ -854,7 +862,7 @@ public class Generator : Runner
     private void InitClassModel(ClassModel model, GeneratingRequest request)
     {
         model.Contract = request.Contract;
-        model.NamespaceValue = request.Interface.Namespace ?? string.Empty;
+        model.NamespaceValue = request.Interface.Namespace;
     }
 
     private void CheckConsistence()

@@ -27,7 +27,7 @@ public class Tests
     public class Test1Options
     {
         public int Seed { get; internal init; } = 1471570481;
-        public bool DoCreateDatabase { get; internal init; } = true;
+        public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
@@ -160,13 +160,13 @@ public class Tests
                 }
                 else if(node.NodeType is NodeType.Extender)
                 {
-                    string pkName = $"IPrimaryKey<{((ExtenderNode)node).Base.InterfaceName}>";
+                    string pkName = $"IPrimaryKey<{node.Base.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), pkName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
                     Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
-                    string amName = $"IAccessManager<{((ExtenderNode)node).Base.InterfaceName}>";
+                    string amName = $"IAccessManager<{node.Base.InterfaceName}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), amName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
@@ -366,17 +366,27 @@ public class Tests
 
         Node[] allNodes = universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).ToArray();
 
+        List<PropertyDescriptor> allProps = new();
+
         foreach (Node node in allNodes)
         {
+            allProps.Clear();
+            Node cur = node;
+
+            while(cur is { })
+            {
+                allProps.AddRange(cur.Properties);
+            }
+
             Type? type = model.GetType($"{(node.Namespace is { } ? $"{node.Namespace}." : string.Empty)}{node.InterfaceName}");
             Assert.That(type, Is.Not.Null);
             foreach (PropertyInfo pi in type.GetProperties())
             {
-                PropertyDescriptor? pd = node.Properties.Where(p => pi.Name.Equals(p.Name)).FirstOrDefault();
+                PropertyDescriptor? pd = allProps.Where(p => pi.Name.Equals(p.Name)).FirstOrDefault();
                 Assert.That(pd, Is.Not.Null);
             }
             NullabilityInfoContext nullability = new();
-            foreach (PropertyDescriptor pd in node.Properties)
+            foreach (PropertyDescriptor pd in allProps)
             {
                 PropertyInfo? pi = type.GetProperty(pd.Name);
                 Assert.That(pi, Is.Not.Null);
@@ -391,7 +401,7 @@ public class Tests
             if(node.NodeType is NodeType.Extender)
             {
                 Type[]? interfaces = type.GetInterfaces();
-                Assert.That(interfaces.Length, Is.EqualTo(1));
+                Assert.That(interfaces.Length, Is.EqualTo(1), node.FullName);
                 Type baseType = interfaces[0];
                 Assert.Multiple(() =>
                 {

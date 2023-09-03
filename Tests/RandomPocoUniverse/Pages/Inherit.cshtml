@@ -8,6 +8,10 @@
 </text>
 }
 
-namespace @Model.Holder.Namespace;
+@if (Model.Holder.Namespace is { })
+{
+    <text>namespace @Model.Holder.Namespace;
+</text>
+}
 
 public class @Model.Holder.ClassName: @Html.Raw(string.Join(", ", Model.Holder.Base))

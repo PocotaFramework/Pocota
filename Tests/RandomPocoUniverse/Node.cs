@@ -11,9 +11,10 @@ public class Node
     public NodeType NodeType { get; internal set; } = NodeType.Envelope;
     public List<PropertyDescriptor> Properties { get; private init; } = new();
     public List<MethodHolder> Methods { get; private init; } = new();
-    public bool WillBeInherited { get; internal set; } = false;
+    public int NumInherited { get; internal set; } = 0;
     public string? Namespace { get; internal set; } = null;
     public string FullName => Namespace is { } ? $"{Namespace}.{InterfaceName}" : InterfaceName;
+    public Node? Base { get; internal init; } = null;
 
     public virtual string InterfaceName => $"IEnvelope{Id}";
 

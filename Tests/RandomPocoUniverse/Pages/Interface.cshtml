@@ -12,13 +12,13 @@
 </text>
 }
 
-public interface @Model.Node.InterfaceName@if (Model.Interface is 
+public abstract class @Model.Node.InterfaceName@if (Model.Interface is 
 { }) { <text>: @Html.Raw(Model.Interface)</text> }
 
 {
 @foreach(PropertyDescriptor pd in Model.Node.Properties)
 {
-    <text>    @Html.Raw(pd.TypeString) @pd.Name { get; @if(!pd.IsReadOnly){<text>set;</text>}}
+    <text>    public abstract @Html.Raw(pd.TypeString) @pd.Name { get; @if(!pd.IsReadOnly){<text>set;</text>}}
 </text>
 }
 }

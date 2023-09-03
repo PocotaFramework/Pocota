@@ -89,7 +89,10 @@ public class SourcesGenerator: Runner
 
         if(model.Node.NodeType is NodeType.Extender)
         {
-            if((model.Node as ExtenderNode)!.Base.Namespace is { } && !(model.Node as ExtenderNode)!.Base.Namespace!.Equals(model.Node!.Namespace))
+            if(
+                (model.Node as ExtenderNode)!.Base.Namespace is { } 
+                && !(model.Node as ExtenderNode)!.Base.Namespace!.Equals(model.Node!.Namespace)
+            )
             {
                 model.Usings.Add((model.Node as ExtenderNode)!.Base.Namespace!);
             }
@@ -147,7 +150,6 @@ public class SourcesGenerator: Runner
 
     internal void GenerateInherit(InheritModel model)
     {
-        InheritHolder holder = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as InheritHolder)!;
-
+        model.Holder = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as InheritHolder)!;
     }
 }
