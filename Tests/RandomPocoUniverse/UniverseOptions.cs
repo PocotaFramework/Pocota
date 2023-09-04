@@ -21,6 +21,7 @@ public class UniverseOptions
     public string DatabaseName { get; set; } = null!;
     public string TargetFramework { get; set; } = "net6.0-windows";
     public Language ClientLanguage { get; set; } = Language.CSharp;
+    public Action<Universe>? NodesTelemetry0 { get; set; } = null;
     public Action<Universe>? NodesTelemetry { get; set; } = null;
     public Action<Universe, Project>? ModelAndContractTelemetry { get; set; } = null;
     public Action<RequestKind, Type, string, Exception?>? OnGenerateClassesResponse { get; set; } = null;

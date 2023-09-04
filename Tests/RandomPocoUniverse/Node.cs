@@ -11,17 +11,23 @@ public class Node
     public NodeType NodeType { get; internal set; } = NodeType.Envelope;
     public List<PropertyDescriptor> Properties { get; private init; } = new();
     public List<MethodHolder> Methods { get; private init; } = new();
-    public int NumInherited { get; internal set; } = 0;
+    public int NumInherits { get; internal set; } = 0;
     public string? Namespace { get; internal set; } = null;
-    public string FullName => Namespace is { } ? $"{Namespace}.{InterfaceName}" : InterfaceName;
-    public Node? Base { get; internal init; } = null;
+    public string FullName => Namespace is { } ? $"{Namespace}.{Name}" : Name;
+    public Node? Base { get; internal set; } = null;
+    public int MaxPropertyNum { get; internal set; } = 0;
 
-    public virtual string InterfaceName => $"IEnvelope{Id}";
+    public virtual string Name => $"Envelope{Id}";
 
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.Append("{").Append(GetType().Name).Append(" Id: ").Append(Id).Append(", refs: [").Append(string.Join(',', References.Select(n => n.Id)))
+        sb.Append("{").Append(GetType().Name).Append(" Id: ").Append(Id);
+        if(Base is { })
+        {
+            sb.Append(", base: &").Append(Base.Id);
+        }
+        sb.Append(", refs: [").Append(string.Join(',', References.Select(n => n.Id)))
             .Append("], props: [").Append(string.Join(',', Properties.Select(p => p.ToString()))).Append("]}");
 
         return sb.ToString();

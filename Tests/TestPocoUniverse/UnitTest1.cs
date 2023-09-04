@@ -26,13 +26,13 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = 1471570481;
+        public int Seed { get; internal init; } = -1;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
-        public bool DoGenerateClasses { get; internal init; } = true;
+        public bool DoGenerateClasses { get; internal init; } = false;
         public bool GenerateClassesVerbose { get; internal init; } = false;
-        public bool DoCompilePocoUniverseServer { get; internal init; } = true;
-        public bool DoRunPocoUniverseServer { get; internal init; } = true;
+        public bool DoCompilePocoUniverseServer { get; internal init; } = false;
+        public bool DoRunPocoUniverseServer { get; internal init; } = false;
         public override string ToString()
         {
             return string.Join('\n', new string[] {
@@ -107,6 +107,7 @@ public class Tests
 
         Builder.UniverseOptions.ConnectionString = "Server=.\\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;";
         Builder.UniverseOptions.DatabaseName = "qq";
+        Builder.UniverseOptions.NodesTelemetry0 = un => NodesTelemetry0(un, dataHolder);
         Builder.UniverseOptions.NodesTelemetry = un => NodesTelemetry(un, dataHolder);
         Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
@@ -130,48 +131,56 @@ public class Tests
 
     }
 
+    private void NodesTelemetry0(Universe universe, Test1DataHolder dataHolder)
+    {
+        foreach(Node node in universe.Nodes)
+        {
+            Console.WriteLine(node);
+        }
+    }
+
     private void AddPocotaTelemetry(Universe universe, IServiceCollection services, Test1DataHolder dataHolder)
     {
         dataHolder.AddPocotaTelemetryCalled = true;
         Assert.Multiple(() =>
         {
-            foreach (Node node in universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders))
+            foreach (Node node in universe.Nodes)
             {
-                ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(node.InterfaceName)).ToArray();
-                Assert.That(sds, Has.Length.EqualTo(1), node.InterfaceName);
-                Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), node.InterfaceName);
-                Assert.That(sds[0].ImplementationType, Is.Not.Null, node.InterfaceName);
-                Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}Poco"), node.InterfaceName);
+                ServiceDescriptor[] sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(node.Name)).ToArray();
+                Assert.That(sds, Has.Length.EqualTo(1), node.Name);
+                Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), node.Name);
+                Assert.That(sds[0].ImplementationType, Is.Not.Null, node.Name);
+                Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}Poco"), node.Name);
 
                 if (node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
                 {
-                    string pkName = $"IPrimaryKey<{node.InterfaceName}>";
+                    string pkName = $"IPrimaryKey<{node.Name}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), pkName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
-                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
-                    string amName = $"IAccessManager<{node.InterfaceName}>";
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}PrimaryKey"), pkName);
+                    string amName = $"IAccessManager<{node.Name}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), amName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, amName);
-                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}AllowAccessManager"), amName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}AllowAccessManager"), amName);
                 }
                 else if(node.NodeType is NodeType.Extender)
                 {
-                    string pkName = $"IPrimaryKey<{node.Base.InterfaceName}>";
+                    string pkName = $"IPrimaryKey<{node.Base.Name}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), pkName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), pkName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, pkName);
-                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}PrimaryKey"), pkName);
-                    string amName = $"IAccessManager<{node.Base.InterfaceName}>";
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}PrimaryKey"), pkName);
+                    string amName = $"IAccessManager<{node.Base.Name}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(amName)).ToArray();
                     Assert.That(sds, Has.Length.EqualTo(1), amName);
                     Assert.That(sds[0].Lifetime, Is.EqualTo(ServiceLifetime.Transient), amName);
                     Assert.That(sds[0].ImplementationType, Is.Not.Null, amName);
-                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.InterfaceName.Substring(1)}AllowAccessManager"), amName);
+                    Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}AllowAccessManager"), amName);
                 }
             }
             foreach (MethodInfo mi in universe.Controller.GetMethods())
@@ -194,7 +203,7 @@ public class Tests
 
     private void CreateDatabaseTelemetry(Universe universe, Test1DataHolder dataHolder)
     {
-        Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Entities.Count));
+        Assert.That(universe.DataSet.Tables.Count, Is.EqualTo(universe.Nodes.Where(n => n is EntityNode).Count()));
     }
 
     private void GenerateClassesTelemetry(Universe un, Test1DataHolder dataHolder)
@@ -211,10 +220,10 @@ public class Tests
 
     private void NodesTelemetry(Universe universe, Test1DataHolder dataHolder)
     {
-        Assert.That(universe.Entities.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Entities.Select(n => n.Referencers.Count).Sum()));
+        Assert.That(universe.Nodes.Select(n => n.References.GroupBy(n => n.Id).Count()).Sum(), Is.EqualTo(universe.Nodes.Select(n => n.Referencers.Count).Sum()));
         Assert.Multiple(() =>
         {
-            universe.Entities.ForEach(e =>
+            universe.Nodes.Where(n => n is EntityNode && n.Base is null).Select(n => (EntityNode)n).ToList().ForEach(e =>
             {
                 Assert.That(e.PrimaryKey.GroupBy(p => p.Name).Count(), Is.EqualTo(e.PrimaryKey.Count), e.ToString());
             });
@@ -242,7 +251,7 @@ public class Tests
                         $"/{Builder.UniverseOptions.ClientLanguage}/ClientImplementation".Equals(path)
                         && (selector = 3) == selector
                         && dataHolder._allNodesClientImplementation.RemoveAll(
-                            n => @interface.Name.Equals(n.InterfaceName) 
+                            n => @interface.Name.Equals(n.Name) 
                                 && (
                                     (
                                         n.Namespace is null 
@@ -275,7 +284,7 @@ public class Tests
                         $"/ServerImplementation".Equals(path)
                         && (selector = 6) == selector
                         && dataHolder._allNodesServerImplementation.RemoveAll(
-                            n => @interface.Name.Equals(n.InterfaceName)
+                            n => @interface.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
@@ -292,7 +301,7 @@ public class Tests
                         $"/PrimaryKey".Equals(path)
                         && (selector = 7) == selector
                         && dataHolder._allNodesPrimaryKey.RemoveAll(
-                            n => @interface.Name.Equals(n.InterfaceName)
+                            n => @interface.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
@@ -309,7 +318,7 @@ public class Tests
                         $"/AllowAccessManager".Equals(path)
                         && (selector = 8) == selector
                         && dataHolder._allNodesAllowAccessManager.RemoveAll(
-                            n => @interface.Name.Equals(n.InterfaceName)
+                            n => @interface.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
@@ -364,7 +373,7 @@ public class Tests
         Assembly model = Assembly.LoadFile(contract.GetLibraryFile("Model.dll")!);
         Assert.That(model, Is.Not.Null);
 
-        Node[] allNodes = universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes).ToArray();
+        Node[] allNodes = universe.Nodes.ToArray();
 
         List<PropertyDescriptor> allProps = new();
 
@@ -378,7 +387,7 @@ public class Tests
                 allProps.AddRange(cur.Properties);
             }
 
-            Type? type = model.GetType($"{(node.Namespace is { } ? $"{node.Namespace}." : string.Empty)}{node.InterfaceName}");
+            Type? type = model.GetType($"{(node.Namespace is { } ? $"{node.Namespace}." : string.Empty)}{node.Name}");
             Assert.That(type, Is.Not.Null);
             foreach (PropertyInfo pi in type.GetProperties())
             {
@@ -417,7 +426,7 @@ public class Tests
                                 && n.Namespace.Equals(baseType.Namespace)
                             )
                         ) 
-                        && n.InterfaceName.Equals(baseType!.Name)
+                        && n.Name.Equals(baseType!.Name)
                     ).FirstOrDefault();
                     Assert.That(baseNode, Is.Not.Null);
                     Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
@@ -440,7 +449,7 @@ public class Tests
         int i = 0;
         for (; i < allNodes.Length && pa.MoveNext(); ++i)
         {
-            Node? node = allNodes.Where(n => n.InterfaceName.Equals(pa.Current.Interface.Name)).FirstOrDefault();
+            Node? node = allNodes.Where(n => n.Name.Equals(pa.Current.Interface.Name)).FirstOrDefault();
             Assert.That(node, Is.Not.Null);
             Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(node.Namespace));
             Assert.Multiple(() =>
@@ -466,13 +475,13 @@ public class Tests
 
         dataHolder._universe = universe;
         dataHolder._allNodesClientImplementation.Clear();
-        dataHolder._allNodesClientImplementation.AddRange(universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders));
+        dataHolder._allNodesClientImplementation.AddRange(universe.Nodes);
         dataHolder._allNodesServerImplementation.Clear();
-        dataHolder._allNodesServerImplementation.AddRange(universe.Entities.Concat(universe.Envelopes).Concat(universe.Extenders));
+        dataHolder._allNodesServerImplementation.AddRange(universe.Nodes);
         dataHolder._allNodesPrimaryKey.Clear();
-        dataHolder._allNodesPrimaryKey.AddRange(universe.Entities);
+        dataHolder._allNodesPrimaryKey.AddRange(universe.Nodes.Where(n => n is EntityNode && n.Base is null));
         dataHolder._allNodesAllowAccessManager.Clear();
-        dataHolder._allNodesAllowAccessManager.AddRange(universe.Entities);
+        dataHolder._allNodesAllowAccessManager.AddRange(universe.Nodes.Where(n => n is EntityNode));
         dataHolder._contractConfiguratorsCount = 1;
     }
 }

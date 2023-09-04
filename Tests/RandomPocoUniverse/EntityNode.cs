@@ -6,8 +6,8 @@ namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
 public class EntityNode: Node
 {
-    public List<PropertyDescriptor> PrimaryKey { get; internal set; } = new();
-    public override string InterfaceName => $"IEntity{Id}";
+    public override string Name => $"Entity{Id}";
+    public List<PropertyDescriptor> PrimaryKey { get; internal set; } = null!;
     public string[] KeyDefinition => PrimaryKey.SelectMany(pk =>
     {
         Match match = Regex.Match(pk.Name, "^((?:P|Id)\\d+)+$");

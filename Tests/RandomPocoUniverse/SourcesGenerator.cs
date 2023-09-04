@@ -66,10 +66,10 @@ public class SourcesGenerator: Runner
         contract.AddProject(model);
         contract.AddProject(options.ContractProjectFile);
 
-        foreach (Node node in universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes))
+        foreach (Node node in universe.Nodes)
         {
             TextReader interfaceSource = connector.Get("/Interface", new Tuple<Universe, Node>(universe, node));
-            File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.InterfaceName}.cs"), interfaceSource.ReadToEnd());
+            File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), interfaceSource.ReadToEnd());
         }
 
         TextReader contractSource = connector.Get("Contract", universe);
@@ -87,21 +87,21 @@ public class SourcesGenerator: Runner
         Tuple<Universe, Node> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Universe, Node>)!;
         model.Node = parameter.Item2;
 
-        if(model.Node.NodeType is NodeType.Extender)
+        if(model.Node.Base is { })
         {
             if(
-                (model.Node as ExtenderNode)!.Base.Namespace is { } 
-                && !(model.Node as ExtenderNode)!.Base.Namespace!.Equals(model.Node!.Namespace)
+                model.Node.Base.Namespace is { } 
+                && !model.Node.Base.Namespace!.Equals(model.Node!.Namespace)
             )
             {
-                model.Usings.Add((model.Node as ExtenderNode)!.Base.Namespace!);
+                model.Usings.Add(model.Node.Base.Namespace!);
             }
-            model.Interface = (model.Node as ExtenderNode)!.Base.InterfaceName;
+            model.Interface = model.Node.Base.Name;
         }
 
         foreach(PropertyDescriptor pd in model.Node.Properties) 
         {
-            Console.WriteLine($"{model.Node.InterfaceName}: {pd}");
+            Console.WriteLine($"{model.Node.Name}: {pd}");
             if (pd.IsCollection)
             {
                 model.Usings.Add(typeof(IList<>).Namespace!);
@@ -126,7 +126,7 @@ public class SourcesGenerator: Runner
     internal void GenerateContract(ContractModel model)
     {
         model.Universe = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Universe)!;
-        foreach(Node node in model.Universe.Entities.Concat(model.Universe.Extenders))
+        foreach(Node node in model.Universe.Nodes)
         {
             if(node.Namespace is { })
             {
@@ -138,7 +138,7 @@ public class SourcesGenerator: Runner
                         MethodModel mm = new MethodModel
                         {
                             Name = mh.Name,
-                            ReturnType = mh.IsCollection ? $"IList<{node.InterfaceName}>" : node.InterfaceName,
+                            ReturnType = mh.IsCollection ? $"IList<{node.Name}>" : node.Name,
                         };
                         mm.Parameters.AddRange(mh.Parameters);
                         mm.Properties.AddRange(mh.Properties);

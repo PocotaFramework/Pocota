@@ -5,13 +5,14 @@ using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
 using System.Text;
+using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
 public class Builder
 {
     private const int s_numNodes = 20;
-    private const int s_numEnvelopes = 5;
+    private const int s_numEnvelopes = 7;
     private const int s_minReferences = 3;
     private const int s_maxReferences = 10;
     private const int s_baseCycleReferenced = 3;
@@ -27,8 +28,7 @@ public class Builder
     private const int s_maxFkPk = 3;
     private const int s_baseAccessProperty = 2;
     private const int s_maxAccessProperties = 10;
-    private const int s_maxExtenders = 3;
-    private const int s_maxExtenderAdditionalProperties = 3;
+    private const int s_maxInheritance = 3;
     private const int s_maxMethods = 3;
     private const int s_maxMethodArgs = 3;
     private const int s_baseMethodSingle = 3;
@@ -36,9 +36,10 @@ public class Builder
     private const int s_baseAsteriskPath = 3;
     private const int s_baseOtherArgs = 3;
     private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
-    private const int s_baseWillBeInherited = 10;
     private const int s_maxNamespaces = 5;
     private const int s_maxNumInherited = 2;
+    private const int s_maxInheritedtAdditionalProperties = 3;
+    private const int s_baseIsCalculated = 5;
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -58,12 +59,13 @@ public class Builder
         Universe universe = new();
 
         CreateNodes(universe, random);
+
+        UniverseOptions.NodesTelemetry0?.Invoke(universe);
+
         CreateKeys(universe, random);
+
         CompleteEntities(universe, random);
-        CreateExtenders(universe, random);
         CompleteEnvelopes(universe, random);
-        CompleteNodes(universe, random);
-        CreateInheritNodes(universe, random);
 
         CreateContractMethods(universe, random);
 
@@ -95,29 +97,13 @@ public class Builder
         return universe;
     }
 
-    private static void CreateInheritNodes(Universe universe, Random random)
-    {
-        //throw new NotImplementedException();
-    }
-
-    private static void CompleteNodes(Universe universe, Random random)
-    {
-        foreach(Node node in universe.Entities.Concat(universe.Extenders).Concat(universe.Envelopes))
-        {
-            if (random.Next(s_baseWillBeInherited) == 0)
-            {
-                node.NumInherited = random.Next(s_maxNumInherited);
-            }
-        }
-    }
-
     private static void CreateContractMethods(Universe universe, Random random)
-    {
+    {/*
         foreach(Node node in universe.Entities.Concat(universe.Extenders))
         {
             node.Methods.Add(new MethodHolder
             {
-                Name = $"Get{node.InterfaceName}"
+                Name = $"Get{node.Name}"
             });
             string getArg = (node is EntityNode ? node : ((ExtenderNode)node).Base).InterfaceName;
             node.Methods.First().Parameters.Add(new MethodParameterModel
@@ -132,7 +118,7 @@ public class Builder
                 bool isCollection = random.Next(s_baseMethodSingle) == 0;
                 MethodHolder mh = new MethodHolder
                 {
-                    Name = $"{node.InterfaceName}Method{i}",
+                    Name = $"{node.Name}Method{i}",
                     IsCollection = isCollection,
                 };
                 int numArgs = random.Next(s_maxMethodArgs + 1);
@@ -159,10 +145,10 @@ public class Builder
                 CreatePropertyPaths(mh.Properties, node, random, string.Empty, 0);
             }
         }
-    }
+    */}
 
     private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
-    {
+    {/*
         if (random.Next(s_baseAsteriskPath) == 0)
         {
             path += $"{(level > 0 ? "." : string.Empty)}*";
@@ -181,7 +167,7 @@ public class Builder
                 properties.Add($"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}");
             }
         }
-    }
+    */}
 
     private static void CompilePocoUniverseServer(Universe universe)
     {
@@ -221,49 +207,14 @@ public class Builder
     {
         InheritHolder holder = new()
         {
-            ClassName = node.InterfaceName.Substring(1),
+            ClassName = node.Name.Substring(1),
         };
         return holder;
     }
 
-    private static void CreateExtenders(Universe universe, Random random)
-    {
-        foreach (EntityNode node in universe.Entities)
-        {
-            EntityNode entity = node;
-            int numExtenders = random.Next(s_maxExtenders + 1);
-            int allPropsCnt = entity.Properties.Count;
-            for (int i = 0; i < numExtenders; ++i)
-            {
-                int ns = random.Next(s_maxNamespaces)!;
-                ExtenderNode extender = new() 
-                { 
-                    NodeType = NodeType.Extender, 
-                    Base = entity,
-                    Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
-                };
-                int numProperties = 1 + random.Next(s_maxExtenderAdditionalProperties);
-                for (int j = 0; j < numProperties; ++j)
-                {
-                    extender.Properties.Add(new PropertyDescriptor
-                    {
-                        Name = $"P{allPropsCnt}",
-                        Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
-                        IsCollection = random.Next(s_baseCollection) == 0,
-                        IsNullable = random.Next(s_baseNullable) == 0,
-                        IsReadOnly = random.Next(s_baseReadonly) == 0,
-                    });
-                    ++allPropsCnt;
-                }
-                universe.Extenders.Add(extender);
-                entity = extender;
-            }
-        }
-    }
-
     private static void CompleteEntities(Universe universe, Random random)
     {
-        foreach (EntityNode entity in universe.Entities)
+        foreach (EntityNode entity in universe.Nodes.Where(n => n is EntityNode))
         {
             if (entity.AccessProperties.Any())
             {
@@ -275,7 +226,7 @@ public class Builder
         while (changed)
         {
             changed = false;
-            foreach (EntityNode entity in universe.Entities)
+            foreach (EntityNode entity in universe.Nodes.Where(n => n is EntityNode))
             {
                 foreach (EntityNode node in entity.Properties.Where(p => p.IsAccess && p.Node is { }).Select(p => p.Node!))
                 {
@@ -421,19 +372,22 @@ go
 
     private static void CreateKeys(Universe universe, Random random)
     {
-        foreach (EntityNode node in universe.Entities)
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             CreatePrimaryKey(node, random);
         }
-        foreach (EntityNode node in universe.Entities)
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             CreateForeignKeys(node, random);
         }
-        foreach (EntityNode node in universe.Entities.Where(n => n.NodeType is not NodeType.ManyToManyLink))
+        foreach (EntityNode node in universe.Nodes.Where(
+                n => n is EntityNode && n.Base is null && n.NodeType is not NodeType.ManyToManyLink
+            )
+        )
         {
             CreateFkPk(node, random);
         }
-        foreach (EntityNode node in universe.Entities)
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             CompletePrimaryKey(node);
         }
@@ -541,7 +495,7 @@ go
 
     private static void CreatePrimaryKey(EntityNode node, Random random)
     {
-        if (node.NodeType is NodeType.Entity)
+        if (node.NodeType is NodeType.Entity && node.Base is null)
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
             for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
@@ -560,12 +514,13 @@ go
 
     private static void CompleteEnvelopes(Universe universe, Random random)
     {
-        foreach (Node node in universe.Envelopes)
+        List<EntityNode> entities = universe.Nodes.Where(n => n is EntityNode).Select(n => (EntityNode)n).ToList();
+        foreach (Node node in universe.Nodes.Where(n => n is not EntityNode))
         {
             int numEntities = 1 + random.Next(s_maxEntitiesAtEnvelop);
             for (int i = 0; i < numEntities; ++i)
             {
-                Node entity = universe.Entities[random.Next(universe.Entities.Count)];
+                Node entity = entities[random.Next(entities.Count)];
                 node.References.Add(entity);
                 node.Properties.Add(new PropertyDescriptor
                 {
@@ -636,20 +591,77 @@ go
         return dataType.ToString();
     }
 
-    private static void CreateNodes(Universe universe, Random random, bool areEntities)
+    private static void CreateNodes(Universe universe, Random random)
     {
-        for (int i = 0; i < s_numNodes; ++i)
+        int thresh = s_numNodes - (1 + s_maxNumInherited) * s_maxNumInherited / 2;
+        Console.WriteLine($"thresh: {thresh}");
+        int addThresh = s_maxNumInherited;
+        int numInherits = 0;
+        int numNodes = s_numNodes;
+        for (int i = 0; i < numNodes; ++i)
         {
             bool isEnvelope = random.Next(s_numNodes) < s_numEnvelopes;
             int ns = random.Next(s_maxNamespaces)!;
             Node node = isEnvelope ? new Node() : new EntityNode();
+
+            if(i == thresh)
+            {
+                ++numInherits;
+                thresh += addThresh;
+                --addThresh;
+                Console.WriteLine($"thresh: {thresh}");
+            }
+            node.NumInherits = numInherits;
+            
+            if(numInherits > 0)
+            {
+                List<Node> bases;
+                do
+                {
+                    bases = universe.Nodes.Where(
+                        n => n.NodeType == node.NodeType && n.NumInherits == node.NumInherits - 1
+                    ).ToList();
+                }
+                while (!bases.Any());
+                Node baseNode = bases[random.Next(bases.Count)];
+                while(baseNode.NumInherits < numInherits - 1)
+                {
+                    Node node1 = node.NodeType == NodeType.Envelope ? new Node() : new EntityNode();
+                    node1.Base = baseNode;
+                    if (node1 is EntityNode entity1)
+                    {
+                        entity1.PrimaryKey = ((EntityNode)baseNode).PrimaryKey;
+                    }
+                    node1.NumInherits = baseNode.NumInherits + 1;
+                    baseNode = node1;
+                }
+                node.Base = baseNode;
+                if (node is EntityNode entity)
+                {
+                    entity.PrimaryKey = ((EntityNode)baseNode).PrimaryKey;
+                }
+            }
+            else if(node is EntityNode entity)
+            {
+                entity.PrimaryKey = new List<PropertyDescriptor>();
+            }
             node.Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" };
             universe.Nodes.Add(node);
         }
+        universe.Nodes.Sort(
+            (n1, n2) => n1.NumInherits != n2.NumInherits 
+                ? n1.NumInherits.CompareTo(n2.NumInherits) 
+                : n1.Id.CompareTo(n2.Id)
+        );
+        numNodes = universe.Nodes.Count;
         List<Node> manyToManyLinks = new();
-        for (int i = 0; i < s_numNodes; ++i)
+        for (int i = 0; i < numNodes; ++i)
         {
-            List<T> list = universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink).ToList();
+            if (universe.Nodes[i].Base is { })
+            {
+                universe.Nodes[i].MaxPropertyNum = universe.Nodes[i].Base!.MaxPropertyNum;
+            }
+            List<Node> list = universe.Nodes.Take(numNodes).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
             int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
             int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
@@ -658,30 +670,32 @@ go
             {
                 int pos = random.Next(list.Count);
                 if (
-                    areEntities
-                    && nodes[i] != list[pos]
-                    && !nodes[i].References.Any(n => list[pos].References.Contains(n))
+                    universe.Nodes[i].NodeType is NodeType.Entity
+                    && list[pos].NodeType is NodeType.Entity
+                    && universe.Nodes[i] != list[pos]
+                    && !universe.Nodes[i].References.Any(n => list[pos].References.Contains(n))
                     && random.Next(1 + (int)Math.Ceiling(s_fraqManyToMany * s_numNodes * (s_maxReferences + s_minReferences) * .25)) == 0
                 )
                 {
                     int ns = random.Next(s_maxNamespaces)!;
-                    T link = new()
+                    EntityNode link = new()
                     {
                         NodeType = NodeType.ManyToManyLink,
                         Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
+                        PrimaryKey = new List<PropertyDescriptor>(),
                     };
-                    link.References.Add(nodes[i]);
-                    nodes[i].Referencers.Add(link);
+                    link.References.Add(universe.Nodes[i]);
+                    universe.Nodes[i].Referencers.Add(link);
                     link.References.Add(list[pos]);
                     list[pos].Referencers.Add(link);
-                    nodes.Add(link);
+                    universe.Nodes.Add(link);
                     if (random.Next(s_baseCollection) == 0)
                     {
                         bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
                             Name = $"P{list[pos].Properties.Count}",
-                            Node = nodes[i],
+                            Node = universe.Nodes[i],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
                             IsNullable = isNullable,
@@ -694,19 +708,19 @@ go
                         bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
-                            Name = $"P{nodes[i].Properties.Count}",
+                            Name = $"P{universe.Nodes[i].Properties.Count}",
                             Node = list[pos],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
                             IsNullable = isNullable,
                             IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         };
-                        nodes[i].Properties.Add(pd1);
+                        universe.Nodes[i].Properties.Add(pd1);
                     }
                     link.Properties.Add(new PropertyDescriptor
                     {
                         Name = $"P{link.Properties.Count}",
-                        Node = nodes[i],
+                        Node = universe.Nodes[i],
                         IsReadOnly = true,
                         IsNullable = false,
                         IsCollection = false,
@@ -722,21 +736,29 @@ go
                 }
                 else
                 {
-                    nodes[i].References.Add(list[pos]);
-                    list[pos].Referencers.Add(nodes[i]);
+                    universe.Nodes[i].References.Add(list[pos]);
+                    list[pos].Referencers.Add(universe.Nodes[i]);
                     bool isNullable = random.Next(s_baseNullable) == 0;
                     PropertyDescriptor pd = new()
                     {
-                        Name = $"P{nodes[i].Properties.Count}",
+                        Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsNullable = isNullable,
-                        IsAccess = areEntities && !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
+                        IsAccess = universe.Nodes[i] is EntityNode 
+                            && list[pos] is EntityNode
+                            && !isNullable && baseAccessProperty > 0 
+                            && random.Next(baseAccessProperty) == 0,
+                        IsCalculated = universe.Nodes[i] is EntityNode
+                            && list[pos] is not EntityNode
                     };
-                    nodes[i].Properties.Add(pd);
+
+                    ++universe.Nodes[i].MaxPropertyNum;
+
+                    universe.Nodes[i].Properties.Add(pd);
                     if (random.Next(s_baseCollection) == 0)
                     {
-                        if (!areEntities)
+                        if (universe.Nodes[i] is not EntityNode)
                         {
                             pd.IsCollection = true;
                         }
@@ -744,13 +766,14 @@ go
                         {
                             PropertyDescriptor pd1 = new()
                             {
-                                Name = $"P{list[pos].Properties.Count}",
-                                Node = nodes[i],
+                                Name = $"P{list[pos].MaxPropertyNum}",
+                                Node = universe.Nodes[i],
                                 IsReadOnly = random.Next(s_baseReadonly) == 0,
                                 IsCollection = true,
                                 IsNullable = random.Next(s_baseNullable) == 0,
                             };
                             list[pos].Properties.Add(pd1);
+                            ++list[pos].MaxPropertyNum;
                         }
                     }
                 }
@@ -759,54 +782,66 @@ go
             {
                 Type type = s_terminalTypes[random.Next(s_terminalTypes.Length)];
                 bool isPrimaryKeyPart =
-                    areEntities
+                    universe.Nodes[i] is EntityNode
+                    && universe.Nodes[i].Base is null
                     && (type == typeof(int) || type == typeof(string))
                     && (
                         random.Next(s_basePrimaryKeyPart) == 0
                         || (
-                            j == numOtherProperties - 1 && !nodes[i].Properties.Any()
+                            j == numOtherProperties - 1 && !universe.Nodes[i].Properties.Any()
                         )
                     );
                 bool isCollection = !isPrimaryKeyPart && random.Next(s_baseCollection) == 0;
                 bool isNullable = !isPrimaryKeyPart && random.Next(s_baseNullable) == 0;
+                bool isCalculated = random.Next(s_baseIsCalculated) == 0;
                 PropertyDescriptor pd = new()
                 {
-                    Name = $"P{nodes[i].Properties.Count}",
+                    Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                     Type = type,
                     IsReadOnly = !isPrimaryKeyPart && random.Next(s_baseReadonly) == 0,
                     IsCollection = isCollection,
                     IsNullable = isNullable,
-                    IsAccess = areEntities && !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
+                    IsAccess = universe.Nodes[i] is EntityNode
+                        && !isCalculated
+                        && !isNullable && baseAccessProperty > 0 
+                        && random.Next(baseAccessProperty) == 0,
+                    IsCalculated = isCalculated,
                 };
-                nodes[i].Properties.Add(pd);
+                universe.Nodes[i].Properties.Add(pd);
+                
+                ++universe.Nodes[i].MaxPropertyNum;
+                
                 if (isPrimaryKeyPart)
                 {
-                    (nodes[i] as EntityNode)?.PrimaryKey.Add(pd);
+                    (universe.Nodes[i] as EntityNode)?.PrimaryKey.Add(pd);
                 }
             }
         }
-        for (int i = 0; i < s_numNodes; ++i)
+        for (int i = 0; i < numNodes; ++i)
         {
             HashSet<Node> set = new();
-            if (!IsLooped(nodes[i], nodes[i], string.Empty, set) && random.Next(s_baseCycleReferenced) == 0)
+            if (!IsLooped(universe.Nodes[i], universe.Nodes[i], string.Empty, set) && random.Next(s_baseCycleReferenced) == 0)
             {
-                foreach (Node probe in nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink && !set.Contains(n)))
+                foreach (Node probe in universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink && !set.Contains(n)))
                 {
-                    if (IsLooped(nodes[i], probe, $"/{nodes[i].Id}", null))
+                    if (IsLooped(universe.Nodes[i], probe, $"/{universe.Nodes[i].Id}", null))
                     {
-                        nodes[i].References.Add(probe);
-                        probe.Referencers.Add(nodes[i]);
+                        universe.Nodes[i].References.Add(probe);
+                        probe.Referencers.Add(universe.Nodes[i]);
                         PropertyDescriptor pd = new()
                         {
-                            Name = $"P{nodes[i].Properties.Count}",
+                            Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                             Node = probe,
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsNullable = random.Next(s_baseNullable) == 0,
                         };
-                        nodes[i].Properties.Add(pd);
+                        universe.Nodes[i].Properties.Add(pd);
+
+                        ++universe.Nodes[i].MaxPropertyNum;
+
                         if (random.Next(s_baseCollection) == 0)
                         {
-                            if (!areEntities)
+                            if (universe.Nodes[i] is not EntityNode)
                             {
                                 pd.IsCollection = true;
                             }
@@ -814,13 +849,14 @@ go
                             {
                                 PropertyDescriptor pd1 = new()
                                 {
-                                    Name = $"P{probe.Properties.Count}",
-                                    Node = nodes[i],
+                                    Name = $"P{probe.MaxPropertyNum}",
+                                    Node = universe.Nodes[i],
                                     IsReadOnly = random.Next(s_baseReadonly) == 0,
                                     IsCollection = true,
                                     IsNullable = random.Next(s_baseNullable) == 0,
                                 };
                                 probe.Properties.Add(pd1);
+                                ++probe.MaxPropertyNum;
                             }
                         }
                         break;
@@ -847,7 +883,7 @@ go
 
     private static void CreateDataSet(Universe universe)
     {
-        foreach (EntityNode node in universe.Entities)
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             DataTable table = new DataTable($"Table{node.Id}");
             universe.DataSet.Tables.Add(table);
@@ -897,7 +933,7 @@ go
                 Console.WriteLine($"no pk: {table.TableName}");
             }
         }
-        foreach (EntityNode node in universe.Entities)
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
             foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
