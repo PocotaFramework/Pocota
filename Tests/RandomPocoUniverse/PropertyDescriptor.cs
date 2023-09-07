@@ -15,13 +15,14 @@ public class PropertyDescriptor
     public string? PrimaryKeyPartAlias { get; set; } = null;
     public bool IsAccess { get; set; } = false;
     public bool IsCalculated { get; set; } = false;
+    public int Source { get; set; } = -1;
 
     public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.Name)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
 
     public override string ToString()
     {
         StringBuilder sb = new();
-        sb.Append("{pd");
+        sb.Append($"{{pd<{Source}>");
         sb.Append(" ").Append(Name).Append(" ");
         if(Node is { })
         {

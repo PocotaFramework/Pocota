@@ -27,8 +27,8 @@ public class Node
         {
             sb.Append(", base: &").Append(Base.Id);
         }
-        sb.Append(", refs: [").Append(string.Join(',', References.Select(n => n.Id)))
-            .Append("], props: [").Append(string.Join(',', Properties.Select(p => p.ToString()))).Append("]}");
+        sb.Append(", refs: [").Append(string.Join(',', References.Select(n => n.Id).OrderBy(i => i)))
+            .Append("]").Append(References.GroupBy(n => n.Id).Count()).Append(", props: [").Append(string.Join(',', Properties.Select(p => p.ToString()))).Append("]}");
 
         return sb.ToString();
     }
