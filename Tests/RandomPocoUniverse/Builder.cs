@@ -241,7 +241,6 @@ public class Builder
                         {
                             PropertyDescriptor pd = new()
                             {
-                                Name = $"P{node.MaxPropertyNum}",
                                 Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
                                 IsReadOnly = random.Next(s_baseReadonly) == 0,
                                 IsCollection = random.Next(s_baseCollection) == 0,
@@ -250,7 +249,6 @@ public class Builder
                                 Source = 1,
                             };
                             node.Properties.Add(pd);
-                            ++node.MaxPropertyNum;
                         }
                         changed = true;
                     }
@@ -438,7 +436,6 @@ go
                     {
                         pd.References.Add(new PropertyDescriptor
                         {
-                            Name = $"{pd.Name}{node.PrimaryKey[i].Name}",
                             Type = node.PrimaryKey[i].Type,
                             IsReadOnly = pd.IsReadOnly,
                             IsNullable = pd.IsNullable,
@@ -460,7 +457,6 @@ go
                 {
                     pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
                     {
-                        Name = $"{pd.Name}{p.Name}",
                         Type = p.Type,
                         IsReadOnly = pd.IsReadOnly,
                         IsNullable = pd.IsNullable,
@@ -479,7 +475,6 @@ go
                         {
                             pd2 = new PropertyDescriptor
                             {
-                                Name = $"{pd.Name}{pd1.Name}",
                                 Type = pd1.Type,
                                 IsReadOnly = pd.IsReadOnly,
                                 IsNullable = pd.IsNullable,
@@ -506,7 +501,6 @@ go
             {
                 node.PrimaryKey.Add(new PropertyDescriptor
                 {
-                    Name = $"Id{i}",
                     Type = typeof(int),
                     IsNullable = false,
                     IsCollection = false,
@@ -529,14 +523,12 @@ go
                 node.References.Add(entity);
                 node.Properties.Add(new PropertyDescriptor
                 {
-                    Name = $"P{node.MaxPropertyNum}",
                     Node = entity,
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
                     IsNullable = random.Next(s_baseNullable) == 0,
                     IsCollection = random.Next(s_baseCollection) == 0,
                     Source = 15,
                 });
-                ++node.MaxPropertyNum;
             }
         }
     }
@@ -664,10 +656,6 @@ go
         List<Node> manyToManyLinks = new();
         for (int i = 0; i < numNodes; ++i)
         {
-            if (universe.Nodes[i].Base is { })
-            {
-                universe.Nodes[i].MaxPropertyNum = universe.Nodes[i].Base!.MaxPropertyNum;
-            }
             List<Node> list = universe.Nodes.Take(numNodes).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
             int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
@@ -701,7 +689,6 @@ go
                         bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
-                            Name = $"P{list[pos].MaxPropertyNum}",
                             Node = universe.Nodes[i],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
@@ -710,14 +697,12 @@ go
                             Source = 3,
                         };
                         list[pos].Properties.Add(pd1);
-                        ++list[pos].MaxPropertyNum;
                     }
                     if (random.Next(s_baseCollection) == 0)
                     {
                         bool isNullable = random.Next(s_baseNullable) == 0;
                         PropertyDescriptor pd1 = new()
                         {
-                            Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                             Node = list[pos],
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsCollection = true,
@@ -726,28 +711,23 @@ go
                             Source = 4,
                         };
                         universe.Nodes[i].Properties.Add(pd1);
-                        ++universe.Nodes[i].MaxPropertyNum;
                     }
                     link.Properties.Add(new PropertyDescriptor
                     {
-                        Name = $"P{link.MaxPropertyNum}",
                         Node = universe.Nodes[i],
                         IsReadOnly = true,
                         IsNullable = false,
                         IsCollection = false,
                         Source = 5,
                     });
-                    ++link.MaxPropertyNum;
                     link.Properties.Add(new PropertyDescriptor
                     {
-                        Name = $"P{link.MaxPropertyNum}",
                         Node = list[pos],
                         IsReadOnly = true,
                         IsNullable = false,
                         IsCollection = false,
                         Source = 6,
                     });
-                    ++link.MaxPropertyNum;
                 }
                 else
                 {
@@ -756,7 +736,6 @@ go
                     bool isNullable = random.Next(s_baseNullable) == 0;
                     PropertyDescriptor pd = new()
                     {
-                        Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsNullable = isNullable,
@@ -769,8 +748,6 @@ go
                         Source = 7,
                     };
 
-                    ++universe.Nodes[i].MaxPropertyNum;
-
                     universe.Nodes[i].Properties.Add(pd);
                     if (random.Next(s_baseCollection) == 0)
                     {
@@ -782,7 +759,6 @@ go
                         {
                             PropertyDescriptor pd1 = new()
                             {
-                                Name = $"P{list[pos].MaxPropertyNum}",
                                 Node = universe.Nodes[i],
                                 IsReadOnly = random.Next(s_baseReadonly) == 0,
                                 IsCollection = true,
@@ -790,7 +766,6 @@ go
                                 Source = 8,
                             };
                             list[pos].Properties.Add(pd1);
-                            ++list[pos].MaxPropertyNum;
                         }
                     }
                 }
@@ -813,7 +788,6 @@ go
                 bool isCalculated = random.Next(s_baseIsCalculated) == 0;
                 PropertyDescriptor pd = new()
                 {
-                    Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                     Type = type,
                     IsReadOnly = !isPrimaryKeyPart && random.Next(s_baseReadonly) == 0,
                     IsCollection = isCollection,
@@ -826,8 +800,6 @@ go
                     Source = 9,
                 };
                 universe.Nodes[i].Properties.Add(pd);
-                
-                ++universe.Nodes[i].MaxPropertyNum;
                 
                 if (isPrimaryKeyPart)
                 {
@@ -848,15 +820,12 @@ go
                         probe.Referencers.Add(universe.Nodes[i]);
                         PropertyDescriptor pd = new()
                         {
-                            Name = $"P{universe.Nodes[i].MaxPropertyNum}",
                             Node = probe,
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
                             IsNullable = random.Next(s_baseNullable) == 0,
                             Source = 10,
                         };
                         universe.Nodes[i].Properties.Add(pd);
-
-                        ++universe.Nodes[i].MaxPropertyNum;
 
                         if (random.Next(s_baseCollection) == 0)
                         {
@@ -868,7 +837,6 @@ go
                             {
                                 PropertyDescriptor pd1 = new()
                                 {
-                                    Name = $"P{probe.MaxPropertyNum}",
                                     Node = universe.Nodes[i],
                                     IsReadOnly = random.Next(s_baseReadonly) == 0,
                                     IsCollection = true,
@@ -876,7 +844,6 @@ go
                                     Source = 11,
                                 };
                                 probe.Properties.Add(pd1);
-                                ++probe.MaxPropertyNum;
                             }
                         }
                         break;

@@ -5,7 +5,11 @@ namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 public class Node
 {
     private static int s_genId = 0;
-    public int Id { get; private init; } = Interlocked.Increment(ref s_genId);
+
+    private Node? _base = null;
+    private List<Node>? _inherits = null;
+
+    public int Id { get; private init; } = ++s_genId;
     public List<Node> References { get; private init; } = new();
     public HashSet<Node> Referencers { get; private init; } = new();
     public NodeType NodeType { get; internal set; } = NodeType.Envelope;
@@ -14,8 +18,33 @@ public class Node
     public int NumInherits { get; internal set; } = 0;
     public string? Namespace { get; internal set; } = null;
     public string FullName => Namespace is { } ? $"{Namespace}.{Name}" : Name;
-    public Node? Base { get; internal set; } = null;
-    public int MaxPropertyNum { get; internal set; } = 0;
+    public Node? Base 
+    { 
+        get => _base; 
+        internal set 
+        { 
+            if(value is { })
+            {
+                if(value._inherits is null)
+                {
+                    value._inherits = new List<Node>();
+                }
+                value._inherits.Add(this);
+            }
+            else
+            {
+                if (_base is { } && _base._inherits is { })
+                {
+                    _base._inherits.Remove(this);
+                }
+            }
+            _base = value;
+        }
+    }
+    public List<Node>? Inherits 
+    {
+        get => _inherits;
+    }
 
     public virtual string Name => $"Envelope{Id}";
 

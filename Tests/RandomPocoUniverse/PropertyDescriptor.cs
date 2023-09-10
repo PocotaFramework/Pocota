@@ -5,7 +5,9 @@ namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
 public class PropertyDescriptor
 {
-    public string Name { get; set; } = null!;
+    private static int s_genId = 0;
+
+    public string Name { get; private init; } = $"P{++s_genId }";
     public Node? Node { get; set; } = null;
     public Type? Type { get; set; } = null;
     public bool IsCollection { get; set; } = false;
