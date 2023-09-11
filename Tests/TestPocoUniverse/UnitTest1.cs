@@ -1,13 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Net.Leksi.Pocota.Common;
-using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
-using NUnit.Framework.Interfaces;
 using System.Diagnostics;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace TestPocoUniverse;
 
@@ -27,7 +24,7 @@ public class Tests
     public class Test1Options
     {
         public int Seed { get; internal init; } = 2024548466;
-        public bool DoCreateDatabase { get; internal init; } = false;
+        public bool DoCreateDatabase { get; internal init; } = true;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
@@ -137,12 +134,13 @@ public class Tests
         {
             foreach (Node node in universe.Nodes)
             {
-                //Console.WriteLine(node);
-                if(node is EntityNode)
+                Console.WriteLine(node);
+                if (node is EntityNode)
                 {
                     foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
                     {
                         Assert.That(pd.References, Is.Not.Null, $"{pd}, {node}");
+                        Assert.That(pd.References?.Count, Is.EqualTo(((EntityNode)pd.Node!).PrimaryKey.Count), $"{pd}, {node}");
                     }
                 }
             }

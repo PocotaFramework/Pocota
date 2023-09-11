@@ -4,15 +4,14 @@ namespace EFLearning;
 
 public class ApplicationContext : DbContext
 {
-    public DbSet<UserImpl> Users { get; set; } = null!;
-    public ApplicationContext()
-    {
-        Database.EnsureDeleted();
-        Database.EnsureCreated();
-    }
+    public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Company> Companies { get; set; } = null!;
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=helloapp.db");
+        modelBuilder.Entity<UserImpl>().HasOne(u => u.Company).WithOne(c => (UserImpl)c.Director).HasForeignKey();
+        modelBuilder.Entity<CompanyImpl>();
     }
 }

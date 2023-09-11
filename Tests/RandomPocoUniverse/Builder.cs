@@ -4,6 +4,7 @@ using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml.Linq;
 
@@ -96,22 +97,22 @@ public class Builder
     }
 
     private static void CreateContractMethods(Universe universe, Random random)
-    {/*
-        foreach(Node node in universe.Entities.Concat(universe.Extenders))
+    {
+        Node[] envelopes = universe.Nodes.Where(n => n is not EntityNode).ToArray();
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             node.Methods.Add(new MethodHolder
             {
                 Name = $"Get{node.Name}"
             });
-            string getArg = (node is EntityNode ? node : ((ExtenderNode)node).Base).InterfaceName;
             node.Methods.First().Parameters.Add(new MethodParameterModel
             {
                 Name = "arg",
-                Type = getArg,
+                Type = node.Name,
             });
             CreatePropertyPaths(node.Methods.First().Properties, node, random, string.Empty, 0);
             int numMethods = random.Next(s_maxMethods + 1);
-            for(int i = 0; i < numMethods; ++i)
+            for (int i = 0; i < numMethods; ++i)
             {
                 bool isCollection = random.Next(s_baseMethodSingle) == 0;
                 MethodHolder mh = new MethodHolder
@@ -120,18 +121,18 @@ public class Builder
                     IsCollection = isCollection,
                 };
                 int numArgs = random.Next(s_maxMethodArgs + 1);
-                for(int j = 0; j < numArgs; ++j)
+                for (int j = 0; j < numArgs; ++j)
                 {
                     string type;
-                    
-                    if( random.Next(s_baseOtherArgs) == 0)
+
+                    if (random.Next(s_baseOtherArgs) == 0)
                     {
                         Type t = s_terminalTypes[random.Next(s_terminalTypes.Length)];
                         type = Util.MakeTypeName(t);
                     }
                     else
                     {
-                        type = universe.Envelopes[random.Next(universe.Envelopes.Count)].InterfaceName;
+                        type = envelopes[random.Next(envelopes.Length)].Name;
                     }
                     mh.Parameters.Add(new MethodParameterModel
                     {
@@ -143,7 +144,7 @@ public class Builder
                 CreatePropertyPaths(mh.Properties, node, random, string.Empty, 0);
             }
         }
-    */}
+    }
 
     private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
     {/*
@@ -428,6 +429,7 @@ go
                 node.PrimaryKey!.Add(candidates[pos]);
                 candidates.RemoveAt(pos);
             }
+            // todo у потомков меняются ключи, надо отследить
             foreach (EntityNode referenser in node.Referencers.Where(n => n is EntityNode))
             {
                 foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
@@ -598,7 +600,6 @@ go
     private static void CreateNodes(Universe universe, Random random)
     {
         int thresh = s_numNodes - (1 + s_maxNumInherited) * s_maxNumInherited / 2;
-        Console.WriteLine($"thresh: {thresh}");
         int addThresh = s_maxNumInherited;
         int numInherits = 0;
         int numNodes = s_numNodes;
@@ -632,22 +633,10 @@ go
                 {
                     Node node1 = node.NodeType == NodeType.Envelope ? new Node() : new EntityNode();
                     node1.Base = baseNode;
-                    if (node1 is EntityNode entity1)
-                    {
-                        entity1.PrimaryKey = ((EntityNode)baseNode).PrimaryKey;
-                    }
                     node1.NumInherits = baseNode.NumInherits + 1;
                     baseNode = node1;
                 }
                 node.Base = baseNode;
-                if (node is EntityNode entity)
-                {
-                    entity.PrimaryKey = ((EntityNode)baseNode).PrimaryKey;
-                }
-            }
-            else if(node is EntityNode entity)
-            {
-                entity.PrimaryKey = new List<PropertyDescriptor>();
             }
             node.Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" };
             universe.Nodes.Add(node);
@@ -682,7 +671,6 @@ go
                     {
                         NodeType = NodeType.ManyToManyLink,
                         Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
-                        PrimaryKey = new List<PropertyDescriptor>(),
                     };
                     link.References.Add(universe.Nodes[i]);
                     universe.Nodes[i].Referencers.Add(link);
@@ -907,7 +895,7 @@ go
                         table.Columns.Add(col);
                     }
                 }
-                else
+                else if(pd.Node is null)
                 {
                     DataColumn col = new DataColumn
                     {
@@ -928,10 +916,10 @@ go
         foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
             DataTable table = universe.DataSet.Tables[$"Table{node.Id}"]!;
-            foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is { } && !p.IsCollection))
+            foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
             {
                 DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
-                //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
+                Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
                 try
                 {
                     table.Constraints.Add(

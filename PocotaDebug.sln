@@ -42,8 +42,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoUniverseCommon", "Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoUniverseServer", "Tests\PocoUniverseServer\PocoUniverseServer.csproj", "{A468DEA1-DB38-4622-9976-1270CBACB3EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFLearning", "Tests\EFLearning\EFLearning.csproj", "{6181F308-21B6-445E-AAF6-9A91C6B44F19}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,12 +115,6 @@ Global
 		{A468DEA1-DB38-4622-9976-1270CBACB3EB}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{A468DEA1-DB38-4622-9976-1270CBACB3EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A468DEA1-DB38-4622-9976-1270CBACB3EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.RAC|Any CPU.ActiveCfg = Release|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.RAC|Any CPU.Build.0 = Release|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -139,7 +131,6 @@ Global
 		{0BAE4891-E23E-460A-A9EB-0ACB781439E2} = {58627AA6-CA23-4998-943D-2AEC52E95C72}
 		{7366EFFB-8BD4-47E8-878D-94219697E0FA} = {58627AA6-CA23-4998-943D-2AEC52E95C72}
 		{A468DEA1-DB38-4622-9976-1270CBACB3EB} = {58627AA6-CA23-4998-943D-2AEC52E95C72}
-		{6181F308-21B6-445E-AAF6-9A91C6B44F19} = {58627AA6-CA23-4998-943D-2AEC52E95C72}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DA5EDFDC-26C8-46B1-9271-A4CCC5A758D6}
