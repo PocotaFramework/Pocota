@@ -4,11 +4,11 @@ namespace Net.Leksi.Pocota.Common;
 
 internal class CycleFinder
 {
-    private readonly Dictionary<Type, InterfaceHolder> _targets;
+    private readonly Dictionary<Type, ClassHolder> _targets;
     private PropertyInfo _property;
     private string _keyPartName;
 
-    internal CycleFinder(Dictionary<Type, InterfaceHolder> targets, PropertyInfo property, string keyPartName)
+    internal CycleFinder(Dictionary<Type, ClassHolder> targets, PropertyInfo property, string keyPartName)
     {
         _targets = targets;
         _property = property;
@@ -18,7 +18,7 @@ internal class CycleFinder
     internal bool Move()
     {
         if (
-            _targets.TryGetValue(_property.PropertyType, out InterfaceHolder? target)
+            _targets.TryGetValue(_property.PropertyType, out ClassHolder? target)
             && target.KeysDefinitions.TryGetValue(_keyPartName, out PrimaryKeyDefinition? key)
             && key.KeyReference is { })
         {
@@ -33,7 +33,7 @@ internal class CycleFinder
         return _property == another._property && _keyPartName.Equals(another._keyPartName);
     }
 
-    internal static void CheckNoCycle(Dictionary<Type, InterfaceHolder> targets, Type targetType, PrimaryKeyDefinition key)
+    internal static void CheckNoCycle(Dictionary<Type, ClassHolder> targets, Type targetType, PrimaryKeyDefinition key)
     {
         CycleFinder pointer1 = new(targets, key.Property!, key.KeyReference!);
         CycleFinder pointer2 = new(targets, key.Property!, key.KeyReference!);

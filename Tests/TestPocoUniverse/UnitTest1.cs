@@ -29,7 +29,7 @@ public class Tests
         public int Seed { get; internal init; } = 2024548466;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
-        public bool DoGenerateClasses { get; internal init; } = false;
+        public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
         public bool DoCompilePocoUniverseServer { get; internal init; } = false;
         public bool DoRunPocoUniverseServer { get; internal init; } = false;
@@ -137,7 +137,7 @@ public class Tests
         {
             foreach (Node node in universe.Nodes)
             {
-                Console.WriteLine(node);
+                //Console.WriteLine(node);
                 if(node is EntityNode)
                 {
                     foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
@@ -460,9 +460,9 @@ public class Tests
         int i = 0;
         for (; i < allNodes.Length && pa.MoveNext(); ++i)
         {
-            Node? node = allNodes.Where(n => n.Name.Equals(pa.Current.Interface.Name)).FirstOrDefault();
+            Node? node = allNodes.Where(n => n.Name.Equals(pa.Current.Class.Name)).FirstOrDefault();
             Assert.That(node, Is.Not.Null);
-            Assert.That(pa.Current.Interface.Namespace, Is.EqualTo(node.Namespace));
+            Assert.That(pa.Current.Class.Namespace, Is.EqualTo(node.Namespace));
             Assert.Multiple(() =>
             {
                 Assert.That(

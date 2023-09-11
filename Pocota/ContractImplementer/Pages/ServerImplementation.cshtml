@@ -310,7 +310,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         {
             <text>        public @nameof(IPrimaryKey) CreatePrimaryKey(@nameof(IServiceProvider) serviceProvider)
         {
-            return (@Model.PrimaryKey.Name)serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IPrimaryKey<object>)}<{Model.Interface}>>")@{}();
+            return (@Model.PrimaryKey.Name)serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IPrimaryKey<object>)}<{Model.Class}>>")@{}();
         }
 </text>
         }
@@ -412,7 +412,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
    
 @foreach(PropertyModel pm in Model.Properties.Where(p => !string.IsNullOrEmpty(p.Name)))
 {
-    <text>    public virtual @Html.Raw(pm.Type)@pm.Nullable @pm.Name 
+    <text>    public override @Html.Raw(pm.Type)@pm.Nullable @pm.Name 
     {
         get => Get@{}@pm.Name@{}();
     @if(!pm.IsReadonly)
@@ -476,7 +476,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
 </text>
             }
         }
-                _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Interface}>>")@{}().CheckAccess(this);
+                _serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(IAccessManager<object>)}<{Model.Class}>>")@{}().CheckAccess(this);
                 _isAccessChecked = true;
             }
             finally

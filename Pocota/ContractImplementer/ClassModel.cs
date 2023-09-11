@@ -11,7 +11,7 @@ public class ClassModel: PageModel
     internal HashSet<string> Usings { get; private init; } = new();
     internal List<string> Interfaces { get; private init; } = new();
     internal PrimaryKeyModel? PrimaryKey { get; set; } = null;
-    internal string? Interface { get; set; } = null;
+    internal string? Class { get; set; } = null;
     internal PocoKind? PocoKind { get; set; } = null;
     internal List<PropertyModel> Properties { get; private init; } = new();
     internal List<PropertyModel> AccessProperties { get; private init; } = new();

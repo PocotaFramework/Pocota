@@ -18,7 +18,7 @@ public class EntityNode: Node
             {
                 return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"typeof({Util.MakeTypeName(pk.Type!)})" };
             }
-            return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}\"" };
+            return new string[] { $"\"{pk.PrimaryKeyPartAlias}\"", $"\"{parts[0]}<{pk.Source}>\"" };
         }
         if (parts[1].StartsWith("Id"))
         {

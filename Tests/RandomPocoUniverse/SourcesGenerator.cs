@@ -68,7 +68,7 @@ public class SourcesGenerator: Runner
 
         foreach (Node node in universe.Nodes)
         {
-            TextReader interfaceSource = connector.Get("/Interface", new Tuple<Universe, Node>(universe, node));
+            TextReader interfaceSource = connector.Get("/Class", new Tuple<Universe, Node>(universe, node));
             File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), interfaceSource.ReadToEnd());
         }
 

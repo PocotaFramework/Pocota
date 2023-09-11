@@ -436,6 +436,7 @@ go
                     {
                         pd.References.Add(new PropertyDescriptor
                         {
+                            Name = $"{pd.Name}{node.PrimaryKey[i].Name}",
                             Type = node.PrimaryKey[i].Type,
                             IsReadOnly = pd.IsReadOnly,
                             IsNullable = pd.IsNullable,
@@ -457,6 +458,7 @@ go
                 {
                     pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
                     {
+                        Name = $"{pd.Name}{p.Name}",
                         Type = p.Type,
                         IsReadOnly = pd.IsReadOnly,
                         IsNullable = pd.IsNullable,
@@ -475,6 +477,7 @@ go
                         {
                             pd2 = new PropertyDescriptor
                             {
+                                Name = $"{pd.Name}{pd1.Name}",
                                 Type = pd1.Type,
                                 IsReadOnly = pd.IsReadOnly,
                                 IsNullable = pd.IsNullable,
@@ -499,14 +502,16 @@ go
             int pkCount = 1 + random.Next(s_maxKeyParts);
             for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
             {
-                node.PrimaryKey.Add(new PropertyDescriptor
+                PropertyDescriptor pd = new()
                 {
                     Type = typeof(int),
                     IsNullable = false,
                     IsCollection = false,
                     IsReadOnly = true,
                     Source = 14,
-                });
+                };
+                pd.Name = pd.Name.Replace("P", "Id");
+                node.PrimaryKey.Add(pd);
             }
         }
     }

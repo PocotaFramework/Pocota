@@ -31,10 +31,9 @@ public class Generator : Runner
     private const string s_self = "Self";
 
     private readonly HashSet<Type> _queue = new();
-    private readonly Regex _interfaceNameCheck = new("^I(.+?)$");
-    private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?$");
+    private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?(?:<\\d+>)?$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
-    private readonly Dictionary<Type, InterfaceHolder> _interfaceHoldersByType = new();
+    private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
 
     private Type? _contract = null;
@@ -78,7 +77,6 @@ public class Generator : Runner
                     {
                         ProcessPocoAttribute(attr);
                     }
-                    CheckConsistence();
                     CheckBaseInterfaces();
                     CheckPrimaryKeys();
                     CheckAccessProperties();
@@ -201,7 +199,7 @@ public class Generator : Runner
                     }
                 }
             }
-            else if (_interfaceHoldersByType.TryGetValue(@interface, out InterfaceHolder? target))
+            else if (_classHoldersByType.TryGetValue(@interface, out ClassHolder? target))
             {
                 if (true/*target.BaseInterface == target.Interface*/)
                 {
@@ -256,6 +254,9 @@ public class Generator : Runner
                             {
                                 ++fails;
                             }
+                        }
+                        if (_classHoldersByType[target.BaseClass].KeysDefinitions.Any())
+                        {
                             if (
                                 ProcessInterface(
                                     connector, @interface,
@@ -300,8 +301,9 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
-            && @interface.KeysDefinitions.Any()
+            && _classHoldersByType.TryGetValue(request.Class, out ClassHolder? ch)
+            && _classHoldersByType.TryGetValue(ch.BaseClass, out ClassHolder? baseClass)
+            && baseClass.KeysDefinitions.Any()
         )
         {
             _variables.Clear();
@@ -310,14 +312,14 @@ public class Generator : Runner
 
             AddUsings(model, typeof(IAccessManager<>));
 
-            model.ClassName = MakeAllowAccessManager(request.Interface);
+            model.ClassName = MakeAllowAccessManager(request.Class);
             model.Interfaces.Add(
                 Util.MakeTypeName(
-                    typeof(IAccessManager<>).MakeGenericType(new Type[] { request.Interface })
+                    typeof(IAccessManager<>).MakeGenericType(new Type[] { request.Class })
                 )
             );
 
-            model.Interface = Util.MakeTypeName(request.Interface);
+            model.Class = Util.MakeTypeName(request.Class);
 
             request.ResultName = model.ClassName;
         }
@@ -343,7 +345,7 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && request.Interface == _contract
+            && request.Class == _contract
         )
         {
             InitClassModel(model, request);
@@ -354,7 +356,7 @@ public class Generator : Runner
             AddUsings(model, typeof(IDataProviderFactory));
             AddUsings(model, typeof(DataProvider));
 
-            foreach (MethodInfo method in request.Interface.GetMethods())
+            foreach (MethodInfo method in request.Class.GetMethods())
             {
                 _variables.Clear();
                 AddUsings(model, method.ReturnType);
@@ -457,14 +459,14 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+            && _classHoldersByType.TryGetValue(request.Class, out ClassHolder? @interface)
             && @interface.KeysDefinitions.Any())
         {
             _variables.Clear();
 
             InitClassModel(model, request);
 
-            model.ClassName = MakePrimaryKeyName(request.Interface);
+            model.ClassName = MakePrimaryKeyName(request.Class);
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IPrimaryKey));
@@ -472,7 +474,7 @@ public class Generator : Runner
             AddUsings(model, typeof(KeyDefinition));
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey)));
-            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Interface })));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Class })));
 
             FillPrimaryKeyModel(model, @interface);
         }
@@ -488,7 +490,7 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && request.Interface == _contract
+            && request.Class == _contract
         )
         {
             InitClassModel(model, request);
@@ -501,7 +503,7 @@ public class Generator : Runner
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IConfigurator)));
 
-            foreach (KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
+            foreach (KeyValuePair<Type, ClassHolder> entry in _classHoldersByType)
             {
                 AddUsings(model, entry.Key);
                 model.Services.Add(new ServiceModel
@@ -525,7 +527,7 @@ public class Generator : Runner
                     });
                 }
             }
-            foreach (MethodInfo method in request.Interface.GetMethods())
+            foreach (MethodInfo method in request.Class.GetMethods())
             {
                 model.Services.Add(
                     new ServiceModel
@@ -557,17 +559,17 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && _interfaceHoldersByType.TryGetValue(request.Interface, out InterfaceHolder? @interface)
+            && _classHoldersByType.TryGetValue(request.Class, out ClassHolder? @interface)
         )
         {
             _variables.Clear();
 
             InitClassModel(model, request);
 
-            model.ClassName = MakePocoClassName(request.Interface);
+            model.ClassName = MakePocoClassName(request.Class);
             request.ResultName = model.ClassName;
 
-            model.Interface = Util.MakeTypeName(request.Interface);
+            model.Class = Util.MakeTypeName(request.Class);
 
             AddUsings(model, typeof(IServiceCollection));
             AddUsings(model, typeof(IServiceProvider));
@@ -586,35 +588,35 @@ public class Generator : Runner
                 AddUsings(model, typeof(IPrimaryKey<>));
                 AddUsings(model, typeof(IEntityProperty));
                 AddUsings(model, typeof(ISelfEntityProperty));
-                AddUsings(model, request.Interface);
+                AddUsings(model, request.Class);
                 AddUsings(model, typeof(PropertyAccessMode));
+                model.Interfaces.Add(Util.MakeTypeName(request.Class));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
-                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Entity;
                 if (@interface.AccessProperties is { } && @interface.AccessProperties.Any())
                 {
                     AddUsings(model, typeof(IAccessManager<>));
                 }
             }
-            else if (
-                @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && _interfaceHoldersByType.ContainsKey(baseInterface)
-            )
-            {
-                AddUsings(model, baseInterface);
-                AddUsings(model, typeof(IEntityProperty));
-                AddUsings(model, typeof(PropertyAccessMode));
-                model.Interfaces.Add(MakePocoClassName(baseInterface));
-                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
-                model.PocoKind = PocoKind.Extender;
-            }
+            //else if (
+            //    @interface.Class.GetInterfaces().FirstOrDefault() is Type baseInterface
+            //    && _interfaceHoldersByType.ContainsKey(baseInterface)
+            //)
+            //{
+            //    AddUsings(model, baseInterface);
+            //    AddUsings(model, typeof(IEntityProperty));
+            //    AddUsings(model, typeof(PropertyAccessMode));
+            //    model.Interfaces.Add(MakePocoClassName(baseInterface));
+            //    model.Interfaces.Add(Util.MakeTypeName(request.Class));
+            //    model.PocoKind = PocoKind.Extender;
+            //}
             else
             {
+                AddUsings(model, request.Class);
                 AddUsings(model, typeof(IEnvelope));
-                AddUsings(model, request.Interface);
                 AddUsings(model, typeof(IProperty));
+                model.Interfaces.Add(Util.MakeTypeName(request.Class));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEnvelope)));
-                model.Interfaces.Add(Util.MakeTypeName(request.Interface));
                 model.PocoKind = PocoKind.Envelope;
             }
             NullabilityInfoContext nic = new();
@@ -622,19 +624,19 @@ public class Generator : Runner
             {
                 Name = string.Empty,
                 FieldName = GetUniqueVariable($"_{s_self.ToLower()}{s_property}"),
-                Type = Util.MakeTypeName(@interface.Interface),
+                Type = Util.MakeTypeName(@interface.Class),
                 Nullable = string.Empty,
                 IsReadonly = false,
                 IsClass = true,
                 PropertyClass = $"{s_self}{s_property}{s_class}",
                 PropertyField = $"{s_staticPrefix}{s_self}{s_property}",
-                ItemType = Util.MakeTypeName(@interface.Interface),
+                ItemType = Util.MakeTypeName(@interface.Class),
                 IsCollection = false,
-                PocoKind = GetPocoKind(@interface.Interface),
+                PocoKind = GetPocoKind(@interface.Class),
                 IsAccess = false,
             };
             model.Properties.Add(pm);
-            foreach (PropertyInfo pi in request.Interface.GetProperties())
+            foreach (PropertyInfo pi in request.Class.GetProperties())
             {
                 pm = new()
                 {
@@ -741,15 +743,15 @@ public class Generator : Runner
 
     private PocoKind GetPocoKind(Type type)
     {
-        if (_interfaceHoldersByType.TryGetValue(type, out InterfaceHolder? @interface))
+        if (_classHoldersByType.TryGetValue(type, out ClassHolder? @interface))
         {
             if (@interface.KeysDefinitions.Any())
             {
                 return PocoKind.Entity;
             }
             if (
-                @interface.Interface.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && _interfaceHoldersByType.ContainsKey(baseInterface)
+                @interface.Class.GetInterfaces().FirstOrDefault() is Type baseInterface
+                && _classHoldersByType.ContainsKey(baseInterface)
             )
             {
                 return PocoKind.Extender;
@@ -780,21 +782,21 @@ public class Generator : Runner
 
     private string MakePocoClassName(Type @interface)
     {
-        return $"{_interfaceHoldersByType[@interface].Name}{s_poco}";
+        return $"{_classHoldersByType[@interface].Name}{s_poco}";
     }
 
     private string MakeAllowAccessManager(Type @interface)
     {
-        return $"{_interfaceHoldersByType[@interface].Name}{s_allowAccessManager}";
+        return $"{_classHoldersByType[@interface].Name}{s_allowAccessManager}";
     }
 
-    private void FillPrimaryKeyModel(ClassModel model, InterfaceHolder @interface)
+    private void FillPrimaryKeyModel(ClassModel model, ClassHolder @interface)
     {
         if (@interface.KeysDefinitions.Any())
         {
             model.PrimaryKey = new PrimaryKeyModel
             {
-                Name = MakePrimaryKeyName(@interface.Interface)
+                Name = MakePrimaryKeyName(@interface.Class)
             };
 
             foreach (KeyValuePair<string, PrimaryKeyDefinition> partDefinition in @interface.KeysDefinitions)
@@ -812,12 +814,14 @@ public class Generator : Runner
                     partModel.Property = $"{partModel.PropertyName}).{s_primaryKey}";
                     partModel.KeyReference = partDefinition.Value.KeyReference!;
                     partModel.PrimaryKeyClassName = MakePrimaryKeyName(partDefinition.Value.Property.PropertyType);
+                    AddUsings(model, _classHoldersByType[partDefinition.Value.Property.PropertyType].BaseClass);
                 }
                 else if (partDefinition.Value.Property is { })
                 {
                     partModel.IsProperty = true;
                     partModel.PropertyName = partDefinition.Value.Property!.Name!;
                     partModel.Property = partModel.PropertyName;
+                    AddUsings(model, partDefinition.Value.Property.PropertyType);
                 }
                 if (partModel.Property is { })
                 {
@@ -856,74 +860,43 @@ public class Generator : Runner
 
     private string MakePrimaryKeyName(Type @interface)
     {
-        return $"{_interfaceHoldersByType[@interface].Name}{s_primaryKey}";
+        return $"{_classHoldersByType[_classHoldersByType[@interface].BaseClass].Name}{s_primaryKey}";
     }
 
     private void InitClassModel(ClassModel model, GeneratingRequest request)
     {
         model.Contract = request.Contract;
-        model.NamespaceValue = request.Interface.Namespace;
-    }
-
-    private void CheckConsistence()
-    {
-        foreach (KeyValuePair<Type, InterfaceHolder> entry in _interfaceHoldersByType)
-        {
-            if (entry.Value.KeysDefinitions.Any())
-            {
-                foreach (PropertyInfo pi in entry.Key.GetProperties())
-                {
-                    Type itemType = pi.PropertyType;
-                    if (
-                        itemType.IsGenericType
-                        && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition())
-                        && itemType.GetGenericArguments()[0] is Type type
-                    )
-                    {
-                        itemType = type;
-                    }
-                    if (_interfaceHoldersByType.TryGetValue(itemType, out InterfaceHolder? ih) && !ih.KeysDefinitions.Any())
-                    {
-                        throw new InvalidOperationException($"Entity {entry.Key} cannot have any property with item type Poco but not Entity (but {pi.Name} item type is {itemType})!");
-                    }
-                }
-            }
-        }
+        model.NamespaceValue = request.Class.Namespace;
     }
 
     private void ProcessPocoAttribute(PocoAttribute attr)
     {
-        if (!attr.Interface.IsInterface)
+        if (!attr.Class.IsAbstract)
         {
-            throw new InvalidOperationException($"Only interfaces allowed ({attr.Interface})!");
+            throw new InvalidOperationException($"Only abstract classes allowed ({attr.Class})!");
         }
-        if (attr.Interface.GetMethods().Where(x => !x.IsSpecialName).Count() > 0)
+        if (attr.Class.GetMethods().Where(x => x.DeclaringType == attr.Class && !x.IsSpecialName).Count() > 0)
         {
-            throw new InvalidOperationException($"Methods are not allowed at the interface {attr.Interface}!");
+            throw new InvalidOperationException($"Methods are not allowed at the ch {attr.Class}!");
         }
-        if (!_interfaceHoldersByType.TryGetValue(attr.Interface, out InterfaceHolder? interfaceHolder))
+        if (!_classHoldersByType.TryGetValue(attr.Class, out ClassHolder? interfaceHolder))
         {
-            interfaceHolder = new() { Interface = attr.Interface };
-            Match match = _interfaceNameCheck.Match(attr.Interface.Name);
-            if (!match.Success)
-            {
-                throw new InvalidOperationException($"Interface {attr.Interface} does not meet name condition: I{{Name}}!");
-            }
-            interfaceHolder.Name = match.Groups[1].Captures[0].Value;
-            _interfaceHoldersByType.Add(attr.Interface, interfaceHolder);
-            _queue.Add(attr.Interface);
+            interfaceHolder = new() { Class = attr.Class };
+            interfaceHolder.Name = attr.Class.Name;
+            _classHoldersByType.Add(attr.Class, interfaceHolder);
+            _queue.Add(attr.Class);
         }
         else
         {
-            throw new InvalidOperationException($"Interface {attr.Interface} is already defined at {_contract}!");
+            throw new InvalidOperationException($"Class {attr.Class} is already defined at {_contract}!");
         }
         if (attr.PrimaryKey is { })
         {
             if (
-                attr.Interface.GetInterfaces().Any()
+                attr.Class.GetInterfaces().Any()
             )
             {
-                throw new InvalidOperationException($"Extender {attr.Interface} cannot have own PrimaryKey!");
+                throw new InvalidOperationException($"Extender {attr.Class} cannot have own PrimaryKey!");
             }
             PrimaryKeyDefinition? keyDefinition = null;
             for (int i = 0; i < attr.PrimaryKey.Length; ++i)
@@ -937,7 +910,7 @@ public class Generator : Runner
                     else
                     {
                         throw new InvalidOperationException(
-                            $"Invalid primary key's field name {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                            $"Invalid primary key's field name {attr.PrimaryKey[i]} for target {attr.Class}!"
                         );
                     }
                 }
@@ -951,11 +924,11 @@ public class Generator : Runner
                     {
                         Match match1 = _keyPathCheck.Match(path);
                         string propertyName = match1.Groups[1].Captures[0].Value;
-                        keyDefinition!.Property = attr.Interface.GetProperty(propertyName);
+                        keyDefinition!.Property = attr.Class.GetProperty(propertyName);
                         if (keyDefinition!.Property is null)
                         {
                             throw new InvalidOperationException(
-                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is absent!"
+                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Class}, the property {propertyName} is absent!"
                             );
                         }
                         NullabilityInfoContext nullability = new();
@@ -963,7 +936,7 @@ public class Generator : Runner
                         if (nullabilityInfo.ReadState is NullabilityState.Nullable)
                         {
                             throw new InvalidOperationException(
-                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}, the property {propertyName} is nullable!"
+                                $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Class}, the property {propertyName} is nullable!"
                             );
                         }
                         if (match1.Groups[2].Captures.Count == 1)
@@ -978,13 +951,13 @@ public class Generator : Runner
                     else
                     {
                         throw new InvalidOperationException(
-                            $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                            $"Invalid primary key's definition {attr.PrimaryKey[i]} for target {attr.Class}!"
                         );
                     }
                     if (!interfaceHolder.KeysDefinitions.TryAdd(keyDefinition.Name, keyDefinition))
                     {
                         throw new InvalidOperationException(
-                            $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for target {attr.Interface}!"
+                            $"Duplicate primary key's definition {keyDefinition.Name} = {attr.PrimaryKey[i]} for target {attr.Class}!"
                         );
                     }
                 }
@@ -993,10 +966,6 @@ public class Generator : Runner
             {
                 interfaceHolder.AccessProperties = attr.AccessProperties;
             }
-        }
-        else if (attr.AccessProperties is { })
-        {
-            throw new InvalidOperationException($"{nameof(attr.AccessProperties)} are allowed only for entities!");
         }
     }
 
@@ -1007,38 +976,34 @@ public class Generator : Runner
 
     private void CheckBaseInterfaces()
     {
-        List<InterfaceHolder> chain = new();
-        foreach (Type targetType in _interfaceHoldersByType.Keys)
+        List<ClassHolder> chain = new();
+        foreach (Type targetType in _classHoldersByType.Keys)
         {
             chain.Clear();
             Type? currentType = targetType;
             while (currentType is { })
             {
-                InterfaceHolder ih = _interfaceHoldersByType[currentType];
-                if (ih.BaseInterface is { })
+                ClassHolder ih = _classHoldersByType[currentType];
+                if (ih.BaseClass is { })
                 {
-                    chain.ForEach(ih1 => ih1.BaseInterface = ih.BaseInterface);
+                    chain.ForEach(ih1 => ih1.BaseClass = ih.BaseClass);
                     currentType = null;
                 }
                 else
                 {
                     chain.Add(ih);
-                    Type[] baseTypes = currentType.GetInterfaces().Where(i => _interfaceHoldersByType.ContainsKey(i)).ToArray();
-                    if (baseTypes.Length > 1)
+                    Type? baseType = currentType.BaseType;
+                    if (baseType is { } && _classHoldersByType.ContainsKey(baseType))
                     {
-                        throw new InvalidOperationException($"Poco interface {currentType} cannot extend more than one poco interface, but it extends: {string.Join(", ", (IEnumerable<Type>)baseTypes)}");
-                    }
-                    if (baseTypes.Length > 0)
-                    {
-                        if (currentType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(p => baseTypes[0].GetProperty(p.Name) is { }).Any())
+                        if (currentType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(p => baseType.GetProperty(p.Name) is { }).Any())
                         {
-                            throw new InvalidOperationException($"Poco interface {currentType} cannot redeclare any property of base interface!");
+                            throw new InvalidOperationException($"Poco ch {currentType} cannot redeclare any property of base ch!");
                         }
-                        currentType = baseTypes[0];
+                        currentType = baseType;
                     }
                     else
                     {
-                        chain.ForEach(ih => ih.BaseInterface = currentType);
+                        chain.ForEach(ih => ih.BaseClass = currentType);
                         currentType = null;
                     }
                 }
@@ -1048,22 +1013,28 @@ public class Generator : Runner
 
     private void CheckPrimaryKeys()
     {
-        foreach (Type targetType in _interfaceHoldersByType.Keys)
+        foreach (Type targetType in _classHoldersByType.Keys)
         {
-            InterfaceHolder ih = _interfaceHoldersByType[targetType];
+            ClassHolder ih = _classHoldersByType[targetType];
             foreach (PrimaryKeyDefinition key in ih.KeysDefinitions.Values)
             {
                 if (key.KeyReference is { })
                 {
-                    if (
-                        !_interfaceHoldersByType.TryGetValue(key.Property!.PropertyType, out InterfaceHolder? other)
-                        || !other.KeysDefinitions.ContainsKey(key.KeyReference)
-                    )
+                    bool found = false;
+                    if(_classHoldersByType.TryGetValue(key.Property!.PropertyType, out ClassHolder? other))
+                    {
+                        while(other.Class.BaseType is { } && _classHoldersByType.ContainsKey(other.Class.BaseType))
+                        {
+                            other = _classHoldersByType[other.Class.BaseType];
+                        }
+                        found = other.KeysDefinitions.ContainsKey(key.KeyReference);
+                    }
+                    if (!found)
                     {
                         throw new InvalidOperationException($"Key part {key.Property.DeclaringType}.{key.Property.Name}.{key.KeyReference} referenced by keyDefinition['{key.Name}']='{key.Property.Name}.{key.KeyReference}' for {nameof(targetType)}={targetType} is not defined!");
                     }
 
-                    CycleFinder.CheckNoCycle(_interfaceHoldersByType, targetType, key);
+                    CycleFinder.CheckNoCycle(_classHoldersByType, targetType, key);
                     SetAbsentTypes(targetType, key);
                 }
             }
@@ -1074,14 +1045,11 @@ public class Generator : Runner
     {
         Stack<KeyValuePair<Type, string>> stack = new();
         stack.Push(new KeyValuePair<Type, string>(targetType, key.Name));
-        while (stack.TryPeek(out var item))
+        while (stack.TryPeek(out KeyValuePair<Type, string> item))
         {
-            PrimaryKeyDefinition? keyDefinition = null;
-            if (
-                _interfaceHoldersByType.TryGetValue(item.Key, out InterfaceHolder? target)
-                && target.KeysDefinitions.TryGetValue(item.Value, out keyDefinition)
-                && keyDefinition.Type is { }
-                )
+            ClassHolder? target = _classHoldersByType[item.Key];
+            PrimaryKeyDefinition? keyDefinition = _classHoldersByType[target.BaseClass].KeysDefinitions[item.Value];
+            if (keyDefinition.Type is { })
             {
                 break;
             }
@@ -1092,23 +1060,28 @@ public class Generator : Runner
                 )
             );
         }
-        if (stack.TryPop(out var item1))
+        if (stack.TryPop(out KeyValuePair<Type, string> item1))
         {
-            Type type = _interfaceHoldersByType[item1.Key!].KeysDefinitions[item1.Value].Type;
+            ClassHolder? target = _classHoldersByType[item1.Key];
+            Type type = _classHoldersByType[target.BaseClass].KeysDefinitions[item1.Value].Type;
             while (stack.TryPop(out var item2))
             {
-                _interfaceHoldersByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
+                _classHoldersByType[item2.Key!].KeysDefinitions[item2.Value].Type = type;
             }
         }
     }
 
     private void CheckAccessProperties()
     {
-        foreach (Type targetType in _interfaceHoldersByType.Keys)
+        foreach (Type targetType in _classHoldersByType.Keys)
         {
-            InterfaceHolder ih = _interfaceHoldersByType[targetType];
+            ClassHolder ih = _classHoldersByType[targetType];
             if (ih.AccessProperties is { })
             {
+                if (!_classHoldersByType[ih.BaseClass].KeysDefinitions.Any())
+                {
+                    throw new InvalidOperationException($"{nameof(ih.AccessProperties)} are allowed only for entities, but {ih.Class} is not!");
+                }
                 try
                 {
                     ih.AccessPropertiesTree = PathNode.FromPaths(ih.AccessProperties);
@@ -1121,15 +1094,15 @@ public class Generator : Runner
                 }
             }
         }
-        foreach (Type targetType in _interfaceHoldersByType.Keys)
+        foreach (Type targetType in _classHoldersByType.Keys)
         {
-            InterfaceHolder ih = _interfaceHoldersByType[targetType];
+            ClassHolder ih = _classHoldersByType[targetType];
             if (
                 ih.AccessPropertiesTree is { }
                 && ih.AccessPropertiesTree.Children.Where(c =>
                     {
                         PropertyInfo p = targetType.GetProperty(c.Name)!;
-                        return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _interfaceHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
+                        return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _classHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
                     })
                     .FirstOrDefault() is PathNode bad
             )
@@ -1165,13 +1138,13 @@ public class Generator : Runner
                         {
                             throw new InvalidOperationException($"List property {child.Name} at path {node.Path} must have single child '@' (root: {rootTargetType})!");
                         }
-                        if (_interfaceHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
+                        if (_classHoldersByType.ContainsKey(pi.PropertyType.GetGenericArguments()[0]))
                         {
                             CheckPathNode(pi.PropertyType.GetGenericArguments()[0], child.Children[0], starsAllowed, claimAllowed, nullableAllowed, rootTargetType);
                         }
                     }
                 }
-                else if (_interfaceHoldersByType.ContainsKey(pi.PropertyType))
+                else if (_classHoldersByType.ContainsKey(pi.PropertyType))
                 {
                     CheckPathNode(pi.PropertyType, child, starsAllowed, claimAllowed, nullableAllowed, rootTargetType);
                 }
@@ -1183,7 +1156,7 @@ public class Generator : Runner
                     }
                 }
             }
-            else if (_interfaceHoldersByType[targetType].KeysDefinitions.ContainsKey(child.Name))
+            else if (_classHoldersByType[targetType].KeysDefinitions.ContainsKey(child.Name))
             {
                 if (child.Children!.Any())
                 {
@@ -1213,7 +1186,7 @@ public class Generator : Runner
     {
         GeneratingRequest request = new()
         {
-            Interface = @interface,
+            Class = @interface,
             Kind = requestKind,
             Contract = contract
         };
