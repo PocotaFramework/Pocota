@@ -4,6 +4,7 @@ using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
+using System.Security.AccessControl;
 using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Xml.Linq;
@@ -147,17 +148,23 @@ public class Builder
     }
 
     private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
-    {/*
+    {
         if (random.Next(s_baseAsteriskPath) == 0)
         {
             path += $"{(level > 0 ? "." : string.Empty)}*";
             properties.Add(path);
             return;
         }
-        IEnumerable<PropertyDescriptor> props = node.NodeType is NodeType.Extender ? ((ExtenderNode)node).Base.Properties.Concat(node.Properties) : node.Properties;
-        foreach (PropertyDescriptor prop in props)
+        List<PropertyDescriptor> allProps = new();
+        Node? cur = node;
+        while (cur is { })
         {
-            if(prop.Node is { } && level < s_maxPathLength)
+            allProps.AddRange(cur.Properties);
+            cur = cur.Base;
+        }
+        foreach (PropertyDescriptor prop in allProps)
+        {
+            if (prop.Node is { } && level < s_maxPathLength)
             {
                 CreatePropertyPaths(properties, prop.Node, random, $"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}", level + 1);
             }
@@ -166,7 +173,7 @@ public class Builder
                 properties.Add($"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}");
             }
         }
-    */}
+    }
 
     private static void CompilePocoUniverseServer(Universe universe)
     {
@@ -331,6 +338,7 @@ go
         conn.Open();
         foreach (string sql in commands)
         {
+            //Console.WriteLine(sql);
             cmd.CommandText = sql;
             cmd.ExecuteNonQuery();
         }
@@ -385,7 +393,7 @@ go
             )
         )
         {
-            CreateFkPk(node, random);
+            CreateFkPk(universe, node, random);
         }
         foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
@@ -414,7 +422,7 @@ go
         }
     }
 
-    private static void CreateFkPk(EntityNode node, Random random)
+    private static void CreateFkPk(Universe universe, EntityNode node, Random random)
     {
         int numAddPk = random.Next(s_maxFkPk + 1);
         if (numAddPk > 0)
@@ -429,24 +437,32 @@ go
                 node.PrimaryKey!.Add(candidates[pos]);
                 candidates.RemoveAt(pos);
             }
-            // todo у потомков меняются ключи, надо отследить
-            foreach (EntityNode referenser in node.Referencers.Where(n => n is EntityNode))
+            PropagatePkChanges(universe, node, node);
+        }
+    }
+
+    private static void PropagatePkChanges(Universe universe, EntityNode root, EntityNode node)
+    {
+        foreach (EntityNode referenser in node.Referencers.Where(n => n is EntityNode))
+        {
+            foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
             {
-                foreach (PropertyDescriptor pd in referenser.Properties.Where(p => p.Node == node && !p.IsCollection))
+                for (int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
                 {
-                    for (int i = pd.References!.Count; i < node.PrimaryKey.Count; ++i)
+                    pd.References.Add(new PropertyDescriptor
                     {
-                        pd.References.Add(new PropertyDescriptor
-                        {
-                            Name = $"{pd.Name}{node.PrimaryKey[i].Name}",
-                            Type = node.PrimaryKey[i].Type,
-                            IsReadOnly = pd.IsReadOnly,
-                            IsNullable = pd.IsNullable,
-                            Source = 12,
-                        });
-                    }
+                        Name = $"{pd.Name}{root.PrimaryKey[i].Name}",
+                        Type = root.PrimaryKey[i].Type,
+                        IsReadOnly = pd.IsReadOnly,
+                        IsNullable = pd.IsNullable,
+                        Source = 12,
+                    });
                 }
             }
+        }
+        foreach(EntityNode inherit in universe.Nodes.Where(n => n.Base == node))
+        {
+            PropagatePkChanges(universe, root, inherit);
         }
     }
 
@@ -593,7 +609,7 @@ go
         if (dataType == typeof(string)) return "varchar(50)";
         if (dataType == typeof(bool)) return "bit";
         if (dataType == typeof(DateTime)) return "datetime";
-        if (dataType == typeof(Enum)) return "char(10)";
+        if (dataType.IsEnum) return "char(10)";
         return dataType.ToString();
     }
 
@@ -912,6 +928,23 @@ go
             {
                 Console.WriteLine($"no pk: {table.TableName}");
             }
+
+            //todo для наследников первичный ключ также внешний
+            if(node.Base is EntityNode root)
+            {
+                while(root.Base is EntityNode baseEntity)
+                {
+                    root = baseEntity;
+                }
+                DataTable rootTable = universe.DataSet.Tables[$"Table{root.Id}"]!;
+                table.Constraints.Add(
+                    new ForeignKeyConstraint(
+                        $"fk_{table.TableName}_{rootTable.TableName}",
+                        rootTable.PrimaryKey,
+                        table.PrimaryKey
+                    )
+                );
+            }
         }
         foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
         {
@@ -919,7 +952,7 @@ go
             foreach (PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
             {
                 DataTable relatedTable = universe.DataSet.Tables[$"Table{pd.Node!.Id}"]!;
-                Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
+                //Console.WriteLine($"{table}, [{string.Join(',', pd.References!)}], {relatedTable}, [{string.Join<DataColumn>(',', relatedTable.PrimaryKey)}]");
                 try
                 {
                     table.Constraints.Add(

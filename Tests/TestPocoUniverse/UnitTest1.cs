@@ -28,8 +28,8 @@ public class Tests
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
-        public bool DoCompilePocoUniverseServer { get; internal init; } = false;
-        public bool DoRunPocoUniverseServer { get; internal init; } = false;
+        public bool DoCompilePocoUniverseServer { get; internal init; } = true;
+        public bool DoRunPocoUniverseServer { get; internal init; } = true;
         public override string ToString()
         {
             return string.Join('\n', new string[] {
@@ -134,7 +134,7 @@ public class Tests
         {
             foreach (Node node in universe.Nodes)
             {
-                Console.WriteLine(node);
+                //Console.WriteLine(node);
                 if (node is EntityNode)
                 {
                     foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
