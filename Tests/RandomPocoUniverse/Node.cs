@@ -12,7 +12,6 @@ public class Node
     public int Id { get; private init; } = ++s_genId;
     public List<Node> References { get; private init; } = new();
     public HashSet<Node> Referencers { get; private init; } = new();
-    public NodeType NodeType { get; internal set; } = NodeType.Envelope;
     public List<PropertyDescriptor> Properties { get; private init; } = new();
     public List<MethodHolder> Methods { get; private init; } = new();
     public int NumInherits { get; internal set; } = 0;

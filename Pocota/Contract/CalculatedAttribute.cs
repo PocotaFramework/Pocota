@@ -1,4 +1,4 @@
-﻿namespace Net.Leksi.Pocota.Contract;
+﻿namespace Net.Leksi.Pocota.Common;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class CalculatedAttribute: Attribute

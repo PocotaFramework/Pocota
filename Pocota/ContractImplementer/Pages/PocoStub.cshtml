@@ -1,0 +1,9 @@
+﻿@page
+@using Net.Leksi.Pocota.Common;
+@model ClassModel
+
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
+{
+}

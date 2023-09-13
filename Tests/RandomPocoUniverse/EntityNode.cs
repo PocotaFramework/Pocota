@@ -35,10 +35,6 @@ public class EntityNode: Node
 
     public string[] AccessProperties => Properties.Where(p => p.IsAccess).Select(p => $"{p.Name}{(p.IsCollection ? ".@" : string.Empty)}").ToArray();
 
-    public EntityNode() 
-    {
-        NodeType = NodeType.Entity;
-    }
     public override string ToString()
     {
         StringBuilder sb = new(base.ToString());

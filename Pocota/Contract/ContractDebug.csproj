@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Net.Leksi.Pocota.Contract</AssemblyName>
-    <RootNamespace>Net.Leksi.Pocota.Contract</RootNamespace>
+    <RootNamespace>Net.Leksi.Pocota.Common</RootNamespace>
     <Configurations>Debug;Release;RAC</Configurations>
   </PropertyGroup>
 </Project>

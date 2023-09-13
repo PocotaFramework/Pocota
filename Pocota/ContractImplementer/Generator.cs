@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
+using Net.Leksi.RuntimeAssemblyCompiler;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
@@ -17,6 +18,7 @@ public class Generator : Runner
     private const string s_ask = "?";
     private const string s_allowAccessManager = "AllowAccessManager";
     private const string s_poco = "Poco";
+    private const string s_stub = "Stub";
     private const string s_staticPrefix = "s_";
     private const string s_property = "Property";
     private const string s_class = "Class";
@@ -35,8 +37,10 @@ public class Generator : Runner
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
+    private readonly IConnector _connector;
 
     private Type? _contract = null;
+    private Type? _newContract = null;
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public string? ServerGeneratedDirectory { get; set; } = null;
@@ -44,6 +48,112 @@ public class Generator : Runner
 
     public Action<RequestKind, Type, string, Exception?>? OnResponse { get; set; } = null;
     public bool Verbose { get; set; } = true;
+
+
+    public Type? NewContract
+    {
+        get => _newContract;
+        set
+        {
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            if (!typeof(Contract).IsAssignableFrom(value))
+            {
+                throw new ArgumentException($"{typeof(Contract)} type must be assignable from {value}!");
+            }
+            if (_newContract != value)
+            {
+                _newContract = value;
+
+                _queue.Clear();
+
+                Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
+
+                contract.GetObject = GetObject;
+
+                AddPocos(contract);
+
+                AddPrimaryKeys(contract);
+
+                //Project contract = Project.Create(
+                //    new ProjectOptions
+                //    {
+                //        Name = "Contract",
+                //        TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
+                //    }
+                //);
+
+            }
+        }
+    }
+
+    private void AddPrimaryKeys(Contract contract)
+    {
+        contract.AddPrimaryKey += Contract_AddPrimaryKey; ;
+        contract.DefinePocos();
+        contract.AddPrimaryKey -= Contract_AddPrimaryKey; ;
+    }
+
+    private void Contract_AddPrimaryKey(object? sender, EventArgs e)
+    {
+    }
+
+    private void AddPocos(Contract contract)
+    {
+        contract.AddPoco += Contract_AddPoco;
+        contract.DefinePocos();
+        contract.AddPoco -= Contract_AddPoco;
+        GenerateStubs();
+    }
+
+    private void GenerateStubs()
+    {
+        Project stubs = Project.Create(new ProjectOptions
+        {
+            Name = "Stubs",
+            TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
+        });
+        foreach (Type type in _classHoldersByType.Keys)
+        {
+            if (!stubs.ContainsReference(type.Assembly.Location))
+            {
+                stubs.AddReference(type.Assembly.Location);
+            }
+            TextReader reader = _connector.Get("/PocoStub", type);
+            File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
+        }
+        stubs.Compile();
+    }
+
+    private void Contract_AddPoco(AddPocoEventArgs args)
+    {
+        if (!args.Type.IsAbstract)
+        {
+            throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
+        }
+        if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
+        {
+            throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
+        }
+        if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
+        {
+            interfaceHolder = new() { Class = args.Type };
+            interfaceHolder.Name = args.Type.Name;
+            _classHoldersByType.Add(args.Type, interfaceHolder);
+            _queue.Add(args.Type);
+        }
+        else
+        {
+            throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
+        }
+    }
+
+    private object GetObject(Type type)
+    {
+        throw new NotImplementedException();
+    }
 
     public Type? Contract
     {
@@ -91,6 +201,13 @@ public class Generator : Runner
         }
     }
 
+    public Generator()
+    {
+        Start();
+
+        _connector = GetConnector();
+    }
+
     public void Generate()
     {
         if (_contract is null)
@@ -124,10 +241,6 @@ public class Generator : Runner
             }
         }
 
-        Start();
-
-        IConnector connector = GetConnector();
-
         foreach (Type @interface in _queue)
         {
             if (_contract == @interface)
@@ -140,7 +253,7 @@ public class Generator : Runner
                     {
                         if (
                             ProcessInterface(
-                                connector, @interface,
+                                _connector, @interface,
                                 $"/{ClientLanguage}/Connector", RequestKind.ClientImplementation, @interface
                             )
                         )
@@ -153,7 +266,7 @@ public class Generator : Runner
                         }
                         if (
                             ProcessInterface(
-                                connector, @interface,
+                                _connector, @interface,
                                 $"/{ClientLanguage}/ClientContractConfigurator", RequestKind.ClientImplementation, @interface
                             )
                         )
@@ -169,7 +282,7 @@ public class Generator : Runner
                     {
                         if (
                             ProcessInterface(
-                                connector, @interface,
+                                _connector, @interface,
                                 $"/Controller", RequestKind.Controller, @interface
                             )
                         )
@@ -186,7 +299,7 @@ public class Generator : Runner
                 {
                     if (
                         ProcessInterface(
-                            connector, @interface,
+                            _connector, @interface,
                             $"/ServerContractConfigurator", RequestKind.ServerImplementation, @interface
                         )
                     )
@@ -201,14 +314,47 @@ public class Generator : Runner
             }
             else if (_classHoldersByType.TryGetValue(@interface, out ClassHolder? target))
             {
-                if (true/*target.BaseInterface == target.Interface*/)
+                if (ClientGeneratedDirectory is { })
                 {
-                    if (ClientGeneratedDirectory is { })
+                    if (
+                        ProcessInterface(
+                            _connector, @interface,
+                            $"/{ClientLanguage}/ClientImplementation", RequestKind.ClientImplementation,
+                            _contract!
+                        )
+                    )
+                    {
+                        ++done;
+                    }
+                    else
+                    {
+                        ++fails;
+                    }
+                }
+                if (
+                    ServerGeneratedDirectory is { }
+                )
+                {
+                    if (
+                        ProcessInterface(
+                            _connector, @interface,
+                            $"/ServerImplementation", RequestKind.ServerImplementation,
+                            _contract!
+                        )
+                    )
+                    {
+                        ++done;
+                    }
+                    else
+                    {
+                        ++fails;
+                    }
+                    if (target.KeysDefinitions.Any())
                     {
                         if (
                             ProcessInterface(
-                                connector, @interface,
-                                $"/{ClientLanguage}/ClientImplementation", RequestKind.ClientImplementation,
+                                _connector, @interface,
+                                $"/PrimaryKey", RequestKind.ServerImplementation,
                                 _contract!
                             )
                         )
@@ -220,14 +366,12 @@ public class Generator : Runner
                             ++fails;
                         }
                     }
-                    if (
-                        ServerGeneratedDirectory is { }
-                    )
+                    if (_classHoldersByType[target.BaseClass].KeysDefinitions.Any())
                     {
                         if (
                             ProcessInterface(
-                                connector, @interface,
-                                $"/ServerImplementation", RequestKind.ServerImplementation,
+                                _connector, @interface,
+                                $"/AllowAccessManager", RequestKind.ServerImplementation,
                                 _contract!
                             )
                         )
@@ -237,40 +381,6 @@ public class Generator : Runner
                         else
                         {
                             ++fails;
-                        }
-                        if (target.KeysDefinitions.Any())
-                        {
-                            if (
-                                ProcessInterface(
-                                    connector, @interface,
-                                    $"/PrimaryKey", RequestKind.ServerImplementation,
-                                    _contract!
-                                )
-                            )
-                            {
-                                ++done;
-                            }
-                            else
-                            {
-                                ++fails;
-                            }
-                        }
-                        if (_classHoldersByType[target.BaseClass].KeysDefinitions.Any())
-                        {
-                            if (
-                                ProcessInterface(
-                                    connector, @interface,
-                                    $"/AllowAccessManager", RequestKind.ServerImplementation,
-                                    _contract!
-                                )
-                            )
-                            {
-                                ++done;
-                            }
-                            else
-                            {
-                                ++fails;
-                            }
                         }
                     }
                 }
@@ -678,6 +788,28 @@ public class Generator : Runner
         }
     }
 
+    internal void BuildPocoStub(ClassModel model)
+    {
+        Type? baseType = model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter as Type;
+        if (baseType is { })
+        {
+            _variables.Clear();
+
+            model.NamespaceValue = baseType.Namespace;
+
+            model.ClassName = MakePocoStubName(baseType);
+
+            AddUsings(model, typeof(INotifyPropertyChanged));
+
+            model.Interfaces.Add(Util.MakeTypeName(baseType));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(INotifyPropertyChanged)));
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
+    }
+
     private string MakeDefaultProcessorFactoryName(string methodName)
     {
         return $"{methodName}Default{s_processorFactory}";
@@ -785,6 +917,11 @@ public class Generator : Runner
         return $"{_classHoldersByType[@interface].Name}{s_poco}";
     }
 
+    private string MakePocoStubName(Type baseType)
+    {
+        return $"{_classHoldersByType[baseType].Name}{s_stub}";
+    }
+
     private string MakeAllowAccessManager(Type @interface)
     {
         return $"{_classHoldersByType[@interface].Name}{s_allowAccessManager}";
@@ -841,7 +978,7 @@ public class Generator : Runner
                 if (
                     type.Namespace is { }
                     && (
-                        model.NamespaceValue is null 
+                        model.NamespaceValue is null
                         || !model.NamespaceValue.Equals(type.Namespace)
                     )
                 )
@@ -1021,9 +1158,9 @@ public class Generator : Runner
                 if (key.KeyReference is { })
                 {
                     bool found = false;
-                    if(_classHoldersByType.TryGetValue(key.Property!.PropertyType, out ClassHolder? other))
+                    if (_classHoldersByType.TryGetValue(key.Property!.PropertyType, out ClassHolder? other))
                     {
-                        while(other.Class.BaseType is { } && _classHoldersByType.ContainsKey(other.Class.BaseType))
+                        while (other.Class.BaseType is { } && _classHoldersByType.ContainsKey(other.Class.BaseType))
                         {
                             other = _classHoldersByType[other.Class.BaseType];
                         }
@@ -1196,7 +1333,7 @@ public class Generator : Runner
             RequestKind.ClientImplementation => ClientGeneratedDirectory!,
             _ => ServerGeneratedDirectory!
         };
-        string ext = ClientLanguage switch { _ => ".cs" };
+        string ext = requestKind is RequestKind.ClientImplementation ? ClientLanguage switch { _ => ".cs" } : ".cs";
         if (!Directory.Exists(outputDirectory))
         {
             Directory.CreateDirectory(outputDirectory);
@@ -1230,5 +1367,4 @@ public class Generator : Runner
             return false;
         }
     }
-
 }

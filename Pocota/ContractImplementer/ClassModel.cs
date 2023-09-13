@@ -49,6 +49,10 @@ public class ClassModel: PageModel
         {
             generator.BuildAllowAccessManager(this);
         }
+        else if (HttpContext.Request.Path.Equals("/PocoStub"))
+        {
+            generator.BuildPocoStub(this);
+        }
 
     }
 }

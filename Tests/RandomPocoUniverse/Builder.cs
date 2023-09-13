@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Cryptography.Xml;
@@ -286,15 +287,18 @@ public class Builder
     {
         ClearProjectDir(UniverseOptions.GeneratedServerStuffProjectDir);
         ClearProjectDir(UniverseOptions.GeneratedClientStuffProjectDir);
-        new Generator
+        using (Generator generator = new()
         {
             ServerGeneratedDirectory = UniverseOptions.GeneratedServerStuffProjectDir,
             ClientGeneratedDirectory = UniverseOptions.GeneratedClientStuffProjectDir,
-            Contract = universe.Contract,
+            NewContract = universe.Contract,
             Verbose = UniverseOptions.GenerateClassesVerbose,
             ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
-        }.Generate();
+        })
+        {
+            generator.Generate();
+        }
 
         Project generatedServerStuff = Project.Create(new ProjectOptions
         {
@@ -388,10 +392,7 @@ go
             CreateForeignKeys(node, random);
         }
 
-        foreach (EntityNode node in universe.Nodes.Where(
-                n => n is EntityNode && n.Base is null && n.NodeType is not NodeType.ManyToManyLink
-            )
-        )
+        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode && n.Base is null))
         {
             CreateFkPk(universe, node, random);
         }
@@ -460,7 +461,7 @@ go
                 }
             }
         }
-        foreach(EntityNode inherit in universe.Nodes.Where(n => n.Base == node))
+        foreach (EntityNode inherit in universe.Nodes.Where(n => n.Base == node))
         {
             PropagatePkChanges(universe, root, inherit);
         }
@@ -472,7 +473,7 @@ go
         {
             if (pd.Node is EntityNode entityNode)
             {
-                if(pd.References is null)
+                if (pd.References is null)
                 {
                     pd.References = new List<PropertyDescriptor>(entityNode.PrimaryKey!.Select(p => new PropertyDescriptor
                     {
@@ -482,16 +483,12 @@ go
                         IsNullable = pd.IsNullable,
                         Source = 2,
                     }));
-                    if (node.NodeType is NodeType.ManyToManyLink)
-                    {
-                        node.PrimaryKey!.AddRange(pd.References);
-                    }
                 }
                 else
                 {
-                    foreach(PropertyDescriptor pd1 in entityNode.PrimaryKey!)
+                    foreach (PropertyDescriptor pd1 in entityNode.PrimaryKey!)
                     {
-                        if(pd.References.Where(p => p.Name.Equals($"{pd.Name}{pd1.Name}")).FirstOrDefault() is not PropertyDescriptor pd2)
+                        if (pd.References.Where(p => p.Name.Equals($"{pd.Name}{pd1.Name}")).FirstOrDefault() is not PropertyDescriptor pd2)
                         {
                             pd2 = new PropertyDescriptor
                             {
@@ -503,10 +500,6 @@ go
                             };
                             pd.References.Add(pd2);
                         }
-                        if (node.NodeType is NodeType.ManyToManyLink && !node.PrimaryKey!.Contains(pd2))
-                        {
-                            node.PrimaryKey!.Add(pd2);
-                        }
                     }
                 }
             }
@@ -515,7 +508,7 @@ go
 
     private static void CreatePrimaryKey(EntityNode node, Random random)
     {
-        if (node.NodeType is NodeType.Entity && node.Base is null)
+        if (node is EntityNode && node.Base is null)
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
             for (int i = node.PrimaryKey.Count; i < pkCount; ++i)
@@ -625,29 +618,28 @@ go
             int ns = random.Next(s_maxNamespaces)!;
             Node node = isEnvelope ? new Node() : new EntityNode();
 
-            if(i == thresh)
+            if (i == thresh)
             {
                 ++numInherits;
                 thresh += addThresh;
                 --addThresh;
-                Console.WriteLine($"thresh: {thresh}");
             }
             node.NumInherits = numInherits;
-            
-            if(numInherits > 0)
+
+            if (numInherits > 0)
             {
                 List<Node> bases;
                 do
                 {
                     bases = universe.Nodes.Where(
-                        n => n.NodeType == node.NodeType && n.NumInherits == node.NumInherits - 1
+                        n => n.GetType() == node.GetType() && n.NumInherits == node.NumInherits - 1
                     ).ToList();
                 }
                 while (!bases.Any());
                 Node baseNode = bases[random.Next(bases.Count)];
-                while(baseNode.NumInherits < numInherits - 1)
+                while (baseNode.NumInherits < numInherits - 1)
                 {
-                    Node node1 = node.NodeType == NodeType.Envelope ? new Node() : new EntityNode();
+                    Node node1 = node is EntityNode ? new EntityNode() : new Node();
                     node1.Base = baseNode;
                     node1.NumInherits = baseNode.NumInherits + 1;
                     baseNode = node1;
@@ -658,8 +650,8 @@ go
             universe.Nodes.Add(node);
         }
         universe.Nodes.Sort(
-            (n1, n2) => n1.NumInherits != n2.NumInherits 
-                ? n1.NumInherits.CompareTo(n2.NumInherits) 
+            (n1, n2) => n1.NumInherits != n2.NumInherits
+                ? n1.NumInherits.CompareTo(n2.NumInherits)
                 : n1.Id.CompareTo(n2.Id)
         );
         numNodes = universe.Nodes.Count;
@@ -675,68 +667,34 @@ go
             {
                 int pos = random.Next(list.Count);
                 if (
-                    universe.Nodes[i].NodeType is NodeType.Entity
-                    && list[pos].NodeType is NodeType.Entity
+                    universe.Nodes[i] is EntityNode
+                    && list[pos] is EntityNode
                     && universe.Nodes[i] != list[pos]
                     && !universe.Nodes[i].References.Any(n => list[pos].References.Contains(n))
                     && random.Next(1 + (int)Math.Ceiling(s_fraqManyToMany * s_numNodes * (s_maxReferences + s_minReferences) * .25)) == 0
                 )
                 {
                     int ns = random.Next(s_maxNamespaces)!;
-                    EntityNode link = new()
-                    {
-                        NodeType = NodeType.ManyToManyLink,
-                        Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" },
-                    };
-                    link.References.Add(universe.Nodes[i]);
-                    universe.Nodes[i].Referencers.Add(link);
-                    link.References.Add(list[pos]);
-                    list[pos].Referencers.Add(link);
-                    universe.Nodes.Add(link);
-                    if (random.Next(s_baseCollection) == 0)
-                    {
-                        bool isNullable = random.Next(s_baseNullable) == 0;
-                        PropertyDescriptor pd1 = new()
-                        {
-                            Node = universe.Nodes[i],
-                            IsReadOnly = random.Next(s_baseReadonly) == 0,
-                            IsCollection = true,
-                            IsNullable = isNullable,
-                            IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
-                            Source = 3,
-                        };
-                        list[pos].Properties.Add(pd1);
-                    }
-                    if (random.Next(s_baseCollection) == 0)
-                    {
-                        bool isNullable = random.Next(s_baseNullable) == 0;
-                        PropertyDescriptor pd1 = new()
-                        {
-                            Node = list[pos],
-                            IsReadOnly = random.Next(s_baseReadonly) == 0,
-                            IsCollection = true,
-                            IsNullable = isNullable,
-                            IsAccess = !isNullable && baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
-                            Source = 4,
-                        };
-                        universe.Nodes[i].Properties.Add(pd1);
-                    }
-                    link.Properties.Add(new PropertyDescriptor
+                    PropertyDescriptor pd1 = new()
                     {
                         Node = universe.Nodes[i],
-                        IsReadOnly = true,
-                        IsNullable = false,
-                        IsCollection = false,
-                        Source = 5,
-                    });
-                    link.Properties.Add(new PropertyDescriptor
+                        IsReadOnly = random.Next(s_baseReadonly) == 0,
+                        IsCollection = true,
+                        IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
+                        Source = 3,
+                        IsManyToManyLink = true,
+                    };
+                    list[pos].Properties.Add(pd1);
+                    pd1 = new()
                     {
                         Node = list[pos],
-                        IsReadOnly = true,
-                        IsNullable = false,
-                        IsCollection = false,
-                        Source = 6,
-                    });
+                        IsReadOnly = random.Next(s_baseReadonly) == 0,
+                        IsCollection = true,
+                        IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
+                        Source = 4,
+                        IsManyToManyLink = true,
+                    };
+                    universe.Nodes[i].Properties.Add(pd1);
                 }
                 else
                 {
@@ -748,18 +706,17 @@ go
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsNullable = isNullable,
-                        IsAccess = universe.Nodes[i] is EntityNode 
+                        IsAccess = universe.Nodes[i] is EntityNode
                             && list[pos] is EntityNode
-                            && !isNullable && baseAccessProperty > 0 
+                            && !isNullable && baseAccessProperty > 0
                             && random.Next(baseAccessProperty) == 0,
-                        IsCalculated = universe.Nodes[i] is EntityNode
-                            && list[pos] is not EntityNode,
                         Source = 7,
                     };
 
                     universe.Nodes[i].Properties.Add(pd);
                     if (random.Next(s_baseCollection) == 0)
                     {
+
                         if (universe.Nodes[i] is not EntityNode)
                         {
                             pd.IsCollection = true;
@@ -803,13 +760,13 @@ go
                     IsNullable = isNullable,
                     IsAccess = universe.Nodes[i] is EntityNode
                         && !isCalculated
-                        && !isNullable && baseAccessProperty > 0 
+                        && !isNullable && baseAccessProperty > 0
                         && random.Next(baseAccessProperty) == 0,
                     IsCalculated = isCalculated,
                     Source = 9,
                 };
                 universe.Nodes[i].Properties.Add(pd);
-                
+
                 if (isPrimaryKeyPart)
                 {
                     (universe.Nodes[i] as EntityNode)?.PrimaryKey.Add(pd);
@@ -821,7 +778,7 @@ go
             HashSet<Node> set = new();
             if (!IsLooped(universe.Nodes[i], universe.Nodes[i], string.Empty, set) && random.Next(s_baseCycleReferenced) == 0)
             {
-                foreach (Node probe in universe.Nodes.Where(n => n.NodeType is not NodeType.ManyToManyLink && !set.Contains(n)))
+                foreach (Node probe in universe.Nodes.Where(n => !set.Contains(n)))
                 {
                     if (IsLooped(universe.Nodes[i], probe, $"/{universe.Nodes[i].Id}", null))
                     {
@@ -896,22 +853,37 @@ go
                 table.Columns.Add(col);
             }
 
-            foreach (PropertyDescriptor pd in node.Properties.Where(p => !p.IsCollection && !node.PrimaryKey!.Contains(p)))
+            HashSet<string> countedPairs = new();
+
+            foreach (PropertyDescriptor pd in node.Properties.Where(p => !node.PrimaryKey.Contains(p)))
             {
                 if (pd.Node is EntityNode entityNode)
                 {
-                    foreach (PropertyDescriptor reference in pd.References!.Where(p => !node.PrimaryKey.Contains(p)))
+                    if (pd.IsCollection)
                     {
-                        DataColumn col = new DataColumn
+                        if (
+                            !node.Properties.Any(p => p != pd && p.IsCollection && p.Node == pd.Node)
+                            && entityNode.Properties.Where(p => p.IsCollection && p.Node == node).Count() == 1
+                        )
                         {
-                            ColumnName = reference.Name,
-                            DataType = reference.Type,
-                            AllowDBNull = reference.IsNullable,
-                        };
-                        table.Columns.Add(col);
+                            Console.WriteLine($"{node.Id} - {entityNode.Id}");
+                        }
+                    }
+                    else
+                    {
+                        foreach (PropertyDescriptor reference in pd.References!.Where(p => !node.PrimaryKey.Contains(p)))
+                        {
+                            DataColumn col = new DataColumn
+                            {
+                                ColumnName = reference.Name,
+                                DataType = reference.Type,
+                                AllowDBNull = reference.IsNullable,
+                            };
+                            table.Columns.Add(col);
+                        }
                     }
                 }
-                else if(pd.Node is null)
+                else if (pd.Node is null)
                 {
                     DataColumn col = new DataColumn
                     {
@@ -930,9 +902,9 @@ go
             }
 
             //todo для наследников первичный ключ также внешний
-            if(node.Base is EntityNode root)
+            if (node.Base is EntityNode root)
             {
-                while(root.Base is EntityNode baseEntity)
+                while (root.Base is EntityNode baseEntity)
                 {
                     root = baseEntity;
                 }
@@ -963,7 +935,7 @@ go
                         )
                     );
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     throw new InvalidOperationException($"at {node}", ex);
                 }

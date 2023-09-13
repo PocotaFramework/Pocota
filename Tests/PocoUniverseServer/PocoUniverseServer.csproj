@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.10" />
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.9" />
   </ItemGroup>
 
   <ItemGroup>

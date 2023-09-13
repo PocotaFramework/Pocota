@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-[AttributeUsage(AttributeTargets.Interface)]
+[AttributeUsage(AttributeTargets.Class)]
 public class PocoContractAttribute: Attribute
 {
     public string Name { get; init; }

@@ -18,6 +18,7 @@ public class PropertyDescriptor
     public bool IsAccess { get; internal set; } = false;
     public bool IsCalculated { get; internal set; } = false;
     public int Source { get; internal set; } = -1;
+    public bool IsManyToManyLink {  get; internal set; } = false;
 
     public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.Name)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
 

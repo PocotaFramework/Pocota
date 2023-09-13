@@ -106,7 +106,7 @@ public class Tests
         Builder.UniverseOptions.DatabaseName = "qq";
         Builder.UniverseOptions.NodesTelemetry0 = un => NodesTelemetry0(un, dataHolder);
         Builder.UniverseOptions.NodesTelemetry = un => NodesTelemetry(un, dataHolder);
-        Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
+        //Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
         Builder.UniverseOptions.GenerateClassesTelemetry = un => GenerateClassesTelemetry(un, dataHolder);
         Builder.UniverseOptions.CreateDatabaseTelemetry = un => CreateDatabaseTelemetry(un, dataHolder);
@@ -160,7 +160,7 @@ public class Tests
                 Assert.That(sds[0].ImplementationType, Is.Not.Null, node.Name);
                 Assert.That(sds[0].ImplementationType!.Name, Is.EqualTo($"{node.Name.Substring(1)}Poco"), node.Name);
 
-                if (node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink)
+                if (node is EntityNode)
                 {
                     string pkName = $"IPrimaryKey<{node.Name}>";
                     sds = services.Where(s => Util.MakeTypeName(s.ServiceType).Equals(pkName)).ToArray();
@@ -439,7 +439,7 @@ public class Tests
                     ).FirstOrDefault();
                     Assert.That(baseNode, Is.Not.Null);
                     Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
-                    Assert.That(baseNode.NodeType == NodeType.Entity || baseNode.NodeType == NodeType.ManyToManyLink, Is.True);
+                    Assert.That(baseNode is EntityNode, Is.True);
                 });
             }
         }
@@ -464,12 +464,12 @@ public class Tests
             Assert.Multiple(() =>
             {
                 Assert.That(
-                    node.NodeType is NodeType.Envelope || node.Base is { }, 
+                    node is not EntityNode || node.Base is { }, 
                     Is.EqualTo(pa.Current.PrimaryKey is null), 
                     node.FullName
                 );
                 Assert.That(
-                    (node.NodeType is NodeType.Entity || node.NodeType is NodeType.ManyToManyLink) && node.Base is null, 
+                    node is EntityNode && node.Base is null, 
                     Is.EqualTo(pa.Current.PrimaryKey is { }), 
                     node.FullName
                 );
