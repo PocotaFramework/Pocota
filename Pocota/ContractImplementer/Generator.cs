@@ -5,6 +5,7 @@ using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -37,6 +38,7 @@ public class Generator : Runner
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
+    private readonly HashSet<Assembly> _requisite = new();
     private readonly IConnector _connector;
 
     private Type? _contract = null;
@@ -49,112 +51,7 @@ public class Generator : Runner
     public Action<RequestKind, Type, string, Exception?>? OnResponse { get; set; } = null;
     public bool Verbose { get; set; } = true;
 
-
-    public Type? NewContract
-    {
-        get => _newContract;
-        set
-        {
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-            if (!typeof(Contract).IsAssignableFrom(value))
-            {
-                throw new ArgumentException($"{typeof(Contract)} type must be assignable from {value}!");
-            }
-            if (_newContract != value)
-            {
-                _newContract = value;
-
-                _queue.Clear();
-
-                Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
-
-                contract.GetObject = GetObject;
-
-                AddPocos(contract);
-
-                AddPrimaryKeys(contract);
-
-                //Project contract = Project.Create(
-                //    new ProjectOptions
-                //    {
-                //        Name = "Contract",
-                //        TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
-                //    }
-                //);
-
-            }
-        }
-    }
-
-    private void AddPrimaryKeys(Contract contract)
-    {
-        contract.AddPrimaryKey += Contract_AddPrimaryKey; ;
-        contract.DefinePocos();
-        contract.AddPrimaryKey -= Contract_AddPrimaryKey; ;
-    }
-
-    private void Contract_AddPrimaryKey(object? sender, EventArgs e)
-    {
-    }
-
-    private void AddPocos(Contract contract)
-    {
-        contract.AddPoco += Contract_AddPoco;
-        contract.DefinePocos();
-        contract.AddPoco -= Contract_AddPoco;
-        GenerateStubs();
-    }
-
-    private void GenerateStubs()
-    {
-        Project stubs = Project.Create(new ProjectOptions
-        {
-            Name = "Stubs",
-            TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
-        });
-        foreach (Type type in _classHoldersByType.Keys)
-        {
-            if (!stubs.ContainsReference(type.Assembly.Location))
-            {
-                stubs.AddReference(type.Assembly.Location);
-            }
-            TextReader reader = _connector.Get("/PocoStub", type);
-            File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
-        }
-        stubs.Compile();
-    }
-
-    private void Contract_AddPoco(AddPocoEventArgs args)
-    {
-        if (!args.Type.IsAbstract)
-        {
-            throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
-        }
-        if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
-        {
-            throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
-        }
-        if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
-        {
-            interfaceHolder = new() { Class = args.Type };
-            interfaceHolder.Name = args.Type.Name;
-            _classHoldersByType.Add(args.Type, interfaceHolder);
-            _queue.Add(args.Type);
-        }
-        else
-        {
-            throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
-        }
-    }
-
-    private object GetObject(Type type)
-    {
-        throw new NotImplementedException();
-    }
-
+    public Type? NewContract => _newContract;
     public Type? Contract
     {
         get => _contract;
@@ -206,6 +103,46 @@ public class Generator : Runner
         Start();
 
         _connector = GetConnector();
+    }
+
+    public void SetContract(Type? value)
+    {
+        if (value is null)
+        {
+            throw new ArgumentNullException(nameof(value));
+        }
+        if (!typeof(Contract).IsAssignableFrom(value))
+        {
+            throw new ArgumentException($"{typeof(Contract)} type must be assignable from {value}!");
+        }
+        if (_newContract != value)
+        {
+            _newContract = value;
+
+            _queue.Clear();
+
+            Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
+
+            contract.GetObject = GetObject;
+
+            AddPocos(contract);
+
+            AddPrimaryKeys(contract);
+
+            //Project contract = Project.Create(
+            //    new ProjectOptions
+            //    {
+            //        Name = "Contract",
+            //        TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
+            //    }
+            //);
+
+        }
+    }
+    public void AddRequisite(string name)
+    {
+        Assembly ass = Assembly.Load(name);
+        _requisite.Add(ass);
     }
 
     public void Generate()
@@ -708,18 +645,6 @@ public class Generator : Runner
                     AddUsings(model, typeof(IAccessManager<>));
                 }
             }
-            //else if (
-            //    @interface.Class.GetInterfaces().FirstOrDefault() is Type baseInterface
-            //    && _interfaceHoldersByType.ContainsKey(baseInterface)
-            //)
-            //{
-            //    AddUsings(model, baseInterface);
-            //    AddUsings(model, typeof(IEntityProperty));
-            //    AddUsings(model, typeof(PropertyAccessMode));
-            //    model.Interfaces.Add(MakePocoClassName(baseInterface));
-            //    model.Interfaces.Add(Util.MakeTypeName(request.Class));
-            //    model.PocoKind = PocoKind.Extender;
-            //}
             else
             {
                 AddUsings(model, request.Class);
@@ -803,11 +728,118 @@ public class Generator : Runner
 
             model.Interfaces.Add(Util.MakeTypeName(baseType));
             model.Interfaces.Add(Util.MakeTypeName(typeof(INotifyPropertyChanged)));
+            NullabilityInfoContext nic = new();
+
+            foreach (PropertyInfo pi in baseType.GetProperties())
+            {
+                PropertyModel pm = new()
+                {
+                    Name = pi.Name,
+                    IsReadonly = !pi.CanWrite,
+                    Type = Util.MakeTypeName(pi.PropertyType),
+                    Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
+                };
+                Type itemType = pi.PropertyType;
+                if(itemType.IsGenericType && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) && itemType.GetGenericArguments()[0] is Type ga)
+                {
+                    itemType = ga;
+                    pm.IsCollection = true;
+                }
+                if (_classHoldersByType.TryGetValue(itemType, out ClassHolder? ch))
+                {
+                    if (!string.IsNullOrEmpty(itemType.Namespace))
+                    {
+                        model.Usings.Add(itemType.Namespace);
+                    }
+                    pm.ItemType = MakePocoStubName(itemType);
+                    pm.PocoKind = ch.IsEntity ? PocoKind.Entity : PocoKind.Envelope;
+                }
+                else
+                {
+                    AddUsings(model, itemType);
+                    pm.ItemType = Util.MakeTypeName(itemType);
+                }
+                if (pm.IsCollection)
+                {
+                    AddUsings(model, typeof(IList<>));
+                }
+                model.Properties.Add(pm);
+            }
         }
         else
         {
             throw new InvalidOperationException();
         }
+    }
+
+    private void AddPrimaryKeys(Contract contract)
+    {
+        contract.AddPrimaryKey += Contract_AddPrimaryKey; ;
+        contract.DefinePocos();
+        contract.AddPrimaryKey -= Contract_AddPrimaryKey; ;
+    }
+
+    private void Contract_AddPrimaryKey(object? sender, EventArgs e)
+    {
+    }
+
+    private void AddPocos(Contract contract)
+    {
+        contract.AddPoco += Contract_AddPoco;
+        contract.DefinePocos();
+        contract.AddPoco -= Contract_AddPoco;
+        GenerateStubs();
+    }
+
+    private void GenerateStubs()
+    {
+        Project stubs = Project.Create(new ProjectOptions
+        {
+            Name = "Stubs",
+            TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
+        });
+        foreach (Assembly ass in _requisite)
+        {
+            stubs.AddReference(ass.Location);
+        }
+        foreach (Type type in _classHoldersByType.Keys)
+        {
+            if (!stubs.ContainsReference(type.Assembly.Location))
+            {
+                stubs.AddReference(type.Assembly.Location);
+            }
+            TextReader reader = _connector.Get("/PocoStub", type);
+            File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
+        }
+        stubs.Compile();
+    }
+
+    private void Contract_AddPoco(AddPocoEventArgs args)
+    {
+        if (!args.Type.IsAbstract)
+        {
+            throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
+        }
+        if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
+        {
+            throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
+        }
+        if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
+        {
+            interfaceHolder = new() { Class = args.Type };
+            interfaceHolder.Name = args.Type.Name;
+            _classHoldersByType.Add(args.Type, interfaceHolder);
+            _queue.Add(args.Type);
+        }
+        else
+        {
+            throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
+        }
+    }
+
+    private object GetObject(Type type)
+    {
+        throw new NotImplementedException();
     }
 
     private string MakeDefaultProcessorFactoryName(string methodName)
@@ -877,16 +909,9 @@ public class Generator : Runner
     {
         if (_classHoldersByType.TryGetValue(type, out ClassHolder? @interface))
         {
-            if (@interface.KeysDefinitions.Any())
+            if (@interface.IsEntity)
             {
                 return PocoKind.Entity;
-            }
-            if (
-                @interface.Class.GetInterfaces().FirstOrDefault() is Type baseInterface
-                && _classHoldersByType.ContainsKey(baseInterface)
-            )
-            {
-                return PocoKind.Extender;
             }
             return PocoKind.Envelope;
         }

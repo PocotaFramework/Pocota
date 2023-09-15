@@ -1,9 +1,29 @@
 ﻿@page
 @using Net.Leksi.Pocota.Common;
+@using System.ComponentModel;
 @model ClassModel
 
 @Html.Partial("Header", Model)
 
 public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
+    public event @nameof(PropertyChangedEventHandler)? PropertyChanged;
+
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public override @Html.Raw(pm.Type)@{}@pm.Nullable @pm.Name
+    {
+        get
+        {
+            PropertyChanged?.Invoke(this, new @nameof(PropertyChangedEventArgs)@{}(nameof(@pm.Name)));
+            return @if(pm.PocoKind is PocoKind.NotAPoco){<text>default</text>} else {if(pm.IsCollection){<text>new List<@Html.Raw(pm.Type)>(){</text>}<text>new @Html.Raw(pm.Type)@{}()</text>if(pm.IsCollection){<text>}</text>}};
+        }
+    @if(!pm.IsReadonly)
+    {
+        <text>        set {}
+</text>
+    }
+    }
+</text>
+}
 }

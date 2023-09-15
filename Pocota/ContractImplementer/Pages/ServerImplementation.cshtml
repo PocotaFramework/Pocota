@@ -221,9 +221,9 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 
 @foreach(PropertyModel pm in Model.Properties)
 {
-    if(!string.IsNullOrEmpty(pm.Name) || Model.PocoKind is not PocoKind.Extender)
+    if(!string.IsNullOrEmpty(pm.Name))
     {
-        <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+        <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity)
             {
             if(Model.PocoKind is PocoKind.Entity && string.IsNullOrEmpty(pm.Name)){<text>Self</text>}<text>Entity</text>
             }Property
@@ -282,7 +282,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
                 throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
             }
         }
-        @if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+        @if(Model.PocoKind is PocoKind.Entity)
         {
             <text>        public @nameof(PropertyAccessMode) GetAccess(object target)
         {
@@ -360,7 +360,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
     {
         <text>default</text>
     };
-    @if (Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+    @if (Model.PocoKind is PocoKind.Entity)
     {
         <text>    private PropertyAccessMode @pm.FieldName@{}AccessMode = PropertyAccessMode.Full;
 </text>
@@ -424,10 +424,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
 </text>
 }
 #endregion Properties
-    public @Model.ClassName (@nameof(IServiceProvider) serviceProvider)@if (Model.PocoKind is PocoKind.Extender)
-{
-    <text>: base(serviceProvider)</text>
-}
+    public @Model.ClassName (@nameof(IServiceProvider) serviceProvider)
     {
         _serviceProvider = serviceProvider;
 @if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Envelope)
@@ -460,7 +457,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
 </text>
     }
 
-        @foreach (PropertyModel ap in Model.AccessProperties.Where(p => p.PocoKind is PocoKind.Entity || p.PocoKind is PocoKind.Extender))
+        @foreach (PropertyModel ap in Model.AccessProperties.Where(p => p.PocoKind is PocoKind.Entity))
         {
             @if(ap.IsCollection)
             {
@@ -503,7 +500,7 @@ else if (Model.PocoKind is PocoKind.Envelope)
         {
             throw new @nameof(InvalidOperationException)@{}(string.Format(s_alreadyDelivered, typeof(@Model.ClassName), nameof(@pm.Name)));
         }
-    @if(Model.PocoKind is PocoKind.Entity || Model.PocoKind is PocoKind.Extender)
+    @if(Model.PocoKind is PocoKind.Entity)
     {
         <text>        if(IsAccessChecked)
         {

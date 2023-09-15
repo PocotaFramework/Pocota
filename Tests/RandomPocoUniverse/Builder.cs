@@ -291,12 +291,13 @@ public class Builder
         {
             ServerGeneratedDirectory = UniverseOptions.GeneratedServerStuffProjectDir,
             ClientGeneratedDirectory = UniverseOptions.GeneratedClientStuffProjectDir,
-            NewContract = universe.Contract,
             Verbose = UniverseOptions.GenerateClassesVerbose,
             ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
         })
         {
+            generator.AddRequisite("Net.Leksi.Test.RandomPocoUniverse.Common");
+            generator.SetContract(universe.Contract);
             generator.Generate();
         }
 
