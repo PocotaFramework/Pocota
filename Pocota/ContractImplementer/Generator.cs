@@ -38,7 +38,6 @@ public class Generator : Runner
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
-    private readonly HashSet<Assembly> _requisite = new();
     private readonly IConnector _connector;
 
     private Type? _contract = null;
@@ -139,12 +138,6 @@ public class Generator : Runner
 
         }
     }
-    public void AddRequisite(string name)
-    {
-        Assembly ass = Assembly.Load(name);
-        _requisite.Add(ass);
-    }
-
     public void Generate()
     {
         if (_contract is null)

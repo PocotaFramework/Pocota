@@ -296,7 +296,7 @@ public class Builder
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
         })
         {
-            generator.AddRequisite("Net.Leksi.Test.RandomPocoUniverse.Common");
+            //generator.AddRequisite("Net.Leksi.Test.RandomPocoUniverse.Common");
             generator.SetContract(universe.Contract);
             generator.Generate();
         }
