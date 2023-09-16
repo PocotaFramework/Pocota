@@ -38,6 +38,7 @@ public class Generator : Runner
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
+    private readonly HashSet<Assembly> _requisite = new();
     private readonly IConnector _connector;
 
     private Type? _contract = null;
@@ -138,6 +139,12 @@ public class Generator : Runner
 
         }
     }
+    public void AddRequisite(string name)
+    {
+        Assembly ass = Assembly.Load(name);
+        _requisite.Add(ass);
+    }
+
     public void Generate()
     {
         if (_contract is null)
@@ -733,7 +740,7 @@ public class Generator : Runner
                     Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
                 };
                 Type itemType = pi.PropertyType;
-                if(itemType.IsGenericType && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) && itemType.GetGenericArguments()[0] is Type ga)
+                if (itemType.IsGenericType && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) && itemType.GetGenericArguments()[0] is Type ga)
                 {
                     itemType = ga;
                     pm.IsCollection = true;
@@ -1255,10 +1262,10 @@ public class Generator : Runner
             if (
                 ih.AccessPropertiesTree is { }
                 && ih.AccessPropertiesTree.Children.Where(c =>
-                    {
-                        PropertyInfo p = targetType.GetProperty(c.Name)!;
-                        return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _classHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
-                    })
+                {
+                    PropertyInfo p = targetType.GetProperty(c.Name)!;
+                    return GetPocoKind(p!.PropertyType) is PocoKind.Entity && _classHoldersByType[p!.PropertyType].AccessPropertiesTree is null;
+                })
                     .FirstOrDefault() is PathNode bad
             )
             {
