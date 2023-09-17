@@ -740,24 +740,26 @@ public class Generator : Runner
                     Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
                 };
                 Type itemType = pi.PropertyType;
+                Type itemImplType = pi.PropertyType;
                 if (itemType.IsGenericType && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) && itemType.GetGenericArguments()[0] is Type ga)
                 {
                     itemType = ga;
                     pm.IsCollection = true;
                 }
+                AddUsings(model, itemType);
+                pm.ItemType = Util.MakeTypeName(itemType);
                 if (_classHoldersByType.TryGetValue(itemType, out ClassHolder? ch))
                 {
                     if (!string.IsNullOrEmpty(itemType.Namespace))
                     {
                         model.Usings.Add(itemType.Namespace);
                     }
-                    pm.ItemType = MakePocoStubName(itemType);
+                    pm.ItemImplType = MakePocoStubName(itemType);
                     pm.PocoKind = ch.IsEntity ? PocoKind.Entity : PocoKind.Envelope;
                 }
                 else
                 {
-                    AddUsings(model, itemType);
-                    pm.ItemType = Util.MakeTypeName(itemType);
+                    pm.ItemImplType = pm.ItemType;
                 }
                 if (pm.IsCollection)
                 {
@@ -793,25 +795,31 @@ public class Generator : Runner
 
     private void GenerateStubs()
     {
-        Project stubs = Project.Create(new ProjectOptions
+        using (Project stubs = Project.Create(new ProjectOptions
         {
             Name = "Stubs",
             TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
-        });
-        foreach (Assembly ass in _requisite)
+        }))
         {
-            stubs.AddReference(ass.Location);
-        }
-        foreach (Type type in _classHoldersByType.Keys)
-        {
-            if (!stubs.ContainsReference(type.Assembly.Location))
+            stubs.MissedType += arg =>
             {
-                stubs.AddReference(type.Assembly.Location);
+                Console.WriteLine($"Missed type: {arg.MissedTypeName}");
+            };
+            foreach (Assembly ass in _requisite)
+            {
+                //stubs.AddReference(ass.Location);
             }
-            TextReader reader = _connector.Get("/PocoStub", type);
-            File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
+            foreach (Type type in _classHoldersByType.Keys)
+            {
+                if (!stubs.ContainsReference(type.Assembly.Location))
+                {
+                    stubs.AddReference(type.Assembly.Location);
+                }
+                TextReader reader = _connector.Get("/PocoStub", type);
+                File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
+            }
+            stubs.Compile();
         }
-        stubs.Compile();
     }
 
     private void Contract_AddPoco(AddPocoEventArgs args)

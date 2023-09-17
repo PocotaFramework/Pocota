@@ -54,23 +54,25 @@ public class SourcesGenerator: Runner
             ProjectDir = options.GeneratedContractProjectDir,
         });
 
-        Project model = Project.Create(new ProjectOptions
+        using (Project model = Project.Create(new ProjectOptions
         {
             Name = "Model",
             ProjectDir = options.GeneratedModelProjectDir,
-        });
-
-        model.AddProject(options.PocotaCommonProjectFile);
-        model.AddProject(options.PocoUniverseCommonProjectFile);
-
-        contract.AddProject(model);
-        contract.AddProject(options.ContractProjectFile);
-
-        foreach (Node node in universe.Nodes)
+        }))
         {
-            TextReader interfaceSource = connector.Get("/Class", new Tuple<Universe, Node>(universe, node));
-            File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), interfaceSource.ReadToEnd());
+            model.AddProject(options.PocotaCommonProjectFile);
+            model.AddProject(options.PocoUniverseCommonProjectFile);
+
+            contract.AddProject(model);
+            contract.AddProject(options.ContractProjectFile);
+
+            foreach (Node node in universe.Nodes)
+            {
+                TextReader interfaceSource = connector.Get("/Class", new Tuple<Universe, Node>(universe, node));
+                File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), interfaceSource.ReadToEnd());
+            }
         }
+
 
         TextReader contractSource = connector.Get("/NewContract", universe);
         File.WriteAllText(Path.Combine(contract.ProjectDir, $"{UniverseOptions.ContractName}.cs"), contractSource.ReadToEnd());

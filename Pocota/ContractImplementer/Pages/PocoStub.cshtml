@@ -16,7 +16,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         get
         {
             PropertyChanged?.Invoke(this, new @nameof(PropertyChangedEventArgs)@{}(nameof(@pm.Name)));
-            return @if(pm.PocoKind is PocoKind.NotAPoco){<text>default</text>} else {if(pm.IsCollection){<text>new List<@Html.Raw(pm.ItemType)>(){</text>}<text>new @Html.Raw(pm.ItemType)@{}()</text>if(pm.IsCollection){<text>}</text>}};
+            return @if(pm.PocoKind is PocoKind.NotAPoco){<text>default</text>} else {if(pm.IsCollection){<text>new List<@Html.Raw(pm.ItemType)>(){</text>}<text>new @Html.Raw(pm.ItemImplType)@{}()</text>if(pm.IsCollection){<text>}</text>}};
         }
     @if(!pm.IsReadonly)
     {

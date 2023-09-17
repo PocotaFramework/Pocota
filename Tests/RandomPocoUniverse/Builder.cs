@@ -178,7 +178,7 @@ public class Builder
 
     private static void CompilePocoUniverseServer(Universe universe)
     {
-        Project server = Project.Create(new ProjectOptions
+        using (Project server = Project.Create(new ProjectOptions
         {
             Namespace = UniverseOptions.Namespace,
             Name = "PocoUniverseServerRuntime",
@@ -186,28 +186,30 @@ public class Builder
             Sdk = "Microsoft.NET.Sdk.Web",
             TargetFramework = "net6.0-windows7.0",
             Configuration = UniverseOptions.Configuration,
-        });
-        server.AddPackage(s_e6dWebApp, UniverseOptions.E6dWebAppVersion);
-        server.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
-        server.AddProject(UniverseOptions.PocotaCommonProjectFile);
-        server.AddProject(UniverseOptions.PocotaServerProjectFile);
-        server.AddProject(universe.ServerStuffProject!.ProjectPath);
-
-        string inheritsDir = Path.Combine(server.ProjectDir, "Generated");
-        if (!Directory.Exists(inheritsDir))
+        }))
         {
-            Directory.CreateDirectory(inheritsDir);
-        }
-        else
-        {
-            ClearProjectDir(inheritsDir);
-        }
+            server.AddPackage(s_e6dWebApp, UniverseOptions.E6dWebAppVersion);
+            server.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
+            server.AddProject(UniverseOptions.PocotaCommonProjectFile);
+            server.AddProject(UniverseOptions.PocotaServerProjectFile);
+            server.AddProject(universe.ServerStuffProject!.ProjectPath);
 
-        server.Compile();
+            string inheritsDir = Path.Combine(server.ProjectDir, "Generated");
+            if (!Directory.Exists(inheritsDir))
+            {
+                Directory.CreateDirectory(inheritsDir);
+            }
+            else
+            {
+                ClearProjectDir(inheritsDir);
+            }
 
-        universe.PocoServer = (IPocoServer)Activator.CreateInstance(
-            Assembly.LoadFile(server.LibraryFile!).GetType($"{UniverseOptions.Namespace}.Server")!
-        )!;
+            server.Compile();
+
+            universe.PocoServer = (IPocoServer)Activator.CreateInstance(
+                Assembly.LoadFile(server.LibraryFile!).GetType($"{UniverseOptions.Namespace}.Server")!
+            )!;
+        }
     }
 
     private static InheritHolder InheritNode(Node node)
@@ -301,25 +303,27 @@ public class Builder
             generator.Generate();
         }
 
-        Project generatedServerStuff = Project.Create(new ProjectOptions
+        using (Project generatedServerStuff = Project.Create(new ProjectOptions
         {
             Name = "GeneratedServerStuff",
             TargetFramework = UniverseOptions.TargetFramework,
             ProjectDir = UniverseOptions.GeneratedServerStuffProjectDir,
             GeneratePackage = true,
-        });
+        }))
+        {
+            generatedServerStuff.NoWarn = UniverseOptions.GenerateClassesNoWarn;
+            generatedServerStuff.ThrowAtBuildWarnings = true;
 
-        generatedServerStuff.NoWarn = UniverseOptions.GenerateClassesNoWarn;
-        generatedServerStuff.ThrowAtBuildWarnings = true;
+            generatedServerStuff.AddProject(UniverseOptions.PocotaCommonProjectFile);
+            generatedServerStuff.AddProject(UniverseOptions.PocotaServerProjectFile);
+            generatedServerStuff.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
+            generatedServerStuff.AddProject(Path.Combine(UniverseOptions.GeneratedModelProjectDir, "Model.csproj"));
 
-        generatedServerStuff.AddProject(UniverseOptions.PocotaCommonProjectFile);
-        generatedServerStuff.AddProject(UniverseOptions.PocotaServerProjectFile);
-        generatedServerStuff.AddProject(UniverseOptions.PocoUniverseCommonProjectFile);
-        generatedServerStuff.AddProject(Path.Combine(UniverseOptions.GeneratedModelProjectDir, "Model.csproj"));
+            generatedServerStuff.Compile();
 
-        generatedServerStuff.Compile();
+            universe.ServerStuffProject = generatedServerStuff;
+        }
 
-        universe.ServerStuffProject = generatedServerStuff;
 
         UniverseOptions.GenerateClassesTelemetry?.Invoke(universe);
     }
@@ -353,11 +357,13 @@ go
     {
         ClearProjectDir(UniverseOptions.GeneratedModelProjectDir);
         ClearProjectDir(UniverseOptions.GeneratedContractProjectDir);
-        Project contract = new SourcesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions);
-        universe.Contract = Assembly.LoadFile(contract.LibraryFile!)!
-            .GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}")!;
+        using (Project contract = new SourcesGenerator().GenerateAndCompileModelAndContract(universe, UniverseOptions))
+        {
+            universe.Contract = Assembly.LoadFile(contract.LibraryFile!)!
+                .GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}")!;
 
-        UniverseOptions.ModelAndContractTelemetry?.Invoke(universe, contract);
+            UniverseOptions.ModelAndContractTelemetry?.Invoke(universe, contract);
+        }
 
     }
 
