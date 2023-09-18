@@ -5,7 +5,6 @@ using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.ComponentModel;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -38,7 +37,6 @@ public class Generator : Runner
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly HashSet<string> _variables = new();
-    private readonly HashSet<Assembly> _requisite = new();
     private readonly IConnector _connector;
 
     private Type? _contract = null;
@@ -105,52 +103,32 @@ public class Generator : Runner
         _connector = GetConnector();
     }
 
-    public void SetContract(Type? value)
+    public void Generate(Type contractType)
     {
-        if (value is null)
+        if (contractType is null)
         {
-            throw new ArgumentNullException(nameof(value));
+            throw new ArgumentNullException(nameof(contractType));
         }
-        if (!typeof(Contract).IsAssignableFrom(value))
+        if (!typeof(Contract).IsAssignableFrom(contractType))
         {
-            throw new ArgumentException($"{typeof(Contract)} type must be assignable from {value}!");
+            throw new ArgumentException($"{typeof(Contract)} type must be assignable from {contractType}!");
         }
-        if (_newContract != value)
-        {
-            _newContract = value;
 
-            _queue.Clear();
+        _newContract = contractType;
 
-            Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
+        _queue.Clear();
 
-            contract.GetObject = GetObject;
+        _queue.Add(_newContract);
 
-            AddPocos(contract);
+        Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
 
-            AddPrimaryKeys(contract);
+        contract.GetObject = GetObject;
 
-            //Project contract = Project.Create(
-            //    new ProjectOptions
-            //    {
-            //        Name = "Contract",
-            //        TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
-            //    }
-            //);
+        AddPocos(contract);
 
-        }
-    }
-    public void AddRequisite(string name)
-    {
-        Assembly ass = Assembly.Load(name);
-        _requisite.Add(ass);
-    }
+        AddPrimaryKeys(contract);
 
-    public void Generate()
-    {
-        if (_contract is null)
-        {
-            throw new InvalidOperationException($"Contract is not set!");
-        }
+        return;
 
         int fails = 0;
         int done = 0;
@@ -783,6 +761,7 @@ public class Generator : Runner
 
     private void Contract_AddPrimaryKey(object? sender, EventArgs e)
     {
+       
     }
 
     private void AddPocos(Contract contract)
@@ -805,10 +784,6 @@ public class Generator : Runner
             {
                 Console.WriteLine($"Missed type: {arg.MissedTypeName}");
             };
-            foreach (Assembly ass in _requisite)
-            {
-                //stubs.AddReference(ass.Location);
-            }
             foreach (Type type in _classHoldersByType.Keys)
             {
                 if (!stubs.ContainsReference(type.Assembly.Location))

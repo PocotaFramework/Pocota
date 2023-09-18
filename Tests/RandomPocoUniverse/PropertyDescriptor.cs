@@ -18,7 +18,7 @@ public class PropertyDescriptor
     public bool IsAccess { get; internal set; } = false;
     public bool IsCalculated { get; internal set; } = false;
     public int Source { get; internal set; } = -1;
-    public bool IsManyToManyLink {  get; internal set; } = false;
+    public PropertyDescriptor? Link {  get; internal set; } = null;
 
     public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.Name)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
 
@@ -35,9 +35,13 @@ public class PropertyDescriptor
                 sb.Append(", refs: [").Append(string.Join(',', References!.Select(p => p.ToString()))).Append("]");
             }
         }
+        else if(Type is { })
+        {
+            sb.Append(Type.Name);
+        }
         else
         {
-            sb.Append(Type!.Name);
+            sb.Append("undefined");
         }
         if (IsCollection)
         {

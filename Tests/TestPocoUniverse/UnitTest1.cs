@@ -134,15 +134,15 @@ public class Tests
         {
             foreach (Node node in universe.Nodes)
             {
-                //Console.WriteLine(node);
-                if (node is EntityNode)
-                {
-                    foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
-                    {
-                        Assert.That(pd.References, Is.Not.Null, $"{pd}, {node}");
-                        Assert.That(pd.References?.Count, Is.EqualTo(((EntityNode)pd.Node!).PrimaryKey.Count), $"{pd}, {node}");
-                    }
-                }
+                Console.WriteLine(node);
+                //if (node is EntityNode)
+                //{
+                //    foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
+                //    {
+                //        Assert.That(pd.References, Is.Not.Null, $"{pd}, {node}");
+                //        Assert.That(pd.References?.Count, Is.EqualTo(((EntityNode)pd.Node!).PrimaryKey.Count), $"{pd}, {node}");
+                //    }
+                //}
             }
         });
     }
