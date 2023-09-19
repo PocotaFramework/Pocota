@@ -13,8 +13,6 @@ public class PropertyDescriptor
     public bool IsCollection { get; internal set; } = false;
     public bool IsReadOnly { get; internal set; } = false;
     public bool IsNullable { get; internal set; } = true;
-    public List<PropertyDescriptor>? References { get; internal set; } = null;
-    public string? PrimaryKeyPartAlias { get; internal set; } = null;
     public bool IsAccess { get; internal set; } = false;
     public bool IsCalculated { get; internal set; } = false;
     public int Source { get; internal set; } = -1;
@@ -30,10 +28,6 @@ public class PropertyDescriptor
         if(Node is { })
         {
             sb.Append("&").Append(Node.Id);
-            if(References is { })
-            {
-                sb.Append(", refs: [").Append(string.Join(',', References!.Select(p => p.ToString()))).Append("]");
-            }
         }
         else if(Type is { })
         {

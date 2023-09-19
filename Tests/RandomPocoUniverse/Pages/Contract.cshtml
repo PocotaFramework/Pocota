@@ -12,32 +12,28 @@ using  Net.Leksi.Pocota.Common;
 namespace @UniverseOptions.Namespace;
 
 [PocoContract("Random", Version = "v1.0", RoutePrefix = "/api")]
+public class @UniverseOptions.ContractName: Contract
+{
+    public override void DefinePocos()
+    {
 @foreach(EntityNode entity in Model.Universe.Nodes.Where(n => n is EntityNode))
 {
-    <text>[Poco(typeof(@entity.Name)@if(entity.Base is null){<text>, PrimaryKey = new object[] { @Html.Raw(string.Join(", ", entity.KeyDefinition)) }</text>}@if(entity.AccessProperties.Any()){<text>, 
-        AccessProperties = new string[] { @Html.Raw(string.Join(", ", entity.AccessProperties.Select(s => $"\"{s}\""))) }</text>})]
+    <text>        Entity<@entity.Name>()@foreach(PropertyDescriptor pd in entity.PrimaryKey){<text>
+            .PrimaryKey(p => p.@pd.Name)</text>};
 </text>
 }
 @foreach (Node envelope in Model.Universe.Nodes.Where(n => n is not EntityNode))
 {
-    <text>[Poco(typeof(@envelope.Name))]
+    <text>        Envelope<@envelope.Name>();
 </text>
 }
-public interface @UniverseOptions.ContractName
-{
+    }
 @foreach(MethodModel mm in Model.Methods)
 {
-    if (mm.Properties.Any()) {
-        <text>    [Properties(new string[] {
-        @foreach(string path in mm.Properties)
-        {
-            <text>        "@path",
-</text>
-        }
-    })]
-</text>
+    <text>    public @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")))
+    {
+        throw new NotImplementedException();
     }
-    <text>    @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")));
 </text>
 }
 }

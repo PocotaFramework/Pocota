@@ -74,7 +74,7 @@ public class SourcesGenerator: Runner
         }
 
 
-        TextReader contractSource = connector.Get("/NewContract", universe);
+        TextReader contractSource = connector.Get("/Contract", universe);
         File.WriteAllText(Path.Combine(contract.ProjectDir, $"{UniverseOptions.ContractName}.cs"), contractSource.ReadToEnd());
 
         Stop();

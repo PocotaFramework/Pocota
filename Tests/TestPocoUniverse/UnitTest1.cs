@@ -23,13 +23,13 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = 2024548466;
-        public bool DoCreateDatabase { get; internal init; } = true;
+        public int Seed { get; internal init; } = 437038722;
+        public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
-        public bool DoGenerateClasses { get; internal init; } = true;
+        public bool DoGenerateClasses { get; internal init; } = false;
         public bool GenerateClassesVerbose { get; internal init; } = false;
-        public bool DoCompilePocoUniverseServer { get; internal init; } = true;
-        public bool DoRunPocoUniverseServer { get; internal init; } = true;
+        public bool DoCompilePocoUniverseServer { get; internal init; } = false;
+        public bool DoRunPocoUniverseServer { get; internal init; } = false;
         public override string ToString()
         {
             return string.Join('\n', new string[] {
