@@ -431,7 +431,7 @@ go
             // обрабатываемая вершина имеет цвет равный 2 + позиция исходящего ребра
             // если мы возвращаемся в эту вершину из-за цикла, мы удаляем ребро, ведущее к циклу именно эту вершину.
             colors.Add(n, 2);
-            PropertyDescriptor[] keyNodes = n.PrimaryKey.Where(p => p.Node is EntityNode).ToArray();
+            PropertyDescriptor[] keyNodes = n.PrimaryKey.ToArray();
             for (int i = keyNodes.Length - 1; i >= 0; --i)
             {
                 colors[n] = i + 2;
@@ -504,6 +504,10 @@ go
                     }
                     node.PrimaryKey.Add(enumerator.Current);
                 }
+            }
+            if (!node.PrimaryKey.Any())
+            {
+                throw new Exception();
             }
         }
     }
