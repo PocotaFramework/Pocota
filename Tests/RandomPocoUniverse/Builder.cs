@@ -397,43 +397,62 @@ go
 
     private static void CreateKeys(Universe universe, Random random)
     {
-        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
+        bool changed = true;
+        bool firstPass = true;
+        while(changed)
         {
-            CreatePrimaryKey(node, random);
-            Console.WriteLine($"CreateKeys: {node}");
-        }
-        foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
-        {
-            ResolveCyclicPrimaryKey(node, random);
+            changed = false;
+            foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode en && (firstPass || !en.PrimaryKey.Any())))
+            {
+                CreatePrimaryKey(node, random);
+                //Console.WriteLine($"CreateKeys: {node}");
+            }
+            foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
+            {
+                if(ResolveCyclicPrimaryKey(node, random))
+                {
+                    changed = true;
+                }
+            }
+            firstPass = false;
         }
     }
 
-    private static void ResolveCyclicPrimaryKey(EntityNode node, Random random)
+    private static bool ResolveCyclicPrimaryKey(EntityNode node, Random random)
     {
         Dictionary<EntityNode, int> colors = new();
+        bool result = false;
 
         Action<EntityNode> dfs = null!;
         dfs = n =>
         {
-            colors.Add(n, 1);
+            // немного переделанный алгоритм поиска цикла
+            // непосёщенная ранее вершина не имеет цвета, обработанная вершина имеет цвет 1
+            // обрабатываемая вершина имеет цвет равный 2 + позиция исходящего ребра
+            // если мы возвращаемся в эту вершину из-за цикла, мы удаляем ребро, ведущее к циклу именно эту вершину.
+            colors.Add(n, 2);
             PropertyDescriptor[] keyNodes = n.PrimaryKey.Where(p => p.Node is EntityNode).ToArray();
             for (int i = keyNodes.Length - 1; i >= 0; --i)
             {
+                colors[n] = i + 2;
                 if (keyNodes[i].Node is EntityNode en)
                 {
                     if (!colors.ContainsKey(en))
                     {
                         dfs.Invoke(en);
                     }
-                    else if (colors[en] == 1)
+                    else if (colors[en] >= 2)
                     {
-                        n.PrimaryKey.Remove(keyNodes[i]);
+                        en.CannotBePrimaryKey.Add(en.PrimaryKey[colors[en] - 2]);
+                        en.PrimaryKey.RemoveAt(colors[en] - 2);
+                        result = true;
                     }
                 }
             }
-            colors[n] = 2;
+            colors[n] = 1;
         };
         dfs.Invoke(node);
+        return result;
     }
 
     private static void CreatePrimaryKey(EntityNode node, Random random)
@@ -442,7 +461,13 @@ go
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
             IEnumerator<PropertyDescriptor> enumerator = node.Properties
-                .Where(p => (p.Node is EntityNode || p.Node is null) && !p.IsCollection && !p.IsCalculated && !p.IsNullable)
+                .Where(
+                    p => (p.Node is EntityNode || p.Node is null) 
+                        && !p.IsCollection 
+                        && !p.IsCalculated 
+                        && !p.IsNullable 
+                        && !node.CannotBePrimaryKey.Contains(p)
+                )
                 .GetEnumerator();
             for (int i = node.PrimaryKey.Count; i < pkCount && enumerator.MoveNext(); ++i)
             {

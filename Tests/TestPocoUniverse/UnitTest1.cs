@@ -23,7 +23,7 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = 437038722;
+        public int Seed { get; internal init; } = -1;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = false;
@@ -134,15 +134,11 @@ public class Tests
         {
             foreach (Node node in universe.Nodes)
             {
-                Console.WriteLine(node);
-                //if (node is EntityNode)
-                //{
-                //    foreach(PropertyDescriptor pd in node.Properties.Where(p => p.Node is EntityNode && !p.IsCollection))
-                //    {
-                //        Assert.That(pd.References, Is.Not.Null, $"{pd}, {node}");
-                //        Assert.That(pd.References?.Count, Is.EqualTo(((EntityNode)pd.Node!).PrimaryKey.Count), $"{pd}, {node}");
-                //    }
-                //}
+                //Console.WriteLine(node);
+                if (node is EntityNode en)
+                {
+                    Assert.That(en.PrimaryKey.Any(), Is.True, node.ToString());
+                }
             }
         });
     }

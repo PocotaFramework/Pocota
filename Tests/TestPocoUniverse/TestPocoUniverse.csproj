@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <Configurations>Debug;Release;RAC</Configurations>
+    <RunSettingsFilePath>W:\C#\PocotaNew2\Tests\TestPocoUniverse\bin\RAC\net6.0-windows\fine-code-coverage\coverage-tool-output\TestPocoUniverse-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
   <ItemGroup>
