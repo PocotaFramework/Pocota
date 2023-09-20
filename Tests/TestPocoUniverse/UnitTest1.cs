@@ -118,6 +118,8 @@ public class Tests
         Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
         Builder.UniverseOptions.DoCompilePocoUniverseServer = options.DoCompilePocoUniverseServer;
 
+        File.WriteAllText(Path.Combine(Builder.UniverseOptions.GeneratedContractProjectDir, "seed.txt"), seed.ToString());
+
         Universe universe = Builder.Build(rnd);
 
         if (options.DoRunPocoUniverseServer && universe.PocoServer is { })
