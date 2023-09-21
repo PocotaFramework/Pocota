@@ -6,10 +6,16 @@ public abstract class Contract
 {
     public event AddPocoEventHandler? AddPoco;
     public event EventHandler? AddPrimaryKey;
+    public event EventHandler? AddAccess;
 
     public Func<Type, object> GetObject { get; set; } = null!;
 
     internal void PrimaryKey<T>(Func<T, object> name)
+    {
+        name?.Invoke((T)GetObject(typeof(T)));
+    }
+
+    internal void Access<T>(Func<T, object> name)
     {
         name?.Invoke((T)GetObject(typeof(T)));
     }

@@ -128,6 +128,8 @@ public class Generator : Runner
 
         AddPrimaryKeys(contract);
 
+        AddAccess(contract);
+
         return;
 
         int fails = 0;
@@ -750,6 +752,17 @@ public class Generator : Runner
         {
             throw new InvalidOperationException();
         }
+    }
+
+    private void AddAccess(Contract contract)
+    {
+        contract.AddAccess += Contract_AddAccess;
+        contract.DefinePocos();
+        contract.AddAccess -= Contract_AddAccess;
+    }
+
+    private void Contract_AddAccess(object? sender, EventArgs e)
+    {
     }
 
     private void AddPrimaryKeys(Contract contract)

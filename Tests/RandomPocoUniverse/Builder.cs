@@ -399,7 +399,7 @@ go
         {
             ++i;
             changed = false;
-            foreach (EntityNode node in universe.Nodes.Where(n => n.Base is null && n is EntityNode en && !en.PrimaryKey.Any()))
+            foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode en && !en.PrimaryKey.Any()))
             {
                 CreatePrimaryKey(node, random);
                 //Console.WriteLine($"CreateKeys: {node}");
@@ -458,7 +458,7 @@ go
 
     private static void CreatePrimaryKey(EntityNode node, Random random)
     {
-        if (node.Base is null && !node.PrimaryKey.Any())
+        if (!node.PrimaryKey.Any())
         {
             int pkCount = 1 + random.Next(s_maxKeyParts);
             IEnumerator<PropertyDescriptor> enumerator = node.Properties

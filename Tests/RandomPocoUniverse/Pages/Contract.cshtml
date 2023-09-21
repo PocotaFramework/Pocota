@@ -18,8 +18,8 @@ public class @UniverseOptions.ContractName: Contract
     {
 @foreach(EntityNode entity in Model.Universe.Nodes.Where(n => n is EntityNode))
 {
-    <text>        Entity<@entity.Name>()@foreach(PropertyDescriptor pd in entity.PrimaryKey){<text>
-            .PrimaryKey(p => p.@pd.Name)</text>};
+    <text>        Entity<@entity.Name>()
+            .PrimaryKey(p => new object[]{@Html.Raw(string.Join(",", @entity.PrimaryKey.Select(pd => $"p.{pd.Name}")))});
 </text>
 }
 @foreach (Node envelope in Model.Universe.Nodes.Where(n => n is not EntityNode))
