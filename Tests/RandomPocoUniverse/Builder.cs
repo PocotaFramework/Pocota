@@ -3,12 +3,8 @@ using Net.Leksi.Pocota.Common;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
-using System.Linq;
 using System.Reflection;
-using System.Security.AccessControl;
-using System.Security.Cryptography.Xml;
 using System.Text;
-using System.Xml.Linq;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -398,23 +394,30 @@ go
     private static void CreateKeys(Universe universe, Random random)
     {
         bool changed = true;
-        bool firstPass = true;
-        while(changed)
+        int i = 0;
+        while(changed && i < 10)
         {
+            ++i;
             changed = false;
-            foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode en && (firstPass || !en.PrimaryKey.Any())))
+            foreach (EntityNode node in universe.Nodes.Where(n => n.Base is null && n is EntityNode en && !en.PrimaryKey.Any()))
             {
                 CreatePrimaryKey(node, random);
                 //Console.WriteLine($"CreateKeys: {node}");
             }
             foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
             {
-                if(ResolveCyclicPrimaryKey(node, random))
+                if (ResolveCyclicPrimaryKey(node, random))
                 {
                     changed = true;
                 }
             }
-            firstPass = false;
+            if (changed)
+            {
+                foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
+                {
+                    node.PrimaryKey.RemoveAll(p => node.CannotBePrimaryKey.Contains(p));
+                }
+            }
         }
     }
 
@@ -431,11 +434,10 @@ go
             // обрабатываемая вершина имеет цвет равный 2 + позиция исходящего ребра
             // если мы возвращаемся в эту вершину из-за цикла, мы удаляем ребро, ведущее к циклу именно эту вершину.
             colors.Add(n, 1);
-            PropertyDescriptor[] keyNodes = n.PrimaryKey.ToArray();
-            for (int i = keyNodes.Length - 1; i >= 0; --i)
+            for (int i = 0; i < n.PrimaryKey.Count; ++i)
             {
                 colors[n] = i + 2;
-                if (keyNodes[i].Node is EntityNode en)
+                if (n.PrimaryKey[i].Node is EntityNode en && !n.CannotBePrimaryKey.Contains(n.PrimaryKey[i]))
                 {
                     if (!colors.ContainsKey(en))
                     {
@@ -444,7 +446,6 @@ go
                     else if (colors[en] >= 2)
                     {
                         en.CannotBePrimaryKey.Add(en.PrimaryKey[colors[en] - 2]);
-                        en.PrimaryKey.RemoveAt(colors[en] - 2);
                         result = true;
                     }
                 }
@@ -463,6 +464,7 @@ go
             IEnumerator<PropertyDescriptor> enumerator = node.Properties
                 .Where(
                     p => (p.Node is EntityNode || p.Node is null) 
+                        && p.Node != node
                         && !p.IsCollection 
                         && !p.IsCalculated 
                         && !p.IsNullable 
@@ -471,27 +473,42 @@ go
                 .GetEnumerator();
             for (int i = node.PrimaryKey.Count; i < pkCount && enumerator.MoveNext(); ++i)
             {
-                node.PrimaryKey.Add(enumerator.Current);
-            }
-            if (node.PrimaryKey.Count < pkCount)
-            {
-                enumerator = node.Properties
-                .Where(p => (p.Node is EntityNode || p.Node is null) && !p.IsCollection && !p.IsCalculated)
-                .GetEnumerator();
-                for (int i = node.PrimaryKey.Count; i < pkCount && enumerator.MoveNext(); ++i)
+                if (!node.PrimaryKey.Contains(enumerator.Current))
                 {
-                    if (enumerator.Current.IsNullable)
-                    {
-                        enumerator.Current.IsNullable = false;
-                    }
                     node.PrimaryKey.Add(enumerator.Current);
                 }
             }
             if (node.PrimaryKey.Count < pkCount)
             {
                 enumerator = node.Properties
-                .Where(p => (p.Node is EntityNode || p.Node is null) && !p.IsCalculated)
-                .GetEnumerator();
+                    .Where(
+                        p => (p.Node is EntityNode || p.Node is null)
+                            && p.Node != node
+                            && !p.IsCollection 
+                            && !p.IsCalculated
+                    )
+                    .GetEnumerator();
+                for (int i = node.PrimaryKey.Count; i < pkCount && enumerator.MoveNext(); ++i)
+                {
+                    if (enumerator.Current.IsNullable)
+                    {
+                        enumerator.Current.IsNullable = false;
+                    }
+                    if (!node.PrimaryKey.Contains(enumerator.Current))
+                    {
+                        node.PrimaryKey.Add(enumerator.Current);
+                    }
+                }
+            }
+            if (node.PrimaryKey.Count < pkCount)
+            {
+                enumerator = node.Properties
+                    .Where(
+                        p => (p.Node is EntityNode || p.Node is null)
+                            && p.Node != node
+                            && !p.IsCalculated
+                    )
+                    .GetEnumerator();
                 for (int i = node.PrimaryKey.Count; i < pkCount && enumerator.MoveNext(); ++i)
                 {
                     if (enumerator.Current.IsNullable)
@@ -502,7 +519,10 @@ go
                     {
                         enumerator.Current.IsCollection = false;
                     }
-                    node.PrimaryKey.Add(enumerator.Current);
+                    if (!node.PrimaryKey.Contains(enumerator.Current))
+                    {
+                        node.PrimaryKey.Add(enumerator.Current);
+                    }
                 }
             }
             if (!node.PrimaryKey.Any())
@@ -597,9 +617,10 @@ go
         int addThresh = s_maxNumInherited;
         int numInherits = 0;
         int numNodes = s_numNodes;
+        bool envelopesOnly = false;
         for (int i = 0; i < numNodes; ++i)
         {
-            bool isEnvelope = random.Next(s_numNodes) < s_numEnvelopes;
+            bool isEnvelope = envelopesOnly || random.Next(s_numNodes) < s_numEnvelopes;
             int ns = random.Next(s_maxNamespaces)!;
             Node node = isEnvelope ? new Node() : new EntityNode();
 
@@ -613,26 +634,29 @@ go
 
             if (numInherits > 0)
             {
-                List<Node> bases;
-                do
+                List<Node> bases = universe.Nodes.Where(
+                    n => n.GetType() == node.GetType() && n.NumInherits == node.NumInherits - 1
+                ).ToList();
+                if (bases.Any())
                 {
-                    bases = universe.Nodes.Where(
-                        n => n.GetType() == node.GetType() && n.NumInherits == node.NumInherits - 1
-                    ).ToList();
+                    Node baseNode = bases[random.Next(bases.Count)];
+                    while (baseNode.NumInherits < numInherits - 1)
+                    {
+                        Node node1 = node is EntityNode ? new EntityNode() : new Node();
+                        node1.Base = baseNode;
+                        node1.NumInherits = baseNode.NumInherits + 1;
+                        baseNode = node1;
+                    }
+                    node.Base = baseNode;
                 }
-                while (!bases.Any());
-                Node baseNode = bases[random.Next(bases.Count)];
-                while (baseNode.NumInherits < numInherits - 1)
-                {
-                    Node node1 = node is EntityNode ? new EntityNode() : new Node();
-                    node1.Base = baseNode;
-                    node1.NumInherits = baseNode.NumInherits + 1;
-                    baseNode = node1;
-                }
-                node.Base = baseNode;
             }
             node.Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" };
             universe.Nodes.Add(node);
+            if(!envelopesOnly && i == numNodes - 1 && !universe.Nodes.Any(n => n is not EntityNode))
+            {
+                envelopesOnly = true;
+                numNodes += s_numEnvelopes;
+            }
         }
         universe.Nodes.Sort(
             (n1, n2) => n1.NumInherits != n2.NumInherits

@@ -23,7 +23,7 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = 1924707622;
+        public int Seed { get; internal init; } = -1;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = false;
@@ -55,9 +55,7 @@ public class Tests
 
     public static IEnumerable<Test1Options> Test1OptionsSource()
     {
-        return new Test1Options[] { new Test1Options
-        {
-        } };
+        return new Test1Options[] { new Test1Options() };
     }
 
     [Test]
