@@ -9,9 +9,9 @@ public class PocoEntityInfo<T>: PocoInfo<T> where T : class
         Contract.PrimaryKey(name);
         return this;
     }
-    public PocoEntityInfo<T> Access(Func<T, object> name)
+    public PocoEntityInfo<T> AccessSelector(Func<T, object> name)
     {
-        Contract.Access(name);
+        Contract.AccessSelector(name);
         return this;
     }
 

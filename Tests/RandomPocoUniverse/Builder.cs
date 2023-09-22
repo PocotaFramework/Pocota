@@ -4,6 +4,7 @@ using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
+using System.Security.Cryptography.Xml;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
@@ -61,7 +62,7 @@ public class Builder
 
         CreateKeys(universe, random);
 
-        CompleteEntities(universe, random);
+        CreateAccessSelectors(universe, random);
         CompleteEnvelopes(universe, random);
 
         CreateContractMethods(universe, random);
@@ -216,78 +217,43 @@ public class Builder
         return holder;
     }
 
-    private static void CompleteEntities(Universe universe, Random random)
+    private static void CreateAccessSelectors(Universe universe, Random random)
     {
         foreach (EntityNode entity in universe.Nodes.Where(n => n is EntityNode))
         {
-            if (entity.AccessProperties.Any())
-            {
-                HashSet<EntityNode> used = new();
-                _ = TestAndFixAccessLoop(entity, used);
-            }
-        }
-        bool changed = true;
-        while (changed)
-        {
-            changed = false;
-            foreach (EntityNode entity in universe.Nodes.Where(n => n is EntityNode))
-            {
-                foreach (PropertyDescriptor pd1 in entity.Properties.Where(p => p.IsAccess && p.Node is { }))
-                {
-                    if (pd1.Node is EntityNode en)
-                    {
-                        if (!en.Properties.Any(p => p.IsAccess))
-                        {
-                            bool done = false;
-                            foreach (
-                                PropertyDescriptor pd in en.Properties
-                                    .Where(p => !p.IsNullable && (p.Node is EntityNode || p.Node is null))
-                            )
-                            {
-                                pd.IsAccess = true;
-                                done = true;
-                                break;
-                            }
-                            if (!done)
-                            {
-                                PropertyDescriptor pd = new()
-                                {
-                                    Type = s_terminalTypes[random.Next(s_terminalTypes.Length)],
-                                    IsReadOnly = random.Next(s_baseReadonly) == 0,
-                                    IsCollection = random.Next(s_baseCollection) == 0,
-                                    IsNullable = false,
-                                    IsAccess = true,
-                                    Source = 1,
-                                };
-                                en.Properties.Add(pd);
-                            }
-                            changed = true;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-            }
+            entity.AccessProperties.AddRange(FillAccessSelectorsLevel(entity, random, string.Empty, 0));
         }
     }
 
-    private static bool TestAndFixAccessLoop(EntityNode entity, HashSet<EntityNode> used)
+    private static List<string> FillAccessSelectorsLevel(
+        EntityNode entity,
+        Random random,
+        string path, 
+        int level
+    )
     {
-        if (!used.Add(entity))
+        List<string> result = new();
+        List<PropertyDescriptor> candidates = entity.Properties.Where(
+            p => !p.IsCalculated 
+            && !p.IsNullable 
+            && (level < s_maxPathLength ? (p.Node is null || p.Node is EntityNode) : p.Node is null)
+        ).ToList();
+        int levelCount = Math.Min(2 + random.Next(s_maxAccessProperties - 1), candidates.Count);
+        for (int i = 0; i < levelCount; ++i)
         {
-            return true;
-        }
-        foreach (PropertyDescriptor pd in entity.Properties.Where(p => p.IsAccess && p.Node is { }))
-        {
-            if (TestAndFixAccessLoop((pd.Node as EntityNode)!, used))
+            int pos = random.Next(0, candidates.Count);
+            string next = $"{path}{(string.IsNullOrEmpty(path) ? string.Empty : ".")}{candidates[pos].Name}";
+            if (candidates[pos].Node is EntityNode en)
             {
-                pd.IsAccess = false;
+                result.AddRange(FillAccessSelectorsLevel(en, random, next, level + 1));
             }
+            else
+            {
+                result.Add(next);
+            }
+            candidates.RemoveAt(pos);
         }
-        used.Remove(entity);
-        return false;
+        return result;
     }
 
     private static void GenerateClasses(Universe universe)
@@ -395,7 +361,7 @@ go
     {
         bool changed = true;
         int i = 0;
-        while(changed && i < 10)
+        while (changed && i < 10)
         {
             ++i;
             changed = false;
@@ -463,11 +429,11 @@ go
             int pkCount = 1 + random.Next(s_maxKeyParts);
             IEnumerator<PropertyDescriptor> enumerator = node.Properties
                 .Where(
-                    p => (p.Node is EntityNode || p.Node is null) 
+                    p => (p.Node is EntityNode || p.Node is null)
                         && p.Node != node
-                        && !p.IsCollection 
-                        && !p.IsCalculated 
-                        && !p.IsNullable 
+                        && !p.IsCollection
+                        && !p.IsCalculated
+                        && !p.IsNullable
                         && !node.CannotBePrimaryKey.Contains(p)
                 )
                 .GetEnumerator();
@@ -484,7 +450,7 @@ go
                     .Where(
                         p => (p.Node is EntityNode || p.Node is null)
                             && p.Node != node
-                            && !p.IsCollection 
+                            && !p.IsCollection
                             && !p.IsCalculated
                     )
                     .GetEnumerator();
@@ -652,7 +618,7 @@ go
             }
             node.Namespace = ns switch { 0 => null, _ => $"{UniverseOptions.Namespace}.ns{ns}" };
             universe.Nodes.Add(node);
-            if(!envelopesOnly && i == numNodes - 1 && !universe.Nodes.Any(n => n is not EntityNode))
+            if (!envelopesOnly && i == numNodes - 1 && !universe.Nodes.Any(n => n is not EntityNode))
             {
                 envelopesOnly = true;
                 numNodes += s_numEnvelopes;
@@ -669,9 +635,7 @@ go
         {
             List<Node> list = universe.Nodes.Take(numNodes).ToList();
             int numReferences = s_minReferences + random.Next(s_maxReferences - s_minReferences + 1);
-            int numAccessProperties = random.Next(s_baseAccessProperty) == 0 ? 1 + random.Next(s_maxAccessProperties) : 0;
             int numOtherProperties = s_minOtherProperties + random.Next(s_maxOtherProperties - s_minOtherProperties + 1);
-            int baseAccessProperty = numAccessProperties > 0 ? (int)Math.Ceiling(1.0 * numOtherProperties / numAccessProperties) : 0;
             for (int j = 0; j < numReferences; ++j)
             {
                 int pos = random.Next(list.Count);
@@ -689,7 +653,6 @@ go
                         Node = universe.Nodes[i],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsCollection = true,
-                        IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         Source = 3,
                     };
                     list[pos].Properties.Add(pd1);
@@ -698,7 +661,6 @@ go
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsCollection = true,
-                        IsAccess = baseAccessProperty > 0 && random.Next(baseAccessProperty) == 0,
                         Source = 4,
                         Link = pd1,
                     };
@@ -715,10 +677,6 @@ go
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
                         IsNullable = isNullable,
-                        IsAccess = universe.Nodes[i] is EntityNode
-                            && list[pos] is EntityNode
-                            && !isNullable && baseAccessProperty > 0
-                            && random.Next(baseAccessProperty) == 0,
                         Source = 7,
                     };
 
@@ -754,10 +712,6 @@ go
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
                     IsCollection = isCollection,
                     IsNullable = isNullable,
-                    IsAccess = universe.Nodes[i] is EntityNode
-                        && !isCalculated
-                        && !isNullable && baseAccessProperty > 0
-                        && random.Next(baseAccessProperty) == 0,
                     IsCalculated = isCalculated,
                     Source = 9,
                 };

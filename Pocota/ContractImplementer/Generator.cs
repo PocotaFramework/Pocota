@@ -46,6 +46,8 @@ public class Generator : Runner
     public string? ServerGeneratedDirectory { get; set; } = null;
     public string? ClientGeneratedDirectory { get; set; } = null;
 
+    public string? ContractStubsProjectDir {  get; set; } = null;
+
     public Action<RequestKind, Type, string, Exception?>? OnResponse { get; set; } = null;
     public bool Verbose { get; set; } = true;
 
@@ -128,7 +130,7 @@ public class Generator : Runner
 
         AddPrimaryKeys(contract);
 
-        AddAccess(contract);
+        AddAccessSelectors(contract);
 
         return;
 
@@ -754,14 +756,14 @@ public class Generator : Runner
         }
     }
 
-    private void AddAccess(Contract contract)
+    private void AddAccessSelectors(Contract contract)
     {
-        contract.AddAccess += Contract_AddAccess;
+        contract.AddAccessSelector += Contract_AddAccessSelector;
         contract.DefinePocos();
-        contract.AddAccess -= Contract_AddAccess;
+        contract.AddAccessSelector -= Contract_AddAccessSelector;
     }
 
-    private void Contract_AddAccess(object? sender, EventArgs e)
+    private void Contract_AddAccessSelector(object? sender, EventArgs e)
     {
     }
 
@@ -791,6 +793,7 @@ public class Generator : Runner
         {
             Name = "Stubs",
             TargetFramework = $"net{Environment.Version.Major}.{Environment.Version.Minor}",
+            ProjectDir = ContractStubsProjectDir,
         }))
         {
             stubs.MissedType += arg =>
@@ -806,6 +809,7 @@ public class Generator : Runner
                 TextReader reader = _connector.Get("/PocoStub", type);
                 File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
             }
+            Console.WriteLine(stubs.ProjectDir);
             stubs.Compile();
         }
     }

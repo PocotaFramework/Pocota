@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Http;
+using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -8,7 +9,7 @@ public class EntityNode: Node
     public List<PropertyDescriptor> PrimaryKey { get; private init; } = new();
     public HashSet<PropertyDescriptor> CannotBePrimaryKey { get; private init; } = new();
 
-    public string[] AccessProperties => Properties.Where(p => p.IsAccess).Select(p => $"{p.Name}{(p.IsCollection ? ".@" : string.Empty)}").ToArray();
+    public List<string> AccessProperties {get; private init; } = new();
 
     public override string ToString()
     {
