@@ -4,7 +4,6 @@ using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
-using System.Security.Cryptography.Xml;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
@@ -22,13 +21,9 @@ public class Builder
     private const int s_baseCollection = 5;
     private const int s_baseReadonly = 7;
     private const int s_baseNullable = 3;
-    private const int s_basePrimaryKeyPart = 11;
     private const int s_minOtherProperties = 3;
     private const int s_maxOtherProperties = 10;
-    private const int s_maxFkPk = 3;
-    private const int s_baseAccessProperty = 2;
-    private const int s_maxAccessProperties = 10;
-    private const int s_maxInheritance = 3;
+    private const int s_maxAccessProperties = 4;
     private const int s_maxMethods = 3;
     private const int s_maxMethodArgs = 3;
     private const int s_baseMethodSingle = 3;
@@ -38,7 +33,6 @@ public class Builder
     private const string s_e6dWebApp = "Net.Leksi.E6dWebApp";
     private const int s_maxNamespaces = 5;
     private const int s_maxNumInherited = 2;
-    private const int s_maxInheritedtAdditionalProperties = 3;
     private const int s_baseIsCalculated = 5;
 
     private readonly static Type[] s_terminalTypes = new Type[]
@@ -221,7 +215,15 @@ public class Builder
     {
         foreach (EntityNode entity in universe.Nodes.Where(n => n is EntityNode))
         {
-            entity.AccessProperties.AddRange(FillAccessSelectorsLevel(entity, random, string.Empty, 0));
+            List<string> candidates = FillAccessSelectorsLevel(entity, random, string.Empty, 0);
+            int count = Math.Min(2 + random.Next(s_maxAccessProperties - 1), candidates.Count);
+            for (int i = 0; i < count; ++i)
+            {
+                int pos = random.Next(0, candidates.Count);
+                entity.AccessProperties.Add(candidates[pos]);
+                candidates.RemoveAt(pos);
+            }
+            entity.AccessProperties.Sort();
         }
     }
 
@@ -236,13 +238,15 @@ public class Builder
         List<PropertyDescriptor> candidates = entity.Properties.Where(
             p => !p.IsCalculated 
             && !p.IsNullable 
-            && (level < s_maxPathLength ? (p.Node is null || p.Node is EntityNode) : p.Node is null)
+            && (level < s_maxPathLength ? (p.Node is null || p.Node is EntityNode) : (p.Node is null))
         ).ToList();
         int levelCount = Math.Min(2 + random.Next(s_maxAccessProperties - 1), candidates.Count);
         for (int i = 0; i < levelCount; ++i)
         {
             int pos = random.Next(0, candidates.Count);
-            string next = $"{path}{(string.IsNullOrEmpty(path) ? string.Empty : ".")}{candidates[pos].Name}";
+            string delim = string.IsNullOrEmpty(path) ? string.Empty : ".";
+            string indexer = candidates[pos].IsCollection && candidates[pos].Node is EntityNode ? "[0]" : string.Empty;
+            string next = $"{path}{delim}{candidates[pos].Name}{indexer}";
             if (candidates[pos].Node is EntityNode en)
             {
                 result.AddRange(FillAccessSelectorsLevel(en, random, next, level + 1));

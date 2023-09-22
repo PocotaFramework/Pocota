@@ -20,7 +20,9 @@ public class @UniverseOptions.ContractName: Contract
 {
     <text>        Entity<@entity.Name>()
             .PrimaryKey(p => new object[]{@Html.Raw(string.Join(",", @entity.PrimaryKey.Select(pd => $"p.{pd.Name}")))})@if(entity.AccessProperties.Any()){<text>
-            .AccessSelector(p => new object[]{@Html.Raw(string.Join(",", @entity.AccessProperties.Select(ap => $"p.{ap}")))})</text>};
+            .AccessSelector(p => new object[]{
+                @Html.Raw(string.Join(",\n                ", @entity.AccessProperties.Select(ap => $"p.{ap}")))
+            })</text>};
 </text>
 }
 @foreach (Node envelope in Model.Universe.Nodes.Where(n => n is not EntityNode))
