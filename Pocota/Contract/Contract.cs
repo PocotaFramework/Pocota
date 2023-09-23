@@ -2,13 +2,9 @@
 
 namespace Net.Leksi.Pocota.Common;
 
-public abstract class Contract
+public abstract class Contract: ContractBase
 {
-    public event AddPocoEventHandler? AddPoco;
-    public event EventHandler? AddPrimaryKey;
-    public event EventHandler? AddAccessSelector;
-    public event EventHandler? MandatoryOn;
-    public event EventHandler? MandatoryOff;
+    public event ContractEventHandler? ContractEvent;
 
     public Func<Type, object?> GetObject { get; set; } = null!;
 
@@ -16,8 +12,15 @@ public abstract class Contract
     {
         if(GetObject(typeof(T)) is T target)
         {
-            AddPrimaryKey?.Invoke(this, EventArgs.Empty);
-            name?.Invoke(target);
+            try
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.PrimaryKey, IsStarting = true });
+                name?.Invoke(target);
+            }
+            finally
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.PrimaryKey, });
+            }
         }
     }
 
@@ -25,47 +28,74 @@ public abstract class Contract
     {
         if (GetObject(typeof(T)) is T target)
         {
-            AddAccessSelector?.Invoke(this, EventArgs.Empty);
-            name?.Invoke(target);
+            try
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.AccessSelector, IsStarting = true });
+                name?.Invoke(target);
+            }
+            finally
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.AccessSelector, });
+            }
         }
     }
 
     public abstract void DefinePocos();
 
-    protected PocoEntityInfo<T> Entity<T>(Action<PocoEntityInfo<T>>? config = null) where T : class
-    {
-        PocoEntityInfo<T> result = new PocoEntityInfo<T>(this);
-        config?.Invoke(result);
-        AddPoco?.Invoke(new AddPocoEventArgs { Type = typeof(T), IsEntity = true });
-        return result;
-    }
-
-    protected PocoInfo<T> Envelope<T>(Action<PocoInfo<T>>? config = null) where T : class
-    {
-        PocoInfo<T> result = new PocoInfo<T>(this);
-        config?.Invoke(result);
-        AddPoco?.Invoke(new AddPocoEventArgs { Type = typeof(T), IsEntity = false });
-        return result;
-    }
-
-    protected void ReturnProperties<T>(Func<T, object> paths, [CallerMemberName]string? methodName = null) where T: class
-    {
-        if(GetObject.Invoke(typeof(T)) is T target)
-        {
-            paths.Invoke(target);
-        }
-    }
-
-    protected object Mandatory(object value) 
+    protected override sealed PocoEntityInfo<T> Entity<T>() where T : class
     {
         try
         {
-            MandatoryOn?.Invoke(this, EventArgs.Empty);
+            PocoEntityInfo<T> result = new PocoEntityInfo<T>(this);
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { Type = typeof(T), IsEntity = true, IsStarting = true });
+            return result;
+        }
+        finally
+        {
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { });
+        }
+   }
+
+    protected override sealed PocoInfo<T> Envelope<T>() where T : class
+    {
+        try
+        {
+            PocoInfo<T> result = new PocoInfo<T>(this);
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { Type = typeof(T), IsEntity = false, IsStarting = true });
+            return result;
+        }
+        finally
+        {
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { });
+        }
+    }
+
+    protected override sealed void UseProperty<T>(Func<T, object> paths, [CallerMemberName]string? methodName = null) where T: class
+    {
+        if(GetObject.Invoke(typeof(T)) is T target)
+        {
+            try
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.UseProperty, IsStarting = true });
+                paths.Invoke(target);
+            }
+            finally
+            {
+                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.UseProperty, });
+            }
+        }
+    }
+
+    protected override sealed object Mandatory(object value) 
+    {
+        try
+        {
+            ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.Mandatory, IsStarting = true });
             return value;
         }
         finally
         {
-            MandatoryOff?.Invoke(this, EventArgs.Empty);
+            ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.Mandatory });
         }
     }
 }

@@ -183,31 +183,30 @@ public class Builder
                     int pos = random.Next(values!.Count);
                     string next = values[pos];
                     values.RemoveAt(pos);
-                    //bool isKey = false;
-                    //Node current = node;
-                    //foreach(string part in next.Split('.'))
-                    //{
-                    //    string part1 = s_trimPart.Match(part) is Match match && match.Success ? match.Groups[0].Value : part;
-                    //    Console.WriteLine($"{current.Name}, {part}, {part1}");
-                    //    PropertyDescriptor pd = current.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
-                    //    if(pd is null)
-                    //    {
-                    //        for(Node now = current.Base; pd is null && now != now.Base; now = now.Base)
-                    //        {
-                    //            pd = now.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
-                    //        }
-                    //    }
-                    //    if(current is EntityNode entity && entity.PrimaryKey.Contains(pd!))
-                    //    {
-                    //        isKey = true;
-                    //        break;
-                    //    }
-                    //    current = pd!.Node!;
-                    //}
-                    //if(!isKey && random.Next(s_baseMandatoryReturnProperty) == 0)
-                    //{
-                    //    next += '$';
-                    //}
+                    bool isKey = false;
+                    Node current = node;
+                    foreach (string part in next.Split('.'))
+                    {
+                        string part1 = s_trimPart.Match(part) is Match match && match.Success ? match.Groups[0].Value : part;
+                        PropertyDescriptor pd = current.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
+                        if (pd is null)
+                        {
+                            for (Node now = current.Base; pd is null && now != now.Base; now = now.Base)
+                            {
+                                pd = now.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
+                            }
+                        }
+                        if (current is EntityNode entity && entity.PrimaryKey.Contains(pd!))
+                        {
+                            isKey = true;
+                            break;
+                        }
+                        current = pd!.Node!;
+                    }
+                    if (!isKey && random.Next(s_baseMandatoryReturnProperty) == 0)
+                    {
+                        next += '$';
+                    }
 
                     properties.Insert(0, next);
                 }
@@ -383,7 +382,6 @@ go
         conn.Open();
         foreach (string sql in commands)
         {
-            //Console.WriteLine(sql);
             cmd.CommandText = sql;
             cmd.ExecuteNonQuery();
         }
@@ -435,7 +433,6 @@ go
             foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode en && !en.PrimaryKey.Any()))
             {
                 CreatePrimaryKey(node, random);
-                //Console.WriteLine($"CreateKeys: {node}");
             }
             foreach (EntityNode node in universe.Nodes.Where(n => n is EntityNode))
             {

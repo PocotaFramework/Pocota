@@ -41,7 +41,8 @@ public class Generator : Runner
 
     private Type? _contract = null;
     private Type? _newContract = null;
-    private ContractConfiguringTarget _configuringTarget = ContractConfiguringTarget.None;
+    private ContractEventKind _expectedContractEventKind = ContractEventKind.None;
+    private ContractEventKind _currentContractEventKind = ContractEventKind.None;
     private bool _isMandatoryPath = false;
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
@@ -127,10 +128,7 @@ public class Generator : Runner
         _queue.Add(_newContract);
 
         Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
-        contract.AddPrimaryKey += Contract_AddPrimaryKey;
-        contract.AddAccessSelector += Contract_AddAccessSelector;
-        contract.MandatoryOn += Contract_MandatoryOn;
-        contract.MandatoryOff += Contract_MandatoryOff;
+        contract.ContractEvent += ContractEvent;
         contract.GetObject = GetObject;
 
         AddPocos(contract);
@@ -314,16 +312,6 @@ public class Generator : Runner
         {
             Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
         }
-    }
-
-    private void Contract_MandatoryOff(object? sender, EventArgs e)
-    {
-        _isMandatoryPath = false;
-    }
-
-    private void Contract_MandatoryOn(object? sender, EventArgs e)
-    {
-        _isMandatoryPath = true;
     }
 
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
@@ -770,23 +758,110 @@ public class Generator : Runner
         }
     }
 
-    private void Contract_AddAccessSelector(object? sender, EventArgs e)
+    private void ContractEvent(object? sender, ContractEventArgs e)
     {
-        _configuringTarget = ContractConfiguringTarget.AccessSelector;
-    }
-
-    private void Contract_AddPrimaryKey(object? sender, EventArgs e)
-    {
-        _configuringTarget = ContractConfiguringTarget.PrimaryKey;
+        switch (e.EventKind)
+        {
+            case ContractEventKind.AddPoco:
+                {
+                    if(_expectedContractEventKind is ContractEventKind.AddPoco)
+                    {
+                        if(e is AddPocoEventArgs args)
+                        {
+                            if (e.IsStarting)
+                            {
+                                _currentContractEventKind = e.EventKind;
+                                if (!args.Type.IsAbstract)
+                                {
+                                    throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
+                                }
+                                if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
+                                {
+                                    throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
+                                }
+                                if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
+                                {
+                                    interfaceHolder = new() { Class = args.Type };
+                                    interfaceHolder.Name = args.Type.Name;
+                                    _classHoldersByType.Add(args.Type, interfaceHolder);
+                                    _queue.Add(args.Type);
+                                }
+                                else
+                                {
+                                    throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
+                                }
+                            }
+                            else
+                            {
+                                _currentContractEventKind = ContractEventKind.None;
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
+                }
+                break;
+            case ContractEventKind.Mandatory:
+                {
+                    if(_currentContractEventKind is not ContractEventKind.UseProperty)
+                    {
+                        throw new InvalidOperationException("'Mandatory' method is allowed only inside 'UseProperty' call!");
+                    }
+                    _isMandatoryPath = e.IsStarting;
+                }
+                break;
+            case ContractEventKind.PrimaryKey:
+                {
+                    if (_expectedContractEventKind is ContractEventKind.PrimaryKeyOrAccessSelector)
+                    {
+                        if (e.IsStarting)
+                        {
+                            _currentContractEventKind = e.EventKind;
+                        }
+                        else
+                        {
+                            _currentContractEventKind = ContractEventKind.None;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+                break;
+            case ContractEventKind.AccessSelector:
+                {
+                    if (_expectedContractEventKind is ContractEventKind.PrimaryKeyOrAccessSelector)
+                    {
+                        if (e.IsStarting)
+                        {
+                            _currentContractEventKind = e.EventKind;
+                        }
+                        else
+                        {
+                            _currentContractEventKind = ContractEventKind.None;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+                break;
+        }
     }
 
     private void AddPocos(Contract contract)
     {
-        contract.AddPoco += Contract_AddPoco;
+        _expectedContractEventKind = ContractEventKind.AddPoco;
         contract.DefinePocos();
-        contract.AddPoco -= Contract_AddPoco;
+        _expectedContractEventKind = ContractEventKind.None;
         GenerateStubs();
+        _expectedContractEventKind = ContractEventKind.PrimaryKeyOrAccessSelector;
         contract.DefinePocos();
+        _expectedContractEventKind = ContractEventKind.None;
     }
 
     private void GenerateStubs()
@@ -822,29 +897,6 @@ public class Generator : Runner
         }
     }
 
-    private void Contract_AddPoco(AddPocoEventArgs args)
-    {
-        if (!args.Type.IsAbstract)
-        {
-            throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
-        }
-        if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
-        {
-            throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
-        }
-        if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
-        {
-            interfaceHolder = new() { Class = args.Type };
-            interfaceHolder.Name = args.Type.Name;
-            _classHoldersByType.Add(args.Type, interfaceHolder);
-            _queue.Add(args.Type);
-        }
-        else
-        {
-            throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
-        }
-    }
-
     private object? GetObject(Type type)
     {
         Type? resultType = _classHoldersByType.TryGetValue(type, out ClassHolder? ch) ? ch.ContractProcessingStub : null;
@@ -859,7 +911,7 @@ public class Generator : Runner
 
     private void Generator_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Console.WriteLine($"Generator_PropertyChanged: {_configuringTarget}, {sender}({((IHavingLevel)sender).Level}), {e.PropertyName}");
+        //Console.WriteLine($"Generator_PropertyChanged: {_currentContractEventKind}, {sender}({((IHavingLevel)sender).Level}), {e.PropertyName}");
         if (
             sender is IHavingLevel hl 
             && sender.GetType().BaseType is Type targetType 
@@ -867,9 +919,9 @@ public class Generator : Runner
         )
         {
             
-            switch (_configuringTarget)
+            switch (_currentContractEventKind)
             {
-                case ContractConfiguringTarget.PrimaryKey:
+                case ContractEventKind.PrimaryKey:
                     {
                         if(hl.Level > 0)
                         {
@@ -878,7 +930,7 @@ public class Generator : Runner
                         ch.PrimaryKey.Add(targetType.GetProperty(e.PropertyName!)!);
                     }
                     break;
-                case ContractConfiguringTarget.AccessSelector:
+                case ContractEventKind.AccessSelector:
                     {
                     }
                     break;

@@ -95,6 +95,7 @@ public class Tests
         Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
         Builder.UniverseOptions.PocoUniverseServerProjectDir = Path.Combine(projectDir, "..", "PocoUniverseServer");
         Builder.UniverseOptions.ContractStubsProjectDir = Path.Combine(projectDir, "..", "ContractStubs");
+        Builder.UniverseOptions.InfoDir = Path.Combine(projectDir, "..", "Info");
 
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
         Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
@@ -117,7 +118,12 @@ public class Tests
         Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
         Builder.UniverseOptions.DoCompilePocoUniverseServer = options.DoCompilePocoUniverseServer;
 
-        File.WriteAllText(Path.Combine(Builder.UniverseOptions.GeneratedContractProjectDir, "seed.txt"), seed.ToString());
+        if (!Directory.Exists(Builder.UniverseOptions.InfoDir))
+        {
+            Directory.CreateDirectory(Builder.UniverseOptions.InfoDir);
+        }
+
+        File.WriteAllText(Path.Combine(Builder.UniverseOptions.InfoDir, "seed.txt"), seed.ToString());
 
         Universe universe = Builder.Build(rnd);
 

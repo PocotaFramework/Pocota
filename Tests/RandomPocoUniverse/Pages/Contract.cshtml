@@ -1,4 +1,5 @@
 ﻿@page
+@using Net.Leksi.Pocota.Common;
 @using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 @model ContractModel
 @foreach (string usng in Model.Usings.OrderBy(v => v))
@@ -36,8 +37,8 @@ public class @UniverseOptions.ContractName: Contract
     <text>    public @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")))
     {
     @if(mm.Properties.Any()){
-        <text>        DefinePath<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
-            @Html.Raw(string.Join(",\n            ", @mm.Properties.Select(p => $"o.{p}")))
+        <text>        UseProperty<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
+            @Html.Raw(string.Join(",\n            ", @mm.Properties.Select(p => (p.EndsWith('$') ? $"Mandatory(o.{p.Substring(0, p.Length - 1)})" : $"o.{p}"))))
         });
 </text>
     }
