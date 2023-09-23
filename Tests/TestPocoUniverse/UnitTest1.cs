@@ -26,7 +26,7 @@ public class Tests
         public int Seed { get; internal init; } = -1;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
-        public bool DoGenerateClasses { get; internal init; } = false;
+        public bool DoGenerateClasses { get; internal init; } = true;
         public bool GenerateClassesVerbose { get; internal init; } = false;
         public bool DoCompilePocoUniverseServer { get; internal init; } = false;
         public bool DoRunPocoUniverseServer { get; internal init; } = false;
@@ -94,6 +94,7 @@ public class Tests
         Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
         Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
         Builder.UniverseOptions.PocoUniverseServerProjectDir = Path.Combine(projectDir, "..", "PocoUniverseServer");
+        Builder.UniverseOptions.ContractStubsProjectDir = Path.Combine(projectDir, "..", "ContractStubs");
 
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
         Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");

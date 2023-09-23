@@ -41,6 +41,8 @@ public class Generator : Runner
 
     private Type? _contract = null;
     private Type? _newContract = null;
+    private ContractConfiguringTarget _configuringTarget = ContractConfiguringTarget.None;
+    private bool _isMandatoryPath = false;
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public string? ServerGeneratedDirectory { get; set; } = null;
@@ -118,19 +120,20 @@ public class Generator : Runner
 
         _newContract = contractType;
 
+        _classHoldersByType.Clear();
+
         _queue.Clear();
 
         _queue.Add(_newContract);
 
         Contract contract = (Contract)Activator.CreateInstance(_newContract)!;
-
+        contract.AddPrimaryKey += Contract_AddPrimaryKey;
+        contract.AddAccessSelector += Contract_AddAccessSelector;
+        contract.MandatoryOn += Contract_MandatoryOn;
+        contract.MandatoryOff += Contract_MandatoryOff;
         contract.GetObject = GetObject;
 
         AddPocos(contract);
-
-        AddPrimaryKeys(contract);
-
-        AddAccessSelectors(contract);
 
         return;
 
@@ -311,6 +314,16 @@ public class Generator : Runner
         {
             Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
         }
+    }
+
+    private void Contract_MandatoryOff(object? sender, EventArgs e)
+    {
+        _isMandatoryPath = false;
+    }
+
+    private void Contract_MandatoryOn(object? sender, EventArgs e)
+    {
+        _isMandatoryPath = true;
     }
 
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
@@ -707,9 +720,11 @@ public class Generator : Runner
             model.ClassName = MakePocoStubName(baseType);
 
             AddUsings(model, typeof(INotifyPropertyChanged));
+            AddUsings(model, typeof(IHavingLevel));
 
             model.Interfaces.Add(Util.MakeTypeName(baseType));
             model.Interfaces.Add(Util.MakeTypeName(typeof(INotifyPropertyChanged)));
+            model.Interfaces.Add(Util.MakeTypeName(typeof(IHavingLevel)));
             NullabilityInfoContext nic = new();
 
             foreach (PropertyInfo pi in baseType.GetProperties())
@@ -722,7 +737,6 @@ public class Generator : Runner
                     Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
                 };
                 Type itemType = pi.PropertyType;
-                Type itemImplType = pi.PropertyType;
                 if (itemType.IsGenericType && typeof(IList<>).IsAssignableFrom(itemType.GetGenericTypeDefinition()) && itemType.GetGenericArguments()[0] is Type ga)
                 {
                     itemType = ga;
@@ -732,7 +746,7 @@ public class Generator : Runner
                 pm.ItemType = Util.MakeTypeName(itemType);
                 if (_classHoldersByType.TryGetValue(itemType, out ClassHolder? ch))
                 {
-                    if (!string.IsNullOrEmpty(itemType.Namespace))
+                    if (!string.IsNullOrEmpty(itemType.Namespace) && !itemType.Namespace.Equals(model.NamespaceValue))
                     {
                         model.Usings.Add(itemType.Namespace);
                     }
@@ -756,27 +770,14 @@ public class Generator : Runner
         }
     }
 
-    private void AddAccessSelectors(Contract contract)
-    {
-        contract.AddAccessSelector += Contract_AddAccessSelector;
-        contract.DefinePocos();
-        contract.AddAccessSelector -= Contract_AddAccessSelector;
-    }
-
     private void Contract_AddAccessSelector(object? sender, EventArgs e)
     {
-    }
-
-    private void AddPrimaryKeys(Contract contract)
-    {
-        contract.AddPrimaryKey += Contract_AddPrimaryKey; ;
-        contract.DefinePocos();
-        contract.AddPrimaryKey -= Contract_AddPrimaryKey; ;
+        _configuringTarget = ContractConfiguringTarget.AccessSelector;
     }
 
     private void Contract_AddPrimaryKey(object? sender, EventArgs e)
     {
-       
+        _configuringTarget = ContractConfiguringTarget.PrimaryKey;
     }
 
     private void AddPocos(Contract contract)
@@ -785,6 +786,7 @@ public class Generator : Runner
         contract.DefinePocos();
         contract.AddPoco -= Contract_AddPoco;
         GenerateStubs();
+        contract.DefinePocos();
     }
 
     private void GenerateStubs()
@@ -796,10 +798,8 @@ public class Generator : Runner
             ProjectDir = ContractStubsProjectDir,
         }))
         {
-            stubs.MissedType += arg =>
-            {
-                Console.WriteLine($"Missed type: {arg.MissedTypeName}");
-            };
+            stubs.AddReference(typeof(IHavingLevel).Assembly.Location);
+
             foreach (Type type in _classHoldersByType.Keys)
             {
                 if (!stubs.ContainsReference(type.Assembly.Location))
@@ -809,8 +809,16 @@ public class Generator : Runner
                 TextReader reader = _connector.Get("/PocoStub", type);
                 File.WriteAllText(Path.Combine(stubs.ProjectDir, MakePocoStubName(type) + ".cs"), reader.ReadToEnd());
             }
-            Console.WriteLine(stubs.ProjectDir);
             stubs.Compile();
+
+            Assembly stubsAssembly = Assembly.LoadFile(stubs.LibraryFile!);
+            foreach (Type type in _classHoldersByType.Keys)
+            {
+                if(stubsAssembly.GetTypes().Where(t => t.BaseType == type).FirstOrDefault() is Type implType)
+                {
+                    _classHoldersByType[type].ContractProcessingStub = implType;
+                }
+            }
         }
     }
 
@@ -837,9 +845,49 @@ public class Generator : Runner
         }
     }
 
-    private object GetObject(Type type)
+    private object? GetObject(Type type)
     {
-        throw new NotImplementedException();
+        Type? resultType = _classHoldersByType.TryGetValue(type, out ClassHolder? ch) ? ch.ContractProcessingStub : null;
+        object? result = null;
+        if(resultType is { })
+        {
+            result = Activator.CreateInstance(resultType);
+            ((INotifyPropertyChanged?)result)!.PropertyChanged += Generator_PropertyChanged;
+        }
+        return result;
+    }
+
+    private void Generator_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        Console.WriteLine($"Generator_PropertyChanged: {_configuringTarget}, {sender}({((IHavingLevel)sender).Level}), {e.PropertyName}");
+        if (
+            sender is IHavingLevel hl 
+            && sender.GetType().BaseType is Type targetType 
+            && _classHoldersByType.TryGetValue(targetType, out ClassHolder? ch)
+        )
+        {
+            
+            switch (_configuringTarget)
+            {
+                case ContractConfiguringTarget.PrimaryKey:
+                    {
+                        if(hl.Level > 0)
+                        {
+                            throw new InvalidOperationException("PrimaryKey must be own property!");
+                        }
+                        ch.PrimaryKey.Add(targetType.GetProperty(e.PropertyName!)!);
+                    }
+                    break;
+                case ContractConfiguringTarget.AccessSelector:
+                    {
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            throw new Exception();
+        }
     }
 
     private string MakeDefaultProcessorFactoryName(string methodName)

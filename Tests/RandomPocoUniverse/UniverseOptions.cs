@@ -40,4 +40,5 @@ public class UniverseOptions
 
     public string Configuration { get; set; } = null!;
     public string E6dWebAppVersion { get; set; } = null!;
+    public string? ContractStubsProjectDir { get; set; } = null;
 }

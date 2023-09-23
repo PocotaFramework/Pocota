@@ -7,7 +7,9 @@
 
 public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
-    public event @nameof(PropertyChangedEventHandler)? PropertyChanged;
+    public event @nameof(PropertyChangedEventHandler)? @nameof(INotifyPropertyChanged.PropertyChanged);
+
+    public int Level { get; set; } = 0;
 
 @foreach(PropertyModel pm in Model.Properties)
 {
@@ -15,8 +17,15 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     {
         get
         {
-            PropertyChanged?.Invoke(this, new @nameof(PropertyChangedEventArgs)@{}(nameof(@pm.Name)));
-            return @if(pm.PocoKind is PocoKind.NotAPoco){<text>default</text>} else {if(pm.IsCollection){<text>new List<@Html.Raw(pm.ItemType)>(){</text>}<text>new @Html.Raw(pm.ItemImplType)@{}()</text>if(pm.IsCollection){<text>}</text>}};
+    @if(pm.PocoKind is not PocoKind.NotAPoco)
+    {
+        <text>            @Html.Raw(pm.ItemImplType) resultItem = new();
+            resultItem.Level = Level + 1;
+            ((@nameof(INotifyPropertyChanged))resultItem).@nameof(INotifyPropertyChanged.PropertyChanged) += PropagatePropertyChanged;
+</text>
+    }
+            @nameof(INotifyPropertyChanged.PropertyChanged)@{}?.Invoke(this, new @nameof(PropertyChangedEventArgs)@{}(nameof(@pm.Name)));
+            return @if(pm.PocoKind is PocoKind.NotAPoco){<text>default</text>} else {if(pm.IsCollection){<text>new List<@Html.Raw(pm.ItemType)>(){</text>}<text>resultItem</text>if(pm.IsCollection){<text>}</text>}};
         }
     @if(!pm.IsReadonly)
     {
@@ -26,4 +35,8 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     }
 </text>
 }
+    private void PropagatePropertyChanged(object? sender, @nameof(PropertyChangedEventArgs) args)
+    {
+        @nameof(INotifyPropertyChanged.PropertyChanged)@{}?.Invoke(sender, args);
+    }
 }

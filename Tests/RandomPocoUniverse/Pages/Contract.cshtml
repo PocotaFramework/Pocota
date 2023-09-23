@@ -35,6 +35,12 @@ public class @UniverseOptions.ContractName: Contract
 {
     <text>    public @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")))
     {
+    @if(mm.Properties.Any()){
+        <text>        DefinePath<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
+            @Html.Raw(string.Join(",\n            ", @mm.Properties.Select(p => $"o.{p}")))
+        });
+</text>
+    }
         throw new NotImplementedException();
     }
 </text>

@@ -141,6 +141,7 @@ public class SourcesGenerator: Runner
                         {
                             Name = mh.Name,
                             ReturnType = mh.IsCollection ? $"IList<{node.Name}>" : node.Name,
+                            ReturnItemType = node.Name,
                         };
                         mm.Parameters.AddRange(mh.Parameters);
                         mm.Properties.AddRange(mh.Properties);

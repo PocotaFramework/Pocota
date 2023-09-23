@@ -7,17 +7,27 @@ public abstract class Contract
     public event AddPocoEventHandler? AddPoco;
     public event EventHandler? AddPrimaryKey;
     public event EventHandler? AddAccessSelector;
+    public event EventHandler? MandatoryOn;
+    public event EventHandler? MandatoryOff;
 
-    public Func<Type, object> GetObject { get; set; } = null!;
+    public Func<Type, object?> GetObject { get; set; } = null!;
 
     internal void PrimaryKey<T>(Func<T, object> name)
     {
-        name?.Invoke((T)GetObject(typeof(T)));
+        if(GetObject(typeof(T)) is T target)
+        {
+            AddPrimaryKey?.Invoke(this, EventArgs.Empty);
+            name?.Invoke(target);
+        }
     }
 
     internal void AccessSelector<T>(Func<T, object> name)
     {
-        name?.Invoke((T)GetObject(typeof(T)));
+        if (GetObject(typeof(T)) is T target)
+        {
+            AddAccessSelector?.Invoke(this, EventArgs.Empty);
+            name?.Invoke(target);
+        }
     }
 
     public abstract void DefinePocos();
@@ -38,10 +48,24 @@ public abstract class Contract
         return result;
     }
 
-    protected T DefinePaths<T>(Func<T, object[]> paths, [CallerMemberName]string? methodName = null) where T: new()
+    protected void ReturnProperties<T>(Func<T, object> paths, [CallerMemberName]string? methodName = null) where T: class
     {
-        T result = (T)GetObject?.Invoke(typeof(T))! ?? new T();
-        paths.Invoke(result);
-        return result;
+        if(GetObject.Invoke(typeof(T)) is T target)
+        {
+            paths.Invoke(target);
+        }
+    }
+
+    protected object Mandatory(object value) 
+    {
+        try
+        {
+            MandatoryOn?.Invoke(this, EventArgs.Empty);
+            return value;
+        }
+        finally
+        {
+            MandatoryOff?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

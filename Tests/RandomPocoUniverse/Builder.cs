@@ -1,10 +1,12 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Options;
 using Net.Leksi.Pocota.Common;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using Net.Leksi.Test.RandomPocoUniverse;
 using System.Data;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Net.Leksi.Pocota.Test.RandomPocoUniverse;
 
@@ -34,6 +36,11 @@ public class Builder
     private const int s_maxNamespaces = 5;
     private const int s_maxNumInherited = 2;
     private const int s_baseIsCalculated = 5;
+    private const int s_minProperties = 5;
+    private const int s_maxProperties = 20;
+    private const int s_baseMandatoryReturnProperty = 3;
+
+    private static readonly Regex s_trimPart = new Regex("^[^![]+");
 
     private readonly static Type[] s_terminalTypes = new Type[]
     {
@@ -140,12 +147,6 @@ public class Builder
 
     private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
     {
-        if (random.Next(s_baseAsteriskPath) == 0)
-        {
-            path += $"{(level > 0 ? "." : string.Empty)}*";
-            properties.Add(path);
-            return;
-        }
         List<PropertyDescriptor> allProps = new();
         Node? cur = node;
         while (cur is { })
@@ -155,14 +156,64 @@ public class Builder
         }
         foreach (PropertyDescriptor prop in allProps)
         {
+            string next = $"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}{(prop.IsNullable ? "!" : string.Empty)}{(prop.Node is { } && prop.IsCollection ? "[0]" : string.Empty)}";
             if (prop.Node is { } && level < s_maxPathLength)
             {
-                CreatePropertyPaths(properties, prop.Node, random, $"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}", level + 1);
+                CreatePropertyPaths(properties, prop.Node, random, next, level + 1);
             }
             else
             {
-                properties.Add($"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}");
+                properties.Add(next);
             }
+        }
+        if(level == 0)
+        {
+            int count = s_minProperties + random.Next(s_maxProperties - s_minProperties + 1);
+            Dictionary<int, List<string>> pathsByNumParts = new();
+            for (int j = 0; j <= s_maxPathLength; ++j)
+            {
+                pathsByNumParts.Add(j, properties.Where(s => s.Split('.').Length == j).ToList());
+            }
+            for (int j = 0; j < count; ++j)
+            {
+                int numParts = 1 + random.Next(s_maxPathLength);
+                pathsByNumParts.TryGetValue(numParts, out List<string>? values);
+                if (values!.Any())
+                {
+                    int pos = random.Next(values!.Count);
+                    string next = values[pos];
+                    values.RemoveAt(pos);
+                    //bool isKey = false;
+                    //Node current = node;
+                    //foreach(string part in next.Split('.'))
+                    //{
+                    //    string part1 = s_trimPart.Match(part) is Match match && match.Success ? match.Groups[0].Value : part;
+                    //    Console.WriteLine($"{current.Name}, {part}, {part1}");
+                    //    PropertyDescriptor pd = current.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
+                    //    if(pd is null)
+                    //    {
+                    //        for(Node now = current.Base; pd is null && now != now.Base; now = now.Base)
+                    //        {
+                    //            pd = now.Properties.Where(p => part1.Equals(p.Name)).FirstOrDefault()!;
+                    //        }
+                    //    }
+                    //    if(current is EntityNode entity && entity.PrimaryKey.Contains(pd!))
+                    //    {
+                    //        isKey = true;
+                    //        break;
+                    //    }
+                    //    current = pd!.Node!;
+                    //}
+                    //if(!isKey && random.Next(s_baseMandatoryReturnProperty) == 0)
+                    //{
+                    //    next += '$';
+                    //}
+
+                    properties.Insert(0, next);
+                }
+            }
+            properties.RemoveRange(count, properties.Count - count);
+            properties.Sort();
         }
     }
 
@@ -262,6 +313,17 @@ public class Builder
 
     private static void GenerateClasses(Universe universe)
     {
+        if (UniverseOptions.ContractStubsProjectDir is { }) 
+        {
+            if (!Directory.Exists(UniverseOptions.ContractStubsProjectDir))
+            {
+                Directory.CreateDirectory(UniverseOptions.ContractStubsProjectDir);
+            }
+            else
+            {
+                ClearProjectDir(UniverseOptions.ContractStubsProjectDir);
+            }
+        }
         ClearProjectDir(UniverseOptions.GeneratedServerStuffProjectDir);
         ClearProjectDir(UniverseOptions.GeneratedClientStuffProjectDir);
         using (Generator generator = new()
@@ -271,6 +333,7 @@ public class Builder
             Verbose = UniverseOptions.GenerateClassesVerbose,
             ClientLanguage = UniverseOptions.ClientLanguage,
             OnResponse = UniverseOptions.OnGenerateClassesResponse,
+            ContractStubsProjectDir = UniverseOptions.ContractStubsProjectDir,
         })
         {
             generator.Generate(universe.Contract);
