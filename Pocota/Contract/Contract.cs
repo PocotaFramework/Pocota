@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Net.Leksi.Pocota.Common;
+﻿namespace Net.Leksi.Pocota.Common;
 
 public abstract class Contract: ContractBase
 {
@@ -74,18 +72,18 @@ public abstract class Contract: ContractBase
         }
     }
 
-    protected override sealed void UseProperty<T>(Func<T, object> paths, [CallerMemberName]string? methodName = null) where T: class
+    protected override sealed void UseProperty<T>(Func<T, object> paths) where T: class
     {
         if(GetObject.Invoke(typeof(T)) is T target)
         {
             try
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.UseProperty, IsStarting = true });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.UseProperty, IsStarting = true });
                 paths.Invoke(target);
             }
             finally
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.UseProperty, });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.UseProperty, });
             }
         }
     }

@@ -17,7 +17,7 @@ internal class UsePropertyBuilder
         }
     }
 
-    internal UsePropertyBuilder Add(string propertyName, int siteLevel, bool isExpected, bool isAccessSelector, bool isMandatory)
+    internal UsePropertyBuilder Add(string propertyName, int siteLevel, UsePropertyKinds kinds)
     {
         if(_current is null)
         {
@@ -41,18 +41,7 @@ internal class UsePropertyBuilder
             next = UsePropertyNode.FromPropertyInfo(pi);
             next.Parent = _current;
         }
-        if (isMandatory)
-        {
-            next.Kinds |= UsePropertyKinds.Mandatory;
-        }
-        if (isExpected)
-        {
-            next.Kinds |= UsePropertyKinds.Expected;
-        }
-        if (isAccessSelector)
-        {
-            next.Kinds |= UsePropertyKinds.AccessSelector;
-        }
+        next.Kinds |= kinds;
         _current = next;
         return this;
     }

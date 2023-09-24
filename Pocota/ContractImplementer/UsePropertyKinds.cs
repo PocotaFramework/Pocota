@@ -7,4 +7,5 @@ public enum UsePropertyKinds
     Expected = 1,
     AccessSelector = 2,
     Mandatory = 4,
+    PrimaryKey = 8,
 }

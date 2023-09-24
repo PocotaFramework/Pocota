@@ -43,8 +43,9 @@ public class UsePropertyNode
         {
             if (_parent is null && value is { })
             {
-                value._children.Add(this);
-                _level = value._level + 1;
+                _parent = value;
+                _parent._children.Add(this);
+                _level = _parent._level + 1;
                 PropagateLevel();
                 PropagateKinds();
             }
