@@ -43,6 +43,7 @@ public class Generator : Runner
     private Type? _newContract = null;
     private ContractEventKind _expectedContractEventKind = ContractEventKind.None;
     private ContractEventKind _currentContractEventKind = ContractEventKind.None;
+    private Type? _currentPocoType = null;
     private bool _isMandatoryPath = false;
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
@@ -131,7 +132,7 @@ public class Generator : Runner
         contract.ContractEvent += ContractEvent;
         contract.GetObject = GetObject;
 
-        AddPocos(contract);
+        ParseContract(contract);
 
         return;
 
@@ -771,29 +772,36 @@ public class Generator : Runner
                             if (e.IsStarting)
                             {
                                 _currentContractEventKind = e.EventKind;
-                                if (!args.Type.IsAbstract)
+                                _currentPocoType = e.PocoType;
+                                if (!args.PocoType.IsAbstract)
                                 {
-                                    throw new InvalidOperationException($"Only abstract classes allowed ({args.Type})!");
+                                    throw new InvalidOperationException($"Only abstract classes allowed ({args.PocoType})!");
                                 }
-                                if (args.Type.GetMethods().Where(x => x.DeclaringType == args.Type && !x.IsSpecialName).Count() > 0)
+                                if (args.PocoType.GetMethods().Where(x => x.DeclaringType == args.PocoType && !x.IsSpecialName).Count() > 0)
                                 {
-                                    throw new InvalidOperationException($"Methods are not allowed at the ch {args.Type}!");
+                                    throw new InvalidOperationException($"Methods are not allowed at the ch {args.PocoType}!");
                                 }
-                                if (!_classHoldersByType.TryGetValue(args.Type, out ClassHolder? interfaceHolder))
+                                if (!_classHoldersByType.TryGetValue(args.PocoType, out ClassHolder? classHolder))
                                 {
-                                    interfaceHolder = new() { Class = args.Type };
-                                    interfaceHolder.Name = args.Type.Name;
-                                    _classHoldersByType.Add(args.Type, interfaceHolder);
-                                    _queue.Add(args.Type);
+                                    classHolder = new() { Class = args.PocoType };
+                                    classHolder.Name = args.PocoType.Name;
+                                    if (args.IsEntity)
+                                    {
+                                        classHolder.UsePropertyBuilder = new UsePropertyBuilder();
+                                        classHolder.UsePropertyBuilder.Root = UsePropertyNode.FromType(args.PocoType);
+                                    }
+                                    _classHoldersByType.Add(args.PocoType, classHolder);
+                                    _queue.Add(args.PocoType);
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException($"Class {args.Type} is already defined at {_newContract}!");
+                                    throw new InvalidOperationException($"Class {args.PocoType} is already defined at {_newContract}!");
                                 }
                             }
                             else
                             {
                                 _currentContractEventKind = ContractEventKind.None;
+                                _currentPocoType = null;
                             }
                         }
                         else
@@ -819,10 +827,12 @@ public class Generator : Runner
                         if (e.IsStarting)
                         {
                             _currentContractEventKind = e.EventKind;
+                            _currentPocoType = e.PocoType;
                         }
                         else
                         {
                             _currentContractEventKind = ContractEventKind.None;
+                            _currentPocoType = null;
                         }
                     }
                     else
@@ -838,10 +848,12 @@ public class Generator : Runner
                         if (e.IsStarting)
                         {
                             _currentContractEventKind = e.EventKind;
+                            _currentPocoType = e.PocoType;
                         }
                         else
                         {
                             _currentContractEventKind = ContractEventKind.None;
+                            _currentPocoType = null;
                         }
                     }
                     else
@@ -853,14 +865,14 @@ public class Generator : Runner
         }
     }
 
-    private void AddPocos(Contract contract)
+    private void ParseContract(Contract contract)
     {
         _expectedContractEventKind = ContractEventKind.AddPoco;
-        contract.DefinePocos();
+        contract.AddPocos();
         _expectedContractEventKind = ContractEventKind.None;
         GenerateStubs();
         _expectedContractEventKind = ContractEventKind.PrimaryKeyOrAccessSelector;
-        contract.DefinePocos();
+        contract.AddPocos();
         _expectedContractEventKind = ContractEventKind.None;
     }
 
@@ -911,11 +923,11 @@ public class Generator : Runner
 
     private void Generator_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        //Console.WriteLine($"Generator_PropertyChanged: {_currentContractEventKind}, {sender}({((IHavingLevel)sender).Level}), {e.PropertyName}");
+        Console.WriteLine($"Generator_PropertyChanged: {_currentContractEventKind}, {sender}({((IHavingLevel)sender).Level}), {e.PropertyName}");
         if (
             sender is IHavingLevel hl 
-            && sender.GetType().BaseType is Type targetType 
-            && _classHoldersByType.TryGetValue(targetType, out ClassHolder? ch)
+            && _currentPocoType is { } 
+            && _classHoldersByType.TryGetValue(_currentPocoType, out ClassHolder? ch)
         )
         {
             
@@ -927,11 +939,12 @@ public class Generator : Runner
                         {
                             throw new InvalidOperationException("PrimaryKey must be own property!");
                         }
-                        ch.PrimaryKey.Add(targetType.GetProperty(e.PropertyName!)!);
+                        ch.PrimaryKey.Add(_currentPocoType.GetProperty(e.PropertyName!)!);
                     }
                     break;
                 case ContractEventKind.AccessSelector:
                     {
+                        ch.UsePropertyBuilder!.Add(e.PropertyName!, ((IHavingLevel)sender).Level, false, true, false);
                     }
                     break;
             }

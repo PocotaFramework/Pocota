@@ -5,4 +5,6 @@ public class ContractEventArgs: EventArgs
     public ContractEventKind EventKind { get; init; }
     public bool IsStarting { get; init; } = false;
 
+    public Type PocoType { get; init; } = null!;
+
 }

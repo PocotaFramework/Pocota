@@ -15,7 +15,7 @@ namespace @UniverseOptions.Namespace;
 [PocoContract("Random", Version = "v1.0", RoutePrefix = "/api")]
 public class @UniverseOptions.ContractName: Contract
 {
-    public override void DefinePocos()
+    public override void AddPocos()
     {
 @foreach(EntityNode entity in Model.Universe.Nodes.Where(n => n is EntityNode))
 {

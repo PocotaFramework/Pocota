@@ -14,12 +14,14 @@ public abstract class Contract: ContractBase
         {
             try
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.PrimaryKey, IsStarting = true });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T), 
+                    EventKind = ContractEventKind.PrimaryKey, IsStarting = true });
                 name?.Invoke(target);
             }
             finally
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.PrimaryKey, });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T), 
+                    EventKind = ContractEventKind.PrimaryKey, });
             }
         }
     }
@@ -30,29 +32,31 @@ public abstract class Contract: ContractBase
         {
             try
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.AccessSelector, IsStarting = true });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T),
+                    EventKind = ContractEventKind.AccessSelector, IsStarting = true });
                 name?.Invoke(target);
             }
             finally
             {
-                ContractEvent?.Invoke(this, new ContractEventArgs { EventKind = ContractEventKind.AccessSelector, });
+                ContractEvent?.Invoke(this, new ContractEventArgs { PocoType = typeof(T), 
+                    EventKind = ContractEventKind.AccessSelector, });
             }
         }
     }
 
-    public abstract void DefinePocos();
+    public abstract void AddPocos();
 
     protected override sealed PocoEntityInfo<T> Entity<T>() where T : class
     {
         try
         {
             PocoEntityInfo<T> result = new PocoEntityInfo<T>(this);
-            ContractEvent?.Invoke(this, new AddPocoEventArgs { Type = typeof(T), IsEntity = true, IsStarting = true });
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { PocoType = typeof(T), IsEntity = true, IsStarting = true, });
             return result;
         }
         finally
         {
-            ContractEvent?.Invoke(this, new AddPocoEventArgs { });
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { PocoType = typeof(T), });
         }
    }
 
@@ -61,7 +65,7 @@ public abstract class Contract: ContractBase
         try
         {
             PocoInfo<T> result = new PocoInfo<T>(this);
-            ContractEvent?.Invoke(this, new AddPocoEventArgs { Type = typeof(T), IsEntity = false, IsStarting = true });
+            ContractEvent?.Invoke(this, new AddPocoEventArgs { PocoType = typeof(T), IsStarting = true, });
             return result;
         }
         finally
