@@ -414,7 +414,7 @@ public class Tests
             if(node.Base is { })
             {
                 Type? baseType = type.BaseType;
-                Assert.That(baseType, Is.Not.Null);
+                Assert.That(baseType, Is.Not.Null, node.ToString());
                 Assert.Multiple(() =>
                 {
                     Node? baseNode = allNodes.Where(
@@ -431,9 +431,8 @@ public class Tests
                         )
                         && n.Name.Equals(baseType!.Name)
                     ).FirstOrDefault();
-                    Assert.That(baseNode, Is.Not.Null);
-                    Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
-                    Assert.That(baseNode is EntityNode, Is.True);
+                    Assert.That(baseNode, Is.Not.Null, node.ToString());
+                    Assert.That(baseNode!.GetType(), Is.EqualTo(node.GetType()), node.ToString());
                 });
             }
         }
