@@ -9,7 +9,8 @@ public class EntityNode: Node
     public List<PropertyDescriptor> PrimaryKey { get; private init; } = new();
     public HashSet<PropertyDescriptor> CannotBePrimaryKey { get; private init; } = new();
 
-    public List<string> AccessProperties {get; private init; } = new();
+    public List<string> AccessProperties { get; private init; } = new();
+    public List<string> Calculated { get; private init; } = new();
 
     public override string ToString()
     {

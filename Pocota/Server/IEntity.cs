@@ -6,5 +6,4 @@ public interface IEntity: IPoco
 {
     PropertyAccessMode AccessMode { get; set; }
     void CheckAccess();
-    IPrimaryKey PrimaryKey { get; }
 }

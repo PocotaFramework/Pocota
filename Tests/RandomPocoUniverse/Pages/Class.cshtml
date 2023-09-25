@@ -1,6 +1,6 @@
 ﻿@page
 @using Net.Leksi.Pocota.Test.RandomPocoUniverse;
-@model InterfaceModel
+@model ClassModel
 @foreach (string usng in Model.Usings.OrderBy(v => v))
 {
     <text>using @usng;
@@ -12,8 +12,8 @@
 </text>
 }
 
-public abstract class @Model.Node.Name@if (Model.Interface is 
-{ }) { <text>: @Html.Raw(Model.Interface)</text> }
+public abstract class @Model.Node.Name@if (Model.Class is 
+{ }) { <text>: @Html.Raw(Model.Class)</text> }
 
 {
 @foreach(PropertyDescriptor pd in Model.Node.Properties)

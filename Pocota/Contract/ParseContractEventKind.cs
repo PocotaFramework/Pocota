@@ -1,13 +1,14 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public enum ContractEventKind
+public enum ParseContractEventKind
 {
     None,
     AddPoco,
     PrimaryKey,
     AccessSelector,
-    UseProperty,
+    PropertyUse,
     Mandatory,
     Method,
-    PrimaryKeyOrAccessSelector,
+    EntityPropertyAttribute,
+    Calculated,
 }

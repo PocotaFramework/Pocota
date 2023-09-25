@@ -12,9 +12,10 @@ using  Net.Leksi.Pocota.Common;
 
 namespace @UniverseOptions.Namespace;
 
-[PocoContract("Random", Version = "v1.0", RoutePrefix = "/api")]
 public class @UniverseOptions.ContractName: Contract
 {
+    public override string Version => "v1.0";
+    public override string RoutePrefix => "/api";
     public override void AddPocos()
     {
 @foreach(EntityNode entity in Model.Universe.Nodes.Where(n => n is EntityNode))
@@ -23,7 +24,11 @@ public class @UniverseOptions.ContractName: Contract
             .PrimaryKey(p => new object[]{@Html.Raw(string.Join(",", @entity.PrimaryKey.Select(pd => $"p.{pd.Name}")))})@if(entity.AccessProperties.Any()){<text>
             .AccessSelector(p => new object[]{
                 @Html.Raw(string.Join(",\n                ", @entity.AccessProperties.Select(ap => $"p.{ap}")))
-            })</text>};
+            })</text>}@if(entity.Calculated.Any()){<text>
+            .Calculated(p => new object[]{
+                @Html.Raw(string.Join(",\n                ", @entity.Calculated.Select(ap => $"p.{ap}")))
+            })</text>}@foreach(PropertyDescriptor pd in entity.Properties.Where(p => p.Link is {})){<text>
+            .Link<@pd.Link!.Owner.Name>(p => p.@pd.Name@(pd.IsNullable ? "!" : string.Empty), p => p.@pd.Link!.Name@(pd.Link!.IsNullable ? "!" : string.Empty))</text>};
 </text>
 }
 @foreach (Node envelope in Model.Universe.Nodes.Where(n => n is not EntityNode))

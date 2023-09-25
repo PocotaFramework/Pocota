@@ -1,23 +1,27 @@
-﻿using System.Reflection;
+﻿using Net.Leksi.Pocota.Server;
+using System.Reflection;
 
 namespace Net.Leksi.Pocota.Common;
 
-internal class UsePropertyBuilder
+internal class PropertyUseBuilder
 {
-    private UsePropertyNode? _root = null;
-    private UsePropertyNode? _current = null!;
+    private PropertyUseNode? _root = null;
+    private PropertyUseNode? _current = null!;
 
-    internal UsePropertyNode? Root
+    internal PropertyUseNode? Root
     {
         get => _root;
         set
         {
             _root = value;
             _current = _root;
+            LastTouchedNode = null;
         }
     }
 
-    internal UsePropertyBuilder Add(string propertyName, int siteLevel, UsePropertyKinds kinds)
+    internal PropertyUseNode? LastTouchedNode { get; private set; } = null;
+
+    internal PropertyUseBuilder Add(string propertyName, int siteLevel, PropertyUseKinds kinds)
     {
         if(_current is null)
         {
@@ -35,14 +39,15 @@ internal class UsePropertyBuilder
             }
             _current = _current.Parent;
         }
-        if(!(_current.Children.Where(c => propertyName.Equals(c.Name)).FirstOrDefault() is UsePropertyNode next))
+        if(!(_current.Children.Where(c => propertyName.Equals(c.Name)).FirstOrDefault() is PropertyUseNode next))
         {
             PropertyInfo pi = _current.Type.GetProperty(propertyName)!;
-            next = UsePropertyNode.FromPropertyInfo(pi);
+            next = PropertyUseNode.FromPropertyInfo(pi);
             next.Parent = _current;
         }
         next.Kinds |= kinds;
         _current = next;
+        LastTouchedNode = _current;
         return this;
     }
 }

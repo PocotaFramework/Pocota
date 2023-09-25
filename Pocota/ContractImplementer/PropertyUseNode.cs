@@ -1,42 +1,53 @@
-﻿using System;
+﻿using Net.Leksi.Pocota.Server;
+using System;
 using System.Collections;
 using System.Reflection;
 
 namespace Net.Leksi.Pocota.Common;
 
-public class UsePropertyNode
+public class PropertyUseNode
 {
-    public class ChildrenList : IReadOnlyList<UsePropertyNode>
+    public class ChildrenList : IReadOnlyList<PropertyUseNode>
     {
-        private readonly List<UsePropertyNode> _list = new();
+        private readonly List<PropertyUseNode> _list = new();
 
-        public UsePropertyNode this[int index] => ((IReadOnlyList<UsePropertyNode>)_list)[index];
+        public PropertyUseNode this[int index] => ((IReadOnlyList<PropertyUseNode>)_list)[index];
 
-        public int Count => ((IReadOnlyCollection<UsePropertyNode>)_list).Count;
+        public int Count => ((IReadOnlyCollection<PropertyUseNode>)_list).Count;
 
-        internal ChildrenList(List<UsePropertyNode> list)
+        internal ChildrenList(List<PropertyUseNode> list)
         {
             _list = list;
         }
 
-        public IEnumerator<UsePropertyNode> GetEnumerator()
+        public IEnumerator<PropertyUseNode> GetEnumerator()
         {
-            return ((IEnumerable<UsePropertyNode>)_list).GetEnumerator();
+            return ((IEnumerable<PropertyUseNode>)_list).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)_list).GetEnumerator();
         }
+
+        public void Sort(Comparison<PropertyUseNode> comparison)
+        {
+            _list.Sort(comparison);
+            foreach(PropertyUseNode node in _list)
+            {
+                node.Children.Sort(comparison);
+            }
+        }
     }
-    private UsePropertyNode? _parent = null;
+    private PropertyUseNode? _parent = null;
     private int _level = 0;
-    private readonly List<UsePropertyNode> _children = new();
-    private UsePropertyKinds _kinds = UsePropertyKinds.None;
+    private readonly List<PropertyUseNode> _children = new();
+    private PropertyUseKinds _kinds = PropertyUseKinds.None;
     public PropertyInfo? PropertyInfo { get; private set; } = null;
     public Type Type { get; private set; } = null!;
-    public bool IsList{ get; private set; } = false;
-    public UsePropertyNode? Parent
+    public string Path { get; private set; } = string.Empty;
+
+    public PropertyUseNode? Parent
     {
         get => _parent;
         set
@@ -46,6 +57,7 @@ public class UsePropertyNode
                 _parent = value;
                 _parent._children.Add(this);
                 _level = _parent._level + 1;
+                Path = $"{_parent.Path}{(!string.IsNullOrEmpty(_parent.Path) ? "." : string.Empty)}{Name}";
                 PropagateLevel();
                 PropagateKinds();
             }
@@ -54,7 +66,7 @@ public class UsePropertyNode
 
     public ChildrenList Children { get; private init; }
 
-    public UsePropertyKinds Kinds
+    public PropertyUseKinds Kinds
     {
         get => _kinds;
         set
@@ -67,20 +79,20 @@ public class UsePropertyNode
     public int Level => _level;
     public string Name => PropertyInfo?.Name ?? string.Empty;
 
-    private UsePropertyNode()
+    private PropertyUseNode()
     {
         Children = new ChildrenList(_children);
     }
 
-    internal static UsePropertyNode FromType(Type type)
+    internal static PropertyUseNode FromType(Type type)
     {
-        UsePropertyNode result = new();
+        PropertyUseNode result = new();
         result.Type = type;
         return result;
     }
-    internal static UsePropertyNode FromPropertyInfo(PropertyInfo pi)
+    internal static PropertyUseNode FromPropertyInfo(PropertyInfo pi)
     {
-        UsePropertyNode result = new();
+        PropertyUseNode result = new();
         result.PropertyInfo = pi;
         result.Type = pi.PropertyType;
         if(result.Type.IsGenericType && typeof(IList<>).IsAssignableFrom(result.Type.GetGenericTypeDefinition()))
@@ -90,7 +102,7 @@ public class UsePropertyNode
         return result;
     }
 
-    internal UsePropertyNode Clone()
+    internal PropertyUseNode Clone()
     {
         if (Level > 0)
         {
@@ -104,12 +116,15 @@ public class UsePropertyNode
         if(_parent is { })
         {
             bool done = true;
-            foreach (UsePropertyKinds kind in Enum.GetValues(typeof(UsePropertyKinds)))
+            foreach (PropertyUseKinds kind in Enum.GetValues(typeof(PropertyUseKinds)))
             {
-                if ((_parent.Kinds & kind) != kind)
+                if(kind is not PropertyUseKinds.Calculated)
                 {
-                    _parent.Kinds |= kind;
-                    done = false;
+                    if ((Kinds & kind) == kind && (_parent.Kinds & kind) != kind)
+                    {
+                        _parent.Kinds |= kind;
+                        done = false;
+                    }
                 }
             }
             if (!done)
@@ -119,16 +134,16 @@ public class UsePropertyNode
         }
     }
 
-    private UsePropertyNode InternalClone()
+    private PropertyUseNode InternalClone()
     {
-        UsePropertyNode result = new();
+        PropertyUseNode result = new();
         result._level = _level;
         result.PropertyInfo = PropertyInfo;
         result.Type = Type;
         result._kinds = _kinds;
-        foreach (UsePropertyNode node in Children)
+        foreach (PropertyUseNode node in Children)
         {
-            UsePropertyNode next = node.InternalClone();
+            PropertyUseNode next = node.InternalClone();
             next.Parent = result;
         }
         return result;
@@ -136,7 +151,7 @@ public class UsePropertyNode
 
     private void PropagateLevel()
     {
-        foreach (UsePropertyNode node in _children)
+        foreach (PropertyUseNode node in _children)
         {
             node._level = _level + 1;
             node.PropagateLevel();

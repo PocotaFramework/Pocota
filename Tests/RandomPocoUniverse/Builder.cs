@@ -572,7 +572,7 @@ go
             {
                 Node entity = entities[random.Next(entities.Count)];
                 node.References.Add(entity);
-                node.Properties.Add(new PropertyDescriptor
+                node.Properties.Add(new PropertyDescriptor(node)
                 {
                     Node = entity,
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -712,7 +712,7 @@ go
                 )
                 {
                     int ns = random.Next(s_maxNamespaces)!;
-                    PropertyDescriptor pd1 = new()
+                    PropertyDescriptor pd1 = new(list[pos])
                     {
                         Node = universe.Nodes[i],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -720,7 +720,7 @@ go
                         Source = 3,
                     };
                     list[pos].Properties.Add(pd1);
-                    PropertyDescriptor pd2 = new()
+                    PropertyDescriptor pd2 = new(universe.Nodes[i])
                     {
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -736,7 +736,7 @@ go
                     universe.Nodes[i].References.Add(list[pos]);
                     list[pos].Referencers.Add(universe.Nodes[i]);
                     bool isNullable = random.Next(s_baseNullable) == 0;
-                    PropertyDescriptor pd = new()
+                    PropertyDescriptor pd = new(universe.Nodes[i])
                     {
                         Node = list[pos],
                         IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -751,7 +751,7 @@ go
                         pd.IsCollection = true;
                         if (universe.Nodes[i] is EntityNode)
                         {
-                            PropertyDescriptor pd1 = new()
+                            PropertyDescriptor pd1 = new(list[pos])
                             {
                                 Node = universe.Nodes[i],
                                 IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -769,8 +769,8 @@ go
                 Type type = s_terminalTypes[random.Next(s_terminalTypes.Length)];
                 bool isCollection = random.Next(s_baseCollection) == 0;
                 bool isNullable = random.Next(s_baseNullable) == 0;
-                bool isCalculated = random.Next(s_baseIsCalculated) == 0;
-                PropertyDescriptor pd = new()
+                bool isCalculated = universe.Nodes[i] is EntityNode && random.Next(s_baseIsCalculated) == 0;
+                PropertyDescriptor pd = new(universe.Nodes[i])
                 {
                     Type = type,
                     IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -780,6 +780,10 @@ go
                     Source = 9,
                 };
                 universe.Nodes[i].Properties.Add(pd);
+                if (isCalculated)
+                {
+                    ((EntityNode)universe.Nodes[i]).Calculated.Add($"{pd.Name}{(pd.IsNullable ? "!" : string.Empty)}");
+                }
 
             }
         }
@@ -794,7 +798,7 @@ go
                     {
                         universe.Nodes[i].References.Add(probe);
                         probe.Referencers.Add(universe.Nodes[i]);
-                        PropertyDescriptor pd = new()
+                        PropertyDescriptor pd = new(universe.Nodes[i])
                         {
                             Node = probe,
                             IsReadOnly = random.Next(s_baseReadonly) == 0,
@@ -811,7 +815,7 @@ go
                             }
                             else
                             {
-                                PropertyDescriptor pd1 = new()
+                                PropertyDescriptor pd1 = new(probe)
                                 {
                                     Node = universe.Nodes[i],
                                     IsReadOnly = random.Next(s_baseReadonly) == 0,

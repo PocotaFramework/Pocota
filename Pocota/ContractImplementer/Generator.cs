@@ -3,11 +3,13 @@ using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using static Net.Leksi.E6dWebApp.Runner;
 
 namespace Net.Leksi.Pocota.Common;
 
@@ -31,21 +33,25 @@ public class Generator : Runner
     private const string s_processorFactory = "ProcessorFactory";
     private const string s_string = "string";
     private const string s_self = "Self";
+    private const string s_null = "null";
 
     private readonly HashSet<Type> _queue = new();
     private readonly Regex _keyPathCheck = new("^([_a-zA-Z][_a-zA-Z0-9]*)(?:\\.([_a-zA-Z][_a-zA-Z0-9]*))?(?:<\\d+>)?$");
     private readonly Regex _keyNameCheck = new("^[_a-zA-Z][_a-zA-Z0-9]*$");
+    private readonly Regex _contractNameProvider = new("^(.*?)(?:Contract)?$", RegexOptions.IgnoreCase);
     private readonly Dictionary<Type, ClassHolder> _classHoldersByType = new();
     private readonly Dictionary<string, MethodHolder> _methodHoldersByName = new();
     private readonly HashSet<string> _variables = new();
     private readonly IConnector _connector;
 
-    private Type? _contract = null;
-    private ContractEventKind _expectedContractEventKind = ContractEventKind.None;
-    private ContractEventKind _currentContractEventKind = ContractEventKind.None;
+    private Type? _contractType = null;
+    private ParseContractEventKind _expectedContractEventKind = ParseContractEventKind.None;
+    private ParseContractEventKind _currentContractEventKind = ParseContractEventKind.None;
     private ClassHolder? _currentClassHolder = null;
     private MethodHolder? _currentMethodHolder = null;
-    private bool _isMandatoryPath = false;
+    private PropertyUseNode? _lastTochedPropertyUseNode = null;
+    private string _contractName = string.Empty;
+    private Contract _contract = null!;
 
     public Language ClientLanguage { get; set; } = Language.CSharp;
     public string? ServerGeneratedDirectory { get; set; } = null;
@@ -74,19 +80,81 @@ public class Generator : Runner
             throw new ArgumentException($"{typeof(Contract)} type must be assignable from {contractType}!");
         }
 
-        _contract = contractType;
+        _contractType = contractType;
 
         _classHoldersByType.Clear();
 
         _queue.Clear();
 
-        _queue.Add(_contract);
+        _queue.Add(_contractType);
 
-        Contract contract = (Contract)Activator.CreateInstance(_contract)!;
-        contract.ContractEvent += ContractEvent;
-        contract.GetObject = GetObject;
+        _contract = (Contract)Activator.CreateInstance(_contractType)!;
 
-        ParseContract(contract);
+        _contractName = _contractNameProvider.Match(_contractType.Name).Groups[1].Value;
+
+        _contract.ParseContractEvent += ParseContractEvent;
+        _contract.GetObject = GetObject;
+
+        ParseContract(_contract);
+
+        int fails = 0;
+        int done = 0;
+
+        if (ClientGeneratedDirectory is { } && Directory.Exists(ClientGeneratedDirectory))
+        {
+            foreach (string path in Directory.EnumerateFiles(
+                ClientGeneratedDirectory,
+                "*.cs",
+                new EnumerationOptions { RecurseSubdirectories = true }
+            ))
+            {
+                File.Delete(path);
+            }
+        }
+        if (ServerGeneratedDirectory is { } && Directory.Exists(ServerGeneratedDirectory))
+        {
+            foreach (string path in Directory.EnumerateFiles(
+                ServerGeneratedDirectory,
+                "*.cs",
+                new EnumerationOptions { RecurseSubdirectories = true }
+            ))
+            {
+                File.Delete(path);
+            }
+        }
+
+        foreach(Type type in _queue)
+        {
+            if(type == _contractType)
+            {
+
+            }
+            else
+            {
+                if (ServerGeneratedDirectory is { })
+                {
+                    if (
+                        ProcessInterface(
+                            type,
+                            $"/ServerImplementation", RequestKind.ServerImplementation
+                        )
+                    )
+                    {
+                        ++done;
+                    }
+                    else
+                    {
+                        ++fails;
+                    }
+                }
+            }
+        }
+
+        if (Verbose)
+        {
+            Console.WriteLine($"Total: {done + fails}, done: {done}, failed: {fails}");
+        }
+
     }
 
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
@@ -147,12 +215,12 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && request.Class == _contract
+            && request.Class == _contractType
         )
         {
             InitClassModel(model, request);
 
-            model.ClassName = MakeControllerName(_contract);
+            model.ClassName = MakeControllerName();
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IDataProviderFactory));
@@ -186,7 +254,7 @@ public class Generator : Runner
                 {
                     Name = nameof(RouteAttribute)
                 };
-                route.Properties.Add(s_template, $"\"/{MakeRoute(model.Contract, method.Name)}\"");
+                route.Properties.Add(s_template, $"\"/{MakeRoute(_contract, method.Name)}\"");
 
                 mm.Attributes.Add(route);
 
@@ -244,7 +312,7 @@ public class Generator : Runner
             model.UpdateRouteAttribute.Properties
                 .Add(
                     s_template,
-                    $"\"/{MakeRoute(model.Contract, $"/{s_update}")}\""
+                    $"\"/{MakeRoute(_contract, $"/{s_update}")}\""
                 );
             model.UpdateRouteAttribute.Properties[s_template] =
                 Regex.Replace(model.UpdateRouteAttribute.Properties[s_template], "/+", "/");
@@ -262,7 +330,7 @@ public class Generator : Runner
         if (
             request is { }
             && _classHoldersByType.TryGetValue(request.Class, out ClassHolder? ch)
-            && ch.IsEntity)
+            && ch.PocoKind is not PocoKind.Entity)
         {
             _variables.Clear();
 
@@ -273,12 +341,10 @@ public class Generator : Runner
 
             AddUsings(model, typeof(IPrimaryKey));
             AddUsings(model, typeof(IPrimaryKey<>));
-            AddUsings(model, typeof(KeyDefinition));
 
             model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey)));
             model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { request.Class })));
 
-            FillPrimaryKeyModel(model, ch);
         }
         else
         {
@@ -292,12 +358,12 @@ public class Generator : Runner
              as GeneratingRequest;
         if (
             request is { }
-            && request.Class == _contract
+            && request.Class == _contractType
         )
         {
             InitClassModel(model, request);
 
-            model.ClassName = MakeContractConfiguratorName(_contract);
+            model.ClassName = MakeContractConfiguratorName();
             request.ResultName = model.ClassName;
 
             AddUsings(model, typeof(IServiceCollection));
@@ -313,7 +379,7 @@ public class Generator : Runner
                     ServiceType = Util.MakeTypeName(entry.Key),
                     ImplementationType = MakePocoClassName(entry.Key),
                 });
-                if (entry.Value.IsEntity)
+                if (entry.Value.PocoKind is PocoKind.Entity)
                 {
                     AddUsings(model, typeof(IAccessManager<>));
                     AddUsings(model, typeof(IPrimaryKey<>));
@@ -379,7 +445,7 @@ public class Generator : Runner
 
             _ = GetUniqueVariable("_serviceProvider");
 
-            if (ch.IsEntity)
+            if (ch.PocoKind is PocoKind.Entity)
             {
                 _ = GetUniqueVariable("_isAccessChecked");
                 _ = GetUniqueVariable("_isAccessChecking");
@@ -389,16 +455,20 @@ public class Generator : Runner
                 AddUsings(model, typeof(IPrimaryKey));
                 AddUsings(model, typeof(IPrimaryKey<>));
                 AddUsings(model, typeof(IEntityProperty));
-                AddUsings(model, typeof(ISelfEntityProperty));
+                AddUsings(model, typeof(IEnumerable));
+                AddUsings(model, typeof(IEnumerable<>));
                 AddUsings(model, request.Class);
                 AddUsings(model, typeof(PropertyAccessMode));
                 model.Interfaces.Add(Util.MakeTypeName(request.Class));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
+                model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { ch.Class })));
                 model.PocoKind = PocoKind.Entity;
-                if (ch.UsePropertyBuilder!.Root!.Children.Any(c => (c.Kinds & UsePropertyKinds.AccessSelector) != 0))
+                if (ch.PropertyUseBuilder!.Root!.Children.Any(c => (c.Kinds & PropertyUseKinds.AccessSelector) != 0))
                 {
                     AddUsings(model, typeof(IAccessManager<>));
                 }
+                model.PrimaryKey = new PrimaryKeyModel { Name = MakePrimaryKeyName(ch.Class) };
+                FillPrimaryKeyParts(model.PrimaryKey, ch.PropertyUseBuilder.Root.Children, string.Empty);
             }
             else
             {
@@ -415,6 +485,7 @@ public class Generator : Runner
                 Name = string.Empty,
                 FieldName = GetUniqueVariable($"_{s_self.ToLower()}{s_property}"),
                 Type = Util.MakeTypeName(ch.Class),
+                Owner = s_null,
                 Nullable = string.Empty,
                 IsReadonly = false,
                 IsClass = true,
@@ -433,6 +504,7 @@ public class Generator : Runner
                     Name = pi.Name,
                     FieldName = GetUniqueVariable($"_{pi.Name.Substring(0, 1).ToLower()}{pi.Name.Substring(1)}"),
                     Type = Util.MakeTypeName(pi.PropertyType),
+                    Owner = Util.MakeTypeName(ch.Class),
                     Nullable = nic.Create(pi).ReadState is NullabilityState.Nullable ? s_ask : string.Empty,
                     IsReadonly = !pi.CanWrite,
                     IsClass = pi.PropertyType.IsClass || pi.PropertyType.IsInterface,
@@ -455,7 +527,6 @@ public class Generator : Runner
                 AddUsings(model, pi.PropertyType);
                 AddUsings(model, itemType);
             }
-            FillPrimaryKeyModel(model, ch);
         }
         else
         {
@@ -506,7 +577,7 @@ public class Generator : Runner
                         model.Usings.Add(itemType.Namespace);
                     }
                     pm.ItemImplType = MakePocoStubName(itemType);
-                    pm.PocoKind = ch.IsEntity ? PocoKind.Entity : PocoKind.Envelope;
+                    pm.PocoKind = ch.PocoKind;
                 }
                 else
                 {
@@ -525,13 +596,29 @@ public class Generator : Runner
         }
     }
 
-    private void ContractEvent(object? sender, ContractEventArgs args)
+    private void FillPrimaryKeyParts(PrimaryKeyModel model, IReadOnlyList<PropertyUseNode> list, string path)
+    {
+        foreach(PropertyUseNode node in list.Where(c => (c.Kinds & PropertyUseKinds.PrimaryKey) is PropertyUseKinds.PrimaryKey))
+        {
+            string nextPath = $"{path}{(string.IsNullOrEmpty(path) ? string.Empty : "?.")}{node.Name}";
+            if (_classHoldersByType.TryGetValue(node.Type, out ClassHolder? ch) && ch.PocoKind is PocoKind.Entity)
+            {
+                FillPrimaryKeyParts(model,  ch.PropertyUseBuilder!.Root!.Children, nextPath);
+            }
+            else
+            {
+                model.Parts.Add(nextPath);
+            }
+        }
+    }
+
+    private void ParseContractEvent(object? sender, ParseContractEventArgs args)
     {
         switch (args.EventKind)
         {
-            case ContractEventKind.AddPoco:
+            case ParseContractEventKind.AddPoco:
                 {
-                    if(_expectedContractEventKind is ContractEventKind.AddPoco)
+                    if(_expectedContractEventKind is ParseContractEventKind.AddPoco)
                     {
                         if(args is AddPocoEventArgs addPocoArgs)
                         {
@@ -550,22 +637,23 @@ public class Generator : Runner
                                     _currentContractEventKind = args.EventKind;
                                     _currentClassHolder = new() { Class = args.PocoType };
                                     _currentClassHolder.Name = args.PocoType.Name;
-                                    if (addPocoArgs.IsEntity)
+                                    _currentClassHolder.PocoKind = addPocoArgs.IsEntity ? PocoKind.Entity : PocoKind.Envelope;
+                                    if (_currentClassHolder.PocoKind is PocoKind.Entity)
                                     {
-                                        _currentClassHolder.UsePropertyBuilder = new UsePropertyBuilder();
-                                        _currentClassHolder.UsePropertyBuilder.Root = UsePropertyNode.FromType(args.PocoType);
+                                        _currentClassHolder.PropertyUseBuilder = new PropertyUseBuilder();
+                                        _currentClassHolder.PropertyUseBuilder.Root = PropertyUseNode.FromType(args.PocoType);
                                     }
                                     _classHoldersByType.Add(args.PocoType, _currentClassHolder);
                                     _queue.Add(args.PocoType);
                                 }
                                 else
                                 {
-                                    throw new InvalidOperationException($"Class {args.PocoType} is already defined at {_contract}!");
+                                    throw new InvalidOperationException($"Class {args.PocoType} is already defined at {_contractType}!");
                                 }
                             }
                             else
                             {
-                                _currentContractEventKind = ContractEventKind.None;
+                                _currentContractEventKind = ParseContractEventKind.None;
                                 _currentClassHolder = null;
                             }
                         }
@@ -576,19 +664,26 @@ public class Generator : Runner
                     }
                 }
                 break;
-            case ContractEventKind.Mandatory:
+            case ParseContractEventKind.Mandatory:
                 {
-                    if(_currentContractEventKind is not ContractEventKind.UseProperty)
+                    if(_currentContractEventKind is not ParseContractEventKind.PropertyUse)
                     {
-                        throw new InvalidOperationException("'Mandatory' method is allowed only inside 'UseProperty' call!");
+                        throw new InvalidOperationException("'Mandatory' method is allowed only inside 'PropertyUse' call!");
                     }
-                    _isMandatoryPath = args.IsStarting;
+                    if(_lastTochedPropertyUseNode is { })
+                    {
+                        _lastTochedPropertyUseNode.Kinds |= PropertyUseKinds.Mandatory;
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
                 }
                 break;
-            case ContractEventKind.PrimaryKey:
+            case ParseContractEventKind.PrimaryKey:
                 {
                     if (
-                        _expectedContractEventKind is ContractEventKind.PrimaryKeyOrAccessSelector
+                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
                         && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
                     )
                     {
@@ -598,7 +693,7 @@ public class Generator : Runner
                         }
                         else
                         {
-                            _currentContractEventKind = ContractEventKind.None;
+                            _currentContractEventKind = ParseContractEventKind.None;
                             _currentClassHolder = null;
                         }
                     }
@@ -608,10 +703,10 @@ public class Generator : Runner
                     }
                 }
                 break;
-            case ContractEventKind.AccessSelector:
+            case ParseContractEventKind.AccessSelector:
                 {
                     if (
-                        _expectedContractEventKind is ContractEventKind.PrimaryKeyOrAccessSelector
+                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
                         && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
                     )
                     {
@@ -621,7 +716,7 @@ public class Generator : Runner
                         }
                         else
                         {
-                            _currentContractEventKind = ContractEventKind.None;
+                            _currentContractEventKind = ParseContractEventKind.None;
                             _currentClassHolder = null;
                         }
                     }
@@ -631,10 +726,10 @@ public class Generator : Runner
                     }
                 }
                 break;
-            case ContractEventKind.UseProperty:
+            case ParseContractEventKind.Calculated:
                 {
                     if (
-                        _expectedContractEventKind is ContractEventKind.UseProperty
+                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
                         && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
                     )
                     {
@@ -644,7 +739,30 @@ public class Generator : Runner
                         }
                         else
                         {
-                            _currentContractEventKind = ContractEventKind.None;
+                            _currentContractEventKind = ParseContractEventKind.None;
+                            _currentClassHolder = null;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception();
+                    }
+                }
+                break;
+            case ParseContractEventKind.PropertyUse:
+                {
+                    if (
+                        _expectedContractEventKind is ParseContractEventKind.PropertyUse
+                        && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
+                    )
+                    {
+                        if (args.IsStarting)
+                        {
+                            _currentContractEventKind = args.EventKind;
+                        }
+                        else
+                        {
+                            _currentContractEventKind = ParseContractEventKind.None;
                             _currentClassHolder = null;
                         }
                     }
@@ -659,13 +777,18 @@ public class Generator : Runner
 
     private void ParseContract(Contract contract)
     {
-        _expectedContractEventKind = ContractEventKind.AddPoco;
+        _expectedContractEventKind = ParseContractEventKind.AddPoco;
         contract.AddPocos();
         GenerateStubs();
-        _expectedContractEventKind = ContractEventKind.PrimaryKeyOrAccessSelector;
+        _expectedContractEventKind = ParseContractEventKind.EntityPropertyAttribute;
         contract.AddPocos();
-        _expectedContractEventKind = ContractEventKind.UseProperty;
-        foreach (MethodInfo mi in _contract!.GetMethods().Where(m => !m.IsSpecialName && m.DeclaringType == _contract && !m.IsVirtual))
+        CheckAccessSelectors();
+        CheckPrimaryKeys();
+
+        SortPropertyUses();
+
+        _expectedContractEventKind = ParseContractEventKind.PropertyUse;
+        foreach (MethodInfo mi in _contractType!.GetMethods().Where(m => !m.IsSpecialName && m.DeclaringType == _contractType && !m.IsVirtual))
         {
             _currentMethodHolder = new MethodHolder { MethodInfo = mi };
             if (!_methodHoldersByName.TryAdd(mi.Name, _currentMethodHolder))
@@ -682,13 +805,14 @@ public class Generator : Runner
             }
             if(_classHoldersByType.TryGetValue(_currentMethodHolder.ReturnItemType, out ClassHolder? ch))
             {
-                _currentMethodHolder.UsePropertyBuilder.Root = ch.UsePropertyBuilder!.Root!.Clone();
+                _currentMethodHolder.PropertyUseBuilder.Root = ch.PropertyUseBuilder!.Root!.Clone();
             }
             object[] args = mi.GetParameters()
                 .Select(p => p.ParameterType.IsValueType ? Activator.CreateInstance(p.ParameterType) : null)
                 .ToArray()!;
             try
             {
+                //Console.WriteLine($"Method: {mi}");
                 mi.Invoke(contract, args);
             }
             catch (TargetInvocationException tiex)
@@ -699,7 +823,140 @@ public class Generator : Runner
                 }
             }
         }
-        _expectedContractEventKind = ContractEventKind.None;
+        _expectedContractEventKind = ParseContractEventKind.None;
+    }
+
+    private void SortPropertyUses()
+    {
+        foreach (PropertyUseNode pun in _classHoldersByType.Values.Where(v => v.PocoKind is PocoKind.Entity).Select(v => v.PropertyUseBuilder!.Root!))
+        {
+            pun.Children.Sort((x, y) =>
+            {
+                bool xPk = (x.Kinds & PropertyUseKinds.PrimaryKey) is PropertyUseKinds.PrimaryKey;
+                bool yPk = (y.Kinds & PropertyUseKinds.PrimaryKey) is PropertyUseKinds.PrimaryKey;
+                if (xPk && !yPk)
+                {
+                    return -1;
+                }
+                if (!xPk && yPk)
+                {
+                    return 1;
+                }
+                int xRange = 2;
+                if(_classHoldersByType.TryGetValue(x.Type, out ClassHolder? ch))
+                {
+                    xRange = ch.PocoKind is PocoKind.Envelope ? 1 : 0;
+                }
+                int yRange = 2;
+                if (_classHoldersByType.TryGetValue(y.Type, out ClassHolder? ch1))
+                {
+                    yRange = ch1.PocoKind is PocoKind.Envelope ? 1 : 0;
+                }
+                if(xRange != yRange)
+                {
+                    return xRange - yRange;
+                }
+                return x.Name.CompareTo(y.Name);
+            });
+        }
+    }
+
+    private void SortPropertyUses(IList<PropertyUseNode> children)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void CheckPrimaryKeys()
+    {
+        foreach(ClassHolder ch in _classHoldersByType.Values.Where(v => v.PocoKind is PocoKind.Entity))
+        {
+            if(
+                ch.PropertyUseBuilder!.Root is null 
+                || !ch.PropertyUseBuilder!.Root.Children.Any(c => (c.Kinds & PropertyUseKinds.PrimaryKey) is PropertyUseKinds.PrimaryKey)
+            ) 
+            {
+                throw new InvalidOperationException($"Entity must have primary key but {ch.Class} has not any!");
+            }
+            if (
+                ch.PropertyUseBuilder!.Root.Children.Where(
+                    c =>
+                        (c.Kinds & PropertyUseKinds.PrimaryKey) is PropertyUseKinds.PrimaryKey
+                        && (c.Kinds & PropertyUseKinds.Calculated) is PropertyUseKinds.Calculated
+                ).Select(c => c.Name).ToArray() is string[] bad
+                && bad.Any()
+            )
+            {
+                throw new InvalidOperationException($"Primary key cannot be calculated but {ch.Class} has some: [{string.Join(", ", bad)}]!");
+            }
+            CheckNoCycles(ch);
+        }
+    }
+
+    private void CheckAccessSelectors()
+    {
+        foreach (ClassHolder ch in _classHoldersByType.Values.Where(v => v.PocoKind is PocoKind.Entity))
+        {
+            WalkAccessSelectors(ch, ch.PropertyUseBuilder!.Root!, false);
+        }
+    }
+
+    private void WalkAccessSelectors(ClassHolder classHolder, PropertyUseNode node, bool failed)
+    {
+        bool isLeaf = !node.Children.Any(c => (c.Kinds & PropertyUseKinds.AccessSelector) is PropertyUseKinds.AccessSelector);
+
+        if (
+            (
+                !isLeaf
+                && (
+                    !_classHoldersByType.TryGetValue(node.Type, out ClassHolder? ch)
+                    || ch.PocoKind is not PocoKind.Entity
+                )
+            )
+            || (
+                isLeaf
+                && _classHoldersByType.ContainsKey(node.Type)
+            )
+            || (node.Kinds & PropertyUseKinds.Calculated) is PropertyUseKinds.Calculated
+            
+        )
+        {
+            failed = true;
+        }
+        if(!isLeaf)
+        {
+            foreach(PropertyUseNode next in node.Children.Where(c => (c.Kinds & PropertyUseKinds.AccessSelector) is PropertyUseKinds.AccessSelector))
+            {
+                WalkAccessSelectors(classHolder, next, failed);
+            }
+        }
+        else if(failed)
+        {
+            throw new InvalidOperationException($"Access selector must be a chain of entities and have 'stored' property at the end but {classHolder.Class}.{node.Path} doesn't fit!");
+        }
+    }
+
+    private void CheckNoCycles(ClassHolder ch)
+    {
+        PropertyUseNode tree = ch.PropertyUseBuilder!.Root!;
+        Dictionary<Type, int> colors = new();
+        Action<PropertyUseNode> dfs = null!;
+        dfs = n =>
+        {
+            colors.Add(n.Type, 1);
+            foreach(PropertyUseNode node in n.Children.Where(c => (c.Kinds & PropertyUseKinds.PrimaryKey) == PropertyUseKinds.PrimaryKey))
+            {
+                if (!colors.ContainsKey(node.Type))
+                {
+                    dfs.Invoke(node);
+                }
+                else if (colors[node.Type] == 1)
+                {
+                    throw new InvalidOperationException($"Entity {ch.Class} has cyclic primary key!");
+                }
+            }
+            colors[n.Type] = 2;
+        };
+        dfs.Invoke(tree);
     }
 
     private void GenerateStubs()
@@ -749,48 +1006,86 @@ public class Generator : Runner
 
     private void Generator_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        Console.WriteLine($"Generator_PropertyChanged: {_currentContractEventKind}, {sender}({((IHavingLevel?)sender)!.Level}), {e.PropertyName}");
+        //Console.WriteLine($"Generator_PropertyChanged: {_currentContractEventKind}, {sender}({((IHavingLevel?)sender)!.Level}), {e.PropertyName}");
         if (
-            sender is IHavingLevel hl 
+            e.PropertyName is { }
+            && sender is IHavingLevel hl 
             && _currentClassHolder is { } 
         )
         {
             switch (_currentContractEventKind)
             {
-                case ContractEventKind.PrimaryKey:
+                case ParseContractEventKind.PrimaryKey:
                     {
-                        if(hl.Level > 0)
+                        if (hl.Level > 0)
                         {
                             throw new InvalidOperationException("PrimaryKey must be own property!");
                         }
-                        _currentClassHolder.UsePropertyBuilder!.Add(
-                            e.PropertyName!, ((IHavingLevel)sender).Level, UsePropertyKinds.PrimaryKey
-                        );
+                        if (sender.GetType().GetProperty(e.PropertyName) is PropertyInfo pi)
+                        {
+                            if (_classHoldersByType.TryGetValue(pi.PropertyType, out ClassHolder? ch) && ch.PocoKind is not PocoKind.Entity)
+                            {
+                                throw new InvalidOperationException($"Primary key must be either non-Poco or Entity but '{pi.PropertyType} {e.PropertyName}' doesn't fit!");
+                            }
+                            _currentClassHolder.PropertyUseBuilder!.Add(
+                                e.PropertyName!, ((IHavingLevel)sender).Level, PropertyUseKinds.PrimaryKey
+                            );
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
                     }
                     break;
-                case ContractEventKind.AccessSelector:
+                case ParseContractEventKind.Calculated:
                     {
-                        _currentClassHolder.UsePropertyBuilder!.Add(
-                            e.PropertyName!, ((IHavingLevel)sender).Level, UsePropertyKinds.AccessSelector
-                        );
+                        if (hl.Level > 0)
+                        {
+                            throw new InvalidOperationException("Calculated must be own property!");
+                        }
+                        if (sender.GetType().GetProperty(e.PropertyName) is PropertyInfo pi)
+                        {
+                            if (_classHoldersByType.TryGetValue(pi.PropertyType, out ClassHolder? ch) && ch.PocoKind is not PocoKind.Envelope)
+                            {
+                                throw new InvalidOperationException($"Calculated property must be non-Poco but '{pi.PropertyType} {ch.Class}.{e.PropertyName}' doesn't fit!");
+                            }
+                            _currentClassHolder.PropertyUseBuilder!.Add(
+                                e.PropertyName!, ((IHavingLevel)sender).Level, PropertyUseKinds.Calculated
+                            );
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
                     }
                     break;
-                case ContractEventKind.UseProperty:
+                case ParseContractEventKind.AccessSelector:
+                    {
+                        if (sender.GetType().GetProperty(e.PropertyName) is PropertyInfo pi)
+                        {
+                            _currentClassHolder.PropertyUseBuilder!.Add(
+                                e.PropertyName!, ((IHavingLevel)sender).Level, PropertyUseKinds.AccessSelector
+                            );
+                        }
+                        else
+                        {
+                            throw new Exception();
+                        }
+                    }
+                    break;
+                case ParseContractEventKind.PropertyUse:
                     {
                         if(_currentClassHolder.Class != _currentMethodHolder!.ReturnItemType)
                         {
                             throw new InvalidOperationException(
-                                $"Method return item type {_currentMethodHolder!.ReturnItemType} must be equal to UseProperty generic parameter {_currentClassHolder.Class}!"
+                                $"Method return item type {_currentMethodHolder!.ReturnItemType} must be equal to PropertyUse generic parameter {_currentClassHolder.Class}!"
                             );
                         }
-                        UsePropertyKinds kinds = UsePropertyKinds.Expected;
-                        if (_isMandatoryPath)
-                        {
-                            kinds |= UsePropertyKinds.Mandatory;
-                        }
-                        _currentMethodHolder!.UsePropertyBuilder!.Add(
+                        PropertyUseKinds kinds = PropertyUseKinds.Expected;
+                        _currentMethodHolder!.PropertyUseBuilder!.Add(
                             e.PropertyName!, ((IHavingLevel)sender).Level, kinds
                         );
+                        _lastTochedPropertyUseNode = _currentMethodHolder!.PropertyUseBuilder!.LastTouchedNode;
                     }
                     break;
             }
@@ -826,15 +1121,10 @@ public class Generator : Runner
         return null;
     }
 
-    private string MakeRoute(Type contract, string name)
+    private string MakeRoute(Contract contract, string name)
     {
-        string? routePrefix = null;
-        string? version = null;
-        if (contract.GetCustomAttribute<PocoContractAttribute>() is PocoContractAttribute ca)
-        {
-            routePrefix = ca.RoutePrefix;
-            version = ca.Version;
-        }
+        string routePrefix = contract.RoutePrefix;
+        string version = contract.Version;
 
         StringBuilder routeValue = new();
         if (!string.IsNullOrEmpty(routePrefix))
@@ -845,34 +1135,30 @@ public class Generator : Runner
         {
             routeValue.Append('/').Append(version);
         }
-        if (!string.IsNullOrEmpty(contract.Namespace))
+        if (!string.IsNullOrEmpty(contract.GetType().Namespace))
         {
-            routeValue.Append('/').Append(contract.Namespace.Replace('.', '/'));
+            routeValue.Append('/').Append(contract.GetType().Namespace?.Replace('.', '/'));
         }
-        routeValue.Append('/').Append(contract.Name);
+        routeValue.Append('/').Append(contract.GetType().Name);
         routeValue.Append('/').Append(name);
         return routeValue.ToString();
     }
 
-    private static string MakeControllerName(Type @interface)
+    private string MakeControllerName()
     {
-        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_controller}";
+        return $"{_contractName}{s_controller}";
     }
 
-    private string MakeContractConfiguratorName(Type @interface)
+    private string MakeContractConfiguratorName()
     {
-        return $"{@interface.GetCustomAttribute<PocoContractAttribute>()!.Name}{s_configurator}";
+        return $"{_contractName}{s_configurator}";
     }
 
     private PocoKind GetPocoKind(Type type)
     {
-        if (_classHoldersByType.TryGetValue(type, out ClassHolder? @interface))
+        if (_classHoldersByType.TryGetValue(type, out ClassHolder? ch))
         {
-            if (@interface.IsEntity)
-            {
-                return PocoKind.Entity;
-            }
-            return PocoKind.Envelope;
+            return ch.PocoKind;
         }
         return PocoKind.NotAPoco;
     }
@@ -911,18 +1197,6 @@ public class Generator : Runner
         return $"{_classHoldersByType[@interface].Name}{s_allowAccessManager}";
     }
 
-    private void FillPrimaryKeyModel(ClassModel model, ClassHolder ch)
-    {
-        if (ch.UsePropertyBuilder!.Root!.Children.Any(c => (c.Kinds & UsePropertyKinds.PrimaryKey) != 0))
-        {
-            model.PrimaryKey = new PrimaryKeyModel
-            {
-                Name = MakePrimaryKeyName(ch.Class)
-            };
-
-       }
-    }
-
     private void AddUsings(ClassModel? model, Type type)
     {
         if (model is { })
@@ -956,15 +1230,15 @@ public class Generator : Runner
 
     private void InitClassModel(ClassModel model, GeneratingRequest request)
     {
-        model.Contract = _contract!;
+        model.Contract = _contractType!;
         model.NamespaceValue = request.Class.Namespace;
     }
 
-    private bool ProcessInterface(IConnector connector, Type @interface, string path, RequestKind requestKind)
+    private bool ProcessInterface(Type type, string path, RequestKind requestKind)
     {
         GeneratingRequest request = new()
         {
-            Class = @interface,
+            Class = type,
             Kind = requestKind,
         };
         string outputDirectory = requestKind switch
@@ -980,16 +1254,16 @@ public class Generator : Runner
         }
         try
         {
-            TextReader reader = connector.Get(path, request);
+            TextReader reader = _connector.Get(path, request);
             string outputPath = Path.Combine(outputDirectory, request.ResultName + ext);
             File.WriteAllText(outputPath, reader.ReadToEnd());
             if (OnResponse is { })
             {
-                OnResponse(requestKind, @interface, path, null);
+                OnResponse(requestKind, type, path, null);
             }
             if (Verbose)
             {
-                Console.WriteLine($"{path} for {@interface} generated: {outputPath}");
+                Console.WriteLine($"{path} for {type} generated: {outputPath}");
             }
             return true;
 
@@ -998,11 +1272,11 @@ public class Generator : Runner
         {
             if (OnResponse is { })
             {
-                OnResponse(requestKind, @interface, path, ex);
+                OnResponse(requestKind, type, path, ex);
             }
             if (Verbose)
             {
-                Console.WriteLine($"exception: {requestKind}, {@interface}, {path}, {ex.Message}\n{ex.StackTrace}\n");
+                Console.WriteLine($"exception: {requestKind}, {type}, {path}, {ex.Message}\n{ex.StackTrace}\n");
             }
             return false;
         }

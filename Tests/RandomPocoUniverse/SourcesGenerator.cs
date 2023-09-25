@@ -1,4 +1,5 @@
 ﻿using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.Common;
 using Net.Leksi.Pocota.Common.Generic;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
@@ -84,7 +85,7 @@ public class SourcesGenerator: Runner
         return contract;
     }
 
-    internal void GenerateInterface(InterfaceModel model)
+    internal void GenerateClass(ClassModel model)
     {
         Tuple<Universe, Node> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Universe, Node>)!;
         model.Node = parameter.Item2;
@@ -98,7 +99,7 @@ public class SourcesGenerator: Runner
             {
                 model.Usings.Add(model.Node.Base.Namespace!);
             }
-            model.Interface = model.Node.Base.Name;
+            model.Class = model.Node.Base.Name;
         }
 
         foreach(PropertyDescriptor pd in model.Node.Properties) 

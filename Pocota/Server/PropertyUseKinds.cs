@@ -1,11 +1,12 @@
-﻿namespace Net.Leksi.Pocota.Common;
+﻿namespace Net.Leksi.Pocota.Server;
 
 [Flags]
-public enum UsePropertyKinds
+public enum PropertyUseKinds
 {
     None = 0,
     Expected = 1,
     AccessSelector = 2,
     Mandatory = 4,
     PrimaryKey = 8,
+    Calculated = 16,
 }

@@ -11,7 +11,7 @@ public class ApplicationContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<UserImpl>().HasOne(u => u.Company).WithOne(c => (UserImpl)c.Director).HasForeignKey();
-        modelBuilder.Entity<CompanyImpl>();
+        //modelBuilder.Entity<UserImpl>().HasOne(u => u.Company).WithOne(c => (UserImpl)c.Director).HasForeignKey();
+        //modelBuilder.Entity<CompanyImpl>();
     }
 }

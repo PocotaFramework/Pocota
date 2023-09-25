@@ -1,11 +1,8 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public interface IPrimaryKey
+public interface IPrimaryKey: IEnumerable<object?>
 {
-    object? this[int index] { get; set; }
-    object? this[string name] { get; set; }
-    IList<KeyDefinition> Definitions { get; }
+    object? this[int index] { get; }
     int Count { get; }
     bool IsAssigned { get; }
-    object?[] ToArray();
 }

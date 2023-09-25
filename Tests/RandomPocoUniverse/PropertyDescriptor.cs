@@ -9,6 +9,7 @@ public class PropertyDescriptor
 
     public string Name { get; internal set; } = $"P{++s_genId }";
     public Node? Node { get; internal set; } = null;
+    public Node Owner { get; private init; } = null!;
     public Type? Type { get; internal set; } = null;
     public bool IsCollection { get; internal set; } = false;
     public bool IsReadOnly { get; internal set; } = false;
@@ -20,6 +21,10 @@ public class PropertyDescriptor
 
     public string TypeString => $"{(IsCollection ? "IList<" : string.Empty)}{(Type is { } ?  Util.MakeTypeName(Type) : Node!.Name)}{(IsCollection ? ">" : string.Empty)}{(IsNullable ? "?" : string.Empty)}";
 
+    internal PropertyDescriptor(Node owner)
+    {
+        Owner = owner;
+    }
     public override string ToString()
     {
         StringBuilder sb = new();

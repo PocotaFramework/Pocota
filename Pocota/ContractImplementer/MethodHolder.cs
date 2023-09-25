@@ -6,6 +6,6 @@ internal class MethodHolder
 {
     internal MethodInfo MethodInfo { get; set; } = null!;
     internal Type ReturnItemType { get; set; } = null!;
-    internal UsePropertyBuilder UsePropertyBuilder { get; private init; } = new();
+    internal PropertyUseBuilder PropertyUseBuilder { get; private init; } = new();
 
 }

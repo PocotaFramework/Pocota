@@ -5,6 +5,7 @@ internal class PropertyModel
     internal string Name { get; set; } = null!;
     internal string FieldName { get; set; } = null!;
     internal string Type { get; set; } = null!;
+    internal string Owner { get; set; } = null!;
     internal string Nullable { get; set; } = null!;
     internal bool IsReadonly { get; set; } = false;
     internal bool IsClass { get; set; } = false;

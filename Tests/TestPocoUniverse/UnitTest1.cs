@@ -4,6 +4,7 @@ using Net.Leksi.Pocota.Server;
 using Net.Leksi.Pocota.Test.RandomPocoUniverse;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 
 namespace TestPocoUniverse;
@@ -17,8 +18,11 @@ public class Tests
         internal List<Node> _allNodesServerImplementation = new();
         internal List<Node> _allNodesPrimaryKey = new();
         internal List<Node> _allNodesAllowAccessManager = new();
-        internal int _contractConfiguratorsCount = 0;
-        internal bool AddPocotaTelemetryCalled = false;
+        internal int _contractServerConfiguratorsCount = 0;
+        internal int _contractClientConfiguratorsCount = 0;
+        internal int _connectorsCount = 0;
+        internal bool _addPocotaTelemetryCalled = false;
+        internal List<string> _expectedGeneratorPages = new();
     }
 
     public class Test1Options
@@ -106,7 +110,7 @@ public class Tests
         Builder.UniverseOptions.DatabaseName = "qq";
         Builder.UniverseOptions.NodesTelemetry0 = un => NodesTelemetry0(un, dataHolder);
         Builder.UniverseOptions.NodesTelemetry = un => NodesTelemetry(un, dataHolder);
-        //Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
+        Builder.UniverseOptions.ModelAndContractTelemetry = (un, co) => ModelAndContractTelemetry(un, co, dataHolder);
         Builder.UniverseOptions.OnGenerateClassesResponse = (rk, intrf, path, ex) => OnGenerateClassesResponse(rk, intrf, path, ex, dataHolder);
         Builder.UniverseOptions.GenerateClassesTelemetry = un => GenerateClassesTelemetry(un, dataHolder);
         Builder.UniverseOptions.CreateDatabaseTelemetry = un => CreateDatabaseTelemetry(un, dataHolder);
@@ -117,6 +121,13 @@ public class Tests
         Builder.UniverseOptions.GenerateClassesNoWarn = "0067;0414";
         Builder.UniverseOptions.GenerateClassesVerbose = options.GenerateClassesVerbose;
         Builder.UniverseOptions.DoCompilePocoUniverseServer = options.DoCompilePocoUniverseServer;
+
+        dataHolder._expectedGeneratorPages.AddRange(
+            new string[] 
+            {
+                "/ServerImplementation",
+            }
+        );
 
         if (!Directory.Exists(Builder.UniverseOptions.InfoDir))
         {
@@ -152,7 +163,7 @@ public class Tests
 
     private void AddPocotaTelemetry(Universe universe, IServiceCollection services, Test1DataHolder dataHolder)
     {
-        dataHolder.AddPocotaTelemetryCalled = true;
+        dataHolder._addPocotaTelemetryCalled = true;
         Assert.Multiple(() =>
         {
             foreach (Node node in universe.Nodes)
@@ -226,7 +237,9 @@ public class Tests
             Assert.That(dataHolder._allNodesServerImplementation.Any(), Is.False);
             Assert.That(dataHolder._allNodesPrimaryKey.Any(), Is.False);
             Assert.That(dataHolder._allNodesAllowAccessManager.Any(), Is.False);
-            Assert.That(dataHolder._contractConfiguratorsCount, Is.EqualTo(0));
+            Assert.That(dataHolder._contractServerConfiguratorsCount, Is.EqualTo(0));
+            Assert.That(dataHolder._contractClientConfiguratorsCount, Is.EqualTo(0));
+            Assert.That(dataHolder._connectorsCount, Is.EqualTo(0));
         });
     }
 
@@ -242,36 +255,39 @@ public class Tests
         });
     }
 
-    private void OnGenerateClassesResponse(RequestKind requestKind, Type @interface, string path, Exception? exception, Test1DataHolder dataHolder)
+    private void OnGenerateClassesResponse(RequestKind requestKind, Type type, string path, Exception? exception, Test1DataHolder dataHolder)
     {
         int selector = 0;
         Assert.That(
-            (
+            dataHolder._expectedGeneratorPages.Contains(path)
+            && (
                 requestKind is RequestKind.ClientImplementation 
                 && (
                     (
                         $"/{Builder.UniverseOptions.ClientLanguage}/Connector".Equals(path) 
-                        && @interface == dataHolder._universe.Contract
+                        && type == dataHolder._universe.Contract
                         && (selector = 1) == selector
+                        && --dataHolder._connectorsCount == 0
                     )
                     || (
                         $"/{Builder.UniverseOptions.ClientLanguage}/ClientContractConfigurator".Equals(path) 
-                        && @interface == dataHolder._universe.Contract
+                        && type == dataHolder._universe.Contract
                         && (selector = 2) == selector
+                        && --dataHolder._contractClientConfiguratorsCount == 0
                     )
                     || (
                         $"/{Builder.UniverseOptions.ClientLanguage}/ClientImplementation".Equals(path)
                         && (selector = 3) == selector
                         && dataHolder._allNodesClientImplementation.RemoveAll(
-                            n => @interface.Name.Equals(n.Name) 
+                            n => type.Name.Equals(n.Name) 
                                 && (
                                     (
                                         n.Namespace is null 
-                                        && @interface.Namespace is null
+                                        && type.Namespace is null
                                     ) 
                                     || (
                                         n.Namespace is { } 
-                                        && n.Namespace.Equals(@interface.Namespace)
+                                        && n.Namespace.Equals(type.Namespace)
                                     )
                                 )
                         ) == 1
@@ -280,7 +296,7 @@ public class Tests
             )
             || (
                 requestKind is RequestKind.Controller
-                && $"/Controller".Equals(path) && @interface == dataHolder._universe.Contract
+                && $"/Controller".Equals(path) && type == dataHolder._universe.Contract
                 && (selector = 4) == selector
             )
             || (
@@ -288,23 +304,23 @@ public class Tests
                 && (
                     (
                         $"/ServerContractConfigurator".Equals(path)
-                        && @interface == dataHolder._universe.Contract
+                        && type == dataHolder._universe.Contract
                         && (selector = 5) == selector
-                        && --dataHolder._contractConfiguratorsCount == 0
+                        && --dataHolder._contractServerConfiguratorsCount == 0
                     )
                     || (
                         $"/ServerImplementation".Equals(path)
                         && (selector = 6) == selector
                         && dataHolder._allNodesServerImplementation.RemoveAll(
-                            n => @interface.Name.Equals(n.Name)
+                            n => type.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
-                                        && @interface.Namespace is null
+                                        && type.Namespace is null
                                     )
                                     || (
                                         n.Namespace is { }
-                                        && n.Namespace.Equals(@interface.Namespace)
+                                        && n.Namespace.Equals(type.Namespace)
                                     )
                                 )
                         ) == 1
@@ -313,15 +329,15 @@ public class Tests
                         $"/PrimaryKey".Equals(path)
                         && (selector = 7) == selector
                         && dataHolder._allNodesPrimaryKey.RemoveAll(
-                            n => @interface.Name.Equals(n.Name)
+                            n => type.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
-                                        && @interface.Namespace is null
+                                        && type.Namespace is null
                                     )
                                     || (
                                         n.Namespace is { }
-                                        && n.Namespace.Equals(@interface.Namespace)
+                                        && n.Namespace.Equals(type.Namespace)
                                     )
                                 )
                         ) == 1
@@ -330,15 +346,15 @@ public class Tests
                         $"/AllowAccessManager".Equals(path)
                         && (selector = 8) == selector
                         && dataHolder._allNodesAllowAccessManager.RemoveAll(
-                            n => @interface.Name.Equals(n.Name)
+                            n => type.Name.Equals(n.Name)
                                 && (
                                     (
                                         n.Namespace is null
-                                        && @interface.Namespace is null
+                                        && type.Namespace is null
                                     )
                                     || (
                                         n.Namespace is { }
-                                        && n.Namespace.Equals(@interface.Namespace)
+                                        && n.Namespace.Equals(type.Namespace)
                                     )
                                 )
                         ) == 1
@@ -346,37 +362,12 @@ public class Tests
                 )
             ),
             Is.True,
-            $"{requestKind}, {@interface}, {path}, {exception}, {selector}"
+            $"{requestKind}, {type}, {path}, {exception}, {selector}"
 
         );
-        if (
-            false
-        )
-        {
-            Assert.That(exception, Is.Not.Null);
-            Assert.That(exception, Is.TypeOf<AggregateException>());
-            AggregateException aex = (exception as AggregateException)!;
-            Assert.That(aex.InnerExceptions, Has.Count.EqualTo(2));
-            Assert.Multiple(() =>
-            {
-                Assert.That(aex.InnerExceptions[0].Message, Is.EqualTo("Response status code does not indicate success: 500 (Internal Server Error)."));
-                Assert.That(aex.InnerExceptions[1].Message, Does.StartWith("The method or operation is not implemented.\n"));
-            });
-        }
-        else if (
-            "/Controller".Equals(path)
-            || "/PrimaryKey".Equals(path)
-            || "/AllowAccessManager".Equals(path)
-            || "/ServerImplementation".Equals(path)
-            || "/ServerContractConfigurator".Equals(path)
-        )
+        if (dataHolder._expectedGeneratorPages.Contains(path))
         {
             Assert.That(exception, Is.Null);
-        }
-        else
-        {
-            Assert.That(exception, Is.TypeOf<HttpRequestException>());
-            Assert.That(exception.Message, Is.EqualTo("Response status code does not indicate success: 404 (Not Found)."));
         }
     }
 
@@ -452,10 +443,6 @@ public class Tests
 
         Type? conractType = contractAssembly.GetType($"{UniverseOptions.Namespace}.{UniverseOptions.ContractName}");
         Assert.That(conractType, Is.Not.Null);
-        IEnumerator<PocoContractAttribute> pca = conractType.GetCustomAttributes<PocoContractAttribute>().GetEnumerator();
-
-        Assert.That(pca.MoveNext(), Is.True);
-        Assert.That(pca.MoveNext(), Is.False);
         //IEnumerator<PocoAttribute> pa = conractType.GetCustomAttributes<PocoAttribute>().GetEnumerator();
         
         //int i = 0;
@@ -486,15 +473,48 @@ public class Tests
         //});
 
         dataHolder._universe = universe;
+
         dataHolder._allNodesClientImplementation.Clear();
-        dataHolder._allNodesClientImplementation.AddRange(universe.Nodes);
+        if (dataHolder._expectedGeneratorPages.Contains($"/{Builder.UniverseOptions.ClientLanguage}/ClientImplementation"))
+        {
+            dataHolder._allNodesClientImplementation.AddRange(universe.Nodes);
+        }
+
         dataHolder._allNodesServerImplementation.Clear();
-        dataHolder._allNodesServerImplementation.AddRange(universe.Nodes);
+        if (dataHolder._expectedGeneratorPages.Contains($"/ServerImplementation"))
+        {
+            dataHolder._allNodesServerImplementation.AddRange(universe.Nodes);
+        }
+
         dataHolder._allNodesPrimaryKey.Clear();
-        dataHolder._allNodesPrimaryKey.AddRange(universe.Nodes.Where(n => n is EntityNode && n.Base is null));
+        if (dataHolder._expectedGeneratorPages.Contains($"/PrimaryKey"))
+        {
+            dataHolder._allNodesPrimaryKey.AddRange(universe.Nodes.Where(n => n is EntityNode && n.Base is null));
+        }
+
         dataHolder._allNodesAllowAccessManager.Clear();
-        dataHolder._allNodesAllowAccessManager.AddRange(universe.Nodes.Where(n => n is EntityNode));
-        dataHolder._contractConfiguratorsCount = 1;
+        if (dataHolder._expectedGeneratorPages.Contains($"/AllowAccessManager"))
+        {
+            dataHolder._allNodesAllowAccessManager.AddRange(universe.Nodes.Where(n => n is EntityNode));
+        }
+
+        dataHolder._contractServerConfiguratorsCount = 0;
+        if (dataHolder._expectedGeneratorPages.Contains($"/ServerContractConfigurator"))
+        {
+            dataHolder._contractClientConfiguratorsCount = 1;
+        }
+
+        dataHolder._contractClientConfiguratorsCount = 0;
+        if (dataHolder._expectedGeneratorPages.Contains($"/{Builder.UniverseOptions.ClientLanguage}/ClientContractConfigurator"))
+        {
+            dataHolder._contractClientConfiguratorsCount = 1;
+        }
+
+        dataHolder._connectorsCount = 0;
+        if (dataHolder._expectedGeneratorPages.Contains($"/{Builder.UniverseOptions.ClientLanguage}/Connector"))
+        {
+            dataHolder._connectorsCount = 1;
+        }
     }
 }
 

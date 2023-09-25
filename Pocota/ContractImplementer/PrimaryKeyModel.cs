@@ -3,5 +3,5 @@
 internal class PrimaryKeyModel
 {
     internal string Name { get; set; } = string.Empty;
-    internal readonly List<PrimaryKeyPartModel> Parts = new();
+    internal List<string> Parts { get; private init; } = new();
 }

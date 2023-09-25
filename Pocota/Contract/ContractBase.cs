@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace Net.Leksi.Pocota.Common;
+﻿namespace Net.Leksi.Pocota.Common;
 
 public abstract class ContractBase
 {
