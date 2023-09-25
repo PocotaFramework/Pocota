@@ -14,7 +14,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
     <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity){<text>Entity</text>}Property
     {
-        public string Name => "@pm.Name";
+        public string Name => @if(string.IsNullOrEmpty(@pm.Name)){<text>string.Empty</text>}else{<text>"@pm.Name"</text>};
 
         public Type Type => typeof(@Html.Raw(pm.Type));
             
@@ -174,7 +174,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         _ => throw new @nameof(IndexOutOfRangeException)@{}()
     };
 
-    bool @nameof(IPrimaryKey)@{}.IsAssigned => ((@nameof(IPrimaryKey))this).All(p => p is {});
+    bool @nameof(IPrimaryKey)@{}.IsAssigned => this.All(p => p is {});
 </text>
 }
    
