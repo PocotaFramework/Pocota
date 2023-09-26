@@ -116,21 +116,37 @@ public abstract class Contract : ContractBase
         }
     }
 
-    protected override sealed void UseProperty<T>(Func<T, object> paths) where T : class
+    protected override sealed void Internal<T>(Func<T, object> paths) where T : class
     {
         if (GetObject.Invoke(typeof(T)) is T target)
         {
             try
             {
-                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.PropertyUse, IsStarting = true });
+                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.Internal, IsStarting = true });
                 paths.Invoke(target);
             }
             finally
             {
-                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.PropertyUse, });
+                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.Internal, });
             }
         }
     }
+    protected override sealed void Output<T>(Func<T, object> paths) where T : class
+    {
+        if (GetObject.Invoke(typeof(T)) is T target)
+        {
+            try
+            {
+                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.Output, IsStarting = true });
+                paths.Invoke(target);
+            }
+            finally
+            {
+                ParseContractEvent?.Invoke(this, new ParseContractEventArgs { PocoType = typeof(T), EventKind = ParseContractEventKind.Output, });
+            }
+        }
+    }
+
 
     protected override sealed object Mandatory(object value)
     {

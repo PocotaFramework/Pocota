@@ -28,7 +28,7 @@ public class Generator : Runner
     private const string s_controller = "Controller";
     private const string s_void = "void";
     private const string s_template = "!Template";
-    private const string s_propertyUse = "PropertyUse";
+    private const string s_propertyUse = "Output";
     private const string s_dataProviderFactory = "DataProviderFactory";
     private const string s_processorFactory = "ProcessorFactory";
     private const string s_string = "string";
@@ -458,7 +458,7 @@ public class Generator : Runner
                 AddUsings(model, typeof(IEnumerable));
                 AddUsings(model, typeof(IEnumerable<>));
                 AddUsings(model, request.Class);
-                AddUsings(model, typeof(PropertyAccessMode));
+                AddUsings(model, typeof(AccessMode));
                 model.Interfaces.Add(Util.MakeTypeName(request.Class));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IEntity)));
                 model.Interfaces.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType(new Type[] { ch.Class })));
@@ -470,6 +470,7 @@ public class Generator : Runner
                 model.PrimaryKey = new PrimaryKeyModel { Name = MakePrimaryKeyName(ch.Class) };
                 FillPrimaryKeyParts(model.PrimaryKey, ch.PropertyUseBuilder.Root.Children, string.Empty);
             }
+        
             else
             {
                 AddUsings(model, request.Class);
@@ -666,9 +667,9 @@ public class Generator : Runner
                 break;
             case ParseContractEventKind.Mandatory:
                 {
-                    if(_currentContractEventKind is not ParseContractEventKind.PropertyUse)
+                    if(_currentContractEventKind is not ParseContractEventKind.Output)
                     {
-                        throw new InvalidOperationException("'Mandatory' method is allowed only inside 'PropertyUse' call!");
+                        throw new InvalidOperationException("'Mandatory' method is allowed only inside 'Output' call!");
                     }
                     if(_lastTochedPropertyUseNode is { })
                     {
@@ -680,79 +681,14 @@ public class Generator : Runner
                     }
                 }
                 break;
-            case ParseContractEventKind.PrimaryKey:
+            case ParseContractEventKind.PrimaryKey
+                or ParseContractEventKind.AccessSelector
+                or ParseContractEventKind.Calculated
+                or ParseContractEventKind.Output
+                or ParseContractEventKind.Internal:
                 {
                     if (
-                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
-                        && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
-                    )
-                    {
-                        if (args.IsStarting)
-                        {
-                            _currentContractEventKind = args.EventKind;
-                        }
-                        else
-                        {
-                            _currentContractEventKind = ParseContractEventKind.None;
-                            _currentClassHolder = null;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-                break;
-            case ParseContractEventKind.AccessSelector:
-                {
-                    if (
-                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
-                        && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
-                    )
-                    {
-                        if (args.IsStarting)
-                        {
-                            _currentContractEventKind = args.EventKind;
-                        }
-                        else
-                        {
-                            _currentContractEventKind = ParseContractEventKind.None;
-                            _currentClassHolder = null;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-                break;
-            case ParseContractEventKind.Calculated:
-                {
-                    if (
-                        _expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute
-                        && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
-                    )
-                    {
-                        if (args.IsStarting)
-                        {
-                            _currentContractEventKind = args.EventKind;
-                        }
-                        else
-                        {
-                            _currentContractEventKind = ParseContractEventKind.None;
-                            _currentClassHolder = null;
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception();
-                    }
-                }
-                break;
-            case ParseContractEventKind.PropertyUse:
-                {
-                    if (
-                        _expectedContractEventKind is ParseContractEventKind.PropertyUse
+                        Responses(_expectedContractEventKind, args.EventKind)
                         && _classHoldersByType.TryGetValue(args.PocoType, out _currentClassHolder)
                     )
                     {
@@ -775,6 +711,19 @@ public class Generator : Runner
         }
     }
 
+    private bool Responses(ParseContractEventKind expectedContractEventKind, ParseContractEventKind eventKind)
+    {
+        return eventKind switch 
+        {
+            ParseContractEventKind.PrimaryKey
+                or ParseContractEventKind.AccessSelector
+                or ParseContractEventKind.Calculated => expectedContractEventKind is ParseContractEventKind.EntityPropertyAttribute,
+            ParseContractEventKind.Output
+                or ParseContractEventKind.Internal => expectedContractEventKind is ParseContractEventKind.MethodResultPropertyAttribute,
+            _ => throw new InvalidOperationException()
+        };
+    }
+
     private void ParseContract(Contract contract)
     {
         _expectedContractEventKind = ParseContractEventKind.AddPoco;
@@ -787,7 +736,7 @@ public class Generator : Runner
 
         SortPropertyUses();
 
-        _expectedContractEventKind = ParseContractEventKind.PropertyUse;
+        _expectedContractEventKind = ParseContractEventKind.MethodResultPropertyAttribute;
         foreach (MethodInfo mi in _contractType!.GetMethods().Where(m => !m.IsSpecialName && m.DeclaringType == _contractType && !m.IsVirtual))
         {
             _currentMethodHolder = new MethodHolder { MethodInfo = mi };
@@ -1073,15 +1022,30 @@ public class Generator : Runner
                         }
                     }
                     break;
-                case ParseContractEventKind.PropertyUse:
+                case ParseContractEventKind.Output:
                     {
-                        if(_currentClassHolder.Class != _currentMethodHolder!.ReturnItemType)
+                        if (_currentClassHolder.Class != _currentMethodHolder!.ReturnItemType)
                         {
                             throw new InvalidOperationException(
-                                $"Method return item type {_currentMethodHolder!.ReturnItemType} must be equal to PropertyUse generic parameter {_currentClassHolder.Class}!"
+                                $"Method return item type {_currentMethodHolder!.ReturnItemType} must be equal to Output generic parameter {_currentClassHolder.Class}!"
                             );
                         }
-                        PropertyUseKinds kinds = PropertyUseKinds.Expected;
+                        PropertyUseKinds kinds = PropertyUseKinds.Output;
+                        _currentMethodHolder!.PropertyUseBuilder!.Add(
+                            e.PropertyName!, ((IHavingLevel)sender).Level, kinds
+                        );
+                        _lastTochedPropertyUseNode = _currentMethodHolder!.PropertyUseBuilder!.LastTouchedNode;
+                    }
+                    break;
+                case ParseContractEventKind.Internal:
+                    {
+                        if (_currentClassHolder.Class != _currentMethodHolder!.ReturnItemType)
+                        {
+                            throw new InvalidOperationException(
+                                $"Method return item type {_currentMethodHolder!.ReturnItemType} must be equal to Internal generic parameter {_currentClassHolder.Class}!"
+                            );
+                        }
+                        PropertyUseKinds kinds = PropertyUseKinds.Internal;
                         _currentMethodHolder!.PropertyUseBuilder!.Add(
                             e.PropertyName!, ((IHavingLevel)sender).Level, kinds
                         );

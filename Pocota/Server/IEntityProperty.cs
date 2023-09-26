@@ -4,6 +4,6 @@ namespace Net.Leksi.Pocota.Server;
 
 public interface IEntityProperty: IProperty
 {
-    PropertyAccessMode GetAccess(object target);
-    void SetAccess(object target, PropertyAccessMode value);
+    AccessMode GetAccess(object target);
+    void SetAccess(object target, AccessMode value);
 }

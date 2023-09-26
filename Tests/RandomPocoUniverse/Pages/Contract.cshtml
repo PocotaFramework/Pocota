@@ -41,9 +41,17 @@ public class @UniverseOptions.ContractName: Contract
 {
     <text>    public @Html.Raw(mm.ReturnType) @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{p.Type} {p.Name}")))
     {
-    @if(mm.Properties.Any()){
-        <text>        UseProperty<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
-            @Html.Raw(string.Join(",\n            ", @mm.Properties.Select(p => (p.EndsWith('$') ? $"Mandatory(o.{p.Substring(0, p.Length - 1)})" : $"o.{p}"))))
+    @if(mm.OutputProperties.Any())
+    {
+        <text>        Output<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
+            @Html.Raw(string.Join(",\n            ", @mm.OutputProperties.Select(p => (p.EndsWith('$') ? $"Mandatory(o.{p.Substring(0, p.Length - 1)})" : $"o.{p}"))))
+        });
+</text>
+    }
+    @if(mm.InternalProperties.Any())
+    {
+        <text>        Internal<@Html.Raw(mm.ReturnItemType)>(o => new object[]{
+            @Html.Raw(string.Join(",\n            ", @mm.InternalProperties.Select(p => $"o.{p}")))
         });
 </text>
     }

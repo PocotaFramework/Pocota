@@ -39,6 +39,7 @@ public class Builder
     private const int s_minProperties = 5;
     private const int s_maxProperties = 20;
     private const int s_baseMandatoryReturnProperty = 3;
+    private const int s_baseInternalProperty = 4;
 
     private static readonly Regex s_trimPart = new Regex("^[^![]+");
 
@@ -109,7 +110,7 @@ public class Builder
                 Name = "arg",
                 Type = node.Name,
             });
-            CreatePropertyPaths(node.Methods.First().Properties, node, random, string.Empty, 0);
+            CreatePropertyPaths(node.Methods.First().OutputProperties, node.Methods.First().InternalProperties, node, random, string.Empty, 0);
             int numMethods = random.Next(s_maxMethods + 1);
             for (int i = 0; i < numMethods; ++i)
             {
@@ -140,12 +141,12 @@ public class Builder
                     });
                 }
                 node.Methods.Add(mh);
-                CreatePropertyPaths(mh.Properties, node, random, string.Empty, 0);
+                CreatePropertyPaths(mh.OutputProperties, mh.InternalProperties, node, random, string.Empty, 0);
             }
         }
     }
 
-    private static void CreatePropertyPaths(List<string> properties, Node node, Random random, string path, int level)
+    private static void CreatePropertyPaths(List<string> outputProperties, List<string> internalProperties, Node node, Random random, string path, int level)
     {
         List<PropertyDescriptor> allProps = new();
         Node? cur = node;
@@ -159,11 +160,11 @@ public class Builder
             string next = $"{path}{(level > 0 ? "." : string.Empty)}{prop.Name}{(prop.IsNullable ? "!" : string.Empty)}{(prop.Node is { } && prop.IsCollection ? "[0]" : string.Empty)}";
             if (prop.Node is { } && level < s_maxPathLength)
             {
-                CreatePropertyPaths(properties, prop.Node, random, next, level + 1);
+                CreatePropertyPaths(outputProperties, internalProperties, prop.Node, random, next, level + 1);
             }
             else
             {
-                properties.Add(next);
+                outputProperties.Add(next);
             }
         }
         if(level == 0)
@@ -172,7 +173,7 @@ public class Builder
             Dictionary<int, List<string>> pathsByNumParts = new();
             for (int j = 0; j <= s_maxPathLength; ++j)
             {
-                pathsByNumParts.Add(j, properties.Where(s => s.Split('.').Length == j).ToList());
+                pathsByNumParts.Add(j, outputProperties.Where(s => s.Split('.').Length == j).ToList());
             }
             for (int j = 0; j < count; ++j)
             {
@@ -203,16 +204,24 @@ public class Builder
                         }
                         current = pd!.Node!;
                     }
-                    if (!isKey && random.Next(s_baseMandatoryReturnProperty) == 0)
+                    if(!isKey && random.Next(s_baseInternalProperty) == 0)
                     {
-                        next += '$';
+                        internalProperties.Add(next);
+                    }
+                    else
+                    {
+                        if (!isKey && random.Next(s_baseMandatoryReturnProperty) == 0)
+                        {
+                            next += '$';
+                        }
+                        outputProperties.Insert(0, next);
                     }
 
-                    properties.Insert(0, next);
                 }
             }
-            properties.RemoveRange(count, properties.Count - count);
-            properties.Sort();
+            outputProperties.RemoveRange(count, outputProperties.Count - count);
+            outputProperties.Sort();
+            internalProperties.Sort();
         }
     }
 

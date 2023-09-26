@@ -18,6 +18,8 @@ public class ClassModel: PageModel
     internal List<ServiceModel> Services { get; private init; } = new();
     internal List<MethodModel> Methods { get; private init; } = new();
     internal AttributeModel? UpdateRouteAttribute { get; set; } = null;
+    internal string? PropertyUseVariable { get; set; } = null;
+    internal PropertyUseModel? PropertyUse { get; set; } = null;
 
     public void OnGet([FromServices] Generator generator)
     {

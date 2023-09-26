@@ -6,9 +6,11 @@ public enum ParseContractEventKind
     AddPoco,
     PrimaryKey,
     AccessSelector,
-    PropertyUse,
+    Output,
     Mandatory,
     Method,
     EntityPropertyAttribute,
     Calculated,
+    Internal,
+    MethodResultPropertyAttribute
 }

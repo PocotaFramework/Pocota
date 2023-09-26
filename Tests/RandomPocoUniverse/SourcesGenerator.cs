@@ -145,7 +145,8 @@ public class SourcesGenerator: Runner
                             ReturnItemType = node.Name,
                         };
                         mm.Parameters.AddRange(mh.Parameters);
-                        mm.Properties.AddRange(mh.Properties);
+                        mm.OutputProperties.AddRange(mh.OutputProperties);
+                        mm.InternalProperties.AddRange(mh.InternalProperties);
                         return mm;
                     })
                 );;
