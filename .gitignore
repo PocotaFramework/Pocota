@@ -1,0 +1,8 @@
+bin
+obj
+.vs
+*.user
+*.bak
+**/Installer/Output
+Tests/Generated
+
