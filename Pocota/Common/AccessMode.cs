@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota.Common;
 
-public enum PropertyAccessMode
+public enum AccessMode
 {
     Full,
     ReadOnly,

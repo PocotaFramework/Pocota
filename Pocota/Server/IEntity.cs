@@ -4,6 +4,7 @@ namespace Net.Leksi.Pocota.Server;
 
 public interface IEntity: IPoco
 {
-    PropertyAccessMode AccessMode { get; set; }
+    AccessMode AccessMode { get; set; }
+    void EnsureAccessSelectors();
     void CheckAccess();
 }

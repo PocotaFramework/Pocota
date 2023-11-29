@@ -14,7 +14,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 {
     <text>    public class @pm.PropertyClass: I@{}@if(Model.PocoKind is PocoKind.Entity){<text>Entity</text>}Property
     {
-        public string Name => "@pm.Name";
+        public string Name => @if(string.IsNullOrEmpty(@pm.Name)){<text>string.Empty</text>}else{<text>"@pm.Name"</text>};
 
         public Type Type => typeof(@Html.Raw(pm.Type));
             
@@ -72,7 +72,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>        public @nameof(PropertyAccessMode) GetAccess(object target)
+        <text>        public @nameof(AccessMode) GetAccess(object target)
         {
             if(target is @Model.ClassName obj)
             {
@@ -81,7 +81,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
             throw new @nameof(ArgumentException)@{}(string.Format(s_invalidTarget, target is null ? "null" : target.GetType(), typeof(@Model.ClassName)));
         }
 
-        public void SetAccess(object target, @nameof(PropertyAccessMode) value)
+        public void SetAccess(object target, @nameof(AccessMode) value)
         {
             if(target is @Model.ClassName obj)
             {
@@ -113,12 +113,12 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 </text>
 }
 #endregion Property fields
-
 #region Fields
     private readonly @nameof(IServiceProvider) _serviceProvider;
 @if (Model.PocoKind is PocoKind.Entity)
 {
-    <text>    private @nameof(PropertyAccessMode) _accessMode = PropertyAccessMode.Full;
+    <text>
+    private @nameof(AccessMode) _accessMode = @nameof(AccessMode).@nameof(AccessMode.Full);
     private bool _isAccessChecked = false;
     protected internal bool _isAccessChecking = false;
 </text>
@@ -135,7 +135,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
     };
     @if (Model.PocoKind is PocoKind.Entity)
     {
-        <text>    private PropertyAccessMode @pm.FieldName@{}AccessMode = PropertyAccessMode.Full;
+        <text>    private @nameof(AccessMode) @pm.FieldName@{}AccessMode = @nameof(AccessMode).@nameof(AccessMode.Full);
 </text>
     }
     private bool @pm.FieldName@{}IsSet = false;
@@ -151,7 +151,7 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
 }
 @if (Model.PocoKind is PocoKind.Entity)
 {
-    <text>    @nameof(PropertyAccessMode) @nameof(IEntity)@{}.AccessMode
+    <text>    @nameof(AccessMode) @nameof(IEntity)@{}.AccessMode
     {
         get  => _accessMode;
         set 
@@ -174,7 +174,12 @@ public class @Model.ClassName: @Html.Raw(string.Join(", ", Model.Interfaces))
         _ => throw new @nameof(IndexOutOfRangeException)@{}()
     };
 
-    bool @nameof(IPrimaryKey)@{}.IsAssigned => ((@nameof(IPrimaryKey))this).All(p => p is {});
+    bool @nameof(IPrimaryKey)@{}.IsAssigned => this.All(p => p is {});
+
+    void @nameof(IEntity)@{}.EnsureAccessSelectors()
+    {
+        throw new @nameof(NotImplementedException)@{}();
+    }
 </text>
 }
    

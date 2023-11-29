@@ -27,7 +27,7 @@ public class Tests
 
     public class Test1Options
     {
-        public int Seed { get; internal init; } = 1128802683;
+        public int Seed { get; internal init; } = -1;
         public bool DoCreateDatabase { get; internal init; } = false;
         public bool DoGenerateModelAndContract { get; internal init; } = true;
         public bool DoGenerateClasses { get; internal init; } = true;
@@ -415,7 +415,7 @@ public class Tests
             if(node.Base is { })
             {
                 Type? baseType = type.BaseType;
-                Assert.That(baseType, Is.Not.Null);
+                Assert.That(baseType, Is.Not.Null, node.ToString());
                 Assert.Multiple(() =>
                 {
                     Node? baseNode = allNodes.Where(
@@ -432,9 +432,8 @@ public class Tests
                         )
                         && n.Name.Equals(baseType!.Name)
                     ).FirstOrDefault();
-                    Assert.That(baseNode, Is.Not.Null);
-                    Assert.That(baseNode!.GetType(), Is.EqualTo(typeof(EntityNode)));
-                    Assert.That(baseNode is EntityNode, Is.True);
+                    Assert.That(baseNode, Is.Not.Null, node.ToString());
+                    Assert.That(baseNode!.GetType(), Is.EqualTo(node.GetType()), node.ToString());
                 });
             }
         }
