@@ -93,13 +93,14 @@ public class Tests
             Builder.UniverseOptions.Configuration = configuration;
         }
 
-        Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "GeneratedModel");
-        Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "GeneratedContract");
-        Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedServerStuff");
-        Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "GeneratedClientStuff");
+        Builder.UniverseOptions.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "Generated", "Model");
+        Builder.UniverseOptions.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
+        Builder.UniverseOptions.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "ServerStuff");
+        Builder.UniverseOptions.GeneratedClientStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "ClientStuff");
+        Builder.UniverseOptions.InfoDir = Path.Combine(projectDir, "..", "Generated", "Info");
+        Builder.UniverseOptions.ContractStubsProjectDir = Path.Combine(projectDir, "..", "Generated", "ContractStubs");
+
         Builder.UniverseOptions.PocoUniverseServerProjectDir = Path.Combine(projectDir, "..", "PocoUniverseServer");
-        Builder.UniverseOptions.ContractStubsProjectDir = Path.Combine(projectDir, "..", "ContractStubs");
-        Builder.UniverseOptions.InfoDir = Path.Combine(projectDir, "..", "Info");
 
         Builder.UniverseOptions.ContractProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
         Builder.UniverseOptions.PocotaCommonProjectFile = Path.Combine(projectDir, "..", "..", "Pocota", "Common", "CommonDebug.csproj");
