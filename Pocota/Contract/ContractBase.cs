@@ -1,0 +1,10 @@
+﻿namespace Net.Leksi.Pocota;
+
+public abstract class ContractBase
+{
+    public abstract string Version { get; }
+    public abstract string RoutePrefix { get; }
+    public abstract void ConfigurePocos();
+    public abstract EntityInfo<T> Entity<T>() where T : class;
+    public abstract PocoInfo<T> Envelope<T>() where T : class;
+}

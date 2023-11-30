@@ -33,6 +33,11 @@ public class Pipeline
             Node next = new();
             next.Kind = NodeKind.Envelope;
             next.Name = $"{next.Kind}{i + 1}";
+            int ns = _random.Next(_options.NamespacesCount + 1);
+            if(ns > 0)
+            {
+                next.Namespace = $"Net.Leksi.NS{ns}";
+            }
             _graph.Nodes.Add(next);
         }
 
@@ -93,10 +98,16 @@ public class Pipeline
                     offset = node.Parent.Properties.Last().Position;
                 }
             }
+            int pkCount = Math.Min(
+                    numProperties, Math.Max(
+                        0,
+                        node.Kind is NodeKind.Envelope ? 0 : _random.Next(1, _options.PKCountBase + 1) - node.PkCount
+                    )
+                );
+
             for(int i = 0; i < numProperties; ++i)
             {
                 PropertyHolder ph = new();
-                ph.Position = offset + i + 1;
                 if(tos is { } && i < tos.Count && tos[i] != node.Parent)
                 {
                     ph.Node = tos[i];
@@ -106,6 +117,33 @@ public class Pipeline
                     ph.Type = _types[_random.Next(_types.Count)];
                 }
                 node.Properties.Add(ph);
+            }
+            for(int i = 0; i < numProperties; ++i)
+            {
+                int swapPos = _random.Next(i, numProperties);
+                if(swapPos > i)
+                {
+                    PropertyHolder tmp = node.Properties[i];
+                    node.Properties[i] = node.Properties[swapPos];
+                    node.Properties[swapPos] = tmp;
+                }
+                node.Properties[i].Position = offset + i + 1;
+            }
+            for (int i = 0; i < numProperties; ++i)
+            {
+                if (i < pkCount)
+                {
+                    node.Properties[i].IsPrimaryKey = true;
+                    node.Properties[i].IsNullable = false;
+                    node.Properties[i].IsCollection = false;
+                    node.Properties[i].IsReadOnly= false;
+                }
+                else
+                {
+                    node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
+                    node.Properties[i].IsReadOnly = _random.NextDouble() < _options.ReadOnlyFraction;
+                    node.Properties[i].IsCollection = _random.NextDouble() < _options.CollectionFraction;
+                }
             }
         }
     }
@@ -139,9 +177,9 @@ public class Pipeline
     {
         BuildGraph();
         GenerateInheritancesAndProperties();
-        Console.WriteLine(_graph);
+
         SourcesGenerator generator = new();
 
-        generator.GenerateModel(_graph, _options);
+        generator.GenerateModelAndContract(_graph, _options);
     }
 }

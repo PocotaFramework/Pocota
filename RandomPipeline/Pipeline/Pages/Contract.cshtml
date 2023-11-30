@@ -1,0 +1,44 @@
+﻿@page
+@using Net.Leksi.Pocota.Pipeline
+@model ContractModel
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+@if(Model.Namespace is { })
+{
+    <text>
+namespace @Model.Namespace;
+</text>
+}
+
+public class @Model.ClassName: Contract
+{
+    public override string Version => "v1.0";
+    public override string RoutePrefix => "/api";
+
+    public override void ConfigurePocos()
+    {
+@foreach(Node node in Model.Graph.Nodes)
+{
+    @if(node.Kind is NodeKind.Entity)
+    {
+        <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.Properties.Any(p => p.IsPrimaryKey))
+        {
+            <text>
+            .PrimaryKey(o => new object[]{@foreach(PropertyHolder ph in node.Properties.Where(p => p.IsPrimaryKey))
+        {
+            <text>o.@ph.Name, </text>
+        }})</text>
+        };
+</text>        
+    }
+    else
+    {
+        <text>        Envelope@{}@Html.Raw($"<{node.Name}>")@{}();
+</text>        
+    }
+}
+    }
+}

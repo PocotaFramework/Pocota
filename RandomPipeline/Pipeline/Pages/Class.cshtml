@@ -8,11 +8,12 @@
 }
 @if(Model.Node.Namespace is { })
 {
-    <text>namespace @Model.Node.Namespace;
-
+    <text>
+namespace @Model.Node.Namespace;
 </text>
 }
-public abstract class @Model.Node.Name@if (Model.Node.Parent is { })
+
+public abstract class @Model.Node.Name@if(Model.Node.Parent is { })
 {
     <text>: @Model.Node.Parent.Name</text>
 }
@@ -20,8 +21,11 @@ public abstract class @Model.Node.Name@if (Model.Node.Parent is { })
 {
 @foreach(PropertyHolder ph in Model.Node.Properties)
 {
-    <text>    public @ph.TypeName @ph.Name { get; set; }
+    <text>    public abstract @(ph.IsCollection ? 
+        Html.Raw("List<") : string.Empty
+    )@ph.TypeName@(ph.IsCollection ? 
+        Html.Raw(">") : string.Empty
+    )@(ph.IsNullable ? "?" : string.Empty) @ph.Name { get;@(!ph.IsReadOnly ? " set;" : string.Empty) }
 </text>
 }
-
 }

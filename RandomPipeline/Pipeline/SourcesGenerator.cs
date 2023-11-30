@@ -5,6 +5,8 @@ namespace Net.Leksi.Pocota.Pipeline;
 
 public class SourcesGenerator: Runner
 {
+    private const string s_contractClassName = "RandomContract";
+    private const string s_contractNamespace = "Net.Leksi.Pocota.RandomServer";
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -14,7 +16,7 @@ public class SourcesGenerator: Runner
     {
         app.MapRazorPages();
     }
-    internal void GenerateModel(Graph graph, Options options)
+    internal void GenerateModelAndContract(Graph graph, Options options)
     {
         Start();
 
@@ -25,6 +27,13 @@ public class SourcesGenerator: Runner
             Directory.Delete(options.GeneratedModelProjectDir, true);
         }
         Directory.CreateDirectory(options.GeneratedModelProjectDir);
+
+        if (Directory.Exists(options.GeneratedContractProjectDir))
+        {
+            Directory.Delete(options.GeneratedContractProjectDir, true);
+        }
+        Directory.CreateDirectory(options.GeneratedContractProjectDir);
+
         using (Project model = Project.Create(new ProjectOptions
         {
             Name = "Model",
@@ -34,15 +43,26 @@ public class SourcesGenerator: Runner
             model.AddProject(options.PipelineCommonProjectDir);
             foreach (Node node in graph.Nodes)
             {
-                TextReader interfaceSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
-                File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), interfaceSource.ReadToEnd());
+                TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
+                File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
             }
-            model.Compile();
+            using(Project contract = Project.Create(new ProjectOptions
+            {
+                Name = s_contractClassName,
+                ProjectDir = options.GeneratedContractProjectDir,
+            }))
+            {
+                contract.AddProject(options.ContractProjectDir);
+                contract.AddProject(model);
+                TextReader contractSource = connector.Get("/Contract", graph);
+                File.WriteAllText(Path.Combine(contract.ProjectDir, $"{s_contractClassName}.cs"), contractSource.ReadToEnd());
+                contract.Compile();
+            }
         }
+
         Stop();
     }
-
-    internal void GenerateClass(ClassModel model)
+    internal void GenerateModelClass(ClassModel model)
     {
         Tuple<Graph, Node> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Node>)!;
         model.Node = parameter.Item2;
@@ -64,14 +84,29 @@ public class SourcesGenerator: Runner
             }
             else if (ph.Type is { })
             {
-                if (ph.IsCollection)
-                {
-                    model.Usings.Add(typeof(List<>).Namespace!);
-                }
                 if (ph.Type.Namespace is { })
                 {
                     model.Usings.Add(ph.Type.Namespace);
                 }
+            }
+            if (ph.IsCollection)
+            {
+                model.Usings.Add(typeof(List<>).Namespace!);
+            }
+        }
+    }
+
+    internal void GenerateContractClass(ContractModel model)
+    {
+        Graph graph = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Graph)!;
+        model.ClassName = s_contractClassName;
+        model.Namespace = s_contractNamespace;
+        model.Graph = graph;
+        foreach(Node node in graph.Nodes)
+        {
+            if(node.Namespace is { })
+            {
+                model.Usings.Add(node.Namespace);
             }
         }
     }

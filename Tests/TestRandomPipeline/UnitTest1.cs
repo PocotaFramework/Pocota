@@ -36,9 +36,14 @@ public class Tests
         return new TestPipelineOptions[] { new TestPipelineOptions {
             Seed = -1,
             NodesCount = 20,
-            EntitiesFraction = 0.7,
-            Completeness = 0.4,
-            InheritanceFraction = 0.3,
+            EntitiesFraction = .7,
+            Completeness = .4,
+            InheritanceFraction = .3,
+            NamespacesCount = 5,
+            PKCountBase = 3,
+            ReadOnlyFraction = .2,
+            CollectionFraction = .2,
+            NullableFraction = .4,
         } };
     }
 
@@ -62,8 +67,10 @@ public class Tests
         string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
 
         options.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "Generated", "Model");
+        options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
 
         options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
+        options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
 
         new Pipeline(rnd, options).Run();
     }

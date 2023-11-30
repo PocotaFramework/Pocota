@@ -7,6 +7,7 @@ internal class Node
     public NodeKind Kind { get; set; }
     public Node? Parent { get; set; } = null;
     public List<PropertyHolder> Properties { get; private init; } = new();
+    public int PkCount => Properties.Where(p => p.IsPrimaryKey).Count() + (Parent?.PkCount ?? 0);
     public override string ToString()
     {
         return Name;
