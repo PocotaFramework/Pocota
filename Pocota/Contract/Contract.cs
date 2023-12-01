@@ -3,6 +3,7 @@ namespace Net.Leksi.Pocota;
 
 public abstract class Contract: ContractBase
 {
+    protected IServiceProvider? _serviceProvider = null;
     public sealed override EntityInfo<T> Entity<T>()
     {
         EntityInfo<T> info = new(this);

@@ -1,5 +1,7 @@
 ﻿using Net.Leksi.E6dWebApp;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Reflection;
+using System.Text;
 
 namespace Net.Leksi.Pocota;
 
@@ -34,9 +36,25 @@ public class Generator: Runner
         IConnector connector = GetConnector();
 
         using (Project contractProcessor = Project.Create(new ProjectOptions { 
-            
+            Name = "ContractProcessor"
         }))
         {
+            StringBuilder sb = new();
+            if(typeof(Contract).Namespace is { })
+            {
+                sb.AppendLine($"using {_contract.GetType().Namespace};");
+            }
+            sb.Append($@"using System;
+public class Contract1: {_contract.GetType().Name}
+{{
+    public Contract1(IServiceProvider serviceProvider)
+    {{
+        _serviceProvider = serviceProvider;
+    }}
+}}
+");
+            contractProcessor.AddReference(Assembly.GetAssembly(_contract.GetType())!.Location);
+            File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, "Contract.cs"), sb.ToString());
             contractProcessor.Compile();
         }
 

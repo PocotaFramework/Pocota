@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
+    <ProjectReference Include="..\..\Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 

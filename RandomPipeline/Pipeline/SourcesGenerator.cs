@@ -1,5 +1,6 @@
 ﻿using Net.Leksi.E6dWebApp;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Reflection;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Pipeline;
@@ -9,6 +10,11 @@ public class SourcesGenerator: Runner
     private const string s_contractClassName = "RandomContract";
     private const string s_contractNamespace = "Net.Leksi.Pocota.RandomServer";
     private const string s_targetFramework = "net8.0-windows";
+
+    private Project? _model;
+    private Project? _contract;
+    private Project? _serverStaff;
+
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -36,33 +42,29 @@ public class SourcesGenerator: Runner
         }
         Directory.CreateDirectory(options.GeneratedContractProjectDir);
 
-        using (Project model = Project.Create(new ProjectOptions
+        _model = Project.Create(new ProjectOptions
         {
             Name = "Model",
             ProjectDir = options.GeneratedModelProjectDir,
             TargetFramework = s_targetFramework,
-        }))
+        });
+        _model.AddProject(options.PipelineCommonProjectDir);
+        foreach (Node node in graph.Nodes)
         {
-            model.AddProject(options.PipelineCommonProjectDir);
-            foreach (Node node in graph.Nodes)
-            {
-                TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
-                File.WriteAllText(Path.Combine(model.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
-            }
-            using(Project contract = Project.Create(new ProjectOptions
-            {
-                Name = s_contractClassName,
-                ProjectDir = options.GeneratedContractProjectDir,
-                TargetFramework = s_targetFramework,
-            }))
-            {
-                contract.AddProject(options.ContractProjectDir);
-                contract.AddProject(model);
-                TextReader contractSource = connector.Get("/Contract", graph);
-                File.WriteAllText(Path.Combine(contract.ProjectDir, $"{s_contractClassName}.cs"), contractSource.ReadToEnd());
-                contract.Compile();
-            }
+            TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
+            File.WriteAllText(Path.Combine(_model.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
         }
+        _contract = Project.Create(new ProjectOptions
+        {
+            Name = s_contractClassName,
+            ProjectDir = options.GeneratedContractProjectDir,
+            TargetFramework = s_targetFramework,
+        });
+        _contract.AddProject(options.ContractProjectDir);
+        _contract.AddProject(_model);
+        TextReader contractSource = connector.Get("/Contract", graph);
+        File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{s_contractClassName}.cs"), contractSource.ReadToEnd());
+        _contract.Compile();
 
         Stop();
     }
@@ -153,15 +155,22 @@ public class SourcesGenerator: Runner
         }
         Directory.CreateDirectory(options.GeneratedServerStaffProjectDir);
 
-        using(Project serverStaff = Project.Create(new ProjectOptions
+        _serverStaff = Project.Create(new ProjectOptions
         {
             Name = "ServerStaff",
             ProjectDir = options.GeneratedServerStaffProjectDir,
             TargetFramework = s_targetFramework,
-        }))
+        });
+        
+        Generator _generator = Generator.Create(new FrameworkGeneratorOptions
         {
-            serverStaff.Compile();
-        }
+            Contract = (Contract)Activator.CreateInstance(
+                Assembly.LoadFile(_contract!.LibraryFile!)
+                    .GetType($"{s_contractNamespace}.{s_contractClassName}")!
+            )!
+        });
+        _serverStaff.Compile();
+       
 
         Stop();
 
