@@ -81,6 +81,12 @@ public class Tests
         options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
         options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
 
-        new Pipeline(rnd, options).Run();
+        Pipeline pipeline = new(rnd, options);
+
+        pipeline.GenerateModelAndContract();
+
+        options.GeneratedServerStaffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStaff");
+
+        pipeline.GenerateFramework();
     }
 }

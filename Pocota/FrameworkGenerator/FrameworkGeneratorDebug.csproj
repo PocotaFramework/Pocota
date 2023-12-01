@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Net.Leksi.Pocota</RootNamespace>
+    <AssemblyName>Net.Leksi.Pocota.FrameworkGenerator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.11" />
+    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="1.5.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Contract\ContractDebug.csproj" />
+  </ItemGroup>
+
+</Project>

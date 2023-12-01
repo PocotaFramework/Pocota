@@ -8,6 +8,7 @@ public class SourcesGenerator: Runner
 {
     private const string s_contractClassName = "RandomContract";
     private const string s_contractNamespace = "Net.Leksi.Pocota.RandomServer";
+    private const string s_targetFramework = "net8.0-windows";
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -39,6 +40,7 @@ public class SourcesGenerator: Runner
         {
             Name = "Model",
             ProjectDir = options.GeneratedModelProjectDir,
+            TargetFramework = s_targetFramework,
         }))
         {
             model.AddProject(options.PipelineCommonProjectDir);
@@ -51,6 +53,7 @@ public class SourcesGenerator: Runner
             {
                 Name = s_contractClassName,
                 ProjectDir = options.GeneratedContractProjectDir,
+                TargetFramework = s_targetFramework,
             }))
             {
                 contract.AddProject(options.ContractProjectDir);
@@ -138,4 +141,29 @@ public class SourcesGenerator: Runner
         }
     }
 
+    internal void GenerateFramework(Graph graph, Options options)
+    {
+        Start();
+
+        IConnector connector = GetConnector();
+
+        if (Directory.Exists(options.GeneratedServerStaffProjectDir))
+        {
+            Directory.Delete(options.GeneratedServerStaffProjectDir, true);
+        }
+        Directory.CreateDirectory(options.GeneratedServerStaffProjectDir);
+
+        using(Project serverStaff = Project.Create(new ProjectOptions
+        {
+            Name = "ServerStaff",
+            ProjectDir = options.GeneratedServerStaffProjectDir,
+            TargetFramework = s_targetFramework,
+        }))
+        {
+            serverStaff.Compile();
+        }
+
+        Stop();
+
+    }
 }

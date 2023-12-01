@@ -24,4 +24,5 @@ public class Options
     public int FindersCountBase { get; set; }
     public int FindersParamsCountBase { get; set; }
     public double FindersMandatoryFraction { get; set; }
+    public string GeneratedServerStaffProjectDir { get; set; }
 }

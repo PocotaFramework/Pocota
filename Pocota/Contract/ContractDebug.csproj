@@ -1,10 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <RootNamespace>Net.Leksi.Pocota</RootNamespace>
     <Configurations>Debug;Release;RAC</Configurations>
+    <AssemblyName>Net.Leksi.Pocota.Contract</AssemblyName>
   </PropertyGroup>
 </Project>

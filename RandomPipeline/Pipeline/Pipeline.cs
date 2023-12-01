@@ -8,7 +8,6 @@ public class Pipeline
     private readonly Dictionary<Node, int> _colors = new();
     private readonly Random _random;
     private readonly Options _options;
-    private Graph _graph = null!;
     private readonly List<Node> _topolog = new();
     private readonly List<Type> _types = new() {
         typeof(int),
@@ -16,13 +15,15 @@ public class Pipeline
         typeof(DateOnly),
         typeof(MockEnum),
     };
+    private readonly SourcesGenerator _generator = new();
+    private Graph _graph = null!;
 
     public Pipeline(Random random, Options options) 
     { 
         _random = random; 
         _options = options;
     }
-    public void Run()
+    public void GenerateModelAndContract()
     {
         BuildGraph();
         GenerateInheritancesAndProperties();
@@ -31,11 +32,12 @@ public class Pipeline
         GenerateAccessSelectors();
         GenerateMethods();
 
-        SourcesGenerator generator = new();
-
-        generator.GenerateModelAndContract(_graph, _options);
+        _generator.GenerateModelAndContract(_graph, _options);
     }
-
+    public void GenerateFramework()
+    {
+        _generator.GenerateFramework(_graph, _options);
+    }
     private void BuildTrees()
     {
         foreach (Node node in _graph.Nodes)
