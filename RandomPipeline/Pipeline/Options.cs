@@ -23,4 +23,5 @@ public class Options
     public double FindersIsCollectionFraction { get; set; }
     public int FindersCountBase { get; set; }
     public int FindersParamsCountBase { get; set; }
+    public double FindersMandatoryFraction { get; set; }
 }

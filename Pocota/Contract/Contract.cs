@@ -20,6 +20,11 @@ public abstract class Contract: ContractBase
 
     }
 
+    public sealed override object Mandatory(object obj)
+    {
+        return obj;
+    }
+
     internal void AccessSelector<T>(Func<T, object[]> config) where T : class
     {
         throw new NotImplementedException();

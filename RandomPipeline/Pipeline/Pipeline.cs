@@ -356,17 +356,27 @@ public class Pipeline
             {
                 MethodHolder getter = new() { Name = $"Get{node.Name}", ReturnNode = node, ReturnTypeName = node.Name };
                 getter.Params.Add(new ParamHolder { Name = "obj", Node = node, TypeName = node.Name});
-                getter.Output = new List<string>();
+                getter.Output = new List<PropertyUse>();
+                getter.OutputPaths = new List<string>();
                 foreach (TreeNode? leaf in node.Leaves.Where(l => l.Depth < 2))
                 {
+                    getter.Output.Add(new PropertyUse { Property = leaf.Property });
+                    if (_random.NextDouble() < _options.FindersMandatoryFraction)
+                    {
+                        getter.Output.Last().Kinds |= PropertyUseKinds.Mandatory;
+                    }
                     for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
                     {
                         stack.Push(cur.Property);
                     }
                     ExtractPropertyPath(stack, sb);
-                    getter.Output.Add(sb.ToString());
+                    if((getter.Output.Last().Kinds & PropertyUseKinds.Mandatory) == PropertyUseKinds.Mandatory)
+                    {
+                        sb[0] = '#';
+                    }
+                    getter.OutputPaths.Add(sb.ToString());
                 }
-                getter.Output.Sort();
+                getter.OutputPaths.Sort((s1, s2) => s1.Substring(1).CompareTo(s2.Substring(1)));
                 node.Methods.Add(getter);
             }
             int findersCount = _random.Next(1, _options.FindersCountBase + 1);
@@ -389,20 +399,30 @@ public class Pipeline
                     ph.TypeName = Util.MakeTypeName(ph.Type);
                     finder.Params.Add(ph);
                 }
-                finder.Output = new List<string>();
+                finder.Output = new List<PropertyUse>();
+                finder.OutputPaths = new List<string>();
                 foreach (TreeNode? leaf in node.Leaves)
                 {
                     if(leaf.Depth < 2 || _random.NextDouble() < Math.Pow(_options.OutputDepthDamping, leaf.Depth - 2))
                     {
+                        finder.Output.Add(new PropertyUse { Property = leaf.Property });
+                        if(_random.NextDouble() < _options.FindersMandatoryFraction)
+                        {
+                            finder.Output.Last().Kinds |= PropertyUseKinds.Mandatory;
+                        }
                         for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
                         {
                             stack.Push(cur.Property);
                         }
                         ExtractPropertyPath(stack, sb);
-                        finder.Output.Add(sb.ToString());
+                        if ((finder.Output.Last().Kinds & PropertyUseKinds.Mandatory) == PropertyUseKinds.Mandatory)
+                        {
+                            sb[0] = '#';
+                        }
+                        finder.OutputPaths.Add(sb.ToString());
                     }
                 }
-                finder.Output.Sort();
+                finder.OutputPaths.Sort((s1, s2) => s1.Substring(1).CompareTo(s2.Substring(1)));
                 node.Methods.Add(finder);
             }
         }

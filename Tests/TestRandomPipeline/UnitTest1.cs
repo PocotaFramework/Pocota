@@ -52,6 +52,7 @@ public class Tests
             FindersIsCollectionFraction = .8,
             FindersCountBase = 3,
             FindersParamsCountBase = 2,
+            FindersMandatoryFraction = .3,
         } };
     }
 
