@@ -1,4 +1,7 @@
-﻿namespace Net.Leksi.Pocota.Pipeline;
+﻿using System.Diagnostics.Metrics;
+using System.Text;
+
+namespace Net.Leksi.Pocota.Pipeline;
 
 public class Pipeline
 {
@@ -19,6 +22,141 @@ public class Pipeline
         _random = random; 
         _options = options;
     }
+    public void Run()
+    {
+        BuildGraph();
+        GenerateInheritancesAndProperties();
+        GeneratePrimaryKeys();
+        BuildTrees();
+        GenerateAccessSelectors();
+        GenerateMethods();
+
+        SourcesGenerator generator = new();
+
+        generator.GenerateModelAndContract(_graph, _options);
+    }
+
+    private void BuildTrees()
+    {
+        foreach (Node node in _graph.Nodes)
+        {
+            node.Tree = new TreeNode();
+            BuildTree(node, node, node.Tree, 0);
+        }
+    }
+
+    private void GenerateAccessSelectors()
+    {
+        Stack<PropertyHolder> stack = new();
+        StringBuilder sb = new();
+
+        foreach (Node node in _graph.Nodes.Where(n => n.Kind is NodeKind.Entity))
+        {
+            int accessSelectorsCount = _random.Next(_options.AccessSelectorsCountBase + 1);
+            if (accessSelectorsCount > 0)
+            {
+                HashSet<int> used = new();
+                while (accessSelectorsCount > 0 && used.Count < node.Leaves.Count)
+                {
+                    int next = _random.Next(node.Leaves.Count);
+                    if (used.Add(next))
+                    {
+                        int autoLinkCount = -1;
+                        int now = -1;
+                        for (TreeNode? cur = node.Leaves[next]; cur is { } && cur.Property is { }; cur = cur.Parent)
+                        {
+                            if (cur.Property == node.Leaves[next].Property)
+                            {
+                                ++now;
+                            }
+                            else
+                            {
+                                if (now > 0 && autoLinkCount < now)
+                                {
+                                    autoLinkCount = now;
+                                }
+                                now = -1;
+                            }
+                        }
+                        if (now > 0 && autoLinkCount < now)
+                        {
+                            autoLinkCount = now;
+                        }
+                        bool ok = true;
+                        if (autoLinkCount > 0)
+                        {
+                            double damping = Math.Pow(_options.OutputAutoLinkDamping, autoLinkCount);
+                            ok = (_random.NextDouble() < damping);
+                        }
+
+                        if (ok)
+                        {
+                            --accessSelectorsCount;
+                            node.AccessSelector.Add(next);
+                        }
+                    }
+                }
+                node.AccessSelectorPaths = new List<string>();
+                foreach (int i in node.AccessSelector)
+                {
+
+                    for (TreeNode? cur = node.Leaves[i]; cur is { }; cur = cur.Parent)
+                    {
+                        stack.Push(cur.Property);
+                    }
+                    ExtractPropertyPath(stack, sb);
+                    node.AccessSelectorPaths.Add(sb.ToString());
+                }
+                node.AccessSelectorPaths.Sort();
+            }
+        }
+    }
+    private void GeneratePrimaryKeys()
+    {
+        foreach(Node node in _graph.Nodes.Where(n => n.Kind is NodeKind.Entity))
+        {
+            int pkCount = Math.Min(
+                    node.Properties.Count, Math.Max(
+                        0,
+                        node.Kind is NodeKind.Envelope ? 0 : _random.Next(1, _options.PKCountBase + 1) - node.PkCount
+                    )
+                );
+
+            for (int i = 0; i < node.Properties.Count; ++i)
+            {
+                if (i < pkCount)
+                {
+                    if (node.Properties[i].Node is { } && node.Properties[i].Node == node)
+                    {
+                        ++pkCount;
+                    }
+                    else
+                    {
+                        node.Properties[i].IsPrimaryKey = true;
+                        node.Properties[i].IsNullable = false;
+                        node.Properties[i].IsCollection = false;
+                        node.Properties[i].IsReadOnly = false;
+                    }
+                }
+                else
+                {
+                    node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
+                    node.Properties[i].IsReadOnly = _random.NextDouble() < _options.ReadOnlyFraction;
+                    node.Properties[i].IsCollection = _random.NextDouble() < _options.CollectionFraction;
+                }
+            }
+            node.PrimaryKey = new HashSet<PropertyHolder>();
+
+            for (Node? cur = node; cur is { }; cur = cur.Parent)
+            {
+                foreach (PropertyHolder ph in cur.Properties.Where(p => p.IsPrimaryKey))
+                {
+                    node.PrimaryKey.Add(ph);
+                }
+            }
+        }
+    }
+
     internal void BuildGraph()
     {
         
@@ -98,16 +236,9 @@ public class Pipeline
                     offset = node.Parent.Properties.Last().Position;
                 }
             }
-            int pkCount = Math.Min(
-                    numProperties, Math.Max(
-                        0,
-                        node.Kind is NodeKind.Envelope ? 0 : _random.Next(1, _options.PKCountBase + 1) - node.PkCount
-                    )
-                );
-
             for(int i = 0; i < numProperties; ++i)
             {
-                PropertyHolder ph = new();
+                PropertyHolder ph = new(node);
                 if(tos is { } && i < tos.Count && tos[i] != node.Parent)
                 {
                     ph.Node = tos[i];
@@ -118,7 +249,14 @@ public class Pipeline
                 }
                 node.Properties.Add(ph);
             }
-            for(int i = 0; i < numProperties; ++i)
+            int autoLinkCount = _random.Next(_options.AutoLinkBase + 1);
+            for(int i = 0; i < autoLinkCount; ++i)
+            {
+                PropertyHolder ph = new(node) { Node = node };
+                node.Properties.Add(ph);
+            }
+            numProperties += autoLinkCount;
+            for (int i = 0; i < numProperties; ++i)
             {
                 int swapPos = _random.Next(i, numProperties);
                 if(swapPos > i)
@@ -129,24 +267,58 @@ public class Pipeline
                 }
                 node.Properties[i].Position = offset + i + 1;
             }
-            for (int i = 0; i < numProperties; ++i)
+        }
+
+    }
+
+    private static void ExtractPropertyPath(Stack<PropertyHolder> stack, StringBuilder sb)
+    {
+        sb.Clear();
+        while (stack.Any())
+        {
+            PropertyHolder? ph = stack.Pop();
+            if (ph is { })
             {
-                if (i < pkCount)
+                sb.Append('.').Append(ph.Name);
+                if (ph.IsNullable)
                 {
-                    node.Properties[i].IsPrimaryKey = true;
-                    node.Properties[i].IsNullable = false;
-                    node.Properties[i].IsCollection = false;
-                    node.Properties[i].IsReadOnly= false;
+                    sb.Append('!');
                 }
-                else
+                if (stack.Any())
                 {
-                    node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
-                    node.Properties[i].IsReadOnly = _random.NextDouble() < _options.ReadOnlyFraction;
-                    node.Properties[i].IsCollection = _random.NextDouble() < _options.CollectionFraction;
+                    if (ph.IsCollection)
+                    {
+                        sb.Append("[0]");
+                    }
                 }
             }
         }
     }
+    private void BuildTree(Node root, Node node, TreeNode tree, int depth)
+    {
+        if(depth <= _options.PropertiesTreeDepth)
+        {
+            for(Node? cur = node; cur is { }; cur = cur.Parent)
+            {
+                foreach (PropertyHolder ph in cur.Properties)
+                {
+                    TreeNode tn = new();
+                    tn.Parent = tree;
+                    tn.Property = ph;
+                    tn.Depth = depth;
+                    if (ph.Node is { })
+                    {
+                        BuildTree(root, ph.Node, tn, depth + 1);
+                    }
+                    else
+                    {
+                        root.Leaves.Add(tn);
+                    }
+                }
+            }
+        }
+    }
+
     private bool DFM(Node node)
     {
         if (_colors[node] == 1)
@@ -173,13 +345,67 @@ public class Pipeline
         return true;
     }
 
-    public void Run()
+    private void GenerateMethods()
     {
-        BuildGraph();
-        GenerateInheritancesAndProperties();
+        Stack<PropertyHolder> stack = new();
+        StringBuilder sb = new();
 
-        SourcesGenerator generator = new();
+        foreach (Node node in _graph.Nodes)
+        {
+            if(node.Kind is NodeKind.Entity)
+            {
+                MethodHolder getter = new() { Name = $"Get{node.Name}", ReturnNode = node, ReturnTypeName = node.Name };
+                getter.Params.Add(new ParamHolder { Name = "obj", Node = node, TypeName = node.Name});
+                getter.Output = new List<string>();
+                foreach (TreeNode? leaf in node.Leaves.Where(l => l.Depth < 2))
+                {
+                    for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
+                    {
+                        stack.Push(cur.Property);
+                    }
+                    ExtractPropertyPath(stack, sb);
+                    getter.Output.Add(sb.ToString());
+                }
+                getter.Output.Sort();
+                node.Methods.Add(getter);
+            }
+            int findersCount = _random.Next(1, _options.FindersCountBase + 1);
+            List<Node> envelopes = _graph.Nodes.Where(n => n.Kind is NodeKind.Envelope).ToList();
+            for (int i = 0; i < findersCount; ++i)
+            {
+                MethodHolder finder = new() { 
+                    Name = $"Find{node.Name}_{i + 1}", 
+                    ReturnNode = node, 
+                    ReturnTypeName = node.Name, 
+                    IsCollection = _random.NextDouble() < _options.FindersIsCollectionFraction 
+                };
+                int paramsCount = _random.Next(1, _options.FindersParamsCountBase + 1);
+                ParamHolder ph = new() { Name = "filter", Node = envelopes[_random.Next(envelopes.Count)] };
+                ph.TypeName = ph.Node.Name;
+                finder.Params.Add(ph);
+                for(int j = 1; j < paramsCount; ++j)
+                {
+                    ph = new() { Name = $"arg{j}", Type = _types[_random.Next(_types.Count)] };
+                    ph.TypeName = Util.MakeTypeName(ph.Type);
+                    finder.Params.Add(ph);
+                }
+                finder.Output = new List<string>();
+                foreach (TreeNode? leaf in node.Leaves)
+                {
+                    if(leaf.Depth < 2 || _random.NextDouble() < Math.Pow(_options.OutputDepthDamping, leaf.Depth - 2))
+                    {
+                        for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
+                        {
+                            stack.Push(cur.Property);
+                        }
+                        ExtractPropertyPath(stack, sb);
+                        finder.Output.Add(sb.ToString());
+                    }
+                }
+                finder.Output.Sort();
+                node.Methods.Add(finder);
+            }
+        }
 
-        generator.GenerateModelAndContract(_graph, _options);
     }
 }

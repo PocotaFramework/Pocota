@@ -7,4 +7,5 @@ public abstract class ContractBase
     public abstract void ConfigurePocos();
     public abstract EntityInfo<T> Entity<T>() where T : class;
     public abstract PocoInfo<T> Envelope<T>() where T : class;
+    public abstract void Output<T>(Func<T, object[]> config) where T : class;
 }

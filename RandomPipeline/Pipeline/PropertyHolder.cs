@@ -2,6 +2,7 @@
 
 internal class PropertyHolder
 {
+    internal Node Owner { get; private init; } = null!;
     internal int Position { get; set; }
     internal string Name => $"p{Position}";
     internal Type? Type { get; set; } = null;
@@ -11,4 +12,8 @@ internal class PropertyHolder
     internal bool IsReadOnly { get; set; } = false;
     internal bool IsNullable { get; set; } = true;
     internal bool IsPrimaryKey { get; set; } = false;
+    internal PropertyHolder(Node owner)
+    {
+        Owner = owner;
+    }
 }

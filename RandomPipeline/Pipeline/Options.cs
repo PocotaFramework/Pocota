@@ -15,4 +15,12 @@ public class Options
     public double ReadOnlyFraction { get; set; }
     public double CollectionFraction { get; set; }
     public double NullableFraction { get; set; }
+    public int AutoLinkBase { get; set; }
+    public int PropertiesTreeDepth{ get; set; }
+    public int AccessSelectorsCountBase { get; set; }
+    public double OutputDepthDamping { get; set; }
+    public double OutputAutoLinkDamping { get; set; }
+    public double FindersIsCollectionFraction { get; set; }
+    public int FindersCountBase { get; set; }
+    public int FindersParamsCountBase { get; set; }
 }

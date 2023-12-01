@@ -20,17 +20,20 @@ public class @Model.ClassName: Contract
 
     public override void ConfigurePocos()
     {
-@foreach(Node node in Model.Graph.Nodes)
+@foreach(Node node in Model.Nodes)
 {
     @if(node.Kind is NodeKind.Entity)
     {
-        <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.Properties.Any(p => p.IsPrimaryKey))
+        <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.PrimaryKey is { } && node.PrimaryKey.Any())
         {
             <text>
-            .PrimaryKey(o => new object[]{@foreach(PropertyHolder ph in node.Properties.Where(p => p.IsPrimaryKey))
+            .PrimaryKey(o => new object[]{@string.Join(", ", node.PrimaryKey.Select(p => $"o.{p.Name}"))})</text>
+        }@if(node.AccessSelectorPaths is { } && node.AccessSelectorPaths.Any())
         {
-            <text>o.@ph.Name, </text>
-        }})</text>
+            <text>
+            .AccessSelector(o => new object[]{
+                @Html.Raw(string.Join(",\r\n                ", node.AccessSelectorPaths.Select(v => $"o{v}")))
+            })</text>
         };
 </text>        
     }
@@ -41,4 +44,23 @@ public class @Model.ClassName: Contract
     }
 }
     }
+
+@foreach (Node node in Model.Nodes.Where(n => n.Kind is NodeKind.Entity))
+{
+    foreach(MethodHolder mh in node.Methods)
+    {
+        <text>    public @(
+            mh.IsCollection ? Html.Raw("IList<") : string.Empty
+            )@node.Name@(
+            mh.IsCollection ? Html.Raw(">") : string.Empty
+        ) @mh.Name@{}(@Html.Raw(string.Join(", ", mh.Params.Select(p => $"{p.TypeName} {p.Name}"))))
+    {
+        Output@{}@Html.Raw($"<{node.Name}>")@{}(o => new object[]{
+                @Html.Raw(string.Join(",\r\n                ", mh.Output!.Select(v => $"o{v}")))
+            });
+        throw new NotImplementedException();
+    }
+</text>
+    }
+}
 }

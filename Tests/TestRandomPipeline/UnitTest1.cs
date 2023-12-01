@@ -44,6 +44,14 @@ public class Tests
             ReadOnlyFraction = .2,
             CollectionFraction = .2,
             NullableFraction = .4,
+            AutoLinkBase = 2,
+            PropertiesTreeDepth = 3,
+            AccessSelectorsCountBase = 4,
+            OutputDepthDamping = .5,
+            OutputAutoLinkDamping = .5,
+            FindersIsCollectionFraction = .8,
+            FindersCountBase = 3,
+            FindersParamsCountBase = 2,
         } };
     }
 

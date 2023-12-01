@@ -15,6 +15,11 @@ public abstract class Contract: ContractBase
         return info;
     }
 
+    public sealed override void Output<T>(Func<T, object[]> config)
+    {
+
+    }
+
     internal void AccessSelector<T>(Func<T, object[]> config) where T : class
     {
         throw new NotImplementedException();
@@ -24,4 +29,5 @@ public abstract class Contract: ContractBase
     {
         throw new NotImplementedException();
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using Net.Leksi.E6dWebApp;
 using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Text;
 
 namespace Net.Leksi.Pocota.Pipeline;
 
@@ -101,13 +102,40 @@ public class SourcesGenerator: Runner
         Graph graph = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Graph)!;
         model.ClassName = s_contractClassName;
         model.Namespace = s_contractNamespace;
-        model.Graph = graph;
         foreach(Node node in graph.Nodes)
         {
             if(node.Namespace is { })
             {
                 model.Usings.Add(node.Namespace);
             }
+            foreach(MethodHolder mh in node.Methods)
+            {
+                if (mh.ReturnNode is { } && mh.ReturnNode.Namespace is { })
+                {
+                    model.Usings.Add(mh.ReturnNode.Namespace);
+                }
+                else if (mh.ReturnType is { } && mh.ReturnType.Namespace is { })
+                {
+                    model.Usings.Add(mh.ReturnType.Namespace);
+                }
+                if (mh.IsCollection)
+                {
+                    model.Usings.Add(typeof(IList<>).Namespace!);
+                }
+                foreach (ParamHolder ph in mh.Params)
+                {
+                    if (ph.Node is { } && ph.Node.Namespace is { })
+                    {
+                        model.Usings.Add(ph.Node.Namespace);
+                    }
+                    else if(ph.Type is { } &&  ph.Type.Namespace is { })
+                    {
+                        model.Usings.Add(ph.Type.Namespace);
+                    }
+                }
+            }
+            model.Nodes.Add(node);
         }
     }
+
 }
