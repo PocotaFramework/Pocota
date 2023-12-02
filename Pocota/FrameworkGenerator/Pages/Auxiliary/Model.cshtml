@@ -27,6 +27,16 @@ public class @Model.ClassName: @Model.BaseName
     {
         get
         {
+            Console.WriteLine($"@pm.Name, {_serviceProvider}");
+            @Html.Raw(pm.ItemTypeName)? res = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
+            if(res is { })
+            {
+                return (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))@if (pm.IsCollection){<text>new List@{}@Html.Raw($"<{pm.ItemTypeName}>")@{}(){ res }</text>
+        }
+        else
+        {
+            <text>res</text>};
+            }
             return default;
         }
     @if(!pm.IsReadOnly)

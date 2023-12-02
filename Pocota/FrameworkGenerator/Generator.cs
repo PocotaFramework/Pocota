@@ -134,13 +134,49 @@ public class Generator: Runner
         model.Usings.Add("Microsoft.Extensions.DependencyInjection");
         foreach (PropertyInfo pi in pocoType.GetProperties())
         {
-            Util.AddNamespaces(model.Usings, pi.PropertyType);
             NullabilityInfo ni = nullabilityInfoContext.Create(pi);
+            bool isPoco = false;
+            bool isCollection = false;
+            Type itemType = pi.PropertyType;
+            Console.WriteLine($"itemType: {itemType}");
+            if (itemType.IsGenericType)
+            {
+                Console.WriteLine($"gen: {itemType.GetGenericTypeDefinition()}");
+                if(
+                    pi.PropertyType.GetGenericTypeDefinition() != typeof(List<>) 
+                    && pi.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>)
+                )
+                {
+                    throw new InvalidOperationException($"TODO: InvalidOperationException: {pi.PropertyType}");
+                }
+                itemType = pi.PropertyType.GetGenericArguments()[0];
+                isPoco = _pocos.ContainsKey(itemType);
+                if (!isPoco)
+                {
+                    itemType = pi.PropertyType;
+                }
+                else
+                {
+                    isCollection = pi.PropertyType.GetGenericTypeDefinition() == typeof(List<>);
+                    if (isCollection)
+                    {
+                        Util.AddNamespaces(model.Usings, typeof(List<>));
+                    }
+                }
+            }
+            else
+            {
+                isPoco = _pocos.ContainsKey(itemType);
+            }
+            Util.AddNamespaces(model.Usings, itemType);
             PropertyModel pm = new() { 
                 Name = pi.Name, 
                 TypeName = Util.MakeTypeName(pi.PropertyType), 
+                ItemTypeName = Util.MakeTypeName(itemType),
                 IsReadOnly = !pi.CanWrite, 
-                IsNullable = ni.ReadState is NullabilityState.Nullable 
+                IsNullable = ni.ReadState is NullabilityState.Nullable,
+                IsPoco = isPoco,
+                IsCollection = isCollection,
             };
             
             model.Properties.Add(pm);

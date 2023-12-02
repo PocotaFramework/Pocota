@@ -38,6 +38,7 @@ public abstract class Contract: ContractBase
         {
             ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.AccessSelector });
             T obj = _serviceProvider.GetRequiredService<T>();
+            Console.WriteLine(config);
             config?.Invoke(obj);
         }
     }
