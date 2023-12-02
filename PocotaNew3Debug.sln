@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomContract", "Tests\Gen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Tests\Generated\Model\Model.csproj", "{C6C6A85D-9257-4DFD-BF8C-26970B769B51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkGeneratorDebug", "Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj", "{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrameworkGeneratorDebug", "Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj", "{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

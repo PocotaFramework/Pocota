@@ -162,12 +162,17 @@ public class SourcesGenerator: Runner
             TargetFramework = s_targetFramework,
         });
         
+        
+
         Generator _generator = Generator.Create(new FrameworkGeneratorOptions
         {
             Contract = (Contract)Activator.CreateInstance(
                 Assembly.LoadFile(_contract!.LibraryFile!)
                     .GetType($"{s_contractNamespace}.{s_contractClassName}")!
-            )!
+            )!,
+            RequiredAssemblies = Directory.GetFiles(
+                    Path.GetDirectoryName(_contract!.LibraryFile)!
+                ).Where(f => ".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))).Select(f => Assembly.LoadFile(f)).ToArray(),
         });
         _serverStaff.Compile();
        

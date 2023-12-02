@@ -22,4 +22,27 @@ public static class Util
             + '<' + String.Join(',', type.GetGenericArguments().Select(v => MakeTypeName(v))) + '>';
     }
 
+    public static void AddNamespaces(HashSet<string> namespaces, Type type)
+    {
+        if (type.IsGenericType)
+        {
+            string? ns = type.GetGenericTypeDefinition().Namespace;
+            if (ns is { })
+            {
+                namespaces.Add(ns);
+            }
+            foreach (Type t in type.GetGenericArguments())
+            {
+                AddNamespaces(namespaces, t);
+            }
+        }
+        else
+        {
+            if (type.Namespace is { })
+            {
+                namespaces.Add(type.Namespace);
+            }
+        }
+    }
+
 }

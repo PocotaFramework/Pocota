@@ -1,0 +1,44 @@
+﻿@page
+@using Net.Leksi.Pocota
+@using Net.Leksi.Pocota.Pages.Auxiliary
+@model ModelModel
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+@if (!string.IsNullOrEmpty(Model.Namespace))
+{
+    <text>namespace @Model.Namespace;
+</text>    
+}
+public class @Model.ClassName: @Model.BaseName
+{
+    private readonly @nameof(IServiceProvider) _serviceProvider;
+    private readonly @nameof(Contract) _contract;
+    public @Model.ClassName@{}(@nameof(IServiceProvider) serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+        _contract = serviceProvider.GetRequiredService@{}@Html.Raw($"<{nameof(Contract)}>")@{}();
+    }
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
+    {
+        get
+        {
+            return default;
+        }
+    @if(!pm.IsReadOnly)
+    {
+        <text>        set
+        {
+            throw new @nameof(NotImplementedException)@{}();
+        }
+</text>
+    }
+    }
+</text>
+
+}
+}

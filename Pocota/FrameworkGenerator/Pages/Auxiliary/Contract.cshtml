@@ -1,0 +1,19 @@
+﻿@page
+@model Net.Leksi.Pocota.Pages.Auxiliary.ContractModel
+@{
+}
+using System;
+@if(Model.Contract.GetType().Namespace is { })
+{
+    <text>using @Model.Contract.GetType().Namespace;
+namespace @Model.Contract.GetType().Namespace;
+</text>
+}
+public class Contract1: @Model.Contract.GetType().Name
+{
+    public Contract1(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+}
+
