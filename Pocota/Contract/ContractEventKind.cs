@@ -6,5 +6,7 @@ public enum ContractEventKind
     Poco,
     PrimaryKey,
     Property,
-    AccessSelector
+    AccessSelector,
+    Output,
+    Mandatory,
 }

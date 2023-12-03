@@ -23,19 +23,18 @@ public class @Model.ClassName: @Model.BaseName
     }
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
+    <text>    private     @Html.Raw(pm.ItemTypeName)? _@pm.Name = default;
+    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
     {
         get
         {
-            Console.WriteLine($"@pm.Name, {_serviceProvider}");
-            @Html.Raw(pm.ItemTypeName)? res = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
-            if(res is { })
+            _contract.Property(this, "@pm.Name");
+            if(_@pm.Name == default){
+                _@pm.Name = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
+            }
+            if(_@pm.Name is { })
             {
-                return (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))@if (pm.IsCollection){<text>new List@{}@Html.Raw($"<{pm.ItemTypeName}>")@{}(){ res }</text>
-        }
-        else
-        {
-            <text>res</text>};
+                return (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))@if (pm.IsCollection){<text>new List@{}@Html.Raw($"<{pm.ItemTypeName}>")@{}(){ _@pm.Name }</text>}else{<text>_@pm.Name</text>};
             }
             return default;
         }

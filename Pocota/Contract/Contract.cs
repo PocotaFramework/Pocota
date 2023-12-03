@@ -24,21 +24,32 @@ public abstract class Contract: ContractBase
 
     public sealed override void Output<T>(Func<T, object[]> config)
     {
-
+        if (_serviceProvider is { })
+        {
+            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.Output });
+            T obj = _serviceProvider.GetRequiredService<T>();
+            config?.Invoke(obj);
+        }
     }
 
     public sealed override object Mandatory(object obj)
     {
+        if (_serviceProvider is { })
+        {
+            ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Mandatory });
+        }
         return obj;
     }
-
+    public sealed override void Property(object obj, string propertyName)
+    {
+        ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName });
+    }
     internal void AccessSelector<T>(Func<T, object[]> config) where T : class
     {
         if (_serviceProvider is { })
         {
-            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.AccessSelector });
             T obj = _serviceProvider.GetRequiredService<T>();
-            Console.WriteLine(config);
+            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.AccessSelector });
             config?.Invoke(obj);
         }
     }
@@ -47,8 +58,8 @@ public abstract class Contract: ContractBase
     {
         if (_serviceProvider is { })
         {
-            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.PrimaryKey });
             T obj = _serviceProvider.GetRequiredService<T>();
+            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.PrimaryKey });
             config?.Invoke(obj);
         }
     }

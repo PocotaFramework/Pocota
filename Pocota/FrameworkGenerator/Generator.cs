@@ -53,7 +53,7 @@ public class Generator: Runner
             contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");
             TextReader contractSource = connector.Get("/Auxiliary/Contract");
             File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"Contract1.cs"), contractSource.ReadToEnd());
-            ContractEventHandler eventHandler = args =>
+            ContractEventHandler eventHandler1 = args =>
             {
                 if (args.EventKind is ContractEventKind.Poco)
                 {
@@ -62,13 +62,23 @@ public class Generator: Runner
                         throw new InvalidOperationException("TODO: InvalidOperationException");
                     }
                     _pocos.Add(args.PocoType, new PocoHandler { Type = args.PocoType, Kind = args.PocoKind });
+                }
+            };
+            _contract.ContractProcessing += eventHandler1;
+            _contract.ConfigurePocos();
+            _contract.ContractProcessing -= eventHandler1;
+
+            ContractEventHandler eventHandler2 = args =>
+            {
+                if (args.EventKind is ContractEventKind.Poco)
+                {
                     TextReader contractSource = connector.Get("/Auxiliary/Model", args.PocoType);
                     File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"{args.PocoType.Name}_1.cs"), contractSource.ReadToEnd());
                 }
             };
-            _contract.ContractProcessing += eventHandler;
+            _contract.ContractProcessing += eventHandler2;
             _contract.ConfigurePocos();
-            _contract.ContractProcessing -= eventHandler;
+            _contract.ContractProcessing -= eventHandler2;
 
             contractProcessor.Compile();
 
@@ -93,9 +103,21 @@ public class Generator: Runner
 
             contract.ContractProcessing += args => 
             {
-                Console.WriteLine($"ContractEvent: {args.EventKind}");
+                Console.WriteLine($"ContractEvent: {args.EventKind}, {args.PocoType}, {args.Poco}, {args.Property}");
             };
             contract.ConfigurePocos();
+
+            foreach(MethodInfo mi in contract.GetType().GetMethods())
+            {
+                if(mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
+                {
+                    try
+                    {
+                        mi.Invoke(contract, new object[mi.GetParameters().Length]);
+                    }
+                    catch { }
+                }
+            }
         }
 
         Stop();
