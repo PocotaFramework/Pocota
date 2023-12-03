@@ -101,12 +101,8 @@ public class Generator: Runner
             }).Build();
             Contract contract = host.Services.GetRequiredService<Contract>();
 
-            contract.ContractProcessing += args => 
-            {
-                Console.WriteLine($"ContractEvent: {args.EventKind}, {args.PocoType}, {args.Poco}, {args.Property}");
-            };
-            contract.ConfigurePocos();
-
+            contract.ContractProcessing += Contract_ContractProcessing;
+            
             foreach(MethodInfo mi in contract.GetType().GetMethods())
             {
                 if(mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
@@ -118,9 +114,16 @@ public class Generator: Runner
                     catch { }
                 }
             }
+            contract.ConfigurePocos();
+
         }
 
         Stop();
+    }
+
+    private void Contract_ContractProcessing(ContractEventArgs args)
+    {
+        Console.WriteLine($"ContractEvent: {args.EventKind}, {args.PocoType}, {args.Poco}, {args.Property}");
     }
 
     internal void GenerateContractClass(ContractModel model)
