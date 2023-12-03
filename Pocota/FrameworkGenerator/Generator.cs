@@ -8,7 +8,7 @@ namespace Net.Leksi.Pocota;
 public class Generator: Runner
 {
     private Contract _contract = null!;
-    private readonly Dictionary<Type, PocoHandler> _pocos = new();
+    private readonly Dictionary<string, PocoHandler> _pocos = new();
     private readonly List<string> _additionalReferences = new();
     public static Generator Create(FrameworkGeneratorOptions options)
     {
@@ -59,11 +59,11 @@ public class Generator: Runner
             {
                 if (args.EventKind is ContractEventKind.Poco)
                 {
-                    if (_pocos.ContainsKey(args.PocoType))
+                    if (_pocos.ContainsKey(args.PocoType.FullName!))
                     {
                         throw new InvalidOperationException("TODO: InvalidOperationException");
                     }
-                    _pocos.Add(args.PocoType, new PocoHandler { Type = args.PocoType, Kind = args.PocoKind });
+                    _pocos.Add(args.PocoType.FullName!, new PocoHandler { Type = args.PocoType, Kind = args.PocoKind });
                 }
             };
             _contract.ContractProcessing += eventHandler1;
@@ -93,10 +93,9 @@ public class Generator: Runner
                     typeof(Contract),
                     ass.GetType(typeName, true)!
                 );
-                foreach(Type serviceType in _pocos.Keys)
+                foreach(string serviceTypeName in _pocos.Keys)
                 {
-                    Type implementationType = ass.GetType(_pocos[serviceType].FullName, true)!;
-                    //что-то непонятное: если serviceType, то не регистрируется
+                    Type implementationType = ass.GetType(_pocos[serviceTypeName].FullName, true)!;
                     services.AddTransient(implementationType.BaseType!, implementationType);
                 }
             }).Build();
@@ -132,12 +131,12 @@ public class Generator: Runner
     internal void GenerateModelClass(ModelModel model)
     {
         Type pocoType = (Type)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        PocoHandler handler = _pocos[pocoType];
+        PocoHandler handler = _pocos[pocoType.FullName!];
         model.Namespace = pocoType.Namespace;
         model.ClassName = $"{pocoType.Name}_1";
         model.BaseName = pocoType.Name;
-        _pocos[pocoType].Namespace = model.Namespace;
-        _pocos[pocoType].ClassName = model.ClassName;
+        _pocos[pocoType.FullName!].Namespace = model.Namespace;
+        _pocos[pocoType.FullName!].ClassName = model.ClassName;
         NullabilityInfoContext nullabilityInfoContext = new();
         Util.AddNamespaces(model.Usings, typeof(NotImplementedException));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
@@ -161,7 +160,7 @@ public class Generator: Runner
                     throw new InvalidOperationException($"TODO: InvalidOperationException: {pi.PropertyType}");
                 }
                 itemType = pi.PropertyType.GetGenericArguments()[0];
-                isPoco = _pocos.ContainsKey(itemType);
+                isPoco = _pocos.ContainsKey(itemType.FullName!);
                 if (!isPoco)
                 {
                     itemType = pi.PropertyType;
@@ -177,7 +176,7 @@ public class Generator: Runner
             }
             else
             {
-                isPoco = _pocos.ContainsKey(itemType);
+                isPoco = _pocos.ContainsKey(itemType.FullName!);
             }
             Util.AddNamespaces(model.Usings, itemType);
             PropertyModel pm = new() { 
