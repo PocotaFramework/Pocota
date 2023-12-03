@@ -9,18 +9,18 @@ public class Generator: Runner
 {
     private Contract _contract = null!;
     private readonly Dictionary<Type, PocoHandler> _pocos = new();
-    private readonly List<Assembly> _requiredAssemblies = new();
+    private readonly List<string> _additionalReferences = new();
     public static Generator Create(FrameworkGeneratorOptions options)
     {
         Generator generator = new() 
         { 
             _contract = options.Contract
         };
-        if(options.RequiredAssemblies is { })
+        if(options.AdditionalReferences is { })
         {
-            foreach(Assembly ass in options.RequiredAssemblies)
+            foreach(string ar in options.AdditionalReferences)
             {
-                generator._requiredAssemblies.Add(ass);
+                generator._additionalReferences.Add(ar);
             }
         }
 
@@ -48,9 +48,11 @@ public class Generator: Runner
             Name = "ContractProcessor"
         }))
         {
-            contractProcessor.MissedType += ContractProcessor_MissedType;
-            contractProcessor.AddReference(Assembly.GetAssembly(_contract.GetType())!.Location);
             contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");
+            foreach(string ar in _additionalReferences)
+            {
+                contractProcessor.AddReference(ar);
+            }
             TextReader contractSource = connector.Get("/Auxiliary/Contract");
             File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"Contract1.cs"), contractSource.ReadToEnd());
             ContractEventHandler eventHandler1 = args =>
@@ -121,18 +123,6 @@ public class Generator: Runner
         }
 
         Stop();
-    }
-
-    private void ContractProcessor_MissedType(MissedTypeEventArgs args)
-    {
-        foreach (Assembly ass in _requiredAssemblies)
-        {
-            if(ass.DefinedTypes.Any(t => args.MissedTypeName.Equals(t.Name)))
-            {
-                args.Assembly = ass;
-                break;
-            }
-        }
     }
 
     internal void GenerateContractClass(ContractModel model)

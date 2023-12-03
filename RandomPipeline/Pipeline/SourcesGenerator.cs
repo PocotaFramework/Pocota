@@ -170,9 +170,9 @@ public class SourcesGenerator: Runner
                 Assembly.LoadFile(_contract!.LibraryFile!)
                     .GetType($"{s_contractNamespace}.{s_contractClassName}")!
             )!,
-            RequiredAssemblies = Directory.GetFiles(
+            AdditionalReferences = Directory.GetFiles(
                     Path.GetDirectoryName(_contract!.LibraryFile)!
-                ).Where(f => ".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))).Select(f => Assembly.LoadFile(f)).ToArray(),
+                ).Where(f => ".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))).ToArray(),
         });
         _serverStaff.Compile();
        
