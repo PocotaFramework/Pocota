@@ -75,7 +75,6 @@ public class Tests
         Random rnd = new Random(seed);
         string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
 
-        options.GeneratedModelProjectDir = Path.Combine(projectDir, "..", "Generated", "Model");
         options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
 
         options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");

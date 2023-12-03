@@ -96,8 +96,8 @@ public class Generator: Runner
                 foreach(Type serviceType in _pocos.Keys)
                 {
                     Type implementationType = ass.GetType(_pocos[serviceType].FullName, true)!;
-                    Console.WriteLine(serviceType.IsAssignableFrom(implementationType));
-                    services.AddTransient(serviceType, implementationType);
+                    //что-то непонятное: если serviceType, то не регистрируется
+                    services.AddTransient(implementationType.BaseType!, implementationType);
                 }
             }).Build();
             Contract contract = host.Services.GetRequiredService<Contract>();

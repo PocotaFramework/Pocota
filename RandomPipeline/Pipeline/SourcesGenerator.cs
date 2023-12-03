@@ -30,30 +30,12 @@ public class SourcesGenerator: Runner
 
         IConnector connector = GetConnector();
 
-        if (Directory.Exists(options.GeneratedModelProjectDir))
-        {
-            Directory.Delete(options.GeneratedModelProjectDir, true);
-        }
-        Directory.CreateDirectory(options.GeneratedModelProjectDir);
-
         if (Directory.Exists(options.GeneratedContractProjectDir))
         {
             Directory.Delete(options.GeneratedContractProjectDir, true);
         }
         Directory.CreateDirectory(options.GeneratedContractProjectDir);
 
-        _model = Project.Create(new ProjectOptions
-        {
-            Name = "Model",
-            ProjectDir = options.GeneratedModelProjectDir,
-            TargetFramework = s_targetFramework,
-        });
-        _model.AddProject(options.PipelineCommonProjectDir);
-        foreach (Node node in graph.Nodes)
-        {
-            TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
-            File.WriteAllText(Path.Combine(_model.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
-        }
         _contract = Project.Create(new ProjectOptions
         {
             Name = s_contractClassName,
@@ -61,9 +43,14 @@ public class SourcesGenerator: Runner
             TargetFramework = s_targetFramework,
         });
         _contract.AddProject(options.ContractProjectDir);
-        _contract.AddProject(_model);
         TextReader contractSource = connector.Get("/Contract", graph);
         File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{s_contractClassName}.cs"), contractSource.ReadToEnd());
+        _contract.AddProject(options.PipelineCommonProjectDir);
+        foreach (Node node in graph.Nodes)
+        {
+            TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
+            File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
+        }
         _contract.Compile();
 
         Stop();
