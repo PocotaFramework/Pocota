@@ -8,4 +8,5 @@ internal class PocoHandler
     internal PocoKind Kind { get; set; } = PocoKind.Envelope;
     internal string? Namespace { get; set; }
     internal string ClassName { get; set; } = null!;
+    internal string FullName => $"{(string.IsNullOrEmpty(Namespace) ? string.Empty : $"{Namespace}.")}{ClassName}";
 }

@@ -93,12 +93,11 @@ public class Generator: Runner
                     typeof(Contract),
                     ass.GetType(typeName, true)!
                 );
-                foreach(Type type in _pocos.Keys)
+                foreach(Type serviceType in _pocos.Keys)
                 {
-                    services.AddScoped(
-                        type, 
-                        ass.GetType($"{(!string.IsNullOrEmpty(_pocos[type].Namespace) ? $"{_pocos[type].Namespace}." : string.Empty)}{_pocos[type].ClassName}")!
-                    );
+                    Type implementationType = ass.GetType(_pocos[serviceType].FullName, true)!;
+                    Console.WriteLine(serviceType.IsAssignableFrom(implementationType));
+                    services.AddTransient(serviceType, implementationType);
                 }
             }).Build();
             Contract contract = host.Services.GetRequiredService<Contract>();
