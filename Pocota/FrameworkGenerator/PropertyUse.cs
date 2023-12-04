@@ -2,7 +2,9 @@
 
 internal class PropertyUse
 {
-    internal string ClassName { get; set; } = null!;
-    internal string PropertyName { get; set; } = null!;
+    internal Type? Type { get; set; } = null;
+    internal string Name { get; set; } = string.Empty;
     internal List<PropertyUse>? Children { get; set; }
+    internal PropertyUse? Parent { get; set; } = null;
+    internal PropertyUseFlags Flags { get; set; } = PropertyUseFlags.None;
 }

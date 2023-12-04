@@ -11,7 +11,6 @@ public class SourcesGenerator: Runner
     private const string s_contractNamespace = "Net.Leksi.Pocota.RandomServer";
     private const string s_targetFramework = "net8.0-windows";
 
-    private Project? _model;
     private Project? _contract;
     private Project? _serverStaff;
 

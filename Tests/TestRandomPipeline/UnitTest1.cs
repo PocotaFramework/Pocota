@@ -34,7 +34,7 @@ public class Tests
     public static IEnumerable<TestPipelineOptions> TestPipelineOptionsSource()
     {
         return new TestPipelineOptions[] { new TestPipelineOptions {
-            Seed = -1,
+            Seed = 199080181,
             NodesCount = 20,
             EntitiesFraction = .7,
             Completeness = .4,

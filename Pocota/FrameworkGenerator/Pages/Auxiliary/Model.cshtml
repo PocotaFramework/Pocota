@@ -28,10 +28,10 @@ public class @Model.ClassName: @Model.BaseName
     {
         get
         {
-            _contract.Property(this, "@pm.Name");
             if(_@pm.Name == default){
                 _@pm.Name = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
             }
+            _contract.Property(this, "@pm.Name", _@pm.Name);
             if(_@pm.Name is { })
             {
                 return (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))@if (pm.IsCollection){<text>new List@{}@Html.Raw($"<{pm.ItemTypeName}>")@{}(){ _@pm.Name }</text>}else{<text>_@pm.Name</text>};

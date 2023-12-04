@@ -11,14 +11,14 @@ public abstract class Contract: ContractBase
     public sealed override EntityInfo<T> Entity<T>()
     {
         EntityInfo<T> info = new(this);
-        ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.Poco });
+        ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.Poco, PocoKind = PocoKind.Entity });
         return info;
     }
 
     public sealed override PocoInfo<T> Envelope<T>()
     {
         PocoInfo<T> info = new(this);
-        ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.Poco });
+        ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), EventKind = ContractEventKind.Poco, PocoKind = PocoKind.Envelope });
         return info;
     }
 
@@ -40,9 +40,9 @@ public abstract class Contract: ContractBase
         }
         return obj;
     }
-    public sealed override void Property(object obj, string propertyName)
+    public sealed override void Property(object obj, string propertyName, object? propertyValue)
     {
-        ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName });
+        ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName, Value = propertyValue });
     }
     internal void AccessSelector<T>(Func<T, object[]> config) where T : class
     {
@@ -51,6 +51,7 @@ public abstract class Contract: ContractBase
             T obj = _serviceProvider.GetRequiredService<T>();
             ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.AccessSelector });
             config?.Invoke(obj);
+            ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Done });
         }
     }
 
@@ -61,6 +62,7 @@ public abstract class Contract: ContractBase
             T obj = _serviceProvider.GetRequiredService<T>();
             ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.PrimaryKey });
             config?.Invoke(obj);
+            ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Done });
         }
     }
 

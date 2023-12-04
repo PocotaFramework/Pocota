@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <RootNamespace>Net.Leksi.Pocota</RootNamespace>
+    <RootNamespace>Net.Leksi.Pocota.FrameworkGenerator</RootNamespace>
     <AssemblyName>Net.Leksi.Pocota.FrameworkGenerator</AssemblyName>
   </PropertyGroup>
 

@@ -2,6 +2,6 @@
 
 internal class PropertyUse
 {
-    internal PropertyUseKinds Kinds { get; set; } = PropertyUseKinds.None;
+    internal PropertyUseFlags Kinds { get; set; } = PropertyUseFlags.None;
     internal PropertyHolder Property { get; set; } = null!;
 }

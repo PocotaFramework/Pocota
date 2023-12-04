@@ -115,7 +115,7 @@ public class Pipeline
     }
     private void GeneratePrimaryKeys()
     {
-        foreach(Node node in _graph.Nodes.Where(n => n.Kind is NodeKind.Entity))
+        foreach(Node node in _topolog.Where(n => n.Kind is NodeKind.Entity))
         {
             int pkCount = Math.Min(
                     node.Properties.Count, Math.Max(
@@ -365,14 +365,14 @@ public class Pipeline
                     getter.Output.Add(new PropertyUse { Property = leaf.Property });
                     if (_random.NextDouble() < _options.FindersMandatoryFraction)
                     {
-                        getter.Output.Last().Kinds |= PropertyUseKinds.Mandatory;
+                        getter.Output.Last().Kinds |= PropertyUseFlags.Mandatory;
                     }
                     for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
                     {
                         stack.Push(cur.Property);
                     }
                     ExtractPropertyPath(stack, sb);
-                    if((getter.Output.Last().Kinds & PropertyUseKinds.Mandatory) == PropertyUseKinds.Mandatory)
+                    if((getter.Output.Last().Kinds & PropertyUseFlags.Mandatory) == PropertyUseFlags.Mandatory)
                     {
                         sb[0] = '#';
                     }
@@ -410,14 +410,14 @@ public class Pipeline
                         finder.Output.Add(new PropertyUse { Property = leaf.Property });
                         if(_random.NextDouble() < _options.FindersMandatoryFraction)
                         {
-                            finder.Output.Last().Kinds |= PropertyUseKinds.Mandatory;
+                            finder.Output.Last().Kinds |= PropertyUseFlags.Mandatory;
                         }
                         for (TreeNode? cur = leaf; cur is { }; cur = cur.Parent)
                         {
                             stack.Push(cur.Property);
                         }
                         ExtractPropertyPath(stack, sb);
-                        if ((finder.Output.Last().Kinds & PropertyUseKinds.Mandatory) == PropertyUseKinds.Mandatory)
+                        if ((finder.Output.Last().Kinds & PropertyUseFlags.Mandatory) == PropertyUseFlags.Mandatory)
                         {
                             sb[0] = '#';
                         }

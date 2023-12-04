@@ -9,5 +9,5 @@ public abstract class ContractBase
     public abstract PocoInfo<T> Envelope<T>() where T : class;
     public abstract void Output<T>(Func<T, object[]> config) where T : class;
     public abstract object Mandatory(object obj);
-    public abstract void Property(object obj, string propertyName);
+    public abstract void Property(object obj, string propertyName, object? propertyValue);
 }

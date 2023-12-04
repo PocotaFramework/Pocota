@@ -6,5 +6,6 @@ public class ContractEventArgs: EventArgs
     public ContractEventKind EventKind { get; set; }
     public PocoKind PocoKind { get; set; } = PocoKind.Envelope;
     public string? Property { get; set; }
+    public object? Value { get; set; } = null;
     public object? Poco { get; set; } = null;
 }
