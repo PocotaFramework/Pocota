@@ -11,6 +11,6 @@ public class ContractModel: PageModel
     internal List<Node> Nodes { get; private init; } = new();
     public void OnGet([FromServices] SourcesGenerator generator)
     {
-        generator.GenerateContractClass(this);
+        generator.RenderContractClass(this);
     }
 }

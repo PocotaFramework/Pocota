@@ -15,7 +15,7 @@ public class Options
     public double CollectionFraction { get; set; }
     public double NullableFraction { get; set; }
     public int AutoLinkBase { get; set; }
-    public int PropertiesTreeDepth{ get; set; }
+    public int PropertiesTreeDepth { get; set; }
     public int AccessSelectorsCountBase { get; set; }
     public double OutputDepthDamping { get; set; }
     public double OutputAutoLinkDamping { get; set; }
@@ -23,5 +23,8 @@ public class Options
     public int FindersCountBase { get; set; }
     public int FindersParamsCountBase { get; set; }
     public double FindersMandatoryFraction { get; set; }
-    public string GeneratedServerStaffProjectDir { get; set; }
+    public string GeneratedServerStuffProjectDir { get; set; }
+    public string ContractClassName { get; set; }
+    public string TargetFramework { get; set; }
+    public string ContractNamespace { get; set; }
 }

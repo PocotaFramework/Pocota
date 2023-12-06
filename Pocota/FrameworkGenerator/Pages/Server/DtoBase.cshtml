@@ -1,0 +1,14 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@model DtoBaseModel
+@Html.Partial("Header", Model)
+
+public abstract class @Model.ClassName
+{
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public abstract @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name { get; set; }
+</text>
+}
+}

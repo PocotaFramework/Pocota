@@ -9,6 +9,6 @@ public class ClassModel : PageModel
     internal HashSet<string> Usings { get; init; } = new();
     public void OnGet([FromServices] SourcesGenerator generator)
     {
-        generator.GenerateModelClass(this);
+        generator.RenderModelClass(this);
     }
 }

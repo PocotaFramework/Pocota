@@ -1,5 +1,6 @@
 ﻿@page
 @using Net.Leksi.Pocota
+@using Net.Leksi.Pocota.FrameworkGenerator
 @using Net.Leksi.Pocota.Pages.Auxiliary
 @model ModelModel
 @foreach (string usng in Model.Usings.OrderBy(v => v))
@@ -12,7 +13,7 @@
     <text>namespace @Model.Namespace;
 </text>    
 }
-public class @Model.ClassName: @Model.BaseName
+public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
 {
     private readonly @nameof(IServiceProvider) _serviceProvider;
     private readonly @nameof(Contract) _contract;
@@ -28,13 +29,22 @@ public class @Model.ClassName: @Model.BaseName
     {
         get
         {
-            if(_@pm.Name == default){
-                _@pm.Name = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
+            @if(pm.IsPoco)
+            {
+                <text>            if(_@pm.Name == default){
+                    _@pm.Name = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();
             }
             _contract.Property(this, "@pm.Name", _@pm.Name);
             if(_@pm.Name is { })
             {
                 return (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))@if (pm.IsCollection){<text>new List@{}@Html.Raw($"<{pm.ItemTypeName}>")@{}(){ _@pm.Name }</text>}else{<text>_@pm.Name</text>};
+            }
+</text>
+            }
+            else
+            {
+                <text>            _contract.Property(this, "@pm.Name", default);
+</text>
             }
             return default;
         }

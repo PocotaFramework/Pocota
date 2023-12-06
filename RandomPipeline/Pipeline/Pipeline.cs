@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.Metrics;
+﻿using Net.Leksi.Pocota.FrameworkGenerator;
+using Net.Leksi.RuntimeAssemblyCompiler;
+using System.Diagnostics.Metrics;
+using System.Reflection;
 using System.Text;
 
 namespace Net.Leksi.Pocota.Pipeline;
@@ -17,6 +20,7 @@ public class Pipeline
     };
     private readonly SourcesGenerator _generator = new();
     private Graph _graph = null!;
+    private Project _contract;
 
     public Pipeline(Random random, Options options) 
     { 
@@ -32,11 +36,25 @@ public class Pipeline
         GenerateAccessSelectors();
         GenerateMethods();
 
-        _generator.GenerateModelAndContract(_graph, _options);
+        _contract = _generator.GenerateModelAndContract(_graph, _options);
     }
     public void GenerateFramework()
     {
-        _generator.GenerateFramework(_graph, _options);
+        Generator _generator = Generator.Create(new FrameworkGeneratorOptions
+        {
+            Contract = (Contract)Activator.CreateInstance(
+                       Assembly.LoadFile(_contract!.LibraryFile!)
+                           .GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
+                   )!,
+            AdditionalReferences = Directory.GetFiles(
+                           Path.GetDirectoryName(_contract!.LibraryFile)!
+                       ).Where(f => (".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))) && !f.Equals(_contract!.LibraryFile)).ToArray(),
+            ServerStuffProject = _options.GeneratedServerStuffProjectDir,
+            ReplaceFilesIfExist = true,
+            DoCreateProject = true,
+            ServerTargetFramework = _options.TargetFramework,
+        });
+        _generator.GenerateServerStuff();
     }
     private void BuildTrees()
     {

@@ -1,10 +1,10 @@
 ﻿using Net.Leksi.E6dWebApp;
-using Net.Leksi.Pocota.FrameworkGenerator;
+using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
 
-namespace Net.Leksi.Pocota;
+namespace Net.Leksi.Pocota.FrameworkGenerator;
 
 public class Generator : Runner
 {
@@ -15,6 +15,11 @@ public class Generator : Runner
     private readonly List<string> _additionalReferences = new();
     private readonly Dictionary<Type, List<PropertyUse>> _allPropertyUses = new();
 
+    private string? _serverStuffProject = null;
+    private bool _doCreateProject = false;
+    private bool _replaceFilesIfExist = false;
+    private string? _serverTargetFramework = null;
+
     private MethodHolder? _currentMethod = null;
     private PocoHolder? _currentPoco = null;
     private PropertyUse? _lastPropertyUse = null;
@@ -24,7 +29,11 @@ public class Generator : Runner
     {
         Generator generator = new()
         {
-            _contract = options.Contract
+            _contract = options.Contract,
+            _serverStuffProject = options.ServerStuffProject,
+            _replaceFilesIfExist = options.ReplaceFilesIfExist,
+            _doCreateProject = options.DoCreateProject,
+            _serverTargetFramework = options.ServerTargetFramework,
         };
         if (options.AdditionalReferences is { })
         {
@@ -38,246 +47,156 @@ public class Generator : Runner
 
         return generator;
     }
-    private Generator() { }
-    protected override void ConfigureBuilder(WebApplicationBuilder builder)
+    public Project? GenerateServerStuff()
     {
-        builder.Services.AddRazorPages();
-        builder.Services.AddSingleton(this);
-    }
-    protected override void ConfigureApplication(WebApplication app)
-    {
-        app.MapRazorPages();
-    }
-    private void ProcessContract()
-    {
+        string dtoBase = Path.Combine(_serverStuffProject!, "DtoBase");
+        string dto = Path.Combine(_serverStuffProject!, "Dto");
+        string controllers = Path.Combine(_serverStuffProject!, "Controllers");
+        string projectDir = Path.GetFullPath(_serverStuffProject!);
+
+        if (!_replaceFilesIfExist)
+        {
+            if(Directory.Exists(controllers) || Directory.Exists(dtoBase) || Directory.Exists(dto) || (_doCreateProject && Directory.Exists(projectDir)))
+            {
+                throw new InvalidOperationException($"Some files already exist! Delete them or set true {nameof(FrameworkGeneratorOptions.ReplaceFilesIfExist)} option.");
+            }
+        }
+
+        if (Directory.Exists(dtoBase))
+        {
+            Directory.Delete(dtoBase, true);
+        }
+        if (Directory.Exists(dto))
+        {
+            Directory.Delete(dto, true);
+        }
+        if (Directory.Exists(controllers))
+        {
+            Directory.Delete(controllers, true);
+        }
+        if (_doCreateProject && Directory.Exists(projectDir))
+        {
+            Directory.Delete(projectDir, true);
+        }
+        if (!Directory.Exists(projectDir))
+        {
+            Directory.CreateDirectory(projectDir!);
+        }
+        Directory.CreateDirectory(dtoBase);
+        Directory.CreateDirectory(dto);
+        Directory.CreateDirectory(controllers);
+
+        Project? serverStuffProject = null;
+
+        if (_doCreateProject)
+        {
+            serverStuffProject = Project.Create(new ProjectOptions
+            {
+                Name = Path.GetFileName(_serverStuffProject),
+                ProjectDir = _serverStuffProject,
+                TargetFramework = _serverTargetFramework,
+            });
+            foreach (string ar in _additionalReferences)
+            {
+                serverStuffProject.AddReference(ar);
+            }
+        }
+
         Start();
 
         IConnector connector = GetConnector();
-
-        using (Project contractProcessor = Project.Create(new ProjectOptions
-        {
-            Name = "ContractProcessor"
-        }))
-        {
-            contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");
-            foreach (string ar in _additionalReferences)
-            {
-                contractProcessor.AddReference(ar);
-            }
-            TextReader contractSource = connector.Get("/Auxiliary/Contract");
-            File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"Contract1.cs"), contractSource.ReadToEnd());
-            ContractEventHandler eventHandler1 = args =>
-            {
-                if (args.EventKind is ContractEventKind.Poco)
-                {
-                    if (_pocos.ContainsKey(args.PocoType.FullName!))
-                    {
-                        throw new InvalidOperationException("TODO: InvalidOperationException");
-                    }
-                    PocoHolder ph = new(){ Type = args.PocoType, Kind = args.PocoKind};
-                    _pocos.Add(args.PocoType.FullName!, ph);
-                }
-            };
-            _contract.ContractProcessing += eventHandler1;
-            _contract.ConfigurePocos();
-            _contract.ContractProcessing -= eventHandler1;
-
-            ContractEventHandler eventHandler2 = args =>
-            {
-                if (args.EventKind is ContractEventKind.Poco)
-                {
-                    TextReader contractSource = connector.Get("/Auxiliary/Model", args.PocoType);
-                    File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"{args.PocoType.Name}_1.cs"), contractSource.ReadToEnd());
-                }
-            };
-            _contract.ContractProcessing += eventHandler2;
-            _contract.ConfigurePocos();
-            _contract.ContractProcessing -= eventHandler2;
-
-            contractProcessor.Compile();
-
-            Assembly ass = Assembly.LoadFile(contractProcessor.LibraryFile!);
-
-            IHost host = Host.CreateDefaultBuilder().ConfigureServices(services =>
-            {
-                string typeName = $"{(string.IsNullOrEmpty(_contract.GetType().Namespace) ? string.Empty : $"{_contract.GetType().Namespace}.")}Contract1";
-                services.AddScoped(
-                    typeof(Contract),
-                    ass.GetType(typeName, true)!
-                );
-                foreach (string serviceTypeName in _pocos.Keys)
-                {
-                    Type implementationType = ass.GetType(_pocos[serviceTypeName].FullName, true)!;
-                    services.AddTransient(implementationType.BaseType!, implementationType);
-                    if(_pocos[serviceTypeName].Kind is PocoKind.Entity)
-                    {
-                        _pocos[serviceTypeName].PropertyUse = new() 
-                        {
-                            Type = implementationType,
-                            Name = s_self,
-                        };
-                    }
-                }
-            }).Build();
-            Contract contract = host.Services.GetRequiredService<Contract>();
-
-            contract.ContractProcessing += Contract_ContractProcessing;
-
-            foreach (MethodInfo mi in contract.GetType().GetMethods())
-            {
-                if (mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
-                {
-                    _currentMethod = new MethodHolder() { Name = mi.ToString()! };
-                    _methods.Add(_currentMethod.Name, _currentMethod);
-                    _lastPropertyUse = _currentMethod!.PropertyUse;
-                    _currentMethod!.PropertyUse.Flags |= PropertyUseFlags.Expected;
-                    try
-                    {
-                        mi.Invoke(contract, new object[mi.GetParameters().Length]);
-                    }
-                    catch { }
-
-                    _currentMethod = null;
-                    _propertyUses.Clear();
-                }
-            }
-
-            contract.ConfigurePocos();
-
-            foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
-            {
-                foreach (PropertyUse pu in _allPropertyUses[ph.PropertyUse!.Type!])
-                {
-                    DFM(ph.PropertyUse, pu);
-                }
-            }
-
-            foreach (MethodHolder mh in _methods.Values)
-            {
-                Console.WriteLine(mh.Name);
-                PrintPropertyUse(mh.PropertyUse, 0);
-            }
-
-        }
+        GenerateServerDtoBase(connector, dtoBase);
+        GenerateServerDto(connector, dto);
+        GenerateController(connector, controllers);
 
         Stop();
+
+        if (_doCreateProject)
+        {
+            serverStuffProject!.Compile();
+        }
+
+        return serverStuffProject;
     }
 
-    private void PrintPropertyUse(PropertyUse propertyUse, int depth)
+    private Generator() { }
+    internal void RenderContractClass(ContractModel model)
     {
-        string flags = string.Empty;
-        if(propertyUse.Flags != PropertyUseFlags.None)
-        {
-            flags = "(";
-            if ((propertyUse.Flags & PropertyUseFlags.Expected) == PropertyUseFlags.Expected)
-            {
-                flags += "E";
-            }
-            if ((propertyUse.Flags & PropertyUseFlags.Mandatory) == PropertyUseFlags.Mandatory)
-            {
-                flags += "M";
-            }
-            if ((propertyUse.Flags & PropertyUseFlags.PrimaryKey) == PropertyUseFlags.PrimaryKey)
-            {
-                flags += "P";
-            }
-            if ((propertyUse.Flags & PropertyUseFlags.AccessSelector) == PropertyUseFlags.AccessSelector)
-            {
-                flags += "A";
-            }
-            flags += ")";
-        }
-        Console.WriteLine($"{string.Format($"{{0, {depth * 4}}}", string.Empty)}{flags}{(propertyUse.Type is { } ? $"{propertyUse.Type}, " : string.Empty)}{propertyUse.Name}");
-        if (propertyUse.Children is { })
-        {
-            foreach (PropertyUse pu in propertyUse.Children)
-            {
-                PrintPropertyUse(pu, depth + 1);
-            }
-        }
+        model.Contract = _contract;
     }
 
-    private void Contract_ContractProcessing(ContractEventArgs args)
+    internal void RenderModelClass(ModelModel model)
     {
-        if(args.EventKind is ContractEventKind.PrimaryKey || args.EventKind is ContractEventKind.AccessSelector || args.EventKind is ContractEventKind.Output)
+        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = handler.Type.Namespace;
+        model.ClassName = $"{handler.Type.Name}_1";
+        model.BaseClasses.Add(handler.Type.Name);
+        Util.AddNamespaces(model.Usings, handler.Type);
+        Util.AddNamespaces(model.Usings, typeof(NotImplementedException));
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        Util.AddNamespaces(model.Usings, typeof(Contract));
+        model.Usings.Add("Microsoft.Extensions.DependencyInjection");
+        foreach (PropertyModel pm in handler.Properties)
         {
-            _currentContractEventKind = args.EventKind;
-        }
-        else if(args.EventKind is ContractEventKind.Poco)
-        {
-            _currentContractEventKind = ContractEventKind.None;
-            _currentPoco = _pocos[args.PocoType.FullName!];
-            _propertyUses.Clear();
-        }
-        else
-        {
-            if (_currentContractEventKind is ContractEventKind.Output)
+            if (pm.IsCollection)
             {
-                OutputEvent(args);
+                Util.AddNamespaces(model.Usings, typeof(List<>));
             }
-            else if (_currentContractEventKind is ContractEventKind.PrimaryKey || _currentContractEventKind is ContractEventKind.AccessSelector)
-            {
-                PrimaryKeyOrAccessSelectorEvent(args);
-            }
+            Util.AddNamespaces(model.Usings, pm.ItemType);
+            model.Properties.Add(pm);
         }
     }
 
-    private void PrimaryKeyOrAccessSelectorEvent(ContractEventArgs args)
+    internal void RenderServerDto(DtoModel model)
     {
-        if (args.EventKind is ContractEventKind.Property)
+        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
+        model.ClassName = $"{handler.Type.Name}Dto";
+        model.BaseClasses.Add(handler.Type.Name);
+        Util.AddNamespaces(model.Usings, handler.Type);
+        Util.AddNamespaces(model.Usings, typeof(IProperty));
+        Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        model.PocoKind = handler.Kind;
+        if(handler.Kind is PocoKind.Entity)
         {
-            if (!_propertyUses.Any())
-            {
-                _propertyUses.Add(args.Poco!, _currentPoco!.PropertyUse);
-            }
-            PropertyUse? found = null;
-            if (_propertyUses[args.Poco!].Children is { })
-            {
-                foreach (PropertyUse pu in _propertyUses[args.Poco!].Children!)
-                {
-                    if (pu.Name.Equals(args.Property))
-                    {
-                        found = pu;
-                        break;
-                    }
-                }
-            }
-            if (found is null)
-            {
-                _propertyUses[args.Poco!].Children ??= new List<PropertyUse>();
-                found = new()
-                {
-                    Name = args.Property!,
-                    Parent = _propertyUses[args.Poco!]
-                };
-                _propertyUses[args.Poco!].Children!.Add(found);
-                if (args.Value is { })
-                {
-                    found.Type = args.Value.GetType();
-                    _propertyUses.Add(args.Value, found);
-                }
-            }
-            found.Flags |= (_currentContractEventKind is ContractEventKind.PrimaryKey ? PropertyUseFlags.PrimaryKey : PropertyUseFlags.AccessSelector);
-            if (args.Value is { } && !_propertyUses.ContainsKey(args.Value))
-            {
-                _propertyUses.Add(args.Value, found);
-            }
+            Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
+            Util.AddNamespaces(model.Usings, typeof(Access));
         }
-        else if(args.EventKind is ContractEventKind.Done)
+        foreach (PropertyModel pm in handler.Properties)
         {
-            _propertyUses.Clear();
+            if (pm.IsCollection)
+            {
+                Util.AddNamespaces(model.Usings, typeof(List<>));
+            }
+            Util.AddNamespaces(model.Usings, pm.ItemType);
+            model.Properties.Add(pm);
         }
     }
 
-    void DFM(PropertyUse src, PropertyUse dst)
+    internal void RenderServerDtoBase(DtoBaseModel model)
     {
-        if(src.Children is { })
+        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = handler.Type.Namespace;
+        model.ClassName = handler.Type.Name;
+        foreach (PropertyModel pm in handler.Properties)
         {
-            if(dst.Children is null)
+            if (pm.IsCollection)
+            {
+                Util.AddNamespaces(model.Usings, typeof(List<>));
+            }
+            Util.AddNamespaces(model.Usings, pm.ItemType);
+            model.Properties.Add(pm);
+        }
+    }
+    private void DFM(PropertyUse src, PropertyUse dst)
+    {
+        if (src.Children is { })
+        {
+            if (dst.Children is null)
             {
                 dst.Children = new List<PropertyUse>();
             }
-            foreach(PropertyUse pu in src.Children)
+            foreach (PropertyUse pu in src.Children)
             {
                 PropertyUse? found = null;
                 for (int i = 0; i < dst.Children.Count; ++i)
@@ -293,7 +212,7 @@ public class Generator : Runner
                     found = new PropertyUse { Name = pu.Name, Type = pu.Type, Parent = dst };
                     dst.Children.Add(found);
                 }
-                if(found is { })
+                if (found is { })
                 {
                     found.Flags |= pu.Flags;
                     DFM(pu, found);
@@ -301,7 +220,6 @@ public class Generator : Runner
             }
         }
     }
-
     private void OutputEvent(ContractEventArgs args)
     {
         if (args.EventKind is ContractEventKind.Property)
@@ -369,36 +287,170 @@ public class Generator : Runner
             }
         }
     }
-
-    internal void GenerateContractClass(ContractModel model)
+    protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
-        model.Contract = _contract;
+        builder.Services.AddRazorPages();
+        builder.Services.AddSingleton(this);
+    }
+    protected override void ConfigureApplication(WebApplication app)
+    {
+        app.MapRazorPages();
+    }
+    private void GenerateController(IConnector connector, string targetDir)
+    {
+    }
+    private void GenerateServerDtoBase(IConnector connector, string targetDir)
+    {
+
+        foreach (PocoHolder ph in _pocos.Values)
+        {
+            TextReader contractSource = connector.Get("/Server/DtoBase", ph);
+            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}.cs"), contractSource.ReadToEnd());
+        }
+
+    }
+    private void GenerateServerDto(IConnector connector, string targetDir)
+    {
+        foreach (PocoHolder ph in _pocos.Values)
+        {
+            TextReader contractSource = connector.Get("/Server/Dto", ph);
+            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
+        }
+    }
+    private void ProcessContract()
+    {
+        Start();
+
+        IConnector connector = GetConnector();
+
+        using (Project contractProcessor = Project.Create(new ProjectOptions
+        {
+            Name = "ContractProcessor",
+        }))
+        {
+            contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");
+            foreach (string ar in _additionalReferences)
+            {
+                contractProcessor.AddReference(ar);
+            }
+            contractProcessor.AddReference(_contract.GetType().Assembly.Location);
+            TextReader contractSource = connector.Get("/Auxiliary/Contract");
+            File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"Contract.cs"), contractSource.ReadToEnd());
+            ContractEventHandler eventHandler1 = args =>
+            {
+                if (args.EventKind is ContractEventKind.Poco)
+                {
+                    if (_pocos.ContainsKey(args.PocoType.FullName!))
+                    {
+                        throw new InvalidOperationException("TODO: InvalidOperationException");
+                    }
+                    PocoHolder ph = new() { Type = args.PocoType, Kind = args.PocoKind };
+                    _pocos.Add(args.PocoType.FullName!, ph);
+                }
+            };
+            _contract.ContractProcessing += eventHandler1;
+            _contract.ConfigurePocos();
+            _contract.ContractProcessing -= eventHandler1;
+
+            foreach (PocoHolder ph in _pocos.Values)
+            {
+                BuildProperties(ph);
+            }
+
+            ContractEventHandler eventHandler2 = args =>
+            {
+                if (args.EventKind is ContractEventKind.Poco)
+                {
+                    TextReader contractSource = connector.Get("/Auxiliary/Model", _pocos[args.PocoType.FullName!]);
+                    File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"{args.PocoType.Name}.cs"), contractSource.ReadToEnd());
+                }
+            };
+            _contract.ContractProcessing += eventHandler2;
+            _contract.ConfigurePocos();
+            _contract.ContractProcessing -= eventHandler2;
+
+            contractProcessor.Compile();
+
+            Assembly ass = Assembly.LoadFile(contractProcessor.LibraryFile!);
+
+            IHost host = Host.CreateDefaultBuilder().ConfigureServices(services =>
+            {
+                string typeName = $"{(string.IsNullOrEmpty(_contract.GetType().Namespace) ? string.Empty : $"{_contract.GetType().Namespace}.")}Contract_1";
+                services.AddScoped(
+                    typeof(Contract),
+                    ass.GetType(typeName, true)!
+                );
+                foreach (string serviceTypeName in _pocos.Keys)
+                {
+                    Type implementationType = ass.GetType($"{_pocos[serviceTypeName].Type.FullName}_1", true)!;
+                    services.AddTransient(implementationType.BaseType!, implementationType);
+                    if (_pocos[serviceTypeName].Kind is PocoKind.Entity)
+                    {
+                        _pocos[serviceTypeName].PropertyUse = new()
+                        {
+                            Type = implementationType,
+                            Name = s_self,
+                        };
+                    }
+                }
+            }).Build();
+            Contract contract = host.Services.GetRequiredService<Contract>();
+
+            contract.ContractProcessing += Contract_ContractProcessing;
+
+            foreach (MethodInfo mi in contract.GetType().GetMethods())
+            {
+                if (mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
+                {
+                    _currentMethod = new MethodHolder() { Name = mi.ToString()! };
+                    _methods.Add(_currentMethod.Name, _currentMethod);
+                    _lastPropertyUse = _currentMethod!.PropertyUse;
+                    _currentMethod!.PropertyUse.Flags |= PropertyUseFlags.Expected;
+                    try
+                    {
+                        mi.Invoke(contract, new object[mi.GetParameters().Length]);
+                    }
+                    catch (TargetInvocationException tiex)
+                    {
+                        if (tiex.InnerException is NotImplementedException) { }
+                    }
+
+                    _currentMethod = null;
+                    _propertyUses.Clear();
+                }
+            }
+
+            contract.ConfigurePocos();
+
+            foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
+            {
+                foreach (PropertyUse pu in _allPropertyUses[ph.PropertyUse!.Type!])
+                {
+                    DFM(ph.PropertyUse, pu);
+                }
+                SortPropertyUses(ph.PropertyUse);
+            }
+            foreach (MethodHolder mh in _methods.Values)
+            {
+                SortPropertyUses(mh.PropertyUse);
+            }
+
+        }
+
+        Stop();
     }
 
-    internal void GenerateModelClass(ModelModel model)
+    private void BuildProperties(PocoHolder ph)
     {
-        Type pocoType = (Type)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        PocoHolder handler = _pocos[pocoType.FullName!];
-        model.Namespace = pocoType.Namespace;
-        model.ClassName = $"{pocoType.Name}_1";
-        model.BaseName = pocoType.Name;
-        _pocos[pocoType.FullName!].Namespace = model.Namespace;
-        _pocos[pocoType.FullName!].ClassName = model.ClassName;
         NullabilityInfoContext nullabilityInfoContext = new();
-        Util.AddNamespaces(model.Usings, typeof(NotImplementedException));
-        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
-        Util.AddNamespaces(model.Usings, typeof(Contract));
-        model.Usings.Add("Microsoft.Extensions.DependencyInjection");
-        foreach (PropertyInfo pi in pocoType.GetProperties())
+        foreach (PropertyInfo pi in ph.Type.GetProperties())
         {
             NullabilityInfo ni = nullabilityInfoContext.Create(pi);
             bool isPoco = false;
             bool isCollection = false;
             Type itemType = pi.PropertyType;
-            Console.WriteLine($"itemType: {itemType}");
             if (itemType.IsGenericType)
             {
-                Console.WriteLine($"gen: {itemType.GetGenericTypeDefinition()}");
                 if (
                     pi.PropertyType.GetGenericTypeDefinition() != typeof(List<>)
                     && pi.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>)
@@ -415,21 +467,18 @@ public class Generator : Runner
                 else
                 {
                     isCollection = pi.PropertyType.GetGenericTypeDefinition() == typeof(List<>);
-                    if (isCollection)
-                    {
-                        Util.AddNamespaces(model.Usings, typeof(List<>));
-                    }
                 }
             }
             else
             {
                 isPoco = _pocos.ContainsKey(itemType.FullName!);
             }
-            Util.AddNamespaces(model.Usings, itemType);
             PropertyModel pm = new()
             {
                 Name = pi.Name,
+                Type = pi.PropertyType,
                 TypeName = Util.MakeTypeName(pi.PropertyType),
+                ItemType = itemType,
                 ItemTypeName = Util.MakeTypeName(itemType),
                 IsReadOnly = !pi.CanWrite,
                 IsNullable = ni.ReadState is NullabilityState.Nullable,
@@ -437,8 +486,126 @@ public class Generator : Runner
                 IsCollection = isCollection,
             };
 
-            model.Properties.Add(pm);
+            ph.Properties.Add(pm);
         }
     }
 
+    private void SortPropertyUses(PropertyUse propertyUse)
+    {
+        PropertyUseComparer puc = new();
+        if (propertyUse.Children is { })
+        {
+            propertyUse.Children.Sort(puc);
+            foreach (PropertyUse pu in propertyUse.Children)
+            {
+                SortPropertyUses(pu);
+            }
+        }
+    }
+
+    private void PrintPropertyUse(PropertyUse propertyUse, int depth)
+    {
+        string flags = string.Empty;
+        if (propertyUse.Flags != PropertyUseFlags.None)
+        {
+            flags = "(";
+            if ((propertyUse.Flags & PropertyUseFlags.Expected) == PropertyUseFlags.Expected)
+            {
+                flags += "E";
+            }
+            if ((propertyUse.Flags & PropertyUseFlags.Mandatory) == PropertyUseFlags.Mandatory)
+            {
+                flags += "M";
+            }
+            if ((propertyUse.Flags & PropertyUseFlags.PrimaryKey) == PropertyUseFlags.PrimaryKey)
+            {
+                flags += "P";
+            }
+            if ((propertyUse.Flags & PropertyUseFlags.AccessSelector) == PropertyUseFlags.AccessSelector)
+            {
+                flags += "A";
+            }
+            flags += ")";
+        }
+        Console.WriteLine($"{string.Format($"{{0, {depth * 4}}}", string.Empty)}{flags}{(propertyUse.Type is { } ? $"{propertyUse.Type}, " : string.Empty)}{propertyUse.Name}");
+        if (propertyUse.Children is { })
+        {
+            foreach (PropertyUse pu in propertyUse.Children)
+            {
+                PrintPropertyUse(pu, depth + 1);
+            }
+        }
+    }
+
+    private void Contract_ContractProcessing(ContractEventArgs args)
+    {
+        if (args.EventKind is ContractEventKind.PrimaryKey || args.EventKind is ContractEventKind.AccessSelector || args.EventKind is ContractEventKind.Output)
+        {
+            _currentContractEventKind = args.EventKind;
+        }
+        else if (args.EventKind is ContractEventKind.Poco)
+        {
+            _currentContractEventKind = ContractEventKind.None;
+            _currentPoco = _pocos[args.PocoType.FullName!];
+            _propertyUses.Clear();
+        }
+        else
+        {
+            if (_currentContractEventKind is ContractEventKind.Output)
+            {
+                OutputEvent(args);
+            }
+            else if (_currentContractEventKind is ContractEventKind.PrimaryKey || _currentContractEventKind is ContractEventKind.AccessSelector)
+            {
+                PrimaryKeyOrAccessSelectorEvent(args);
+            }
+        }
+    }
+
+    private void PrimaryKeyOrAccessSelectorEvent(ContractEventArgs args)
+    {
+        if (args.EventKind is ContractEventKind.Property)
+        {
+            if (!_propertyUses.Any())
+            {
+                _propertyUses.Add(args.Poco!, _currentPoco!.PropertyUse!);
+            }
+            PropertyUse? found = null;
+            if (_propertyUses[args.Poco!].Children is { })
+            {
+                foreach (PropertyUse pu in _propertyUses[args.Poco!].Children!)
+                {
+                    if (pu.Name.Equals(args.Property))
+                    {
+                        found = pu;
+                        break;
+                    }
+                }
+            }
+            if (found is null)
+            {
+                _propertyUses[args.Poco!].Children ??= new List<PropertyUse>();
+                found = new()
+                {
+                    Name = args.Property!,
+                    Parent = _propertyUses[args.Poco!]
+                };
+                _propertyUses[args.Poco!].Children!.Add(found);
+                if (args.Value is { })
+                {
+                    found.Type = args.Value.GetType();
+                    _propertyUses.Add(args.Value, found);
+                }
+            }
+            found.Flags |= (_currentContractEventKind is ContractEventKind.PrimaryKey ? PropertyUseFlags.PrimaryKey : PropertyUseFlags.AccessSelector);
+            if (args.Value is { } && !_propertyUses.ContainsKey(args.Value))
+            {
+                _propertyUses.Add(args.Value, found);
+            }
+        }
+        else if (args.EventKind is ContractEventKind.Done)
+        {
+            _propertyUses.Clear();
+        }
+    }
 }

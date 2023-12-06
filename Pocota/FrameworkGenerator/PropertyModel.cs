@@ -1,9 +1,11 @@
-﻿namespace Net.Leksi.Pocota;
+﻿namespace Net.Leksi.Pocota.FrameworkGenerator;
 
 internal class PropertyModel
 {
     internal string Name { get; set; } = null!;
+    internal Type Type { get; set; } = null!;
     internal string TypeName { get; set; } = null!;
+    internal Type ItemType { get; set; } = null!;
     internal string ItemTypeName { get; set; } = null!;
     internal bool IsReadOnly { get; set; }
     internal bool IsNullable { get; set; }

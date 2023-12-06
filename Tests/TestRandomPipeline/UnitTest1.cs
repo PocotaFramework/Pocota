@@ -34,7 +34,7 @@ public class Tests
     public static IEnumerable<TestPipelineOptions> TestPipelineOptionsSource()
     {
         return new TestPipelineOptions[] { new TestPipelineOptions {
-            Seed = 199080181,
+            Seed = -1,
             NodesCount = 20,
             EntitiesFraction = .7,
             Completeness = .4,
@@ -79,12 +79,16 @@ public class Tests
 
         options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
         options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+        options.ContractNamespace = "Net.Leksi.Pocota.RandomServer";
+        options.ContractClassName = "RandomContract";
+        options.TargetFramework = "net8.0-windows";
+
 
         Pipeline pipeline = new(rnd, options);
 
         pipeline.GenerateModelAndContract();
 
-        options.GeneratedServerStaffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStaff");
+        options.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff");
 
         pipeline.GenerateFramework();
     }

@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using Net.Leksi.Pocota.FrameworkGenerator;
 
 namespace Net.Leksi.Pocota.Pages.Auxiliary;
 
-public class ContractModel : PageModel
+public class ContractModel : ClassModel
 {
-    internal Contract Contract { get; set; } = null!;
     public void OnGet([FromServices]Generator generator)
     {
-        generator.GenerateContractClass(this);
+        generator.RenderContractClass(this);
     }
 }

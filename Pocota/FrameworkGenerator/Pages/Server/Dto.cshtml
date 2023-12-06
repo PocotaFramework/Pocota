@@ -1,0 +1,107 @@
+﻿@page
+@using Net.Leksi.Pocota
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@model DtoModel
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
+{
+#region PropertiesClasses
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    public class @pm.Name@{}PropertyClass: @(Model.PocoKind is PocoKind.Entity ? nameof(IEntityProperty) : nameof(IProperty))
+    {
+        public string Name => "@pm.Name";
+        public Type Type => typeof(@Html.Raw(pm.TypeName));
+        public Type ItemType => typeof(@Html.Raw(pm.ItemTypeName));
+        public bool IsCollection => @(pm.IsCollection ? "true" : "false");
+        public bool IsNullable => @(pm.IsNullable ? "true" : "false");
+        public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
+        public bool IsPoco  => @(pm.IsPoco ? "true" : "false");
+        public object GetValue(object obj)
+        {
+            return (obj as @Model.ClassName)?.Get@{}@pm.Name@{}Value();
+        }
+        public void SetValue(object obj, object value)
+        {
+            (obj as @Model.ClassName)?.Set@{}@pm.Name@{}Value(value);
+        }
+    @if(Model.PocoKind is PocoKind.Entity)
+    {
+        <text>        public Access GetAccess(object obj)
+        {
+            throw new @nameof(NotImplementedException)@{}();
+        }
+        public void SetAccess(object obj, Access access)
+        {
+            throw new @nameof(NotImplementedException)@{}();
+        }
+
+</text>
+    }
+    }
+</text>
+}
+#endregion PropertiesClasses
+#region Fields
+    private readonly IPocoContext _pocoContext;
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name;
+</text>
+}
+#endregion Fields
+
+#region Properties
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
+    { 
+        get
+        {
+            return _@pm.Name;
+        }
+        set
+        {
+            if(_pocoContext.ProcessingStage is ProcessingStage.Building)
+            {
+                _@pm.Name = value;
+            }
+            else{
+                throw  new @nameof(InvalidOperationException)@{}("Not at Building stage!");
+            }
+        }
+    }
+</text>
+}
+#endregion Properties
+    public @Model.ClassName@{}(IPocoContext pocoContext)
+    {
+        _pocoContext = pocoContext;
+    }
+#region SettersGetters
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    private void Set@{}@pm.Name@{}Value(object value)
+    {
+        if(_pocoContext.ProcessingStage is ProcessingStage.Deserialization)
+        {
+            _@pm.Name = (@Html.Raw(pm.TypeName))value;
+        }
+        else{
+            throw  new @nameof(InvalidOperationException)@{}("Not at Deserialization stage!");
+        }
+    }
+    private object Get@{}@pm.Name@{}Value()
+    {
+        if(_pocoContext.ProcessingStage is ProcessingStage.Serialization)
+        {
+            return _@pm.Name;
+        }
+        throw  new @nameof(InvalidOperationException)@{}("Not at Serialization stage!");
+    }
+</text>
+}
+#endregion SettersGetters
+}

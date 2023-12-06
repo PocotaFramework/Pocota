@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomContract", "Tests\Gen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrameworkGeneratorDebug", "Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj", "{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerStuff", "Tests\Generated\Framework\ServerStuff\ServerStuff.csproj", "{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,12 @@ Global
 		{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E6B91D-DFA3-4913-B315-A18EC53D5D9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.Debug|Any CPU.ActiveCfg = RAC|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.Debug|Any CPU.Build.0 = RAC|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.RAC|Any CPU.ActiveCfg = RAC|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.RAC|Any CPU.Build.0 = RAC|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.Release|Any CPU.ActiveCfg = RAC|Any CPU
+		{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}.Release|Any CPU.Build.0 = RAC|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

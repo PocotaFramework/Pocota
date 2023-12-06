@@ -7,11 +7,6 @@ namespace Net.Leksi.Pocota.Pipeline;
 
 public class SourcesGenerator: Runner
 {
-    private const string s_contractClassName = "RandomContract";
-    private const string s_contractNamespace = "Net.Leksi.Pocota.RandomServer";
-    private const string s_targetFramework = "net8.0-windows";
-
-    private Project? _contract;
     private Project? _serverStaff;
 
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
@@ -23,7 +18,7 @@ public class SourcesGenerator: Runner
     {
         app.MapRazorPages();
     }
-    internal void GenerateModelAndContract(Graph graph, Options options)
+    internal Project GenerateModelAndContract(Graph graph, Options options)
     {
         Start();
 
@@ -35,15 +30,15 @@ public class SourcesGenerator: Runner
         }
         Directory.CreateDirectory(options.GeneratedContractProjectDir);
 
-        _contract = Project.Create(new ProjectOptions
+        Project _contract = Project.Create(new ProjectOptions
         {
-            Name = s_contractClassName,
+            Name = options.ContractClassName,
             ProjectDir = options.GeneratedContractProjectDir,
-            TargetFramework = s_targetFramework,
+            TargetFramework = options.TargetFramework,
         });
         _contract.AddProject(options.ContractProjectDir);
-        TextReader contractSource = connector.Get("/Contract", graph);
-        File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{s_contractClassName}.cs"), contractSource.ReadToEnd());
+        TextReader contractSource = connector.Get("/Contract", new Tuple<Graph, Options> (graph, options));
+        File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{options.ContractClassName}.cs"), contractSource.ReadToEnd());
         _contract.AddProject(options.PipelineCommonProjectDir);
         foreach (Node node in graph.Nodes)
         {
@@ -53,8 +48,9 @@ public class SourcesGenerator: Runner
         _contract.Compile();
 
         Stop();
+        return _contract;
     }
-    internal void GenerateModelClass(ClassModel model)
+    internal void RenderModelClass(ClassModel model)
     {
         Tuple<Graph, Node> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Node>)!;
         model.Node = parameter.Item2;
@@ -88,11 +84,13 @@ public class SourcesGenerator: Runner
         }
     }
 
-    internal void GenerateContractClass(ContractModel model)
+    internal void RenderContractClass(ContractModel model)
     {
-        Graph graph = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Graph)!;
-        model.ClassName = s_contractClassName;
-        model.Namespace = s_contractNamespace;
+        Tuple<Graph, Options> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Options>)!;
+        Graph graph = parameter.Item1;
+        Options options = parameter.Item2;
+        model.ClassName = options.ContractClassName;
+        model.Namespace = options.ContractNamespace;
         foreach(Node node in graph.Nodes)
         {
             if(node.Namespace is { })
@@ -127,43 +125,5 @@ public class SourcesGenerator: Runner
             }
             model.Nodes.Add(node);
         }
-    }
-
-    internal void GenerateFramework(Graph graph, Options options)
-    {
-        Start();
-
-        IConnector connector = GetConnector();
-
-        if (Directory.Exists(options.GeneratedServerStaffProjectDir))
-        {
-            Directory.Delete(options.GeneratedServerStaffProjectDir, true);
-        }
-        Directory.CreateDirectory(options.GeneratedServerStaffProjectDir);
-
-        _serverStaff = Project.Create(new ProjectOptions
-        {
-            Name = "ServerStaff",
-            ProjectDir = options.GeneratedServerStaffProjectDir,
-            TargetFramework = s_targetFramework,
-        });
-        
-        
-
-        Generator _generator = Generator.Create(new FrameworkGeneratorOptions
-        {
-            Contract = (Contract)Activator.CreateInstance(
-                Assembly.LoadFile(_contract!.LibraryFile!)
-                    .GetType($"{s_contractNamespace}.{s_contractClassName}")!
-            )!,
-            AdditionalReferences = Directory.GetFiles(
-                    Path.GetDirectoryName(_contract!.LibraryFile)!
-                ).Where(f => ".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))).ToArray(),
-        });
-        _serverStaff.Compile();
-       
-
-        Stop();
-
     }
 }
