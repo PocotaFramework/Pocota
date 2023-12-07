@@ -7,8 +7,6 @@ namespace Net.Leksi.Pocota.Pipeline;
 
 public class SourcesGenerator: Runner
 {
-    private Project? _serverStaff;
-
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -50,9 +48,10 @@ public class SourcesGenerator: Runner
         Stop();
         return _contract;
     }
-    internal void RenderModelClass(ClassModel model)
+    internal static void RenderModelClass(ClassModel model)
     {
-        Tuple<Graph, Node> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Node>)!;
+        Tuple<Graph, Node> parameter = 
+            (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Node>)!;
         model.Node = parameter.Item2;
         if(model.Node.Parent is { })
         {
@@ -84,7 +83,7 @@ public class SourcesGenerator: Runner
         }
     }
 
-    internal void RenderContractClass(ContractModel model)
+    internal static void RenderContractClass(ContractModel model)
     {
         Tuple<Graph, Options> parameter = (model.HttpContext.RequestServices.GetRequiredService<RequestParameter>()?.Parameter as Tuple<Graph, Options>)!;
         Graph graph = parameter.Item1;

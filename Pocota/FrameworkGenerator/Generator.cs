@@ -10,10 +10,10 @@ public class Generator : Runner
 {
     private const string s_self = "<self>";
     private Contract _contract = null!;
-    private readonly Dictionary<string, PocoHolder> _pocos = new();
-    private readonly Dictionary<string, MethodHolder> _methods = new();
+    private readonly Dictionary<string, PocoHolder> _pocos = [];
+    private readonly Dictionary<string, MethodHolder> _methods = [];
     private readonly List<string> _additionalReferences = new();
-    private readonly Dictionary<Type, List<PropertyUse>> _allPropertyUses = new();
+    private readonly Dictionary<Type, List<PropertyUse>> _allPropertyUses = [];
 
     private string? _serverStuffProject = null;
     private bool _doCreateProject = false;
@@ -24,7 +24,7 @@ public class Generator : Runner
     private PocoHolder? _currentPoco = null;
     private PropertyUse? _lastPropertyUse = null;
     private ContractEventKind _currentContractEventKind = ContractEventKind.None;
-    private readonly Dictionary<object, PropertyUse> _propertyUses = new();
+    private readonly Dictionary<object, PropertyUse> _propertyUses = [];
     public static Generator Create(FrameworkGeneratorOptions options)
     {
         Generator generator = new()
@@ -127,6 +127,7 @@ public class Generator : Runner
 
     internal void RenderModelClass(ModelModel model)
     {
+        model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = handler.Type.Namespace;
         model.ClassName = $"{handler.Type.Name}_1";
@@ -149,6 +150,7 @@ public class Generator : Runner
 
     internal void RenderServerDto(DtoModel model)
     {
+        model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
         model.ClassName = $"{handler.Type.Name}Dto";
@@ -175,6 +177,7 @@ public class Generator : Runner
 
     internal void RenderServerDtoBase(DtoBaseModel model)
     {
+        model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = handler.Type.Namespace;
         model.ClassName = handler.Type.Name;
@@ -192,10 +195,7 @@ public class Generator : Runner
     {
         if (src.Children is { })
         {
-            if (dst.Children is null)
-            {
-                dst.Children = new List<PropertyUse>();
-            }
+            dst.Children ??= [];
             foreach (PropertyUse pu in src.Children)
             {
                 PropertyUse? found = null;
@@ -224,18 +224,18 @@ public class Generator : Runner
     {
         if (args.EventKind is ContractEventKind.Property)
         {
-            if (!_propertyUses.Any())
+            if (_propertyUses.Count == 0)
             {
                 _currentMethod!.PropertyUse.Type = args.Poco!.GetType();
                 _currentMethod.PropertyUse.Name = s_self;
                 _propertyUses.Add(args.Poco!, _currentMethod.PropertyUse);
-                if (!_allPropertyUses.ContainsKey(_currentMethod.PropertyUse.Type))
+                if (!_allPropertyUses.TryGetValue(_currentMethod.PropertyUse.Type, out List<PropertyUse>? value))
                 {
-                    _allPropertyUses.Add(_currentMethod.PropertyUse.Type, new List<PropertyUse>() { _currentMethod.PropertyUse });
+                    _allPropertyUses.Add(_currentMethod.PropertyUse.Type, [_currentMethod.PropertyUse]);
                 }
                 else
                 {
-                    _allPropertyUses[_currentMethod.PropertyUse.Type].Add(_currentMethod.PropertyUse);
+                    value.Add(_currentMethod.PropertyUse);
                 }
             }
             bool found = false;
@@ -253,7 +253,7 @@ public class Generator : Runner
             }
             if (!found)
             {
-                _propertyUses[args.Poco!].Children ??= new List<PropertyUse>();
+                _propertyUses[args.Poco!].Children ??= [];
                 PropertyUse next = new()
                 {
                     Name = args.Property!,
@@ -264,13 +264,13 @@ public class Generator : Runner
                 {
                     next.Type = args.Value.GetType();
                     _propertyUses.Add(args.Value, next);
-                    if (!_allPropertyUses.ContainsKey(next.Type))
+                    if (!_allPropertyUses.TryGetValue(next.Type, out List<PropertyUse>? value))
                     {
-                        _allPropertyUses.Add(next.Type, new List<PropertyUse>() { next });
+                        _allPropertyUses.Add(next.Type, [next]);
                     }
                     else
                     {
-                        _allPropertyUses[next.Type].Add(next);
+                        value.Add(next);
                     }
                 }
                 _lastPropertyUse = next;
@@ -336,7 +336,7 @@ public class Generator : Runner
             contractProcessor.AddReference(_contract.GetType().Assembly.Location);
             TextReader contractSource = connector.Get("/Auxiliary/Contract");
             File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"Contract.cs"), contractSource.ReadToEnd());
-            ContractEventHandler eventHandler1 = args =>
+            void eventHandler1(ContractEventArgs args)
             {
                 if (args.EventKind is ContractEventKind.Poco)
                 {
@@ -347,7 +347,7 @@ public class Generator : Runner
                     PocoHolder ph = new() { Type = args.PocoType, Kind = args.PocoKind };
                     _pocos.Add(args.PocoType.FullName!, ph);
                 }
-            };
+            }
             _contract.ContractProcessing += eventHandler1;
             _contract.ConfigurePocos();
             _contract.ContractProcessing -= eventHandler1;
@@ -357,14 +357,14 @@ public class Generator : Runner
                 BuildProperties(ph);
             }
 
-            ContractEventHandler eventHandler2 = args =>
+            void eventHandler2(ContractEventArgs args)
             {
                 if (args.EventKind is ContractEventKind.Poco)
                 {
                     TextReader contractSource = connector.Get("/Auxiliary/Model", _pocos[args.PocoType.FullName!]);
                     File.WriteAllText(Path.Combine(contractProcessor.ProjectDir, $"{args.PocoType.Name}.cs"), contractSource.ReadToEnd());
                 }
-            };
+            }
             _contract.ContractProcessing += eventHandler2;
             _contract.ConfigurePocos();
             _contract.ContractProcessing -= eventHandler2;
@@ -490,7 +490,7 @@ public class Generator : Runner
         }
     }
 
-    private void SortPropertyUses(PropertyUse propertyUse)
+    private static void SortPropertyUses(PropertyUse propertyUse)
     {
         PropertyUseComparer puc = new();
         if (propertyUse.Children is { })
@@ -503,7 +503,7 @@ public class Generator : Runner
         }
     }
 
-    private void PrintPropertyUse(PropertyUse propertyUse, int depth)
+    private static void PrintPropertyUse(PropertyUse propertyUse, int depth)
     {
         string flags = string.Empty;
         if (propertyUse.Flags != PropertyUseFlags.None)
@@ -566,7 +566,7 @@ public class Generator : Runner
     {
         if (args.EventKind is ContractEventKind.Property)
         {
-            if (!_propertyUses.Any())
+            if (_propertyUses.Count == 0)
             {
                 _propertyUses.Add(args.Poco!, _currentPoco!.PropertyUse!);
             }
@@ -584,7 +584,7 @@ public class Generator : Runner
             }
             if (found is null)
             {
-                _propertyUses[args.Poco!].Children ??= new List<PropertyUse>();
+                _propertyUses[args.Poco!].Children ??= [];
                 found = new()
                 {
                     Name = args.Property!,

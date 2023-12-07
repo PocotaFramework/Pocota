@@ -5,7 +5,8 @@
 @model DtoModel
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
+public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
+
 {
 #region PropertiesClasses
 @foreach (PropertyModel pm in Model.Properties)
@@ -19,23 +20,23 @@ public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Joi
         public bool IsNullable => @(pm.IsNullable ? "true" : "false");
         public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
         public bool IsPoco  => @(pm.IsPoco ? "true" : "false");
-        public object GetValue(object obj)
+        public object? GetValue(object obj)
         {
             return (obj as @Model.ClassName)?.Get@{}@pm.Name@{}Value();
         }
-        public void SetValue(object obj, object value)
+        public void SetValue(object obj, object? value)
         {
             (obj as @Model.ClassName)?.Set@{}@pm.Name@{}Value(value);
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>        public Access GetAccess(object obj)
+        <text>        public Access? GetAccess(object obj)
         {
-            throw new @nameof(NotImplementedException)@{}();
+            return (obj as @Model.ClassName)?.Get@{}@pm.Name@{}Access();
         }
         public void SetAccess(object obj, Access access)
         {
-            throw new @nameof(NotImplementedException)@{}();
+            (obj as @Model.ClassName)?.Set@{}@pm.Name@{}Access(access);
         }
 
 </text>
@@ -45,10 +46,11 @@ public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Joi
 }
 #endregion PropertiesClasses
 #region Fields
-    private readonly IPocoContext _pocoContext;
+    private readonly IPocoContext _pocoContext = pocoContext;
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name;
+    <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
+    private Access _@pm.Name@{}Access = Access.Full;
 </text>
 }
 #endregion Fields
@@ -69,37 +71,61 @@ public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Joi
                 _@pm.Name = value;
             }
             else{
-                throw  new @nameof(InvalidOperationException)@{}("Not at Building stage!");
+                throw  new InvalidOperationException("Not at Building stage!");
             }
         }
     }
 </text>
 }
 #endregion Properties
-    public @Model.ClassName@{}(IPocoContext pocoContext)
-    {
-        _pocoContext = pocoContext;
-    }
 #region SettersGetters
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    private void Set@{}@pm.Name@{}Value(object value)
+    <text>    private void Set@{}@pm.Name@{}Value(object? value)
     {
         if(_pocoContext.ProcessingStage is ProcessingStage.Deserialization)
         {
-            _@pm.Name = (@Html.Raw(pm.TypeName))value;
+            _@pm.Name = (@Html.Raw(pm.TypeName))value!;
         }
         else{
-            throw  new @nameof(InvalidOperationException)@{}("Not at Deserialization stage!");
+            throw new InvalidOperationException("Not at Deserialization stage!");
         }
     }
-    private object Get@{}@pm.Name@{}Value()
+    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) Get@{}@pm.Name@{}Value()
     {
         if(_pocoContext.ProcessingStage is ProcessingStage.Serialization)
         {
             return _@pm.Name;
         }
-        throw  new @nameof(InvalidOperationException)@{}("Not at Serialization stage!");
+        throw new InvalidOperationException("Not at Serialization stage!");
+    }
+    @if(Model.PocoKind is PocoKind.Entity)
+    {
+        <text>    private Access Get@{}@pm.Name@{}Access()
+    {
+        if(
+            _pocoContext.ProcessingStage is ProcessingStage.Serialization
+            || _pocoContext.ProcessingStage is ProcessingStage.Deserialization
+            || _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
+        )
+        {
+            return _@pm.Name@{}Access;
+        }
+        throw new InvalidOperationException("Not at AccessGiving, Serialization or Deserialization stage!");
+    }
+    private void Set@{}@pm.Name@{}Access(Access access)
+    {
+        if(
+            _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
+        )
+        {
+            _@pm.Name@{}Access = access;
+        }
+        else{
+            throw new InvalidOperationException("Not at AccessGiving stage!");
+        }
+    }
+</text>
     }
 </text>
 }

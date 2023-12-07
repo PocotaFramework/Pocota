@@ -4,7 +4,7 @@ internal class PropertyHolder
 {
     internal Node Owner { get; private init; } = null!;
     internal int Position { get; set; }
-    internal string Name => $"p{Position}";
+    internal string Name => $"P{Position}";
     internal Type? Type { get; set; } = null;
     internal Node? Node { get; set; } = null;
     internal string TypeName => Node is { } ? Node.Name : Util.MakeTypeName(Type!);

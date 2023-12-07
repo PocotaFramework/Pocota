@@ -9,5 +9,5 @@ internal class MethodHolder
     internal string ReturnTypeName { get; set; } = null!;
     internal List<PropertyUse>? Output { get; set; } = null;
     internal List<string>? OutputPaths { get; set; } = null;
-    internal List<ParamHolder> Params { get; private init; } = new();
+    internal List<ParamHolder> Params { get; private init; } = [];
 }

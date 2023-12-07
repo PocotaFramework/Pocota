@@ -4,7 +4,8 @@
     string[] lines = new[]
     {
         $"{(string.IsNullOrEmpty(Model.Namespace) ? string.Empty : $"{Model.Namespace}.")}{Model.ClassName}",
-        $"was generated automatically from {Model.Contract}",
+        "was generated automatically from",
+        $"{Model.Contract}",
         $"at {DateTime.Now.ToString("s")}.",
         "Modifying this file will break the program!"
     };

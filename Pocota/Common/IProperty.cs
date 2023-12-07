@@ -9,6 +9,6 @@ public interface IProperty
     bool IsNullable { get; }
     bool IsReadOnly { get; }
     bool IsPoco { get; }
-    object GetValue(object obj);
-    void SetValue(object obj, object value);
+    object? GetValue(object obj);
+    void SetValue(object obj, object? value);
 }

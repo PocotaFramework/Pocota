@@ -23,8 +23,8 @@ public class Options
     public int FindersCountBase { get; set; }
     public int FindersParamsCountBase { get; set; }
     public double FindersMandatoryFraction { get; set; }
-    public string GeneratedServerStuffProjectDir { get; set; }
-    public string ContractClassName { get; set; }
-    public string TargetFramework { get; set; }
-    public string ContractNamespace { get; set; }
+    public string GeneratedServerStuffProjectDir { get; set; } = null!;
+    public string ContractClassName { get; set; } = null!;
+    public string TargetFramework { get; set; } = null!;
+    public string ContractNamespace { get; set; } = null!;
 }

@@ -3,7 +3,7 @@
 [AttributeUsage(AttributeTargets.Assembly)]
 public class BuilderPropertiesAttribute: Attribute
 {
-    public Dictionary<string, string> Properties { get; private init; } = new();
+    public Dictionary<string, string> Properties { get; private init; } = [];
 
     public BuilderPropertiesAttribute(params string[] entries)
     {

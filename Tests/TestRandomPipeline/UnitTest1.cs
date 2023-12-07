@@ -31,9 +31,9 @@ public class Tests
 
     }
 
-    public static IEnumerable<TestPipelineOptions> TestPipelineOptionsSource()
+    private static TestPipelineOptions[] TestPipelineOptionsSource()
     {
-        return new TestPipelineOptions[] { new TestPipelineOptions {
+        return [ new() {
             Seed = -1,
             NodesCount = 20,
             EntitiesFraction = .7,
@@ -53,7 +53,7 @@ public class Tests
             FindersCountBase = 3,
             FindersParamsCountBase = 2,
             FindersMandatoryFraction = .3,
-        } };
+        } ];
     }
 
     [Test]
@@ -72,7 +72,7 @@ public class Tests
 
         Console.WriteLine($"Seed: {seed}");
 
-        Random rnd = new Random(seed);
+        Random rnd = new(seed);
         string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
 
         options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");

@@ -5,12 +5,12 @@ namespace Net.Leksi.Pocota.Pipeline;
 
 public class ContractModel: PageModel
 {
-    internal HashSet<string> Usings { get; private init; } = new();
+    internal HashSet<string> Usings { get; private init; } = [];
     internal string ClassName { get; set; } = null!;
     internal string Namespace { get; set; } = null!;
-    internal List<Node> Nodes { get; private init; } = new();
+    internal List<Node> Nodes { get; private init; } = [];
     public void OnGet([FromServices] SourcesGenerator generator)
     {
-        generator.RenderContractClass(this);
+        SourcesGenerator.RenderContractClass(this);
     }
 }

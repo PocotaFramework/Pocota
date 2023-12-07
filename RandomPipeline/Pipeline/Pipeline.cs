@@ -6,27 +6,22 @@ using System.Text;
 
 namespace Net.Leksi.Pocota.Pipeline;
 
-public class Pipeline
+public class Pipeline(Random random, Options options)
 {
-    private readonly Dictionary<Node, int> _colors = new();
-    private readonly Random _random;
-    private readonly Options _options;
-    private readonly List<Node> _topolog = new();
-    private readonly List<Type> _types = new() {
+    private readonly Dictionary<Node, int> _colors = [];
+    private readonly Random _random = random;
+    private readonly Options _options = options;
+    private readonly List<Node> _topolog = [];
+    private readonly List<Type> _types = [
         typeof(int),
         typeof(string),
         typeof(DateOnly),
         typeof(MockEnum),
-    };
+    ];
     private readonly SourcesGenerator _generator = new();
     private Graph _graph = null!;
-    private Project _contract;
+    private Project _contract = null!;
 
-    public Pipeline(Random random, Options options) 
-    { 
-        _random = random; 
-        _options = options;
-    }
     public void GenerateModelAndContract()
     {
         BuildGraph();

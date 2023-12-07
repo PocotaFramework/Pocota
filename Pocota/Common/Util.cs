@@ -18,7 +18,7 @@ public static class Util
         {
             return MakeTypeName(type.GetGenericArguments()[0]);
         }
-        return type.GetGenericTypeDefinition().Name.Substring(0, type.GetGenericTypeDefinition().Name.IndexOf('`'))
+        return type.GetGenericTypeDefinition().Name[..type.GetGenericTypeDefinition().Name.IndexOf('`')]
             + '<' + String.Join(',', type.GetGenericArguments().Select(v => MakeTypeName(v))) + '>';
     }
 

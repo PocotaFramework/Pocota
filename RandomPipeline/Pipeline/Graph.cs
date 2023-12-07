@@ -4,8 +4,8 @@ namespace Net.Leksi.Pocota.Pipeline;
 
 internal class Graph
 {
-    internal List<Node> Nodes { get; private init; } = new();
-    internal Dictionary<Node, List<Node>> Edges { get; private init; } = new();
+    internal List<Node> Nodes { get; private init; } = [];
+    internal Dictionary<Node, List<Node>> Edges { get; private init; } = [];
 
     public override string ToString()
     {
@@ -19,14 +19,14 @@ internal class Graph
                 {
                     if(node1 == node.Parent)
                     {
-                        sb.Append("<");
+                        sb.Append('<');
                     }
                     sb.Append(node1);
                     if (node1 == node.Parent)
                     {
-                        sb.Append(">");
+                        sb.Append('>');
                     }
-                    sb.Append(" ");
+                    sb.Append(' ');
                 }
             }
             sb.AppendLine("]");

@@ -6,9 +6,9 @@ namespace Net.Leksi.Pocota.Pipeline;
 public class ClassModel : PageModel
 {
     internal Node Node { get; set; } = null!;
-    internal HashSet<string> Usings { get; init; } = new();
+    internal HashSet<string> Usings { get; init; } = [];
     public void OnGet([FromServices] SourcesGenerator generator)
     {
-        generator.RenderModelClass(this);
+        SourcesGenerator.RenderModelClass(this);
     }
 }
