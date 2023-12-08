@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota;
 
-public interface IEntity
+public interface IEntityAdapter
 {
     IEnumerable<object> GetPrimaryKey();
 }

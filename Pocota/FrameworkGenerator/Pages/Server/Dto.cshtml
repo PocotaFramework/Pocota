@@ -8,6 +8,12 @@
 public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
 
 {
+    private const string s_notBuilding = "Not at Building stage!";
+    private const string s_notDeserialization = "Not at Deserialization stage!";
+    private const string s_notAccessGivingSerializationDeserialization = 
+        "Not at AccessGiving, Serialization or Deserialization stage!";
+    private const string s_notSet = "Not set!";
+    private const string s_notAccessGiving = "Not at AccessGiving stage!";
 #region PropertiesClasses
 @foreach (PropertyModel pm in Model.Properties)
 {
@@ -26,7 +32,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             {
                 return obj1.Get@{}@pm.Name@{}Value();
             }
-            throw new ArgumentException("obj");
+            throw new ArgumentException(nameof(obj));
         }
         public void SetValue(object obj, object? value)
         {
@@ -34,7 +40,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             {
                 obj1.Set@{}@pm.Name@{}Value(value);
             }
-            throw new ArgumentException("obj");
+            throw new ArgumentException(nameof(obj));
         }
         public bool IsSet(object obj)
         {
@@ -42,7 +48,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             {
                 return obj1._@pm.Name@{}IsSet;
             }
-            throw new ArgumentException("obj");
+            throw new ArgumentException(nameof(obj));
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
@@ -93,7 +99,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
                 _@pm.Name@{}IsSet = true;
             }
             else{
-                throw new InvalidOperationException("Not at Building stage!");
+                throw new InvalidOperationException(s_notBuilding);
             }
         }
     }
@@ -111,7 +117,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             _@pm.Name@{}IsSet = true;
         }
         else{
-            throw new InvalidOperationException("Not at Deserialization stage!");
+            throw new InvalidOperationException(s_notDeserialization);
         }
     }
     private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) Get@{}@pm.Name@{}Value()
@@ -142,7 +148,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             }
             throw new InvalidOperationException("Not set!");
         }
-        throw new InvalidOperationException("Not at AccessGiving, Serialization or Deserialization stage!");
+        throw new InvalidOperationException(s_notAccessGivingSerializationDeserialization);
     }
     private void Set@{}@pm.Name@{}Access(Access access)
     {
@@ -156,11 +162,11 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             }
             else
             {
-                throw new InvalidOperationException("Not set!");
+                throw new InvalidOperationException(s_notSet);
             }
         }
         else{
-            throw new InvalidOperationException("Not at AccessGiving stage!");
+            throw new InvalidOperationException(s_notAccessGiving);
         }
     }
 </text>

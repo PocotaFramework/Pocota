@@ -18,7 +18,6 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
 </text>
 }
 #region Properties
-    object[] IEntity.PrimaryKey => throw new NotImplementedException();
 
 @foreach(PropertyModel pm in Model.Properties)
 {
@@ -49,7 +48,18 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         {
     @if(pm.IsPrimaryKey)
     {
-        <text>
+        <text>            if(_source is null)
+            {
+                _@pm.Name = value;
+                if(((@nameof(IEntityAdapter))this).GetPrimaryKey().All(v => v != default))
+                {
+                    //todo ищем _source
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException(s_primaryKeySet);
+            }
 </text>
     }
     else
@@ -68,4 +78,23 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
 </text>
 }
 #endregion Properties
+    IEnumerable<object> @nameof(IEntityAdapter)@{}.GetPrimaryKey()
+    {
+@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+{
+    if(pm.IsPoco)
+    {
+        <text>        foreach (object pk in ((@nameof(IEntityAdapter))_@pm.Name).GetPrimaryKey())
+        {
+            yield return pk;
+        }
+</text>
+    }
+    else
+    {
+        <text>        yield return _@pm.Name;
+</text>
+    }
+}
+    }
 }

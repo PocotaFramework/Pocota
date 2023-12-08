@@ -210,8 +210,9 @@ public class Generator : Runner
         model.EntityClassName = handler.Type.Name;
         Util.AddNamespaces(model.Usings, handler.Type);
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        Util.AddNamespaces(model.Usings, typeof(IEnumerable<>));
         model.BaseClasses.Add(handler.Type.Name);
-        model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
+        model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntityAdapter)));
         foreach (PropertyModel pm in handler.Properties)
         {
             if (pm.IsCollection)
