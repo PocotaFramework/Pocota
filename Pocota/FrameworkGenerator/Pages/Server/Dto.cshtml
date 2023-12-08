@@ -22,11 +22,27 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         public bool IsPoco  => @(pm.IsPoco ? "true" : "false");
         public object? GetValue(object obj)
         {
-            return (obj as @Model.ClassName)?.Get@{}@pm.Name@{}Value();
+            if(obj is @Model.ClassName obj1)
+            {
+                return obj1.Get@{}@pm.Name@{}Value();
+            }
+            throw new ArgumentException("obj");
         }
         public void SetValue(object obj, object? value)
         {
-            (obj as @Model.ClassName)?.Set@{}@pm.Name@{}Value(value);
+            if(obj is @Model.ClassName obj1)
+            {
+                obj1.Set@{}@pm.Name@{}Value(value);
+            }
+            throw new ArgumentException("obj");
+        }
+        public bool IsSet(object obj)
+        {
+            if(obj is @Model.ClassName obj1)
+            {
+                return obj1._@pm.Name@{}IsSet;
+            }
+            throw new ArgumentException("obj");
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
@@ -51,6 +67,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
 {
     <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
     private Access _@pm.Name@{}Access = Access.Full;
+    private bool _@pm.Name@{}IsSet = false;
 </text>
 }
 #endregion Fields
@@ -62,16 +79,21 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
     { 
         get
         {
-            return _@pm.Name;
+            if(_@pm.Name@{}IsSet)
+            {
+                return _@pm.Name;
+            }
+            throw new InvalidOperationException("Not set!");
         }
         set
         {
             if(_pocoContext.ProcessingStage is ProcessingStage.Building)
             {
                 _@pm.Name = value;
+                _@pm.Name@{}IsSet = true;
             }
             else{
-                throw  new InvalidOperationException("Not at Building stage!");
+                throw new InvalidOperationException("Not at Building stage!");
             }
         }
     }
@@ -86,6 +108,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         if(_pocoContext.ProcessingStage is ProcessingStage.Deserialization)
         {
             _@pm.Name = (@Html.Raw(pm.TypeName))value!;
+            _@pm.Name@{}IsSet = true;
         }
         else{
             throw new InvalidOperationException("Not at Deserialization stage!");
@@ -95,7 +118,11 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
     {
         if(_pocoContext.ProcessingStage is ProcessingStage.Serialization)
         {
-            return _@pm.Name;
+            if(_@pm.Name@{}IsSet)
+            {
+                return _@pm.Name;
+            }
+            throw new InvalidOperationException("Not set!");
         }
         throw new InvalidOperationException("Not at Serialization stage!");
     }
@@ -109,7 +136,11 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             || _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
         )
         {
-            return _@pm.Name@{}Access;
+            if(_@pm.Name@{}IsSet)
+            {
+                return _@pm.Name@{}Access;
+            }
+            throw new InvalidOperationException("Not set!");
         }
         throw new InvalidOperationException("Not at AccessGiving, Serialization or Deserialization stage!");
     }
@@ -119,7 +150,14 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
         )
         {
-            _@pm.Name@{}Access = access;
+            if(_@pm.Name@{}IsSet)
+            {
+                _@pm.Name@{}Access = access;
+            }
+            else
+            {
+                throw new InvalidOperationException("Not set!");
+            }
         }
         else{
             throw new InvalidOperationException("Not at AccessGiving stage!");

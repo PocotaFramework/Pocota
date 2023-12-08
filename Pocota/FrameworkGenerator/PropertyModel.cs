@@ -10,5 +10,6 @@ internal class PropertyModel
     internal bool IsReadOnly { get; set; }
     internal bool IsNullable { get; set; }
     internal bool IsPoco { get; set; }
+    internal bool IsPrimaryKey { get; set; }
     internal bool IsCollection { get; set; }
 }

@@ -11,4 +11,5 @@ public interface IProperty
     bool IsPoco { get; }
     object? GetValue(object obj);
     void SetValue(object obj, object? value);
+    bool IsSet(object obj);
 }

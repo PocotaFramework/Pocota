@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Net.Leksi.Pocota.Pipeline;
 
-public class Pipeline(Random random, Options options)
+public class Pipeline(Random? random, Options options)
 {
     private readonly Dictionary<Node, int> _colors = [];
-    private readonly Random _random = random;
+    private readonly Random? _random = random;
     private readonly Options _options = options;
     private readonly List<Node> _topolog = [];
     private readonly List<Type> _types = [
@@ -22,28 +22,36 @@ public class Pipeline(Random random, Options options)
     private Graph _graph = null!;
     private Project _contract = null!;
 
-    public void GenerateModelAndContract()
+    public void GenerateContract()
     {
-        BuildGraph();
-        GenerateInheritancesAndProperties();
-        GeneratePrimaryKeys();
-        BuildTrees();
-        GenerateAccessSelectors();
-        GenerateMethods();
+        if(_random is { })
+        {
+            BuildGraph();
+            GenerateInheritancesAndProperties();
+            GeneratePrimaryKeys();
+            BuildTrees();
+            GenerateAccessSelectors();
+            GenerateMethods();
 
-        _contract = _generator.GenerateModelAndContract(_graph, _options);
+            _contract = _generator.GenerateModelAndContract(_graph, _options);
+        }
+        else
+        {
+            throw new InvalidOperationException($"Random is not set!");
+        }
     }
-    public void GenerateFramework()
+    public void GenerateFramework(string? contractAssemblyLocation = null)
     {
+        contractAssemblyLocation ??= _contract!.LibraryFile!;
         Generator _generator = Generator.Create(new FrameworkGeneratorOptions
         {
             Contract = (Contract)Activator.CreateInstance(
-                       Assembly.LoadFile(_contract!.LibraryFile!)
-                           .GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
-                   )!,
+                    Assembly.LoadFile(contractAssemblyLocation)
+                        .GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
+                )!,
             AdditionalReferences = Directory.GetFiles(
-                           Path.GetDirectoryName(_contract!.LibraryFile)!
-                       ).Where(f => (".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))) && !f.Equals(_contract!.LibraryFile)).ToArray(),
+                    Path.GetDirectoryName(contractAssemblyLocation)!
+                ).Where(f => (".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))) && !f.Equals(contractAssemblyLocation)).ToArray(),
             ServerStuffProject = _options.GeneratedServerStuffProjectDir,
             ReplaceFilesIfExist = true,
             DoCreateProject = true,

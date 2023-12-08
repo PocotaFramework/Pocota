@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -53,43 +54,57 @@ public class Tests
             FindersCountBase = 3,
             FindersParamsCountBase = 2,
             FindersMandatoryFraction = .3,
-        } ];
+            //CustomContractAssemblyLocation = @"W:\C#\PocotaNew3\Tests\CustomsContracts\Contract1\bin\Debug\net8.0-windows\Contract1.dll",
+            ContractNamespace = "Contract1",
+            ContractClassName = "Contract1",
+    } ];
     }
 
     [Test]
     [TestCaseSource(nameof(TestPipelineOptionsSource))]
     public void TestPipeline(TestPipelineOptions options)
     {
-        int seed = options.Seed;
-        if (seed == -1)
-        {
-            seed = (int)(long.Parse(
-                new string(
-                    DateTime.UtcNow.Ticks.ToString().Reverse().ToArray()
-                )
-            ) % int.MaxValue);
-        }
-
-        Console.WriteLine($"Seed: {seed}");
-
-        Random rnd = new(seed);
+        Random? rnd = null;
         string projectDir = Assembly.GetExecutingAssembly().GetCustomAttribute<BuilderPropertiesAttribute>()!.Properties["ProjectDir"];
 
-        options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
-
-        options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
-        options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
-        options.ContractNamespace = "Net.Leksi.Pocota.RandomServer";
-        options.ContractClassName = "RandomContract";
         options.TargetFramework = "net8.0-windows";
 
+        Pipeline pipeline;
 
-        Pipeline pipeline = new(rnd, options);
+        if (options.CustomContractAssemblyLocation is { })
+        {
 
-        pipeline.GenerateModelAndContract();
+            pipeline = new(rnd, options);
+        }
+        else
+        {
+            int seed = options.Seed;
+            if (seed == -1)
+            {
+                seed = (int)(long.Parse(
+                    new string(
+                        DateTime.UtcNow.Ticks.ToString().Reverse().ToArray()
+                    )
+                ) % int.MaxValue);
+            }
+
+            Console.WriteLine($"Seed: {seed}");
+
+            rnd = new(seed);
+            options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
+
+            options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
+            options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+            options.ContractNamespace = "Net.Leksi.Pocota.RandomServer";
+            options.ContractClassName = "RandomContract";
+
+            pipeline = new(rnd, options);
+
+            pipeline.GenerateContract();
+        }
 
         options.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff");
 
-        pipeline.GenerateFramework();
+        pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
     }
 }

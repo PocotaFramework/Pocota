@@ -3,6 +3,7 @@ using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Net.Leksi.Pocota.FrameworkGenerator;
 
@@ -22,9 +23,11 @@ public class Generator : Runner
 
     private MethodHolder? _currentMethod = null;
     private PocoHolder? _currentPoco = null;
+    private object? _currentObject = null;
     private PropertyUse? _lastPropertyUse = null;
     private ContractEventKind _currentContractEventKind = ContractEventKind.None;
     private readonly Dictionary<object, PropertyUse> _propertyUses = [];
+    private readonly List<PropertyUse> _currentPath = [];
     public static Generator Create(FrameworkGeneratorOptions options)
     {
         Generator generator = new()
@@ -224,6 +227,10 @@ public class Generator : Runner
     {
         if (args.EventKind is ContractEventKind.Property)
         {
+            if (args.Poco == _currentObject)
+            {
+                _currentPath.Clear();
+            }
             if (_propertyUses.Count == 0)
             {
                 _currentMethod!.PropertyUse.Type = args.Poco!.GetType();
@@ -275,6 +282,7 @@ public class Generator : Runner
                 }
                 _lastPropertyUse = next;
             }
+            _currentPath.Add(_lastPropertyUse!);
             _lastPropertyUse!.Flags |= PropertyUseFlags.Expected;
         }
         else if (args.EventKind is ContractEventKind.Mandatory)
@@ -424,9 +432,16 @@ public class Generator : Runner
 
             foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
             {
-                foreach (PropertyUse pu in _allPropertyUses[ph.PropertyUse!.Type!])
+                if(ph.Properties.Where(pm => pm.IsPrimaryKey).Count() == 0) 
                 {
-                    DFM(ph.PropertyUse, pu);
+                    throw new InvalidOperationException($"An Entity must have at least one PrimaryKey defined, but {ph.Type} has not!");
+                }
+                if(_allPropertyUses.TryGetValue(ph.PropertyUse!.Type!, out List<PropertyUse>? list))
+                {
+                    foreach (PropertyUse pu in list)
+                    {
+                        DFM(ph.PropertyUse, pu);
+                    }
                 }
                 SortPropertyUses(ph.PropertyUse);
             }
@@ -542,6 +557,7 @@ public class Generator : Runner
         if (args.EventKind is ContractEventKind.PrimaryKey || args.EventKind is ContractEventKind.AccessSelector || args.EventKind is ContractEventKind.Output)
         {
             _currentContractEventKind = args.EventKind;
+            _currentObject = args.Poco;
         }
         else if (args.EventKind is ContractEventKind.Poco)
         {
@@ -566,6 +582,11 @@ public class Generator : Runner
     {
         if (args.EventKind is ContractEventKind.Property)
         {
+            if(args.Poco == _currentObject)
+            {
+                _currentPath.Clear();
+            }
+
             if (_propertyUses.Count == 0)
             {
                 _propertyUses.Add(args.Poco!, _currentPoco!.PropertyUse!);
@@ -597,6 +618,15 @@ public class Generator : Runner
                     _propertyUses.Add(args.Value, found);
                 }
             }
+            _currentPath.Add(found);
+            if (_currentContractEventKind is ContractEventKind.PrimaryKey && _currentPath.Count > 1)
+            {
+                throw new InvalidOperationException($"Primary key must have one property path, for {_currentPath.First().Type} got {string.Join('.', _currentPath.Select(pu => pu.Name))}!");
+            }
+            if(_currentPoco?.Properties.Where(pu => pu.Name.Equals(args.Property)).FirstOrDefault() is PropertyModel pm)
+            {
+                pm.IsPrimaryKey = true;
+            }
             found.Flags |= (_currentContractEventKind is ContractEventKind.PrimaryKey ? PropertyUseFlags.PrimaryKey : PropertyUseFlags.AccessSelector);
             if (args.Value is { } && !_propertyUses.ContainsKey(args.Value))
             {
@@ -607,5 +637,10 @@ public class Generator : Runner
         {
             _propertyUses.Clear();
         }
+    }
+
+    internal void RenderServerEntityAdapter(EntityAdapterModel entityAdapterModel)
+    {
+        throw new NotImplementedException();
     }
 }
