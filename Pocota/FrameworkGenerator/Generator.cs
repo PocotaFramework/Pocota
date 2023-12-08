@@ -55,6 +55,7 @@ public class Generator : Runner
         string dtoBase = Path.Combine(_serverStuffProject!, "DtoBase");
         string dto = Path.Combine(_serverStuffProject!, "Dto");
         string controllers = Path.Combine(_serverStuffProject!, "Controllers");
+        string adapters = Path.Combine(_serverStuffProject!, "Adapters");
         string projectDir = Path.GetFullPath(_serverStuffProject!);
 
         if (!_replaceFilesIfExist)
@@ -77,6 +78,10 @@ public class Generator : Runner
         {
             Directory.Delete(controllers, true);
         }
+        if (Directory.Exists(adapters))
+        {
+            Directory.Delete(adapters, true);
+        }
         if (_doCreateProject && Directory.Exists(projectDir))
         {
             Directory.Delete(projectDir, true);
@@ -87,6 +92,7 @@ public class Generator : Runner
         }
         Directory.CreateDirectory(dtoBase);
         Directory.CreateDirectory(dto);
+        Directory.CreateDirectory(adapters);
         Directory.CreateDirectory(controllers);
 
         Project? serverStuffProject = null;
@@ -110,6 +116,7 @@ public class Generator : Runner
         IConnector connector = GetConnector();
         GenerateServerDtoBase(connector, dtoBase);
         GenerateServerDto(connector, dto);
+        GenerateServerEntityAdapters(connector, adapters);
         GenerateController(connector, controllers);
 
         Stop();
@@ -193,6 +200,36 @@ public class Generator : Runner
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
         }
+    }
+    internal void RenderServerEntityAdapter(EntityAdapterModel model)
+    {
+        model.Contract = _contract;
+        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = handler.Type.Namespace;
+        model.ClassName = $"{handler.Type.Name}Adapter";
+        model.EntityClassName = handler.Type.Name;
+        Util.AddNamespaces(model.Usings, handler.Type);
+        Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        model.BaseClasses.Add(handler.Type.Name);
+        model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
+        foreach (PropertyModel pm in handler.Properties)
+        {
+            if (pm.IsCollection)
+            {
+                Util.AddNamespaces(model.Usings, typeof(List<>));
+            }
+            Util.AddNamespaces(model.Usings, pm.ItemType);
+            model.Properties.Add(pm);
+        }
+    }
+    protected override void ConfigureBuilder(WebApplicationBuilder builder)
+    {
+        builder.Services.AddRazorPages();
+        builder.Services.AddSingleton(this);
+    }
+    protected override void ConfigureApplication(WebApplication app)
+    {
+        app.MapRazorPages();
     }
     private void DFM(PropertyUse src, PropertyUse dst)
     {
@@ -295,27 +332,16 @@ public class Generator : Runner
             }
         }
     }
-    protected override void ConfigureBuilder(WebApplicationBuilder builder)
-    {
-        builder.Services.AddRazorPages();
-        builder.Services.AddSingleton(this);
-    }
-    protected override void ConfigureApplication(WebApplication app)
-    {
-        app.MapRazorPages();
-    }
     private void GenerateController(IConnector connector, string targetDir)
     {
     }
     private void GenerateServerDtoBase(IConnector connector, string targetDir)
     {
-
         foreach (PocoHolder ph in _pocos.Values)
         {
             TextReader contractSource = connector.Get("/Server/DtoBase", ph);
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}.cs"), contractSource.ReadToEnd());
         }
-
     }
     private void GenerateServerDto(IConnector connector, string targetDir)
     {
@@ -323,6 +349,14 @@ public class Generator : Runner
         {
             TextReader contractSource = connector.Get("/Server/Dto", ph);
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
+        }
+    }
+    private void GenerateServerEntityAdapters(IConnector connector, string targetDir)
+    {
+        foreach (PocoHolder ph in _pocos.Values.Where(ph => ph.Kind is PocoKind.Entity))
+        {
+            TextReader contractSource = connector.Get("/Server/EntityAdapter", ph);
+            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Adapter.cs"), contractSource.ReadToEnd());
         }
     }
     private void ProcessContract()
@@ -432,7 +466,7 @@ public class Generator : Runner
 
             foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
             {
-                if(ph.Properties.Where(pm => pm.IsPrimaryKey).Count() == 0) 
+                if(!ph.Properties.Where(pm => pm.IsPrimaryKey).Any()) 
                 {
                     throw new InvalidOperationException($"An Entity must have at least one PrimaryKey defined, but {ph.Type} has not!");
                 }
@@ -454,7 +488,6 @@ public class Generator : Runner
 
         Stop();
     }
-
     private void BuildProperties(PocoHolder ph)
     {
         NullabilityInfoContext nullabilityInfoContext = new();
@@ -504,7 +537,6 @@ public class Generator : Runner
             ph.Properties.Add(pm);
         }
     }
-
     private static void SortPropertyUses(PropertyUse propertyUse)
     {
         PropertyUseComparer puc = new();
@@ -517,26 +549,25 @@ public class Generator : Runner
             }
         }
     }
-
     private static void PrintPropertyUse(PropertyUse propertyUse, int depth)
     {
         string flags = string.Empty;
         if (propertyUse.Flags != PropertyUseFlags.None)
         {
             flags = "(";
-            if ((propertyUse.Flags & PropertyUseFlags.Expected) == PropertyUseFlags.Expected)
+            if (propertyUse.Flags.HasFlag(PropertyUseFlags.Expected))
             {
                 flags += "E";
             }
-            if ((propertyUse.Flags & PropertyUseFlags.Mandatory) == PropertyUseFlags.Mandatory)
+            if (propertyUse.Flags.HasFlag(PropertyUseFlags.Mandatory))
             {
                 flags += "M";
             }
-            if ((propertyUse.Flags & PropertyUseFlags.PrimaryKey) == PropertyUseFlags.PrimaryKey)
+            if (propertyUse.Flags.HasFlag(PropertyUseFlags.PrimaryKey))
             {
                 flags += "P";
             }
-            if ((propertyUse.Flags & PropertyUseFlags.AccessSelector) == PropertyUseFlags.AccessSelector)
+            if (propertyUse.Flags.HasFlag(PropertyUseFlags.AccessSelector))
             {
                 flags += "A";
             }
@@ -551,7 +582,6 @@ public class Generator : Runner
             }
         }
     }
-
     private void Contract_ContractProcessing(ContractEventArgs args)
     {
         if (args.EventKind is ContractEventKind.PrimaryKey || args.EventKind is ContractEventKind.AccessSelector || args.EventKind is ContractEventKind.Output)
@@ -577,7 +607,6 @@ public class Generator : Runner
             }
         }
     }
-
     private void PrimaryKeyOrAccessSelectorEvent(ContractEventArgs args)
     {
         if (args.EventKind is ContractEventKind.Property)
@@ -619,13 +648,16 @@ public class Generator : Runner
                 }
             }
             _currentPath.Add(found);
-            if (_currentContractEventKind is ContractEventKind.PrimaryKey && _currentPath.Count > 1)
+            if(_currentContractEventKind is ContractEventKind.PrimaryKey)
             {
-                throw new InvalidOperationException($"Primary key must have one property path, for {_currentPath.First().Type} got {string.Join('.', _currentPath.Select(pu => pu.Name))}!");
-            }
-            if(_currentPoco?.Properties.Where(pu => pu.Name.Equals(args.Property)).FirstOrDefault() is PropertyModel pm)
-            {
-                pm.IsPrimaryKey = true;
+                if (_currentPath.Count > 1)
+                {
+                    throw new InvalidOperationException($"Primary key must have one property path, for {_currentPath.First().Type} got {string.Join('.', _currentPath.Select(pu => pu.Name))}!");
+                }
+                if (_currentPoco?.Properties.Where(pu => pu.Name.Equals(args.Property)).FirstOrDefault() is PropertyModel pm)
+                {
+                    pm.IsPrimaryKey = true;
+                }
             }
             found.Flags |= (_currentContractEventKind is ContractEventKind.PrimaryKey ? PropertyUseFlags.PrimaryKey : PropertyUseFlags.AccessSelector);
             if (args.Value is { } && !_propertyUses.ContainsKey(args.Value))
@@ -637,10 +669,5 @@ public class Generator : Runner
         {
             _propertyUses.Clear();
         }
-    }
-
-    internal void RenderServerEntityAdapter(EntityAdapterModel entityAdapterModel)
-    {
-        throw new NotImplementedException();
     }
 }

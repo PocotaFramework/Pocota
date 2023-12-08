@@ -8,6 +8,15 @@ public abstract class @Model.ClassName
 {
 @foreach(PropertyModel pm in Model.Properties)
 {
+    if(pm.IsPrimaryKey)
+    {
+        <text>
+            /// <summary>
+    ///  PrimaryKey property
+    /// </summary>
+
+</text>
+    }
     <text>    public abstract @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name { get; set; }
 </text>
 }
