@@ -3,4 +3,5 @@
 public interface IEntityAdapter
 {
     IEnumerable<object> GetPrimaryKey();
+    object Source { get; }
 }

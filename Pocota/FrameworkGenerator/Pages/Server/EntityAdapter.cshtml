@@ -18,7 +18,7 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
 </text>
 }
 #region Properties
-
+    object IEntityAdapter.Source => _source;
 @foreach(PropertyModel pm in Model.Properties)
 {
     <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
@@ -27,17 +27,21 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         {
     @if(pm.IsPrimaryKey)
     {
-        <text>            if(_source is {})
+        <text>            if(_source is null && _@pm.Name is IEntityAdapter)
             {
-                return _source.@pm.Name;
+                return _@pm.Name;
             }
-            return _@pm.Name;
+            return _source.@pm.Name;
 </text>
     }
     else
     {
         <text>            if(_source is {})
             {
+                if(_@pm.Name is IEntityAdapter)
+                {
+                    return _@pm.Name;
+                }
                 return _source.@pm.Name;
             }
             throw new InvalidOperationException(s_primaryKeyNotSet);
@@ -66,6 +70,11 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
     {
         <text>            if(_source is {})
             {
+                if(_@pm.Name is IEntityAdapter ea)
+                {
+                    @pm.Name = value;
+                    _source.@pm.Name = ea.Source;
+                }
                 _source.@pm.Name = value;
             }
             else{
