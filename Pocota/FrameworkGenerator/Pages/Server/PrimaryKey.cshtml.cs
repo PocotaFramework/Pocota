@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 
-public class EntityAdapterModel : ClassModel
+public class PrimaryKeyModel : PocoModel
 {
-    public string EntityClassName { get; set; } = null!;
+    internal string ArgumentClass { get; set; } = null!;
     public void OnGet([FromServices] Generator generator)
     {
-        generator.RenderServerEntityAdapter(this);
+        generator.RenderServerPrimaryKey(this);
     }
 }

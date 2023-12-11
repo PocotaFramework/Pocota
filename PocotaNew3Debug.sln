@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerStuff", "Tests\Genera
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract1", "Tests\CustomsContracts\Contract1\Contract1.csproj", "{C596D163-ABFC-4B19-8665-EC075E300BCF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaServerDebug", "Pocota\Server\PocotaServer\PocotaServerDebug.csproj", "{203B9CD9-3E36-430B-8926-D6D5EE6546AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{C596D163-ABFC-4B19-8665-EC075E300BCF}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{C596D163-ABFC-4B19-8665-EC075E300BCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C596D163-ABFC-4B19-8665-EC075E300BCF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.RAC|Any CPU.ActiveCfg = Release|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.RAC|Any CPU.Build.0 = Release|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -104,6 +112,7 @@ Global
 		{28069559-E400-4510-9621-34053109DE68} = {15B9DBEB-ADDF-442A-9FCA-954581ECAD8B}
 		{84E6B91D-DFA3-4913-B315-A18EC53D5D9E} = {F6607477-5C3C-43B1-8F95-840D1DF55161}
 		{C596D163-ABFC-4B19-8665-EC075E300BCF} = {7CD04CE9-2E1F-4531-ADBC-F879D76D8404}
+		{203B9CD9-3E36-430B-8926-D6D5EE6546AA} = {F6607477-5C3C-43B1-8F95-840D1DF55161}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {86604C9F-C7D5-4795-A922-D532C75C8656}

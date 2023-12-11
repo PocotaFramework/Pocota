@@ -5,15 +5,20 @@
 @model DtoModel
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.Any()){<text>: @string.Join(", ", Model.BaseClasses)</text>}
+public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
 
 {
     private const string s_notBuilding = "Not at Building stage!";
     private const string s_notDeserialization = "Not at Deserialization stage!";
+    private const string s_notSet = "Not set!";
+    private const string s_invalidTargetType = "The argument target must have type @Model.FullName!";
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>    private const string s_notAccessGiving = "Not at AccessGiving stage!";
     private const string s_notAccessGivingSerializationDeserialization = 
         "Not at AccessGiving, Serialization or Deserialization stage!";
-    private const string s_notSet = "Not set!";
-    private const string s_notAccessGiving = "Not at AccessGiving stage!";
+</text>
+}
 #region PropertiesClasses
 @foreach (PropertyModel pm in Model.Properties)
 {
@@ -25,40 +30,52 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         public bool IsCollection => @(pm.IsCollection ? "true" : "false");
         public bool IsNullable => @(pm.IsNullable ? "true" : "false");
         public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
-        public bool IsPoco  => @(pm.IsPoco ? "true" : "false");
-        public object? GetValue(object obj)
+        public @nameof(PocoKind) PocoKind  => @nameof(PocoKind).@pm.PocoKind;
+        public object? GetValue(object target)
         {
-            if(obj is @Model.ClassName obj1)
+            if(target is @Model.ClassName obj)
             {
-                return obj1.Get@{}@pm.Name@{}Value();
+                return @if (pm.IsSelf) {<text>obj</text>}else{<text>obj.Get@{}@pm.Name@{}Value()</text>};
             }
-            throw new ArgumentException(nameof(obj));
+            throw new ArgumentException(s_invalidTargetType);
         }
-        public void SetValue(object obj, object? value)
+        public void SetValue(object target, object? value)
         {
-            if(obj is @Model.ClassName obj1)
+            if(target is @Model.ClassName obj)
             {
-                obj1.Set@{}@pm.Name@{}Value(value);
+                @if (!pm.IsSelf) 
+                {
+                    <text>                obj.Set@{}@pm.Name@{}Value(value)
+</text>
+                };
             }
-            throw new ArgumentException(nameof(obj));
+            throw new ArgumentException(s_invalidTargetType);
         }
-        public bool IsSet(object obj)
+        public bool IsSet(object target)
         {
-            if(obj is @Model.ClassName obj1)
+            if(target is @Model.ClassName obj)
             {
-                return obj1._@pm.Name@{}IsSet;
+                return @if (pm.IsSelf) {<text>true</text>}else{<text>obj._@pm.Name@{}IsSet</text>};
             }
-            throw new ArgumentException(nameof(obj));
+            throw new ArgumentException(s_invalidTargetType);
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>        public Access? GetAccess(object obj)
+        <text>        public Access? GetAccess(object target)
         {
-            return (obj as @Model.ClassName)?.Get@{}@pm.Name@{}Access();
+            if(target is @Model.ClassName obj)
+            {
+                return obj.Get@{}@pm.Name@{}Access();
+            }
+            throw new ArgumentException(s_invalidTargetType);
         }
-        public void SetAccess(object obj, Access access)
+        public void SetAccess(object target, Access access)
         {
-            (obj as @Model.ClassName)?.Set@{}@pm.Name@{}Access(access);
+            if(target is @Model.ClassName obj)
+            {
+                obj.Set@{}@pm.Name@{}Access(access);
+            }
+            throw new ArgumentException(s_invalidTargetType);
         }
 
 </text>
@@ -67,19 +84,45 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
 </text>
 }
 #endregion PropertiesClasses
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>#region PropertyUse
+    private static PropertyUse s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse);
+#endregion PropertyUse
+</text>
+}
+
 #region Fields
-    private readonly IPocoContext _pocoContext = pocoContext;
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
-    private Access _@pm.Name@{}Access = Access.Full;
-    private bool _@pm.Name@{}IsSet = false;
+    <text>    internal static @pm.Name@{}PropertyClass s_@pm.Name@{}Property = new();
 </text>
+}
+    private readonly IPocoContext _pocoContext;
+@foreach (PropertyModel pm in Model.Properties)
+{
+    if (!pm.IsSelf)
+    {
+        <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
+    private bool _@pm.Name@{}IsSet = false;    
+</text>
+    }
+    
+    @if(Model.PocoKind is PocoKind.Entity)
+    {
+        <text>    private Access _@pm.Name@{}Access = Access.Full;
+</text>
+    }
 }
 #endregion Fields
 
 #region Properties
-@foreach(PropertyModel pm in Model.Properties)
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>    PropertyUse @nameof(IPropertyUseAware)@{}.PropertyUse => s_propertyUse;
+</text>
+}
+@foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsSelf))
 {
     <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
     { 
@@ -89,9 +132,12 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             {
                 return _@pm.Name;
             }
-            throw new InvalidOperationException("Not set!");
+            throw new InvalidOperationException(s_notSet);
         }
-        set
+
+    @if(!pm.IsPrimaryKey)
+    {
+        <text>        set
         {
             if(_pocoContext.ProcessingStage is ProcessingStage.Building)
             {
@@ -102,14 +148,22 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
                 throw new InvalidOperationException(s_notBuilding);
             }
         }
+</text>
+    }
     }
 </text>
 }
 #endregion Properties
+    public @Model.ClassName@{}(IServiceProvider services)
+    {
+        _pocoContext = services.GetRequiredService<IPocoContext>();
+    }
 #region SettersGetters
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    private void Set@{}@pm.Name@{}Value(object? value)
+    if(!pm.IsSelf)
+    {
+        <text>    private void Set@{}@pm.Name@{}Value(object? value)
     {
         if(_pocoContext.ProcessingStage is ProcessingStage.Deserialization)
         {
@@ -132,6 +186,8 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
         }
         throw new InvalidOperationException("Not at Serialization stage!");
     }
+</text>
+    }
     @if(Model.PocoKind is PocoKind.Entity)
     {
         <text>    private Access Get@{}@pm.Name@{}Access()
@@ -142,11 +198,23 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             || _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
         )
         {
-            if(_@pm.Name@{}IsSet)
+        @if(pm.IsSelf)
+        {
+            <text>            return _@pm.Name@{}Access;
+</text>
+        }
+        else
+        {
+            <text>            if(_@pm.Name@{}IsSet)
             {
                 return _@pm.Name@{}Access;
             }
-            throw new InvalidOperationException("Not set!");
+            else
+            {
+                throw new InvalidOperationException(s_notSet);
+            }
+</text>
+        }
         }
         throw new InvalidOperationException(s_notAccessGivingSerializationDeserialization);
     }
@@ -156,7 +224,14 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
         )
         {
-            if(_@pm.Name@{}IsSet)
+        @if(pm.IsSelf)
+        {
+            <text>            _@pm.Name@{}Access = access;
+</text>
+        }
+        else
+        {
+            <text>            if(_@pm.Name@{}IsSet)
             {
                 _@pm.Name@{}Access = access;
             }
@@ -164,6 +239,8 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
             {
                 throw new InvalidOperationException(s_notSet);
             }
+</text>
+        }
         }
         else{
             throw new InvalidOperationException(s_notAccessGiving);
@@ -171,7 +248,30 @@ public class @Model.ClassName@{}(IPocoContext pocoContext)@if(Model.BaseClasses.
     }
 </text>
     }
-</text>
 }
 #endregion SettersGetters
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>    IEnumerable<object> @nameof(IEntity)@{}.GetPrimaryKey()
+    {
+@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+{
+    if(pm.PocoKind is PocoKind.Entity)
+    {
+        <text>        foreach (object pk in ((@nameof(IEntity))_@pm.Name).GetPrimaryKey())
+        {
+            yield return pk;
+        }
+</text>
+    }
+    else
+    {
+        <text>        yield return _@pm.Name;
+</text>
+    }
+}
+    }
+
+</text>
+}
 }

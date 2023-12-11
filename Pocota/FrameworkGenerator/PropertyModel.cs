@@ -9,7 +9,8 @@ internal class PropertyModel
     internal string ItemTypeName { get; set; } = null!;
     internal bool IsReadOnly { get; set; }
     internal bool IsNullable { get; set; }
-    internal bool IsPoco { get; set; }
+    internal PocoKind PocoKind { get; set; }
     internal bool IsPrimaryKey { get; set; } = false;
     internal bool IsCollection { get; set; }
+    internal bool IsSelf { get; set; } = false;
 }

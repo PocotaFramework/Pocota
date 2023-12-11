@@ -29,7 +29,7 @@ public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @string.Joi
     {
         get
         {
-            @if(pm.IsPoco)
+            @if(pm.PocoKind is not PocoKind.None)
             {
                 <text>            if(_@pm.Name == default){
                     _@pm.Name = _serviceProvider.GetService@{}@Html.Raw($"<{pm.ItemTypeName}?>")@{}();

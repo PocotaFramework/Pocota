@@ -1,7 +1,10 @@
-﻿namespace Net.Leksi.Pocota;
+﻿using System.Collections.ObjectModel;
+
+namespace Net.Leksi.Pocota;
 
 public class PropertyUse
 {
     public IProperty Property { get; init; } = null!;
-    public List<PropertyUse> Children { get; private init; } = [];
+    public PropertyUseFlags Flags { get; init; } = PropertyUseFlags.None;
+    public ReadOnlyCollection<PropertyUse>? Children { get; init; }
 }

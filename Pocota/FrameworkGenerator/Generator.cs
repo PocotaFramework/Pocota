@@ -10,6 +10,7 @@ namespace Net.Leksi.Pocota.FrameworkGenerator;
 public class Generator : Runner
 {
     private const string s_self = "<self>";
+    private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
     private Contract _contract = null!;
     private readonly Dictionary<string, PocoHolder> _pocos = [];
     private readonly Dictionary<string, MethodHolder> _methods = [];
@@ -54,13 +55,21 @@ public class Generator : Runner
     {
         string dtoBase = Path.Combine(_serverStuffProject!, "DtoBase");
         string dto = Path.Combine(_serverStuffProject!, "Dto");
+        string primaryKeys = Path.Combine(_serverStuffProject!, "PrimaryKeys");
         string controllers = Path.Combine(_serverStuffProject!, "Controllers");
-        string adapters = Path.Combine(_serverStuffProject!, "Adapters");
+        string core = Path.Combine(_serverStuffProject!, "Core");
         string projectDir = Path.GetFullPath(_serverStuffProject!);
 
         if (!_replaceFilesIfExist)
         {
-            if(Directory.Exists(controllers) || Directory.Exists(dtoBase) || Directory.Exists(dto) || (_doCreateProject && Directory.Exists(projectDir)))
+            if(
+                Directory.Exists(controllers) 
+                || Directory.Exists(primaryKeys) 
+                || Directory.Exists(dtoBase)
+                || Directory.Exists(dto)
+                || Directory.Exists(core)
+                || (_doCreateProject && Directory.Exists(projectDir))
+            )
             {
                 throw new InvalidOperationException($"Some files already exist! Delete them or set true {nameof(FrameworkGeneratorOptions.ReplaceFilesIfExist)} option.");
             }
@@ -74,13 +83,17 @@ public class Generator : Runner
         {
             Directory.Delete(dto, true);
         }
+        if (Directory.Exists(primaryKeys))
+        {
+            Directory.Delete(primaryKeys, true);
+        }
         if (Directory.Exists(controllers))
         {
             Directory.Delete(controllers, true);
         }
-        if (Directory.Exists(adapters))
+        if (Directory.Exists(core))
         {
-            Directory.Delete(adapters, true);
+            Directory.Delete(core, true);
         }
         if (_doCreateProject && Directory.Exists(projectDir))
         {
@@ -92,8 +105,9 @@ public class Generator : Runner
         }
         Directory.CreateDirectory(dtoBase);
         Directory.CreateDirectory(dto);
-        Directory.CreateDirectory(adapters);
+        Directory.CreateDirectory(primaryKeys);
         Directory.CreateDirectory(controllers);
+        Directory.CreateDirectory(core);
 
         Project? serverStuffProject = null;
 
@@ -105,6 +119,7 @@ public class Generator : Runner
                 ProjectDir = _serverStuffProject,
                 TargetFramework = _serverTargetFramework,
             });
+            serverStuffProject.AddPackage(s_dependencyInjection, "*");
             foreach (string ar in _additionalReferences)
             {
                 serverStuffProject.AddReference(ar);
@@ -116,8 +131,9 @@ public class Generator : Runner
         IConnector connector = GetConnector();
         GenerateServerDtoBase(connector, dtoBase);
         GenerateServerDto(connector, dto);
-        GenerateServerEntityAdapters(connector, adapters);
+        GenerateServerPrimaryKeys(connector, primaryKeys);
         GenerateController(connector, controllers);
+        GenerateCore(connector, core);
 
         Stop();
 
@@ -146,7 +162,7 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(NotImplementedException));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         Util.AddNamespaces(model.Usings, typeof(Contract));
-        model.Usings.Add("Microsoft.Extensions.DependencyInjection");
+        model.Usings.Add(s_dependencyInjection);
         foreach (PropertyModel pm in handler.Properties)
         {
             if (pm.IsCollection)
@@ -165,15 +181,43 @@ public class Generator : Runner
         model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
         model.ClassName = $"{handler.Type.Name}Dto";
         model.BaseClasses.Add(handler.Type.Name);
+        if(handler.Kind is PocoKind.Entity)
+        {
+            Util.AddNamespaces(model.Usings, typeof(IEntity));
+            Util.AddNamespaces(model.Usings, typeof(IPropertyUseAware));
+            model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
+            model.BaseClasses.Add(Util.MakeTypeName(typeof(IPropertyUseAware)));
+        }
         Util.AddNamespaces(model.Usings, handler.Type);
         Util.AddNamespaces(model.Usings, typeof(IProperty));
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        model.Usings.Add(s_dependencyInjection);
         model.PocoKind = handler.Kind;
         if(handler.Kind is PocoKind.Entity)
         {
             Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
             Util.AddNamespaces(model.Usings, typeof(Access));
         }
+        int pos = 0;
+        while(handler.Properties.Where(pm => pm.Name.Equals($"Self{(pos > 0 ? pos.ToString() : string.Empty)}")).Any())
+        {
+            ++pos;
+        }
+        PropertyModel self = new()
+        {
+            Name = $"Self{(pos > 0 ? pos.ToString() : string.Empty)}",
+            IsCollection = false,
+            IsNullable = false,
+            IsPrimaryKey = false,
+            IsReadOnly = true,
+            ItemType = handler.Type,
+            ItemTypeName = Util.MakeTypeName(handler.Type),
+            PocoKind = handler.Kind,
+            Type = handler.Type,
+            TypeName = Util.MakeTypeName(handler.Type),
+            IsSelf = true,
+        };
+        model.Properties.Add(self);
         foreach (PropertyModel pm in handler.Properties)
         {
             if (pm.IsCollection)
@@ -183,6 +227,47 @@ public class Generator : Runner
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
         }
+        if(handler.Kind is PocoKind.Entity)
+        {
+            model.PropertyUse = BuildPropertyUse(handler.PropertyUse, 0, self, model, false, PropertyUseFlags.AccessSelector);
+        }
+    }
+
+    private PropertyUseModel? BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, ClassModel model, bool showFlags, PropertyUseFlags selectFlags)
+    {
+        PropertyUseModel? result = null;
+        if (self is { } || (propertyUse.Flags & selectFlags) != 0)
+        {
+            result = new()
+            {
+                Level = level,
+                PropertyName = self is { } ? $"s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", "Dto")}.s_{propertyUse.Name}Property"
+            };
+            if (showFlags)
+            {
+                result.Flags = propertyUse.Flags;
+            }
+            if (self is null)
+            {
+                model.Usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}Dto");
+            }
+            if ((propertyUse.Children?.Count ?? 0) > 0)
+            {
+                foreach (PropertyUse child in propertyUse.Children!)
+                {
+                    PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, model, showFlags, selectFlags);
+                    if(next is { })
+                    {
+                        if(result.Children is null)
+                        {
+                            result.Children = [];
+                        }
+                        result.Children.Add(next);
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     internal void RenderServerDtoBase(DtoBaseModel model)
@@ -201,26 +286,53 @@ public class Generator : Runner
             model.Properties.Add(pm);
         }
     }
-    internal void RenderServerEntityAdapter(EntityAdapterModel model)
+    internal void RenderServerPrimaryKey(PrimaryKeyModel model)
     {
         model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        model.Namespace = handler.Type.Namespace;
-        model.ClassName = $"{handler.Type.Name}Adapter";
-        model.EntityClassName = handler.Type.Name;
-        Util.AddNamespaces(model.Usings, handler.Type);
+        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
+        model.ClassName = $"{handler.Type.Name}PrimaryKey";
+        model.ArgumentClass = handler.Type.Name;
+        model.BaseClasses.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType([handler.Type])));
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
-        Util.AddNamespaces(model.Usings, typeof(IEnumerable<>));
-        model.BaseClasses.Add(handler.Type.Name);
-        model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntityAdapter)));
-        foreach (PropertyModel pm in handler.Properties)
+        Util.AddNamespaces(model.Usings, typeof(IPrimaryKey<>));
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        model.Usings.Add(s_dependencyInjection);
+        foreach (PropertyModel pm in handler.Properties.Where(p => p.IsPrimaryKey))
         {
-            if (pm.IsCollection)
-            {
-                Util.AddNamespaces(model.Usings, typeof(List<>));
-            }
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
+        }
+    }
+    internal void RenderAddServerExtensions(AddServerExtensionsModel model)
+    {
+        model.Contract = _contract;
+        model.ClassName = $"{_contract.GetType().Name}Extensions";
+        model.Namespace = _contract.GetType().Namespace;
+        model.Usings.Add(s_dependencyInjection);
+        Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        foreach(PocoHolder ph in _pocos.Values)
+        {
+            Util.AddNamespaces(model.Usings, ph.Type);
+            model.Usings.Add($"{(string.IsNullOrEmpty(ph.Type.Namespace) ? string.Empty : $"{ph.Type.Namespace}.")}Dto");
+
+            ServiceModel sm = new()
+            {
+                ServiceTypeName = Util.MakeTypeName(ph.Type),
+                Lifetime = ServiceLifetime.Scoped,
+            };
+            sm.ImplTypeName = $"{sm.ServiceTypeName}Dto";
+            model.Services.Add(sm);
+            if(ph.Kind is PocoKind.Entity)
+            {
+                sm = new()
+                {
+                    ServiceTypeName = Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType([ph.Type])),
+                    Lifetime = ServiceLifetime.Scoped,
+                };
+                sm.ImplTypeName = $"{Util.MakeTypeName(ph.Type)}PrimaryKey";
+                model.Services.Add(sm);
+            }
         }
     }
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
@@ -333,6 +445,12 @@ public class Generator : Runner
             }
         }
     }
+    private void GenerateCore(IConnector connector, string targetDir)
+    {
+        TextReader contractSource = connector.Get("/Server/AddServerExtensions");
+        File.WriteAllText(Path.Combine(targetDir, $"Add{_contract.GetType().Name}.cs"), contractSource.ReadToEnd());
+    }
+
     private void GenerateController(IConnector connector, string targetDir)
     {
     }
@@ -352,12 +470,12 @@ public class Generator : Runner
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
         }
     }
-    private void GenerateServerEntityAdapters(IConnector connector, string targetDir)
+    private void GenerateServerPrimaryKeys(IConnector connector, string targetDir)
     {
         foreach (PocoHolder ph in _pocos.Values.Where(ph => ph.Kind is PocoKind.Entity))
         {
-            TextReader contractSource = connector.Get("/Server/EntityAdapter", ph);
-            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Adapter.cs"), contractSource.ReadToEnd());
+            TextReader contractSource = connector.Get("/Server/PrimaryKey", ph);
+            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}PrimaryKey.cs"), contractSource.ReadToEnd());
         }
     }
     private void ProcessContract()
@@ -495,7 +613,7 @@ public class Generator : Runner
         foreach (PropertyInfo pi in ph.Type.GetProperties())
         {
             NullabilityInfo ni = nullabilityInfoContext.Create(pi);
-            bool isPoco = false;
+            PocoKind pocoKind = PocoKind.None;
             bool isCollection = false;
             Type itemType = pi.PropertyType;
             if (itemType.IsGenericType)
@@ -508,8 +626,11 @@ public class Generator : Runner
                     throw new InvalidOperationException($"TODO: InvalidOperationException: {pi.PropertyType}");
                 }
                 itemType = pi.PropertyType.GetGenericArguments()[0];
-                isPoco = _pocos.ContainsKey(itemType.FullName!);
-                if (!isPoco)
+                if(_pocos.TryGetValue(itemType.FullName!, out PocoHolder? ph1))
+                {
+                    pocoKind = ph1.Kind;
+                }
+                if (pocoKind is PocoKind.None)
                 {
                     itemType = pi.PropertyType;
                 }
@@ -520,7 +641,10 @@ public class Generator : Runner
             }
             else
             {
-                isPoco = _pocos.ContainsKey(itemType.FullName!);
+                if (_pocos.TryGetValue(itemType.FullName!, out PocoHolder? ph1))
+                {
+                    pocoKind = ph1.Kind;
+                }
             }
             PropertyModel pm = new()
             {
@@ -531,7 +655,7 @@ public class Generator : Runner
                 ItemTypeName = Util.MakeTypeName(itemType),
                 IsReadOnly = !pi.CanWrite,
                 IsNullable = ni.ReadState is NullabilityState.Nullable,
-                IsPoco = isPoco,
+                PocoKind = pocoKind,
                 IsCollection = isCollection,
             };
 

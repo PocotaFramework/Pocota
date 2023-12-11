@@ -8,7 +8,7 @@ public interface IProperty
     bool IsCollection { get; }
     bool IsNullable { get; }
     bool IsReadOnly { get; }
-    bool IsPoco { get; }
+    PocoKind PocoKind { get; }
     object? GetValue(object obj);
     void SetValue(object obj, object? value);
     bool IsSet(object obj);

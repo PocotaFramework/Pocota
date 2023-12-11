@@ -1,0 +1,41 @@
+﻿@page
+@using Net.Leksi.Pocota
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@model PrimaryKeyModel
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+#region Fields
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    private @Html.Raw(pm.TypeName) _@pm.Name = default!;
+</text>
+}
+#endregion Fields
+    public IEnumerable<object> GetPrimaryKey()
+    {
+@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+{
+    if(pm.PocoKind is PocoKind.Entity)
+    {
+        <text>        foreach (object pk in ((@nameof(IEntity))_@pm.Name).GetPrimaryKey())
+        {
+            yield return pk;
+        }
+</text>
+    }
+    else
+    {
+        <text>        yield return _@pm.Name;
+</text>
+    }
+}
+    }
+    public @Model.ArgumentClass GetEntity()
+    {
+        return (@Model.ArgumentClass)services.GetRequiredService<@nameof(IPocoContext)>().GetEntity<@Model.ArgumentClass>(GetPrimaryKey());
+    }
+}
