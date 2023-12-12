@@ -1,4 +1,5 @@
-﻿using Net.Leksi.E6dWebApp;
+﻿using Microsoft.AspNetCore.Authorization;
+using Net.Leksi.E6dWebApp;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
 using System.Text;
@@ -101,6 +102,7 @@ public class SourcesGenerator: Runner
         Options options = parameter.Item2;
         model.ClassName = options.ContractClassName;
         model.Namespace = options.ContractNamespace;
+        model.Usings.Add(typeof(AuthorizeAttribute).Namespace!);
         foreach(Node node in graph.Nodes)
         {
             if(node.Namespace is { })

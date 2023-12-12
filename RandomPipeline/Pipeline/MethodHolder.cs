@@ -10,4 +10,5 @@ internal class MethodHolder
     internal List<PropertyUse>? Output { get; set; } = null;
     internal List<string>? OutputPaths { get; set; } = null;
     internal List<ParamHolder> Params { get; private init; } = [];
+    internal string Authorize {  get; set; } = null!;
 }

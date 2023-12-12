@@ -372,7 +372,20 @@ public class Pipeline(Random? random, Options options)
         }
         return true;
     }
-
+    private string GetAuthorizeRoles()
+    {
+        int numRoles = _random.Next(1, s_roles.Count + 1);
+        HashSet<string> roles = [];
+        for(int i = 0; i < numRoles; ++i)
+        {
+            int next = _random.Next(s_roles.Count);
+            if (!roles.Add(s_roles[next]))
+            {
+                --i;
+            }
+        }
+        return string.Join(", ", roles);
+    }
     private void GenerateMethods()
     {
         Stack<PropertyHolder> stack = new();
@@ -386,6 +399,7 @@ public class Pipeline(Random? random, Options options)
                 getter.Params.Add(new ParamHolder { Name = "obj", Node = node, TypeName = node.Name});
                 getter.Output = new List<PropertyUse>();
                 getter.OutputPaths = new List<string>();
+                getter.Authorize = GetAuthorizeRoles();
                 foreach (TreeNode? leaf in node.Leaves.Where(l => l.Depth < 2))
                 {
                     getter.Output.Add(new PropertyUse { Property = leaf.Property });
@@ -429,6 +443,7 @@ public class Pipeline(Random? random, Options options)
                 }
                 finder.Output = new List<PropertyUse>();
                 finder.OutputPaths = new List<string>();
+                finder.Authorize = GetAuthorizeRoles();
                 foreach (TreeNode? leaf in node.Leaves)
                 {
                     if(leaf.Depth < 2 || _random.NextDouble() < Math.Pow(_options.OutputDepthDamping, leaf.Depth - 2))

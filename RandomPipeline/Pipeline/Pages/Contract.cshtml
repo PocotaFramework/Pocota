@@ -45,11 +45,12 @@ public class @Model.ClassName: Contract
 }
     }
 
-@foreach (Node node in Model.Nodes.Where(n => n.Kind is NodeKind.Entity))
+@foreach (Node node in Model.Nodes/*.Where(n => n.Kind is NodeKind.Entity)*/)
 {
     foreach(MethodHolder mh in node.Methods)
     {
-        <text>    public @(
+        <text>    [Authorize(Roles = "@mh.Authorize")]
+    public @(
             mh.IsCollection ? Html.Raw("IList<") : string.Empty
             )@node.Name@(
             mh.IsCollection ? Html.Raw(">") : string.Empty
