@@ -1,9 +1,12 @@
-﻿using Net.Leksi.E6dWebApp;
+﻿using Microsoft.AspNetCore.Mvc;
+using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
-using static System.Net.Mime.MediaTypeNames;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Net.Leksi.Pocota.FrameworkGenerator;
 
@@ -29,6 +32,7 @@ public class Generator : Runner
     private ContractEventKind _currentContractEventKind = ContractEventKind.None;
     private readonly Dictionary<object, PropertyUse> _propertyUses = [];
     private readonly List<PropertyUse> _currentPath = [];
+    private readonly NullabilityInfoContext _nullabilityInfoContext = new();
     public static Generator Create(FrameworkGeneratorOptions options)
     {
         Generator generator = new()
@@ -118,6 +122,7 @@ public class Generator : Runner
                 Name = Path.GetFileName(_serverStuffProject),
                 ProjectDir = _serverStuffProject,
                 TargetFramework = _serverTargetFramework,
+                Sdk = "Microsoft.NET.Sdk.Web",
             });
             serverStuffProject.AddPackage(s_dependencyInjection, "*");
             foreach (string ar in _additionalReferences)
@@ -139,6 +144,15 @@ public class Generator : Runner
 
         if (_doCreateProject)
         {
+            serverStuffProject!.OnProjectFileGenerated = proj =>
+            {
+                XmlDocument doc = new();
+                doc.Load(proj.ProjectPath);
+                doc.CreateNavigator()!
+                    .SelectSingleNode("/Project/PropertyGroup[1]")!
+                    .AppendChild("<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>");
+                doc.Save(proj.ProjectPath);
+            };
             serverStuffProject!.Compile();
         }
 
@@ -328,6 +342,51 @@ public class Generator : Runner
             }
         }
     }
+    internal void RenderController(ControllerModel model)
+    {
+        model.Contract = _contract;
+        model.ClassName = $"{_contract.GetType().Name}Controller";
+        model.Namespace = _contract.GetType().Namespace;
+        Util.AddNamespaces(model.Usings, typeof(Controller));
+        Util.AddNamespaces(model.Usings, typeof(RouteAttribute));
+        Util.AddNamespaces(model.Usings, typeof(JsonSerializer));
+        Util.AddNamespaces(model.Usings, typeof(JsonSerializerOptions));
+        Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        model.BaseClasses.Add(Util.MakeTypeName(typeof(Controller)));
+        HashSet<string> variables = [];
+        foreach(MethodHolder mh in _methods.Values)
+        {
+            variables.Clear();
+            MethodModel mm = new()
+            {
+                Name = mh.Name,
+                Route = $"{(!string.IsNullOrEmpty(_contract.RoutePrefix) ? $"/{_contract.RoutePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(_contract.Version) ? $"/{_contract.Version}" : string.Empty)}/{mh.Name}",
+            };
+            foreach(ParameterHolder ph in mh.Parameters)
+            {
+                variables.Add(ph.Name);
+                ParameterModel pm = new()
+                {
+                    Name = ph.Name,
+                    TypeName = Util.MakeTypeName(ph.Type),
+                    IsNullable = ph.IsNullable,
+                    Type = ph.Type,
+                };
+                Util.AddNamespaces(model.Usings, ph.Type);
+                mm.Parameters.Add(pm);
+                mm.Route += $"/{{{ph.Name}}}";
+            }
+            foreach (ParameterModel pm in mm.Parameters)
+            {
+                pm.Variable = MakeUniqueName(pm.Name, variables);
+            }
+            mm.Route = Regex.Replace(mm.Route, "/{2,}", "/");
+            mm.JsonSerializerOptionsVariable = MakeUniqueName(mm.JsonSerializerOptionsVariable, variables);
+            mm.PocoContextVariable = MakeUniqueName(mm.PocoContextVariable, variables);
+            model.Methods.Add(mm);
+        }
+    }
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -336,6 +395,12 @@ public class Generator : Runner
     protected override void ConfigureApplication(WebApplication app)
     {
         app.MapRazorPages();
+    }
+    private string MakeUniqueName(string name, HashSet<string> names)
+    {
+        string result = name;
+        for(int pos = 0; names.Contains(result); ++pos, result = $"{name}{pos}") { }
+        return result;
     }
     private void DFM(PropertyUse src, PropertyUse dst)
     {
@@ -446,6 +511,8 @@ public class Generator : Runner
 
     private void GenerateController(IConnector connector, string targetDir)
     {
+        TextReader contractSource = connector.Get("/Server/Controller");
+        File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Controller.cs"), contractSource.ReadToEnd());
     }
     private void GenerateServerDtoBase(IConnector connector, string targetDir)
     {
@@ -556,7 +623,21 @@ public class Generator : Runner
             {
                 if (mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
                 {
-                    _currentMethod = new MethodHolder() { Name = mi.ToString()! };
+                    _currentMethod = new MethodHolder
+                    { 
+                        Name = mi.Name,
+                    };
+                    foreach(ParameterInfo par in mi.GetParameters())
+                    {
+                        ParameterHolder ph = new()
+                        {
+                            Name = par.Name!,
+                            Type= par.ParameterType,
+                            IsNullable = _nullabilityInfoContext.Create(par).ReadState is NullabilityState.Nullable,
+                        };
+                        _currentMethod.Parameters.Add(ph);
+
+                    }
                     _methods.Add(_currentMethod.Name, _currentMethod);
                     _lastPropertyUse = _currentMethod!.PropertyUse;
                     _currentMethod!.PropertyUse.Flags |= PropertyUseFlags.Expected;
@@ -602,10 +683,9 @@ public class Generator : Runner
     }
     private void BuildProperties(PocoHolder ph)
     {
-        NullabilityInfoContext nullabilityInfoContext = new();
         foreach (PropertyInfo pi in ph.Type.GetProperties())
         {
-            NullabilityInfo ni = nullabilityInfoContext.Create(pi);
+            NullabilityInfo ni = _nullabilityInfoContext.Create(pi);
             PocoKind pocoKind = PocoKind.None;
             bool isCollection = false;
             Type itemType = pi.PropertyType;

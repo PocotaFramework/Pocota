@@ -1,0 +1,29 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@model ControllerModel
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+@foreach(MethodModel mm in Model.Methods)
+{
+    <text>    [Route("@mm.Route")]
+    public void @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"string {p.Name}")))
+    {
+        IPocoContext @mm.PocoContextVariable = Request.HttpContext.RequestServices.GetRequiredService<IPocoContext>();
+        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = null!;
+
+    @foreach(ParameterModel pm in mm.Parameters)
+    {
+        <text>        @Html.Raw(pm.TypeName)@if(pm.IsNullable){
+            <text>?</text>
+        } @pm.Variable = JsonSerializer.Deserialize@{}@Html.Raw($"<{pm.TypeName}>")@{
+        }(@pm.Name, @mm.JsonSerializerOptionsVariable)@if(!pm.IsNullable && pm.Type.IsClass){<text>!</text>};
+</text>
+    }
+    }
+</text>
+}
+}

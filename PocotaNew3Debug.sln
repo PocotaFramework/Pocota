@@ -27,9 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrameworkGeneratorDebug", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerStuff", "Tests\Generated\Framework\ServerStuff\ServerStuff.csproj", "{30B8D53B-BCA7-454D-A8D2-C42E76C27A70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract1", "Tests\CustomsContracts\Contract1\Contract1.csproj", "{C596D163-ABFC-4B19-8665-EC075E300BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract1", "Tests\CustomsContracts\Contract1\Contract1.csproj", "{C596D163-ABFC-4B19-8665-EC075E300BCF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocotaServerDebug", "Pocota\Server\PocotaServer\PocotaServerDebug.csproj", "{203B9CD9-3E36-430B-8926-D6D5EE6546AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaServerDebug", "Pocota\Server\PocotaServer\PocotaServerDebug.csproj", "{203B9CD9-3E36-430B-8926-D6D5EE6546AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
