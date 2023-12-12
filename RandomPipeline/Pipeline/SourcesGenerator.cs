@@ -2,6 +2,7 @@
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
 using System.Text;
+using System.Xml;
 
 namespace Net.Leksi.Pocota.Pipeline;
 
@@ -33,6 +34,7 @@ public class SourcesGenerator: Runner
             Name = options.ContractClassName,
             ProjectDir = options.GeneratedContractProjectDir,
             TargetFramework = options.TargetFramework,
+            Sdk = "Microsoft.NET.Sdk.Web",
         });
         _contract.AddProject(options.ContractProjectDir);
         TextReader contractSource = connector.Get("/Contract", new Tuple<Graph, Options> (graph, options));
@@ -43,6 +45,15 @@ public class SourcesGenerator: Runner
             TextReader classSource = connector.Get("/Class", new Tuple<Graph, Node>(graph, node));
             File.WriteAllText(Path.Combine(_contract.ProjectDir, $"{node.Name}.cs"), classSource.ReadToEnd());
         }
+        _contract!.OnProjectFileGenerated = proj =>
+        {
+            XmlDocument doc = new();
+            doc.Load(proj.ProjectPath);
+            doc.CreateNavigator()!
+                .SelectSingleNode("/Project/PropertyGroup[1]")!
+                .AppendChild("<NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>");
+            doc.Save(proj.ProjectPath);
+        };
         _contract.Compile();
 
         Stop();

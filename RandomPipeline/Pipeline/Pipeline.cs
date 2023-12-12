@@ -12,11 +12,16 @@ public class Pipeline(Random? random, Options options)
     private readonly Random? _random = random;
     private readonly Options _options = options;
     private readonly List<Node> _topolog = [];
-    private readonly List<Type> _types = [
+    private static readonly List<Type> s_types = [
         typeof(int),
         typeof(string),
         typeof(DateOnly),
         typeof(MockEnum),
+    ];
+    private static readonly List<string> s_roles = [
+        "role1",
+        "role2",
+        "role3",
     ];
     private readonly SourcesGenerator _generator = new();
     private Graph _graph = null!;
@@ -268,7 +273,7 @@ public class Pipeline(Random? random, Options options)
                 }
                 else
                 {
-                    ph.Type = _types[_random.Next(_types.Count)];
+                    ph.Type = s_types[_random.Next(s_types.Count)];
                 }
                 node.Properties.Add(ph);
             }
@@ -418,7 +423,7 @@ public class Pipeline(Random? random, Options options)
                 finder.Params.Add(ph);
                 for(int j = 1; j < paramsCount; ++j)
                 {
-                    ph = new() { Name = $"arg{j}", Type = _types[_random.Next(_types.Count)] };
+                    ph = new() { Name = $"arg{j}", Type = s_types[_random.Next(s_types.Count)] };
                     ph.TypeName = Util.MakeTypeName(ph.Type);
                     finder.Params.Add(ph);
                 }
