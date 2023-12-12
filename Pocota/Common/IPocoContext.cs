@@ -3,5 +3,5 @@
 public interface IPocoContext
 {
     ProcessingStage ProcessingStage { get; }
-    T GetEntity<T>(IEnumerable<object> primaryKey) where T: class;
+    bool TryFindEntity<T>(IEnumerable<object> primaryKey, out T obj) where T: class;
 }

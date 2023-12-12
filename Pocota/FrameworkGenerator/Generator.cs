@@ -229,41 +229,34 @@ public class Generator : Runner
         }
         if(handler.Kind is PocoKind.Entity)
         {
-            model.PropertyUse = BuildPropertyUse(handler.PropertyUse, 0, self, model, false, PropertyUseFlags.AccessSelector);
+            model.PropertyUse = BuildPropertyUse(handler.PropertyUse, 0, self, model);
         }
     }
 
-    private PropertyUseModel? BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, ClassModel model, bool showFlags, PropertyUseFlags selectFlags)
+    private PropertyUseModel? BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, ClassModel model)
     {
-        PropertyUseModel? result = null;
-        if (self is { } || (propertyUse.Flags & selectFlags) != 0)
+        PropertyUseModel? result = new()
         {
-            result = new()
+            Level = level,
+            PropertyName = self is { } ? $"s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", "Dto")}.s_{propertyUse.Name}Property"
+        };
+        result.Flags = propertyUse.Flags;
+        if (self is null)
+        {
+            model.Usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}Dto");
+        }
+        if ((propertyUse.Children?.Count ?? 0) > 0)
+        {
+            foreach (PropertyUse child in propertyUse.Children!)
             {
-                Level = level,
-                PropertyName = self is { } ? $"s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", "Dto")}.s_{propertyUse.Name}Property"
-            };
-            if (showFlags)
-            {
-                result.Flags = propertyUse.Flags;
-            }
-            if (self is null)
-            {
-                model.Usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}Dto");
-            }
-            if ((propertyUse.Children?.Count ?? 0) > 0)
-            {
-                foreach (PropertyUse child in propertyUse.Children!)
+                PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, model);
+                if(next is { })
                 {
-                    PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, model, showFlags, selectFlags);
-                    if(next is { })
+                    if(result.Children is null)
                     {
-                        if(result.Children is null)
-                        {
-                            result.Children = [];
-                        }
-                        result.Children.Add(next);
+                        result.Children = [];
                     }
+                    result.Children.Add(next);
                 }
             }
         }

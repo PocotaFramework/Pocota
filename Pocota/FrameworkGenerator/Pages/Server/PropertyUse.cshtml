@@ -2,7 +2,8 @@
 @using Net.Leksi.Pocota.FrameworkGenerator
 @model PropertyUseModel
 @{
-    string indention = string.Format($"{{0,{(Model.Level <= 1 ? (Model.Level + 1) : (Model.Level + 1) * 2)}}}", "").Replace(" ", "    ");
+    int indentation_len = (int)ViewData["indentation"]!;
+    string indention = string.Format($"{{0,{indentation_len}}}", "");
     bool showFlags = (bool?)@ViewData["ShowFlags"] ?? true;
 }
 new() 
@@ -15,10 +16,13 @@ new()
 }
 @if((Model.Children?.Count ?? 0) > 0)
 {
+    ViewDataDictionary vdd = new(ViewData);
+    vdd["indentation"] = indentation_len + 8;
+
     <text>@indention@{}    Children = new([
     @foreach(PropertyUseModel pum in Model.Children!)
     {
-        <text>@indention@{}        @Html.Partial("PropertyUse", pum),
+        <text>@indention@{}        @Html.Partial("PropertyUse", pum, vdd),
 </text>
     }
 @indention@{}    ]),

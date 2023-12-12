@@ -2,5 +2,5 @@
 
 public interface IPrimaryKey<T>: IEntity where T : class
 {
-    T GetEntity();
+    bool TryFindEntity(out T obj);
 }

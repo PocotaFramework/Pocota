@@ -34,8 +34,8 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     }
 }
     }
-    public @Model.ArgumentClass GetEntity()
+    public bool TryFindEntity(out @Model.ArgumentClass obj)
     {
-        return (@Model.ArgumentClass)services.GetRequiredService<@nameof(IPocoContext)>().GetEntity<@Model.ArgumentClass>(GetPrimaryKey());
+        return services.GetRequiredService<@nameof(IPocoContext)>().TryFindEntity<@Model.ArgumentClass>(GetPrimaryKey(), out obj);
     }
 }

@@ -16,14 +16,17 @@ public class PocoContext: IPocoContext
         _services = services;
         _infoProvider = _services.GetRequiredService<IProcessingInfoProvider>();
     }
-    public T GetEntity<T>(IEnumerable<object> primaryKey) where T : class
+    public bool TryFindEntity<T>(IEnumerable<object> primaryKey, out T obj) where T : class
     { 
+        bool result = true;
         EntityNode node = FindEntity(typeof(T), primaryKey);
         if(node.Entity is null)
         {
             node.Entity = _services.GetRequiredService<T>();
+            result = false;
         }
-        return (T)node.Entity!;
+        obj = (T)node.Entity!;
+        return result;
     }
     internal EntityNode FindEntity(Type type, IEnumerable<object> primaryKey)
     {

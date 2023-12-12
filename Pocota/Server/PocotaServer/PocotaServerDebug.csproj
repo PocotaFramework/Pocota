@@ -8,6 +8,7 @@
     <Configurations>Debug;Release;RAC</Configurations>
     <AssemblyName>Net.Leksi.Pocota.Server</AssemblyName>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\CommonDebug.csproj" />

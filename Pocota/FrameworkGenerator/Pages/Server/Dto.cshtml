@@ -86,8 +86,10 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
 #endregion PropertiesClasses
 @if(Model.PocoKind is PocoKind.Entity)
 {
+    ViewDataDictionary vdd = new(ViewData);
+    vdd["indentation"] = 4;
     <text>#region PropertyUse
-    private static PropertyUse s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse);
+    private static PropertyUse s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse, vdd);
 #endregion PropertyUse
 </text>
 }
