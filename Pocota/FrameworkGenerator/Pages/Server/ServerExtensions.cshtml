@@ -6,7 +6,7 @@
 
 public static class @Model.ClassName
 {
-    public static IServiceCollection Add@{}@Model.ClassName@{}Server(this IServiceCollection services)
+    public static IServiceCollection @Model.AddMethodName@{}(this IServiceCollection services)
     {
         services.AddScoped<IPocoContext, Server.PocoContext>();
         services.AddScoped<IProcessingInfo, ProcessingInfo>();

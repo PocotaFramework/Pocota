@@ -319,6 +319,7 @@ public class Generator : Runner
     {
         model.Contract = _contract;
         model.ClassName = $"{_contract.GetType().Name}Extensions";
+        model.AddMethodName = $"Add{_contract.GetType().Name}";
         model.Namespace = _contract.GetType().Namespace;
         model.Usings.Add(s_dependencyInjection);
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
