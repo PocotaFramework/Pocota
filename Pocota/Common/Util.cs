@@ -27,7 +27,7 @@ public static class Util
         if (type.IsGenericType)
         {
             string? ns = type.GetGenericTypeDefinition().Namespace;
-            if (ns is { })
+            if (!string.IsNullOrEmpty(ns))
             {
                 namespaces.Add(ns);
             }
@@ -38,7 +38,7 @@ public static class Util
         }
         else
         {
-            if (type.Namespace is { })
+            if (!string.IsNullOrEmpty(type.Namespace))
             {
                 namespaces.Add(type.Namespace);
             }

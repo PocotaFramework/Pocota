@@ -9,7 +9,7 @@ public interface IProperty
     bool IsNullable { get; }
     bool IsReadOnly { get; }
     PocoKind PocoKind { get; }
-    object? GetValue(object obj);
+    object? GetValue(object obj, bool setUsed);
     void SetValue(object obj, object? value);
     bool IsSet(object obj);
 }

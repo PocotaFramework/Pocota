@@ -54,9 +54,7 @@ public class Pipeline(Random? random, Options options)
                     Assembly.LoadFile(contractAssemblyLocation)
                         .GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
                 )!,
-            AdditionalReferences = Directory.GetFiles(
-                    Path.GetDirectoryName(contractAssemblyLocation)!
-                ).Where(f => (".dll".Equals(Path.GetExtension(f)) || ".exe".Equals(Path.GetExtension(f))) && !f.Equals(contractAssemblyLocation)).ToArray(),
+            AdditionalReferences = [ typeof(MockEnum).Assembly.Location ],
             ServerStuffProject = _options.GeneratedServerStuffProjectDir,
             ReplaceFilesIfExist = true,
             DoCreateProject = true,

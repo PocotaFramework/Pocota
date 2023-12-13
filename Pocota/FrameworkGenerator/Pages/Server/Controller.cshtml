@@ -10,10 +10,15 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
 @foreach(MethodModel mm in Model.Methods)
 {
     <text>    [Route("@mm.Route")]
+    @if(!string.IsNullOrEmpty(mm.Authorize))
+    {
+        <text>    [Authorize(@Html.Raw(mm.Authorize))]
+</text>
+    }
     public void @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"string {p.Name}")))
     {
         IPocoContext @mm.PocoContextVariable = Request.HttpContext.RequestServices.GetRequiredService<IPocoContext>();
-        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = null!;
+        JsonSerializerOptions @mm.JsonSerializerOptionsVariable = @mm.PocoContextVariable.@{}GetJsonSerializerOptions();
 
     @foreach(ParameterModel pm in mm.Parameters)
     {

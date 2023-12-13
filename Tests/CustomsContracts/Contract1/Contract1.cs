@@ -4,8 +4,6 @@ namespace Contract1;
 
 public class Contract1 : Contract
 {
-    public override string Version => string.Empty;
-
     public override string RoutePrefix => string.Empty;
 
     public override void ConfigurePocos()

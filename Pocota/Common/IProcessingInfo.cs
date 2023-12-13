@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota;
 
-public interface IProcessingInfoProvider
+public interface IProcessingInfo
 {
     ProcessingStage ProcessingStage { get; }
 }

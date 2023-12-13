@@ -2,21 +2,23 @@
 @using Net.Leksi.Pocota
 @using Net.Leksi.Pocota.FrameworkGenerator
 @using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@using Net.Leksi.Pocota.Server
 @model DtoModel
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
 
 {
-    private const string s_notBuilding = "Not at Building stage!";
-    private const string s_notDeserialization = "Not at Deserialization stage!";
     private const string s_notSet = "Not set!";
     private const string s_invalidTargetType = "The argument target must have type @Model.FullName!";
-@if(Model.PocoKind is PocoKind.Entity)
+    private const string s_notBuildingDeserialization = "Not at Building or Deserialization stage!";
+    private const string s_alreadyUsed = "The value is already used!";
+    private const string s_notSerialization = "Not at Serialization stage!";
+@if (Model.PocoKind is PocoKind.Entity)
 {
-    <text>    private const string s_notAccessGiving = "Not at AccessGiving stage!";
-    private const string s_notAccessGivingSerializationDeserialization = 
-        "Not at AccessGiving, Serialization or Deserialization stage!";
+    <text>    private const string s_accessAlreadyDone = "The access is already done!";
+    private const string s_primaryKey = "The Primary Key cannot be set indirectly!";
+    private const string s_notAccessGiving = "Not at AccessGiving stage!";
 </text>
 }
 #region PropertiesClasses
@@ -31,29 +33,54 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
         public bool IsNullable => @(pm.IsNullable ? "true" : "false");
         public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
         public @nameof(PocoKind) PocoKind  => @nameof(PocoKind).@pm.PocoKind;
-        public object? GetValue(object target)
+        public object? GetValue(object target, bool setUsed)
         {
             if(target is @Model.ClassName obj)
             {
-                return @if (pm.IsSelf) {<text>obj</text>}else{<text>obj.Get@{}@pm.Name@{}Value()</text>};
+    @if (pm.IsSelf) 
+    {
+        <text>                return obj;
+</text>
+    }
+    else
+    {
+        <text>                if(setUsed)
+                {
+                    obj._@pm.Name@{}Used = true;
+                }
+                return obj.@pm.Name;
+</text>
+    }
             }
             throw new ArgumentException(s_invalidTargetType);
         }
         public void SetValue(object target, object? value)
         {
-            if(target is @Model.ClassName obj)
-            {
-                @if (!pm.IsSelf) 
-                {
-                    <text>                obj.Set@{}@pm.Name@{}Value(value)
+    @if(pm.IsPrimaryKey)
+    {
+        <text>            throw new InvalidOperationException(s_primaryKey);
 </text>
-                };
+    }
+    else
+    {
+        <text>            if(target is @Model.ClassName@{}@if(!pm.IsSelf){<text> obj</text>})
+            {
+        @if (!pm.IsSelf) 
+        {
+            <text>                obj.@pm.Name = (@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty))Convert.ChangeType(value, typeof(@Html.Raw(pm.TypeName)@(!pm.Type.IsClass && pm.IsNullable ? "?" : string.Empty)))@(!pm.IsNullable ? "!" : string.Empty);
+</text>
+        }
             }
-            throw new ArgumentException(s_invalidTargetType);
+            else
+            {
+                throw new ArgumentException(s_invalidTargetType);
+            }
+</text>
+    }
         }
         public bool IsSet(object target)
         {
-            if(target is @Model.ClassName obj)
+            if(target is @Model.ClassName@{}@if(!pm.IsSelf){<text> obj</text>})
             {
                 return @if (pm.IsSelf) {<text>true</text>}else{<text>obj._@pm.Name@{}IsSet</text>};
             }
@@ -61,11 +88,11 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>        public Access? GetAccess(object target)
+        <text>        public Access GetAccess(object target)
         {
             if(target is @Model.ClassName obj)
             {
-                return obj.Get@{}@pm.Name@{}Access();
+                return obj._@pm.Name@{}Access;
             }
             throw new ArgumentException(s_invalidTargetType);
         }
@@ -73,9 +100,26 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
         {
             if(target is @Model.ClassName obj)
             {
-                obj.Set@{}@pm.Name@{}Access(access);
+                if(obj._processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
+                {
+                    if(!obj._accessGiven)
+                    {
+                        obj._@pm.Name@{}Access = access;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(s_accessAlreadyDone);
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException(s_notAccessGiving);
+                }
             }
-            throw new ArgumentException(s_invalidTargetType);
+            else
+            {
+                throw new ArgumentException(s_invalidTargetType);
+            }
         }
 
 </text>
@@ -89,7 +133,7 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     ViewDataDictionary vdd = new(ViewData);
     vdd["indentation"] = 4;
     <text>#region PropertyUse
-    private static PropertyUse s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse, vdd);
+    private static readonly PropertyUse s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse, vdd);
 #endregion PropertyUse
 </text>
 }
@@ -100,13 +144,20 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     <text>    internal static @pm.Name@{}PropertyClass s_@pm.Name@{}Property = new();
 </text>
 }
-    private readonly IPocoContext _pocoContext;
+    private readonly IProcessingInfo _processingInfo = services.GetRequiredService<IProcessingInfo>();
+@if (Model.PocoKind is PocoKind.Entity)
+{
+    <text>    private bool _accessGiven = false;
+    private bool _changed = false;
+</text>
+}
 @foreach (PropertyModel pm in Model.Properties)
 {
     if (!pm.IsSelf)
     {
         <text>    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
     private bool _@pm.Name@{}IsSet = false;    
+    private bool _@pm.Name@{}Used = false;
 </text>
     }
     
@@ -121,9 +172,11 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
 #region Properties
 @if(Model.PocoKind is PocoKind.Entity)
 {
-    <text>    PropertyUse @nameof(IPropertyUseAware)@{}.PropertyUse => s_propertyUse;
+    <text>    PropertyUse @nameof(IEntity)@{}.PropertyUse => s_propertyUse;
+    bool @nameof(IEntity)@{}.Changed => _changed;
 </text>
 }
+    IProcessingInfo @nameof(IPoco)@{}.ProcessingInfo => _processingInfo;
 @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsSelf))
 {
     <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
@@ -141,14 +194,30 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     {
         <text>        set
         {
-            if(_pocoContext.ProcessingStage is ProcessingStage.Building)
+            if(_processingInfo.ProcessingStage is ProcessingStage.Building || _processingInfo.ProcessingStage is ProcessingStage.Deserialization)
             {
-                _@pm.Name = value;
-                _@pm.Name@{}IsSet = true;
+                if(_@pm.Name != value){
+                    if(!_@pm.Name@{}Used)
+                    {
+                        _@pm.Name = value;
+                        _@pm.Name@{}IsSet = true;
+        @if(Model.PocoKind is PocoKind.Entity)
+        {
+            <text>                        _changed = true;
+</text>
+        }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(s_alreadyUsed);
+                    }
+                }
             }
-            else{
-                throw new InvalidOperationException(s_notBuilding);
+            else
+            {
+                throw new InvalidOperationException(s_notBuildingDeserialization);
             }
+
         }
 </text>
     }
@@ -156,111 +225,15 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
 </text>
 }
 #endregion Properties
-    public @Model.ClassName@{}(IServiceProvider services)
-    {
-        _pocoContext = services.GetRequiredService<IPocoContext>();
-    }
-#region SettersGetters
-@foreach (PropertyModel pm in Model.Properties)
-{
-    if(!pm.IsSelf)
-    {
-        <text>    private void Set@{}@pm.Name@{}Value(object? value)
-    {
-        if(_pocoContext.ProcessingStage is ProcessingStage.Deserialization)
-        {
-            _@pm.Name = (@Html.Raw(pm.TypeName))value!;
-            _@pm.Name@{}IsSet = true;
-        }
-        else{
-            throw new InvalidOperationException(s_notDeserialization);
-        }
-    }
-    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) Get@{}@pm.Name@{}Value()
-    {
-        if(_pocoContext.ProcessingStage is ProcessingStage.Serialization)
-        {
-            if(_@pm.Name@{}IsSet)
-            {
-                return _@pm.Name;
-            }
-            throw new InvalidOperationException("Not set!");
-        }
-        throw new InvalidOperationException("Not at Serialization stage!");
-    }
-</text>
-    }
-    @if(Model.PocoKind is PocoKind.Entity)
-    {
-        <text>    private Access Get@{}@pm.Name@{}Access()
-    {
-        if(
-            _pocoContext.ProcessingStage is ProcessingStage.Serialization
-            || _pocoContext.ProcessingStage is ProcessingStage.Deserialization
-            || _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
-        )
-        {
-        @if(pm.IsSelf)
-        {
-            <text>            return _@pm.Name@{}Access;
-</text>
-        }
-        else
-        {
-            <text>            if(_@pm.Name@{}IsSet)
-            {
-                return _@pm.Name@{}Access;
-            }
-            else
-            {
-                throw new InvalidOperationException(s_notSet);
-            }
-</text>
-        }
-        }
-        throw new InvalidOperationException(s_notAccessGivingSerializationDeserialization);
-    }
-    private void Set@{}@pm.Name@{}Access(Access access)
-    {
-        if(
-            _pocoContext.ProcessingStage is ProcessingStage.AccessGiving
-        )
-        {
-        @if(pm.IsSelf)
-        {
-            <text>            _@pm.Name@{}Access = access;
-</text>
-        }
-        else
-        {
-            <text>            if(_@pm.Name@{}IsSet)
-            {
-                _@pm.Name@{}Access = access;
-            }
-            else
-            {
-                throw new InvalidOperationException(s_notSet);
-            }
-</text>
-        }
-        }
-        else{
-            throw new InvalidOperationException(s_notAccessGiving);
-        }
-    }
-</text>
-    }
-}
-#endregion SettersGetters
 @if(Model.PocoKind is PocoKind.Entity)
 {
-    <text>    IEnumerable<object> @nameof(IEntity)@{}.GetPrimaryKey()
+    <text>    IEnumerable<object> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
     {
 @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
 {
     if(pm.PocoKind is PocoKind.Entity)
     {
-        <text>        foreach (object pk in ((@nameof(IEntity))_@pm.Name).GetPrimaryKey())
+        <text>        foreach (object pk in ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey())
         {
             yield return pk;
         }
@@ -273,7 +246,36 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     }
 }
     }
-
+    void @nameof(IEntity)@{}.AccessGiven()
+    {
+        if(_processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
+        {
+            _accessGiven = true;
+        }
+        else
+        {
+            throw new InvalidOperationException(s_notAccessGiving);
+        }
+    }
+    void @nameof(IEntity)@{}.AcceptChanges()
+    {
+        if(_processingInfo.ProcessingStage is ProcessingStage.Serialization)
+        {
+            _changed = false;
+        }
+        else
+        {
+            throw new InvalidOperationException(s_notSerialization);
+        }
+    }
+@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey))
+{
+    <text>    internal void Set@{}@pm.Name@{}(@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) value)
+    {
+        _@pm.Name = value;
+    }
+</text>
+}
 </text>
 }
 }

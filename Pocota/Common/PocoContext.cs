@@ -1,20 +1,16 @@
 ﻿
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
 
 namespace Net.Leksi.Pocota;
 
 public class PocoContext: IPocoContext
 {
-    private readonly IServiceProvider _services;
-    private readonly IProcessingInfoProvider _infoProvider;
+    protected readonly IServiceProvider _services;
     private Dictionary<Type, EntityNode> _entitiesCache = new();
-
-    public ProcessingStage ProcessingStage => _infoProvider.ProcessingStage;
-
     public PocoContext(IServiceProvider services)
     {
         _services = services;
-        _infoProvider = _services.GetRequiredService<IProcessingInfoProvider>();
     }
     public bool TryFindEntity<T>(IEnumerable<object> primaryKey, out T obj) where T : class
     { 
@@ -27,6 +23,10 @@ public class PocoContext: IPocoContext
         }
         obj = (T)node.Entity!;
         return result;
+    }
+    public JsonSerializerOptions GetJsonSerializerOptions()
+    {
+        return new JsonSerializerOptions();
     }
     internal EntityNode FindEntity(Type type, IEnumerable<object> primaryKey)
     {

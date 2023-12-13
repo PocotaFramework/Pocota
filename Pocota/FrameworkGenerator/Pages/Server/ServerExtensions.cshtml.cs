@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 
-public class AddServerExtensionsModel : CoreModel
+public class ServerExtensionsModel : CoreModel
 {
     public void OnGet([FromServices] Generator generator)
     {

@@ -2,7 +2,6 @@
 
 public abstract class ContractBase
 {
-    public abstract string Version { get; }
     public abstract string RoutePrefix { get; }
     public abstract void ConfigurePocos();
     public abstract EntityInfo<T> Entity<T>() where T : class;

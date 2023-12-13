@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Contract\ContractDebug.csproj" />
+    <ProjectReference Include="..\Server\PocotaServer\PocotaServerDebug.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.E6dWebApp;
 using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
+using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
 using System.Text.Json;
@@ -13,11 +15,12 @@ namespace Net.Leksi.Pocota.FrameworkGenerator;
 public class Generator : Runner
 {
     private const string s_self = "<self>";
+    private const string s_internal = "Internal";
     private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
     private Contract _contract = null!;
     private readonly Dictionary<string, PocoHolder> _pocos = [];
     private readonly Dictionary<string, MethodHolder> _methods = [];
-    private readonly List<string> _additionalReferences = new();
+    private readonly HashSet<string> _additionalReferences = new();
     private readonly Dictionary<Type, List<PropertyUse>> _allPropertyUses = [];
 
     private string? _serverStuffProject = null;
@@ -43,6 +46,9 @@ public class Generator : Runner
             _doCreateProject = options.DoCreateProject,
             _serverTargetFramework = options.ServerTargetFramework,
         };
+        generator._additionalReferences.Add(typeof(IPoco).Assembly.Location);
+        generator._additionalReferences.Add(typeof(IEntity).Assembly.Location);
+        generator._additionalReferences.Add(typeof(ContractEventHandler).Assembly.Location);
         if (options.AdditionalReferences is { })
         {
             foreach (string ar in options.AdditionalReferences)
@@ -192,34 +198,31 @@ public class Generator : Runner
     {
         model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
+        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}{s_internal}";
         model.ClassName = $"{handler.Type.Name}Dto";
         model.BaseClasses.Add(handler.Type.Name);
         if(handler.Kind is PocoKind.Entity)
         {
             Util.AddNamespaces(model.Usings, typeof(IEntity));
-            Util.AddNamespaces(model.Usings, typeof(IPropertyUseAware));
+            Util.AddNamespaces(model.Usings, typeof(IPrimaryKey));
+            Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
+            Util.AddNamespaces(model.Usings, typeof(Access));
             model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
-            model.BaseClasses.Add(Util.MakeTypeName(typeof(IPropertyUseAware)));
         }
+        else
+        {
+            model.BaseClasses.Add(Util.MakeTypeName(typeof(IPoco)));
+        }
+        Util.AddNamespaces(model.Usings, typeof(IPoco));
         Util.AddNamespaces(model.Usings, handler.Type);
         Util.AddNamespaces(model.Usings, typeof(IProperty));
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
         model.Usings.Add(s_dependencyInjection);
         model.PocoKind = handler.Kind;
-        if(handler.Kind is PocoKind.Entity)
-        {
-            Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
-            Util.AddNamespaces(model.Usings, typeof(Access));
-        }
-        int pos = 0;
-        while(handler.Properties.Where(pm => pm.Name.Equals($"Self{(pos > 0 ? pos.ToString() : string.Empty)}")).Any())
-        {
-            ++pos;
-        }
         PropertyModel self = new()
         {
-            Name = $"Self{(pos > 0 ? pos.ToString() : string.Empty)}",
+            Name = "Self",
             IsCollection = false,
             IsNullable = false,
             IsPrimaryKey = false,
@@ -231,7 +234,7 @@ public class Generator : Runner
             TypeName = Util.MakeTypeName(handler.Type),
             IsSelf = true,
         };
-        model.Properties.Add(self);
+        model.Properties.Insert(0, self);
         foreach (PropertyModel pm in handler.Properties)
         {
             if (pm.IsCollection)
@@ -241,7 +244,7 @@ public class Generator : Runner
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
         }
-        if(handler.Kind is PocoKind.Entity)
+        if (handler.Kind is PocoKind.Entity)
         {
             model.PropertyUse = BuildPropertyUse(handler.PropertyUse, 0, self, model);
         }
@@ -257,7 +260,7 @@ public class Generator : Runner
         result.Flags = propertyUse.Flags;
         if (self is null)
         {
-            model.Usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}Dto");
+            model.Usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}{s_internal}");
         }
         if ((propertyUse.Children?.Count ?? 0) > 0)
         {
@@ -297,7 +300,7 @@ public class Generator : Runner
     {
         model.Contract = _contract;
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}Dto";
+        model.Namespace = handler.Type.Namespace;
         model.ClassName = $"{handler.Type.Name}PrimaryKey";
         model.ArgumentClass = handler.Type.Name;
         model.BaseClasses.Add(Util.MakeTypeName(typeof(IPrimaryKey<>).MakeGenericType([handler.Type])));
@@ -305,23 +308,26 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IPrimaryKey<>));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         model.Usings.Add(s_dependencyInjection);
+        model.Usings.Add($"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}{s_internal}");
         foreach (PropertyModel pm in handler.Properties.Where(p => p.IsPrimaryKey))
         {
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
         }
     }
-    internal void RenderAddServerExtensions(AddServerExtensionsModel model)
+    internal void RenderAddServerExtensions(ServerExtensionsModel model)
     {
         model.Contract = _contract;
         model.ClassName = $"{_contract.GetType().Name}Extensions";
         model.Namespace = _contract.GetType().Namespace;
         model.Usings.Add(s_dependencyInjection);
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
-        foreach(PocoHolder ph in _pocos.Values)
+        Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
+        Util.AddNamespaces(model.Usings, typeof(ProcessingInfo));
+        foreach (PocoHolder ph in _pocos.Values)
         {
             Util.AddNamespaces(model.Usings, ph.Type);
-            model.Usings.Add($"{(string.IsNullOrEmpty(ph.Type.Namespace) ? string.Empty : $"{ph.Type.Namespace}.")}Dto");
+            model.Usings.Add($"{(string.IsNullOrEmpty(ph.Type.Namespace) ? string.Empty : $"{ph.Type.Namespace}.")}{s_internal}");
 
             ServiceModel sm = new()
             {
@@ -354,18 +360,15 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         model.BaseClasses.Add(Util.MakeTypeName(typeof(Controller)));
-        HashSet<string> variables = [];
         foreach(MethodHolder mh in _methods.Values)
         {
-            variables.Clear();
             MethodModel mm = new()
             {
                 Name = mh.Name,
-                Route = $"{(!string.IsNullOrEmpty(_contract.RoutePrefix) ? $"/{_contract.RoutePrefix}" : string.Empty)}{(!string.IsNullOrEmpty(_contract.Version) ? $"/{_contract.Version}" : string.Empty)}/{mh.Name}",
+                Route = $"{(!string.IsNullOrEmpty(_contract.RoutePrefix) ? $"/{_contract.RoutePrefix}" : string.Empty)}/{mh.Name}",
             };
             foreach(ParameterHolder ph in mh.Parameters)
             {
-                variables.Add(ph.Name);
                 ParameterModel pm = new()
                 {
                     Name = ph.Name,
@@ -379,11 +382,30 @@ public class Generator : Runner
             }
             foreach (ParameterModel pm in mm.Parameters)
             {
-                pm.Variable = MakeUniqueName(pm.Name, variables);
+                pm.Variable = $"{pm.Name}Var";
             }
             mm.Route = Regex.Replace(mm.Route, "/{2,}", "/");
-            mm.JsonSerializerOptionsVariable = MakeUniqueName(mm.JsonSerializerOptionsVariable, variables);
-            mm.PocoContextVariable = MakeUniqueName(mm.PocoContextVariable, variables);
+            if(mh.Authorize is { })
+            {
+                List<string> parts = [];
+                if (!string.IsNullOrEmpty(mh.Authorize.Policy))
+                {
+                    parts.Add($"Policy = \"{mh.Authorize.Policy}\"");
+                }
+                if (!string.IsNullOrEmpty(mh.Authorize.Roles))
+                {
+                    parts.Add($"Roles = \"{mh.Authorize.Roles}\"");
+                }
+                if (!string.IsNullOrEmpty(mh.Authorize.AuthenticationSchemes))
+                {
+                    parts.Add($"AuthenticationSchemes = \"{mh.Authorize.AuthenticationSchemes}\"");
+                }
+                if(parts.Count > 0)
+                {
+                    Util.AddNamespaces(model.Usings, typeof(AuthorizeAttribute));
+                    mm.Authorize = string.Join(", ", parts);
+                }
+            }
             model.Methods.Add(mm);
         }
     }
@@ -395,12 +417,6 @@ public class Generator : Runner
     protected override void ConfigureApplication(WebApplication app)
     {
         app.MapRazorPages();
-    }
-    private string MakeUniqueName(string name, HashSet<string> names)
-    {
-        string result = name;
-        for(int pos = 0; names.Contains(result); ++pos, result = $"{name}{pos}") { }
-        return result;
     }
     private void DFM(PropertyUse src, PropertyUse dst)
     {
@@ -505,8 +521,8 @@ public class Generator : Runner
     }
     private void GenerateCore(IConnector connector, string targetDir)
     {
-        TextReader contractSource = connector.Get("/Server/AddServerExtensions");
-        File.WriteAllText(Path.Combine(targetDir, $"Add{_contract.GetType().Name}.cs"), contractSource.ReadToEnd());
+        TextReader contractSource = connector.Get("/Server/ServerExtensions");
+        File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Extensions.cs"), contractSource.ReadToEnd());
     }
 
     private void GenerateController(IConnector connector, string targetDir)
@@ -638,6 +654,7 @@ public class Generator : Runner
                         _currentMethod.Parameters.Add(ph);
 
                     }
+                    _currentMethod.Authorize = mi.GetCustomAttribute<AuthorizeAttribute>();
                     _methods.Add(_currentMethod.Name, _currentMethod);
                     _lastPropertyUse = _currentMethod!.PropertyUse;
                     _currentMethod!.PropertyUse.Flags |= PropertyUseFlags.Expected;

@@ -8,20 +8,20 @@
 public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
 
 {
-#region Fields
+#region Properties
 @foreach (PropertyModel pm in Model.Properties)
 {
-    <text>    private @Html.Raw(pm.TypeName) _@pm.Name = default!;
+    <text>    public @Html.Raw(pm.TypeName) @pm.Name { get; set; } = default!;
 </text>
 }
-#endregion Fields
+#endregion Properties
     public IEnumerable<object> GetPrimaryKey()
     {
 @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
 {
     if(pm.PocoKind is PocoKind.Entity)
     {
-        <text>        foreach (object pk in ((@nameof(IEntity))_@pm.Name).GetPrimaryKey())
+        <text>        foreach (object pk in ((@nameof(IPrimaryKey))@pm.Name).GetPrimaryKey())
         {
             yield return pk;
         }
@@ -29,13 +29,22 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     }
     else
     {
-        <text>        yield return _@pm.Name;
+        <text>        yield return @pm.Name;
 </text>
     }
 }
     }
     public bool TryFindEntity(out @Model.ArgumentClass obj)
     {
-        return services.GetRequiredService<@nameof(IPocoContext)>().TryFindEntity<@Model.ArgumentClass>(GetPrimaryKey(), out obj);
+        bool result = services.GetRequiredService<@nameof(IPocoContext)>().TryFindEntity<@Model.ArgumentClass>(GetPrimaryKey(), out obj);
+        if (!result)
+        {
+@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey))
+{
+    <text>            ((@Model.ArgumentClass@{}Dto)obj).Set@{}@pm.Name@{}(@pm.Name);
+</text>
+}
+        }
+        return result;
     }
 }

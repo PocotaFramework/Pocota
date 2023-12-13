@@ -1,14 +1,15 @@
 ﻿@page
 @using Net.Leksi.Pocota.FrameworkGenerator
 @using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
-@model AddServerExtensionsModel
+@model ServerExtensionsModel
 @Html.Partial("Header", Model)
 
 public static class @Model.ClassName
 {
     public static IServiceCollection Add@{}@Model.ClassName@{}Server(this IServiceCollection services)
     {
-        services.AddScoped<IPocoContext, PocoContext>();
+        services.AddScoped<IPocoContext, Server.PocoContext>();
+        services.AddScoped<IProcessingInfo, ProcessingInfo>();
 @foreach(ServiceModel sm in Model.Services)
 {
     <text>        services.Add@{}@sm.Lifetime@{}@Html.Raw($"<{sm.ServiceTypeName}, {sm.ImplTypeName}>")@{}();
