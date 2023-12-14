@@ -1,0 +1,25 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server
+@model BuilderModel
+@Html.Partial("Header", Model)
+
+public abstract class @Model.ClassName@{}(IServiceProvider services)@if (Model.BaseClasses.Any())
+{
+    <text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>
+}
+
+{
+@foreach(MethodModel mm in Model.Methods)
+{
+    <text>    public abstract @if(mm.IsCollectionReturn)
+        {
+            <text>@Html.Raw($"IEnumerable<{mm.ReturnItemTypeName}>")</text>
+        }
+        else 
+        { 
+            <text>@Html.Raw(mm.ReturnItemTypeName)</text>
+        }  @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{Html.Raw(p.TypeName)}{(p.IsNullable ? "?" : string.Empty)} {p.Name}")));
+</text>
+}
+}
