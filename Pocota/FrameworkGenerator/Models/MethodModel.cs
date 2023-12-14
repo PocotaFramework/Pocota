@@ -6,6 +6,8 @@ internal class MethodModel
     internal string Route { get; set; } = null!;
     internal string? Authorize { get; set; }
     internal List<ParameterModel> Parameters { get; private init; } = [];
-    internal string JsonSerializerOptionsVariable { get; set; } = "jsop";
-    internal string PocoContextVariable { get; set; } = "pocoContext";
+    internal string JsonSerializerOptionsVariable { get; set; } = "jsopVar";
+    internal string PocoContextVariable { get; set; } = "pocoContextVar";
+    internal string ReturnItemTypeName { get; set; } = null!;
+    internal bool IsCollectionReturn { get; set; } = false;
 }

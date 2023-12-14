@@ -48,9 +48,9 @@ public class @Model.ClassName: Contract
 {
     foreach(MethodHolder mh in node.Methods)
     {
-        <text>    [Authorize(Roles = "@mh.Authorize")]
+        <text>    //[Authorize(Roles = "@mh.Authorize")]
     public @(
-            mh.IsCollection ? Html.Raw("IList<") : string.Empty
+            mh.IsCollection ? Html.Raw("List<") : string.Empty
             )@node.Name@(
             mh.IsCollection ? Html.Raw(">") : string.Empty
         ) @mh.Name@{}(@Html.Raw(string.Join(", ", mh.Params.Select(p => $"{p.TypeName} {p.Name}"))))

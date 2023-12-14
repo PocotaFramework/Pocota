@@ -47,7 +47,7 @@ public class Pipeline(Random? random, Options options)
     }
     public void GenerateFramework(string? contractAssemblyLocation = null)
     {
-        contractAssemblyLocation ??= _contract!.LibraryFile!;
+        contractAssemblyLocation ??= _contract!.CompiledFile!;
         Generator _generator = Generator.Create(new FrameworkGeneratorOptions
         {
             Contract = (Contract)Activator.CreateInstance(

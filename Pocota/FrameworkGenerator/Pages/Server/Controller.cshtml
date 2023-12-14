@@ -28,6 +28,9 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
         }(@pm.Name, @mm.JsonSerializerOptionsVariable)@if(!pm.IsNullable && pm.Type.IsClass){<text>!</text>};
 </text>
     }
+        @Model.BuilderClassName @Model.BuilderVariable = Request.HttpContext.RequestServices.GetRequiredService<@Model.BuilderClassName>();
+        Request.HttpContext.Response.ContentType = "application/json";
+        JsonSerializer.Serialize(Request.HttpContext.Response.Body, @Model.BuilderVariable.@mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => p.Variable))), jsopVar);
     }
 </text>
 }

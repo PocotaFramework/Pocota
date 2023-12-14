@@ -10,10 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.11" />
-    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="1.5.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\RuntimeAssemblyCompiler\Library\RuntimeAssemblyCompilerDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />

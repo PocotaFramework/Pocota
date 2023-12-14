@@ -6,6 +6,7 @@ using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -68,6 +69,7 @@ public class Generator : Runner
         string primaryKeys = Path.Combine(_serverStuffProject!, "PrimaryKeys");
         string controllers = Path.Combine(_serverStuffProject!, "Controllers");
         string core = Path.Combine(_serverStuffProject!, "Core");
+        string builder = Path.Combine(_serverStuffProject!, "Builder");
         string projectDir = Path.GetFullPath(_serverStuffProject!);
 
         if (!_replaceFilesIfExist)
@@ -78,6 +80,7 @@ public class Generator : Runner
                 || Directory.Exists(dtoBase)
                 || Directory.Exists(dto)
                 || Directory.Exists(core)
+                || Directory.Exists(builder)
                 || (_doCreateProject && Directory.Exists(projectDir))
             )
             {
@@ -105,6 +108,10 @@ public class Generator : Runner
         {
             Directory.Delete(core, true);
         }
+        if (Directory.Exists(builder))
+        {
+            Directory.Delete(builder, true);
+        }
         if (_doCreateProject && Directory.Exists(projectDir))
         {
             Directory.Delete(projectDir, true);
@@ -118,6 +125,7 @@ public class Generator : Runner
         Directory.CreateDirectory(primaryKeys);
         Directory.CreateDirectory(controllers);
         Directory.CreateDirectory(core);
+        Directory.CreateDirectory(builder);
 
         Project? serverStuffProject = null;
 
@@ -145,6 +153,7 @@ public class Generator : Runner
         GenerateServerPrimaryKeys(connector, primaryKeys);
         GenerateController(connector, controllers);
         GenerateCore(connector, core);
+        GenerateBuilder(connector, builder);
 
         Stop();
 
@@ -166,6 +175,7 @@ public class Generator : Runner
     }
 
     private Generator() { }
+    #region Rendering
     internal void RenderContractClass(ContractModel model)
     {
         model.Contract = _contract;
@@ -361,12 +371,15 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         model.BaseClasses.Add(Util.MakeTypeName(typeof(Controller)));
-        foreach(MethodHolder mh in _methods.Values)
+        model.BuilderClassName = $"{_contract.GetType().Name}Builder";
+        foreach (MethodHolder mh in _methods.Values)
         {
             MethodModel mm = new()
             {
                 Name = mh.Name,
                 Route = $"{(!string.IsNullOrEmpty(_contract.RoutePrefix) ? $"/{_contract.RoutePrefix}" : string.Empty)}/{mh.Name}",
+                ReturnItemTypeName = Util.MakeTypeName(mh.ReturnItemType),
+                IsCollectionReturn = mh.IsCollectionReturn,
             };
             foreach(ParameterHolder ph in mh.Parameters)
             {
@@ -410,6 +423,39 @@ public class Generator : Runner
             model.Methods.Add(mm);
         }
     }
+    internal void RenderBuilder(BuilderModel model)
+    {
+        model.Contract = _contract;
+        model.ClassName = $"{_contract.GetType().Name}Builder";
+        model.Namespace = _contract.GetType().Namespace;
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        Util.AddNamespaces(model.Usings, typeof(IEnumerable<>));
+        foreach (MethodHolder mh in _methods.Values)
+        {
+            MethodModel mm = new()
+            {
+                Name = mh.Name,
+                ReturnItemTypeName = Util.MakeTypeName(mh.ReturnItemType),
+                IsCollectionReturn = mh.IsCollectionReturn,
+            };
+            Util.AddNamespaces(model.Usings, mh.ReturnItemType);
+            foreach (ParameterHolder ph in mh.Parameters)
+            {
+                ParameterModel pm = new()
+                {
+                    Name = ph.Name,
+                    TypeName = Util.MakeTypeName(ph.Type),
+                    IsNullable = ph.IsNullable,
+                    Type = ph.Type,
+                };
+                Util.AddNamespaces(model.Usings, ph.Type);
+                mm.Parameters.Add(pm);
+            }
+            model.Methods.Add(mm);
+        }
+    }
+    #endregion Rendering
+
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
         builder.Services.AddRazorPages();
@@ -520,6 +566,12 @@ public class Generator : Runner
             }
         }
     }
+    private void GenerateBuilder(IConnector connector, string targetDir)
+    {
+        TextReader contractSource = connector.Get("/Server/Builder");
+        File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Builder.cs"), contractSource.ReadToEnd());
+    }
+
     private void GenerateCore(IConnector connector, string targetDir)
     {
         TextReader contractSource = connector.Get("/Server/ServerExtensions");
@@ -609,7 +661,10 @@ public class Generator : Runner
 
             contractProcessor.Compile();
 
-            Assembly ass = Assembly.LoadFile(contractProcessor.LibraryFile!);
+            AssemblyLoadContext alc = new AssemblyLoadContext(null, true);
+            alc.
+
+            Assembly ass = Assembly.LoadFile(contractProcessor.CompiledFile!);
 
             IHost host = Host.CreateDefaultBuilder().ConfigureServices(services =>
             {
@@ -638,13 +693,33 @@ public class Generator : Runner
 
             foreach (MethodInfo mi in contract.GetType().GetMethods())
             {
-                if (mi.GetBaseDefinition().DeclaringType != typeof(ContractBase))
+                //Console.WriteLine($"{mi}, {mi.GetBaseDefinition().DeclaringType}");
+                if (
+                    mi.GetBaseDefinition().DeclaringType != typeof(ContractBase)
+                    && mi.GetBaseDefinition().DeclaringType != typeof(object)
+                    && !mi.IsSpecialName
+                )
                 {
                     _currentMethod = new MethodHolder
                     { 
                         Name = mi.Name,
+                        ReturnType = mi.ReturnType,
                     };
-                    foreach(ParameterInfo par in mi.GetParameters())
+                    _currentMethod.ReturnItemType = mi.ReturnType;
+                    if(mi.ReturnType == typeof(void))
+                    {
+                        throw new InvalidOperationException($"void return is forbidden: {mi}");
+                    }
+                    if (mi.ReturnType.IsGenericType)
+                    {
+                        if(mi.ReturnType.GetGenericTypeDefinition() != typeof(List<>))
+                        {
+                            throw new InvalidOperationException($"Only non generic or List<> return type allowed:{mi}!");
+                        }
+                        _currentMethod.IsCollectionReturn = mi.ReturnType.GetGenericTypeDefinition() == typeof(List<>);
+                        _currentMethod.ReturnItemType = mi.ReturnType.GetGenericArguments()[0];
+                    }
+                    foreach (ParameterInfo par in mi.GetParameters())
                     {
                         ParameterHolder ph = new()
                         {
@@ -886,4 +961,5 @@ public class Generator : Runner
             _propertyUses.Clear();
         }
     }
+
 }
