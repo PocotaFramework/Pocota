@@ -325,7 +325,7 @@ public class Generator : Runner
             model.Properties.Add(pm);
         }
     }
-    internal void RenderAddServerExtensions(ServerExtensionsModel model)
+    internal void RenderCore(ServerExtensionsModel model)
     {
         model.Contract = _contract;
         model.ClassName = $"{_contract.GetType().Name}Extensions";
@@ -335,6 +335,7 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
         Util.AddNamespaces(model.Usings, typeof(ProcessingInfo));
+        Util.AddNamespaces(model.Usings, typeof(ServerPocoContext));
         foreach (PocoHolder ph in _pocos.Values)
         {
             Util.AddNamespaces(model.Usings, ph.Type);
@@ -661,10 +662,7 @@ public class Generator : Runner
 
             contractProcessor.Compile();
 
-            AssemblyLoadContext alc = new AssemblyLoadContext(null, true);
-            alc.
-
-            Assembly ass = Assembly.LoadFile(contractProcessor.CompiledFile!);
+            Assembly ass = contractProcessor.CompiledAssembly!;
 
             IHost host = Host.CreateDefaultBuilder().ConfigureServices(services =>
             {

@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -106,5 +107,6 @@ public class Tests
         options.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff");
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
+        pipeline.GenerateServerImplementation();
     }
 }

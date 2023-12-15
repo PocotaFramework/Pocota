@@ -7,6 +7,6 @@ public class ServerExtensionsModel : CoreModel
     internal string AddMethodName { get; set; } = null!;
     public void OnGet([FromServices] Generator generator)
     {
-        generator.RenderAddServerExtensions(this);
+        generator.RenderCore(this);
     }
 }

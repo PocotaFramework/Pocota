@@ -138,4 +138,9 @@ public class SourcesGenerator: Runner
             model.Nodes.Add(node);
         }
     }
+
+    internal void GenerateServerImplementation(Type? type, Options options)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.11" />
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.*" />
+    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="2.0.*" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\RuntimeAssemblyCompiler\Library\RuntimeAssemblyCompilerDebug.csproj" />
     <ProjectReference Include="..\Contract\ContractDebug.csproj" />
     <ProjectReference Include="..\Server\PocotaServer\PocotaServerDebug.csproj" />
   </ItemGroup>

@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\RandomPipeline\Common\Common.csproj" />
-    <ProjectReference Include="..\Generated\Framework\ServerStuff\ServerStuff.csproj" />
+    <Reference Include="..\Generated\Framework\ServerStuff\bin\RAC\net8.0-windows\ServerStuff.dll" />
   </ItemGroup>
 
 </Project>

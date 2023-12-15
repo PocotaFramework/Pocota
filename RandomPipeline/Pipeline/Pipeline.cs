@@ -26,6 +26,7 @@ public class Pipeline(Random? random, Options options)
     private readonly SourcesGenerator _generator = new();
     private Graph _graph = null!;
     private Project _contract = null!;
+    private Project _serverStuff = null!;
 
     public void GenerateContract()
     {
@@ -47,12 +48,11 @@ public class Pipeline(Random? random, Options options)
     }
     public void GenerateFramework(string? contractAssemblyLocation = null)
     {
-        contractAssemblyLocation ??= _contract!.CompiledFile!;
+        Assembly contractAssembly = (contractAssemblyLocation is { } ? Assembly.LoadFile(contractAssemblyLocation) : _contract.CompiledAssembly)!;
         Generator _generator = Generator.Create(new FrameworkGeneratorOptions
         {
             Contract = (Contract)Activator.CreateInstance(
-                    Assembly.LoadFile(contractAssemblyLocation)
-                        .GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
+                   contractAssembly.GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
                 )!,
             AdditionalReferences = [ typeof(MockEnum).Assembly.Location ],
             ServerStuffProject = _options.GeneratedServerStuffProjectDir,
@@ -60,7 +60,11 @@ public class Pipeline(Random? random, Options options)
             DoCreateProject = true,
             ServerTargetFramework = _options.TargetFramework,
         });
-        _generator.GenerateServerStuff();
+        _serverStuff = _generator.GenerateServerStuff()!;
+    }
+    public void GenerateServerImplementation()
+    {
+        _generator.GenerateServerImplementation(_serverStuff.CompiledAssembly!.GetType($"{_options.ContractClassName}Builder.{_options.ContractNamespace}"), _options);
     }
     private void BuildTrees()
     {
@@ -183,7 +187,7 @@ public class Pipeline(Random? random, Options options)
         }
     }
 
-    internal void BuildGraph()
+    private void BuildGraph()
     {
         
         if(_options.EntitiesFraction > 1)

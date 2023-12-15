@@ -9,7 +9,7 @@ public static class @Model.ClassName
     public static IServiceCollection @Model.AddMethodName@{}(this IServiceCollection services)
     {
         services.AddControllers();
-        services.AddScoped<IPocoContext, Server.PocoContext>();
+        services.AddScoped<IPocoContext, ServerPocoContext>();
         services.AddScoped<IProcessingInfo, ProcessingInfo>();
 @foreach(ServiceModel sm in Model.Services)
 {

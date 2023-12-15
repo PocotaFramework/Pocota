@@ -31,9 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Contract1", "Tests\CustomsC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaServerDebug", "Pocota\Server\PocotaServer\PocotaServerDebug.csproj", "{203B9CD9-3E36-430B-8926-D6D5EE6546AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test1", "Tests\Test1\Test1.csproj", "{4731900D-46CD-4A87-904E-E2CF333CCF5D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RuntimeAssemblyCompilerDebug", "..\RuntimeAssemblyCompiler\Library\RuntimeAssemblyCompilerDebug.csproj", "{E0FD9C15-78A7-41C0-8087-E04C9528671F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test1", "Tests\Test1\Test1.csproj", "{4731900D-46CD-4A87-904E-E2CF333CCF5D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -108,12 +106,6 @@ Global
 		{4731900D-46CD-4A87-904E-E2CF333CCF5D}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{4731900D-46CD-4A87-904E-E2CF333CCF5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4731900D-46CD-4A87-904E-E2CF333CCF5D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.RAC|Any CPU.ActiveCfg = Release|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.RAC|Any CPU.Build.0 = Release|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0FD9C15-78A7-41C0-8087-E04C9528671F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
