@@ -3,6 +3,5 @@ obj
 .vs
 *.user
 *.bak
-**/Installer/Output
-Tests/Generated
+Generated
 

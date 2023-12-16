@@ -4,7 +4,7 @@
 @model BuilderModel
 @Html.Partial("Header", Model)
 
-public abstract class @Model.ClassName@{}(IServiceProvider services)@if (Model.BaseClasses.Any())
+public abstract class @Model.ClassName@{}@if (Model.BaseClasses.Any())
 {
     <text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>
 }

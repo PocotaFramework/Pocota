@@ -44,7 +44,7 @@ public class @Model.ClassName: Contract
 }
     }
 
-@foreach (Node node in Model.Nodes/*.Where(n => n.Kind is NodeKind.Entity)*/)
+@foreach (Node node in Model.Nodes)
 {
     foreach(MethodHolder mh in node.Methods)
     {

@@ -28,4 +28,5 @@ public class Options
     public string TargetFramework { get; set; } = null!;
     public string ContractNamespace { get; set; } = null!;
     public string? CustomContractAssemblyLocation { get; set; } = null;
+    public string ServerImplementationProject { get; set; } = null!;
 }

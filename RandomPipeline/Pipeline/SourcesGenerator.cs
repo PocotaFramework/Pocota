@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.Pipeline.Pages;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Reflection;
 using System.Text;
@@ -141,6 +142,55 @@ public class SourcesGenerator: Runner
 
     internal void GenerateServerImplementation(Type? type, Options options)
     {
-        throw new NotImplementedException();
+        Start();
+
+        IConnector connector = GetConnector();
+
+        TextReader textReader = connector.Get("/Builder", type);
+        File.WriteAllText(
+            Path.Combine(Path.GetDirectoryName(options.ServerImplementationProject)!, "Generated", "Builder.cs"), 
+            textReader.ReadToEnd()
+        );
+
+        Stop();
+ 
+    }
+
+    internal static void RenderBuilder(BuilderModel model)
+    {
+        Type baseType = (Type)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.ClassName = "Builder";
+        model.BaseClasses.Add(Util.MakeTypeName(baseType));
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        Util.AddNamespaces(model.Usings, baseType);
+        foreach(MethodInfo mi in baseType.GetMethods().Where(m => m.DeclaringType == baseType))
+        {
+            Type returnItemType = mi.ReturnType;
+            bool isCollection = false;
+            if(returnItemType.IsGenericType && returnItemType.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                isCollection = true;
+                returnItemType = returnItemType.GetGenericArguments()[0];
+                Util.AddNamespaces(model.Usings, typeof(IEnumerable<>));
+            }
+            Util.AddNamespaces(model.Usings, returnItemType);
+            MethodHolder mh = new()
+            {
+                Name = mi.Name,
+                IsCollection = isCollection,
+                ReturnTypeName = isCollection ? $"IEnumerable<{Util.MakeTypeName(returnItemType)}>" : Util.MakeTypeName(returnItemType),
+            };
+            foreach(ParameterInfo par in mi.GetParameters())
+            {
+                ParamHolder ph = new()
+                {
+                    Name = par.Name!,
+                    TypeName = Util.MakeTypeName(par.ParameterType),
+                };
+                Util.AddNamespaces(model.Usings, par.ParameterType);
+                mh.Params.Add(ph);
+            }
+            model.Methods.Add(mh);
+        }
     }
 }

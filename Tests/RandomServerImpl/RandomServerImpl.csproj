@@ -4,7 +4,12 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.*" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\RandomPipeline\Common\Common.csproj" />

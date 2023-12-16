@@ -58,7 +58,7 @@ public class Tests
             //CustomContractAssemblyLocation = @"W:\C#\PocotaNew3\Tests\CustomsContracts\Contract1\bin\Debug\net8.0-windows\Contract1.dll",
             ContractNamespace = "Contract1",
             ContractClassName = "Contract1",
-    } ];
+        }];
     }
 
     [Test]
@@ -92,10 +92,10 @@ public class Tests
             Console.WriteLine($"Seed: {seed}");
 
             rnd = new(seed);
-            options.GeneratedContractProjectDir = Path.Combine(projectDir, "..", "Generated", "Contract");
+            options.GeneratedContractProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "Contract"));
 
-            options.PipelineCommonProjectDir = Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj");
-            options.ContractProjectDir = Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj");
+            options.PipelineCommonProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "..", "RandomPipeline", "Common", "Common.csproj"));
+            options.ContractProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "..", "Pocota", "Contract", "ContractDebug.csproj"));
             options.ContractNamespace = "Net.Leksi.Pocota.RandomServer";
             options.ContractClassName = "RandomContract";
 
@@ -104,7 +104,8 @@ public class Tests
             pipeline.GenerateContract();
         }
 
-        options.GeneratedServerStuffProjectDir = Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff");
+        options.GeneratedServerStuffProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff"));
+        options.ServerImplementationProject = Path.GetFullPath(Path.Combine(projectDir, "..", "RandomServerImpl", "RandomServerImpl.csproj"));
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
         pipeline.GenerateServerImplementation();

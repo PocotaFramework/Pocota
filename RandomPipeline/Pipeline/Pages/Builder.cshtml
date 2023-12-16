@@ -1,0 +1,27 @@
+﻿@page
+@using Net.Leksi.Pocota.Pipeline
+@using Net.Leksi.Pocota.Pipeline.Pages
+@model BuilderModel
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+@if(Model.Namespace is { })
+{
+    <text>
+namespace @Model.Namespace;
+</text>
+}
+public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+@foreach(MethodHolder mh in Model.Methods)
+{
+    <text>    public override @Html.Raw(mh.ReturnTypeName) @mh.Name@{}(@string.Join(", ", mh.Params.Select(ph => $"{ph.TypeName} {ph.Name}")))
+    {
+        throw new NotImplementedException();
+    }
+</text>
+}
+}

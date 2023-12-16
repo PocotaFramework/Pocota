@@ -64,7 +64,26 @@ public class Pipeline(Random? random, Options options)
     }
     public void GenerateServerImplementation()
     {
-        _generator.GenerateServerImplementation(_serverStuff.CompiledAssembly!.GetType($"{_options.ContractClassName}Builder.{_options.ContractNamespace}"), _options);
+        _generator.GenerateServerImplementation(
+            _serverStuff.CompiledAssembly!.GetType(
+                $"{(
+                !string.IsNullOrEmpty(_options.ContractNamespace) 
+                    ?$"{_options.ContractNamespace}." 
+                    : string.Empty
+                )}{_options.ContractClassName}Builder"
+            ), 
+            _options
+        );
+
+        Project serverImpl = Project.Compile(options.ServerImplementationProject);
+
+        Type serverImplType = serverImpl.CompiledAssembly!.GetType("ServerImpl")!;
+
+        object server = Activator.CreateInstance(serverImplType)!;
+        string link = (string)serverImplType.GetMethod("Run")!.Invoke(server, [])!;
+        File.WriteAllText(Path.Combine(Path.GetDirectoryName(options.ServerImplementationProject)!, "Generated", "link.txt"), link);
+        Thread.Sleep(50000);
+
     }
     private void BuildTrees()
     {
