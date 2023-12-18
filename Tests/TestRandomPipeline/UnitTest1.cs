@@ -107,6 +107,7 @@ public class Tests
 
         options.GeneratedServerStuffProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff"));
         options.ServerImplementationProject = Path.GetFullPath(Path.Combine(projectDir, "..", "RandomServerImpl", "RandomServerImpl.csproj"));
+        options.ContractProcessorDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "ContractProcessor"));
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
 

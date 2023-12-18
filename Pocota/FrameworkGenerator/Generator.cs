@@ -31,6 +31,7 @@ public class Generator : Runner
     private bool _doCreateProject = false;
     private bool _replaceFilesIfExist = false;
     private string? _serverTargetFramework = null;
+    private string? _contractProcessingDir = null;
 
     private MethodHolder? _currentMethod = null;
     private PocoHolder? _currentPoco = null;
@@ -49,6 +50,7 @@ public class Generator : Runner
             _replaceFilesIfExist = options.ReplaceFilesIfExist,
             _doCreateProject = options.DoCreateProject,
             _serverTargetFramework = options.ServerTargetFramework,
+            _contractProcessingDir = options.ContractProcessorDir,
         };
         generator._additionalReferences.Add(typeof(IPoco).Assembly.Location);
         generator._additionalReferences.Add(typeof(IEntity).Assembly.Location);
@@ -190,23 +192,41 @@ public class Generator : Runner
     internal void RenderModelClass(ModelModel model)
     {
         model.Contract = _contract;
-        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        model.Namespace = handler.Type.Namespace;
-        model.ClassName = $"{handler.Type.Name}_1";
-        model.BaseClasses.Add(handler.Type.Name);
-        Util.AddNamespaces(model.Usings, handler.Type);
+        PocoHolder holder = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = holder.Type.Namespace;
+        model.ClassName = $"{holder.Type.Name}_1";
+        model.BaseClasses.Add(holder.Type.Name);
+        Util.AddNamespaces(model.Usings, holder.Type);
         Util.AddNamespaces(model.Usings, typeof(NotImplementedException));
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         Util.AddNamespaces(model.Usings, typeof(Contract));
         model.Usings.Add(s_dependencyInjection);
-        foreach (PropertyModel pm in handler.Properties)
+        Stack<PocoHolder> stack = new();
+        do
         {
-            if (pm.IsCollection)
+            stack.Push(holder);
+            if (_pocos.TryGetValue(holder.Type.BaseType!.FullName!, out PocoHolder? ph))
             {
-                Util.AddNamespaces(model.Usings, typeof(List<>));
+                holder = ph;
             }
-            Util.AddNamespaces(model.Usings, pm.ItemType);
-            model.Properties.Add(pm);
+            else
+            {
+                holder = null!;
+            }
+        }
+        while (holder is { });
+        while(stack.Count > 0)
+        {
+            holder = stack.Pop();
+            foreach (PropertyModel pm in holder.Properties)
+            {
+                if (pm.IsCollection)
+                {
+                    Util.AddNamespaces(model.Usings, typeof(List<>));
+                }
+                Util.AddNamespaces(model.Usings, pm.ItemType);
+                model.Properties.Add(pm);
+            }
         }
     }
 
@@ -736,9 +756,21 @@ public class Generator : Runner
 
         IConnector connector = GetConnector();
 
+
+        if(_contractProcessingDir is { } && Directory.Exists(_contractProcessingDir))
+        {
+            Directory.Delete(_contractProcessingDir, true);
+        }
+        if(_contractProcessingDir is { })
+        {
+            Directory.CreateDirectory(_contractProcessingDir);
+        }
+
         using (Project contractProcessor = Project.Create(new ProjectOptions
         {
             Name = "ContractProcessor",
+            ProjectDir = _contractProcessingDir,
+            TargetFramework = _serverTargetFramework,
         }))
         {
             contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");

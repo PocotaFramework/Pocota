@@ -30,4 +30,6 @@ public class Options
     public string? CustomContractAssemblyLocation { get; set; } = null;
     public string ServerImplementationProject { get; set; } = null!;
     public double CompositionFraction { get; set; }
+    public string? ContractProcessorDir { get; set; } = null;
+
 }

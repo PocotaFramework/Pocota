@@ -59,6 +59,7 @@ public class Pipeline(Random? random, Options options)
             ReplaceFilesIfExist = true,
             DoCreateProject = true,
             ServerTargetFramework = _options.TargetFramework,
+            ContractProcessorDir = _options.ContractProcessorDir,
         });
         _serverStuff = _generator.GenerateServerStuff()!;
     }

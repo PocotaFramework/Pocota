@@ -8,4 +8,5 @@ public class FrameworkGeneratorOptions
     public bool DoCreateProject { get; set; } = false;
     public bool ReplaceFilesIfExist { get; set; } = false;
     public string? ServerTargetFramework { get; set; } = null;
+    public string? ContractProcessorDir { get; set; } = null;
 }

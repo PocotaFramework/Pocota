@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaServerDebug", "Pocota
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomServerImpl", "Tests\RandomServerImpl\RandomServerImpl.csproj", "{0F8A895E-6BEC-4F2E-A225-DFB6F4910419}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractProcessor", "Tests\Generated\ContractProcessor\ContractProcessor.csproj", "{D805ABC9-EFA3-444F-A774-77BA7221207D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -106,6 +108,12 @@ Global
 		{0F8A895E-6BEC-4F2E-A225-DFB6F4910419}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{0F8A895E-6BEC-4F2E-A225-DFB6F4910419}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F8A895E-6BEC-4F2E-A225-DFB6F4910419}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Debug|Any CPU.ActiveCfg = RAC|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Debug|Any CPU.Build.0 = RAC|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.RAC|Any CPU.ActiveCfg = RAC|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.RAC|Any CPU.Build.0 = RAC|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.ActiveCfg = RAC|Any CPU
+		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.Build.0 = RAC|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
