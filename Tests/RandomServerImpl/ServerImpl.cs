@@ -3,13 +3,13 @@ using Net.Leksi.Pocota.RandomServer;
 
 public class ServerImpl: Runner
 {
-    public string Run()
+    public string GetServerLink(object? parameter, Action<HttpContext> onRequest)
     {
         Start();
 
         IConnector connector = GetConnector();
 
-        return connector.GetLink("/");
+        return connector.GetLink("/", parameter, onRequest);
     }
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {

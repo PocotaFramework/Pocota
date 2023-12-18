@@ -15,6 +15,7 @@ internal class PropertyModel
     internal bool IsNullable { get; set; }
     internal PocoKind PocoKind { get; set; }
     internal bool IsPrimaryKey { get; set; } = false;
+    internal bool IsComposition { get; set; } = false;
     internal bool IsCollection { get; set; }
     internal bool IsSelf { get; set; } = false;
 }

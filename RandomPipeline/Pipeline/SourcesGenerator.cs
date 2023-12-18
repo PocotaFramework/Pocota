@@ -142,13 +142,19 @@ public class SourcesGenerator: Runner
 
     internal void GenerateServerImplementation(Type? type, Options options)
     {
+        string generated = Path.Combine(Path.GetDirectoryName(options.ServerImplementationProject)!, "Generated");
+        if (!Directory.Exists(generated))
+        {
+            Directory.CreateDirectory(generated);
+        }
+
         Start();
 
         IConnector connector = GetConnector();
 
         TextReader textReader = connector.Get("/Builder", type);
         File.WriteAllText(
-            Path.Combine(Path.GetDirectoryName(options.ServerImplementationProject)!, "Generated", "Builder.cs"), 
+            Path.Combine(generated, "Builder.cs"), 
             textReader.ReadToEnd()
         );
 

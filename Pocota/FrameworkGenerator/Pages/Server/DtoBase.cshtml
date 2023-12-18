@@ -4,7 +4,7 @@
 @model DtoBaseModel
 @Html.Partial("Header", Model)
 
-public abstract class @Model.ClassName
+public abstract class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
 {
 @foreach(PropertyModel pm in Model.Properties)
 {

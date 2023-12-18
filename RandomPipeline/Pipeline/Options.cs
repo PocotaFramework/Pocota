@@ -29,4 +29,5 @@ public class Options
     public string ContractNamespace { get; set; } = null!;
     public string? CustomContractAssemblyLocation { get; set; } = null;
     public string ServerImplementationProject { get; set; } = null!;
+    public double CompositionFraction { get; set; }
 }

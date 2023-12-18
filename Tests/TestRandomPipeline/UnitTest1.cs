@@ -55,6 +55,7 @@ public class Tests
             FindersCountBase = 3,
             FindersParamsCountBase = 2,
             FindersMandatoryFraction = .3,
+            CompositionFraction = .4,
             //CustomContractAssemblyLocation = @"W:\C#\PocotaNew3\Tests\CustomsContracts\Contract1\bin\Debug\net8.0-windows\Contract1.dll",
             ContractNamespace = "Contract1",
             ContractClassName = "Contract1",
@@ -108,6 +109,11 @@ public class Tests
         options.ServerImplementationProject = Path.GetFullPath(Path.Combine(projectDir, "..", "RandomServerImpl", "RandomServerImpl.csproj"));
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
+
         pipeline.GenerateServerImplementation();
+
+        ServerLink serverLink = new();
+
+        serverLink.GetClient(options.ServerImplementationProject, null, null);
     }
 }

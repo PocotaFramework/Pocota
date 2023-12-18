@@ -6,4 +6,5 @@ internal class PocoHolder
     internal PocoKind Kind { get; set; } = PocoKind.Envelope;
     internal PropertyUse? PropertyUse { get; set; } = null;
     internal List<PropertyModel> Properties { get; private init; } = [];
+    internal string? TableName { get; set; } = null;
 }

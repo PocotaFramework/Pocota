@@ -74,16 +74,6 @@ public class Pipeline(Random? random, Options options)
             ), 
             _options
         );
-
-        Project serverImpl = Project.Compile(options.ServerImplementationProject);
-
-        Type serverImplType = serverImpl.CompiledAssembly!.GetType("ServerImpl")!;
-
-        object server = Activator.CreateInstance(serverImplType)!;
-        string link = (string)serverImplType.GetMethod("Run")!.Invoke(server, [])!;
-        File.WriteAllText(Path.Combine(Path.GetDirectoryName(options.ServerImplementationProject)!, "Generated", "link.txt"), link);
-        Thread.Sleep(50000);
-
     }
     private void BuildTrees()
     {
@@ -189,9 +179,17 @@ public class Pipeline(Random? random, Options options)
                 }
                 else
                 {
-                    node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
-                    node.Properties[i].IsReadOnly = _random.NextDouble() < _options.ReadOnlyFraction;
+                    node.Properties[i].IsReadOnly = _random!.NextDouble() < _options.ReadOnlyFraction;
                     node.Properties[i].IsCollection = _random.NextDouble() < _options.CollectionFraction;
+                    if(node.Properties[i].IsCollection && node.Properties[i].Node is { } && node.Properties[i].Node!.Kind is NodeKind.Entity)
+                    {
+                        node.Properties[i].IsNullable = false;
+                        node.Properties[i].IsComposition = _random.NextDouble() < _options.CompositionFraction;
+                    }
+                    else
+                    {
+                        node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
+                    }
                 }
             }
             node.PrimaryKey = new HashSet<PropertyHolder>();

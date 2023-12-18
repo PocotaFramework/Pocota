@@ -9,5 +9,6 @@ public enum ContractEventKind
     AccessSelector,
     Output,
     Mandatory,
+    Composition,
     Done,
 }

@@ -44,26 +44,14 @@ public abstract class Contract: ContractBase
     {
         ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName, Value = propertyValue });
     }
-    internal void AccessSelector<T>(Func<T, object[]> config) where T : class
+    internal void MarkProperties<T>(Func<T, object[]> config, ContractEventKind eventKind) where T : class
     {
         if (_serviceProvider is { })
         {
             T obj = _serviceProvider.GetRequiredService<T>();
-            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.AccessSelector });
+            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = eventKind });
             config?.Invoke(obj);
             ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Done });
         }
     }
-
-    internal void PrimaryKey<T>(Func<T, object[]> config) where T : class
-    {
-        if (_serviceProvider is { })
-        {
-            T obj = _serviceProvider.GetRequiredService<T>();
-            ContractProcessing?.Invoke(new ContractEventArgs { PocoType = typeof(T), Poco = obj, EventKind = ContractEventKind.PrimaryKey });
-            config?.Invoke(obj);
-            ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Done });
-        }
-    }
-
 }

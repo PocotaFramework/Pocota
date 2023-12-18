@@ -12,6 +12,7 @@ internal class PropertyHolder
     internal bool IsReadOnly { get; set; } = false;
     internal bool IsNullable { get; set; } = true;
     internal bool IsPrimaryKey { get; set; } = false;
+    internal bool IsComposition { get; set; } = false;
     internal PropertyHolder(Node owner)
     {
         Owner = owner;

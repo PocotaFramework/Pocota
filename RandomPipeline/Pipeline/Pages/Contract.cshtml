@@ -33,6 +33,10 @@ public class @Model.ClassName: Contract
             .AccessSelector(o => new object[]{
                 @Html.Raw(string.Join(",\r\n                ", node.AccessSelectorPaths.Select(v => $"o{v}")))
             })</text>
+        }@if(node.Properties.Any(p => p.IsComposition))
+        {
+            <text>
+            .Composition(o => new object[]{@string.Join(", ", node.Properties.Where(p => p.IsComposition).Select(p => $"o.{p.Name}"))})</text>
         };
 </text>        
     }

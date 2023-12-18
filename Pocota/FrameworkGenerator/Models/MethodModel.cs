@@ -10,4 +10,5 @@ internal class MethodModel
     internal string PocoContextVariable { get; set; } = "pocoContextVar";
     internal string ReturnItemTypeName { get; set; } = null!;
     internal bool IsCollectionReturn { get; set; } = false;
+    internal PropertyUseModel? PropertyUse;
 }
