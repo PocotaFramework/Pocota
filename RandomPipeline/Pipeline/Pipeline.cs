@@ -158,7 +158,7 @@ public class Pipeline(Random? random, Options options)
             int pkCount = Math.Min(
                     node.Properties.Count, Math.Max(
                         0,
-                        node.Kind is NodeKind.Envelope ? 0 : _random.Next(1, _options.PKCountBase + 1) - node.PkCount
+                        node.Kind is NodeKind.Envelope ? 0 : _random!.Next(1, _options.PKCountBase + 1) - node.PkCount
                     )
                 );
 

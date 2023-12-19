@@ -7,4 +7,5 @@ internal class PocoHolder
     internal PropertyUse? PropertyUse { get; set; } = null;
     internal List<PropertyModel> Properties { get; private init; } = [];
     internal string? TableName { get; set; } = null;
+    internal HashSet<string> Inheritors { get; private init; } = [];
 }

@@ -233,11 +233,11 @@ public class Generator : Runner
     internal void RenderServerDto(DtoModel model)
     {
         model.Contract = _contract;
-        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        model.Namespace = $"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}{s_internal}";
-        model.ClassName = $"{handler.Type.Name}Dto";
-        model.BaseClasses.Add(handler.Type.Name);
-        if (handler.Kind is PocoKind.Entity)
+        PocoHolder holder = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = $"{(string.IsNullOrEmpty(holder.Type.Namespace) ? string.Empty : $"{holder.Type.Namespace}.")}{s_internal}";
+        model.ClassName = $"{holder.Type.Name}Dto";
+        model.BaseClasses.Add(holder.Type.Name);
+        if (holder.Kind is PocoKind.Entity)
         {
             Util.AddNamespaces(model.Usings, typeof(IEntity));
             Util.AddNamespaces(model.Usings, typeof(IPrimaryKey));
@@ -250,26 +250,45 @@ public class Generator : Runner
             model.BaseClasses.Add(Util.MakeTypeName(typeof(IPoco)));
         }
         Util.AddNamespaces(model.Usings, typeof(IPoco));
-        Util.AddNamespaces(model.Usings, handler.Type);
+        Util.AddNamespaces(model.Usings, holder.Type);
         Util.AddNamespaces(model.Usings, typeof(IProperty));
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
         model.Usings.Add(s_dependencyInjection);
-        model.PocoKind = handler.Kind;
-        PropertyModel self = GetSelfPropertyModel(handler);
+        model.PocoKind = holder.Kind;
+        PropertyModel self = GetSelfPropertyModel(holder);
         model.Properties.Insert(0, self);
-        foreach (PropertyModel pm in handler.Properties)
+        Stack<PocoHolder> stack = new();
+        do
         {
-            if (pm.IsCollection)
+            stack.Push(holder);
+            if (_pocos.TryGetValue(holder.Type.BaseType!.FullName!, out PocoHolder? ph))
             {
-                Util.AddNamespaces(model.Usings, typeof(List<>));
+                holder = ph;
             }
-            Util.AddNamespaces(model.Usings, pm.ItemType);
-            model.Properties.Add(pm);
+            else
+            {
+                holder = null!;
+            }
         }
-        if (handler.Kind is PocoKind.Entity)
+        while (holder is { });
+        while (stack.Count > 0)
         {
-            model.PropertyUse = BuildPropertyUse(handler.PropertyUse!, 0, self, model.Usings);
+            holder = stack.Pop();
+
+            foreach (PropertyModel pm in holder.Properties)
+            {
+                if (pm.IsCollection)
+                {
+                    Util.AddNamespaces(model.Usings, typeof(List<>));
+                }
+                Util.AddNamespaces(model.Usings, pm.ItemType);
+                model.Properties.Add(pm);
+            }
+        }
+        if (holder.Kind is PocoKind.Entity)
+        {
+            model.PropertyUse = BuildPropertyUse(holder.PropertyUse!, 0, self, model.Usings);
         }
     }
 
@@ -796,6 +815,33 @@ public class Generator : Runner
             _contract.ContractProcessing += eventHandler1;
             _contract.ConfigurePocos();
             _contract.ContractProcessing -= eventHandler1;
+
+            foreach (PocoHolder ph in _pocos.Values)
+            {
+                PocoHolder cur = ph;
+                do
+                {
+                    if (_pocos.TryGetValue(cur.Type.BaseType!.FullName!, out PocoHolder? ph1))
+                    {
+                        ph1.Inheritors.Add(cur.Type.FullName!);
+                        foreach(string s in cur.Inheritors)
+                        {
+                            ph1.Inheritors.Add(s);
+                        }
+                        cur = ph1;
+                    }
+                    else
+                    {
+                        cur = null!;
+                    }
+                }
+                while (cur is { });
+            }
+
+            foreach (PocoHolder ph in _pocos.Values)
+            {
+                Console.WriteLine($"{ph.Type}: {string.Join(", ", ph.Inheritors)}");
+            }
 
             foreach (PocoHolder ph in _pocos.Values)
             {

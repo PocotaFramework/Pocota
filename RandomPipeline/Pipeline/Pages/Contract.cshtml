@@ -23,10 +23,10 @@ public class @Model.ClassName: Contract
 {
     @if(node.Kind is NodeKind.Entity)
     {
-        <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.PrimaryKey is { } && node.PrimaryKey.Any())
+        <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.PrimaryKey is { } && node.PrimaryKey.Any(p => node.Properties.Any(p1 => p1.Name.Equals(p.Name))))
         {
             <text>
-            .PrimaryKey(o => new object[]{@string.Join(", ", node.PrimaryKey.Select(p => $"o.{p.Name}"))})</text>
+            .PrimaryKey(o => new object[]{@string.Join(", ", node.PrimaryKey.Where(p => node.Properties.Any(p1 => p1.Name.Equals(p.Name))).Select(p => $"o.{p.Name}"))})</text>
         }@if(node.AccessSelectorPaths is { } && node.AccessSelectorPaths.Any())
         {
             <text>
