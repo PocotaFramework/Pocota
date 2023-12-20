@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.FrameworkGenerator.Models;
 using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Data;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace Net.Leksi.Pocota.FrameworkGenerator;
 
@@ -160,9 +158,15 @@ public class Generator : Runner
         GenerateCore(connector, core);
         GenerateBuilder(connector, builder);
 
+        DataSet dataSet = GenerateDataSet();
+
         FileStream fs = File.OpenWrite(Path.Combine(projectDir, "DataSetSchema.xml"));
-        GenerateDataSet().WriteXmlSchema(fs);
+
+        dataSet.WriteXmlSchema(fs);
+
         fs.Close();
+
+        GenerateDatabaseMetadata(dataSet, connector, projectDir);
 
         Stop();
 
@@ -291,6 +295,32 @@ public class Generator : Runner
             model.PropertyUse = BuildPropertyUse(holder.PropertyUse!, 0, self, model.Usings);
         }
     }
+    internal IEnumerable<PropertyModel> GetAllProperties(PocoHolder holder)
+    {
+        PocoHolder cur = holder;
+        Stack<PocoHolder> stack = new();
+        do
+        {
+            stack.Push(cur);
+            if (_pocos.TryGetValue(cur.Type.BaseType!.FullName!, out PocoHolder? ph))
+            {
+                cur = ph;
+            }
+            else
+            {
+                cur = null!;
+            }
+        }
+        while (cur is { });
+        while(stack.Count > 0)
+        {
+            cur = stack.Pop();
+            foreach(PropertyModel pm in cur.Properties) 
+            {
+                yield return pm;
+            }
+        }
+    }
 
     private static PropertyModel GetSelfPropertyModel(PocoHolder handler)
     {
@@ -378,7 +408,7 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         model.Usings.Add(s_dependencyInjection);
         model.Usings.Add($"{(string.IsNullOrEmpty(handler.Type.Namespace) ? string.Empty : $"{handler.Type.Namespace}.")}{s_internal}");
-        foreach (PropertyModel pm in handler.Properties.Where(p => p.IsPrimaryKey))
+        foreach (PropertyModel pm in GetAllProperties(handler).Where(p => p.IsPrimaryKey).OrderBy(p => p.Name))
         {
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
@@ -494,6 +524,57 @@ public class Generator : Runner
             model.Methods.Add(mm);
         }
     }
+    internal void RenderDatabase(DatabaseModel model)
+    {
+        DataSet dataSet = (DataSet)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        HashSet<Type> types = [];
+        foreach(DataTable table in dataSet.Tables)
+        {
+            foreach (DataColumn col in table.Columns)
+            {
+                types.Add(col.DataType);
+            }
+        }
+        if(types.Count > 0)
+        {
+            model.DataTypeMap = [];
+            foreach (Type type in types)
+            {
+                if (type.IsEnum)
+                {
+                    model.DataTypeMap.Add(
+                        type, 
+                        new DataTypeModel { 
+                            Name = "char", 
+                            Size = Enum.GetNames(type).Select(v => v.Length).Max(),
+                            Check = Enum.GetNames(type).ToList(),
+                        }
+                    );
+                }
+                else if (type == typeof(string))
+                {
+                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "varchar" });
+                }
+                else if (type == typeof(int))
+                {
+                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "integer" });
+                }
+                else if (type == typeof(DateOnly))
+                {
+                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "date" });
+                }
+                else if (type == typeof(TimeOnly))
+                {
+                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "time" });
+                }
+                else if (type == typeof(DateTime))
+                {
+                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "timestamp" });
+                }
+            }
+        }
+        model.DataSet = dataSet;
+    }
     internal void RenderBuilder(BuilderModel model)
     {
         model.Contract = _contract;
@@ -537,9 +618,9 @@ public class Generator : Runner
     }
     private DataSet GenerateDataSet()
     {
-        DataSet result = new(_contract.GetType().FullName!);
+        DataSet result = new(_contract.GetType().Name!);
 
-        List<string> path = new();
+        List<string> path = [];
         foreach (PocoHolder ph in _pocos.Values.Where(p => p.Kind is PocoKind.Entity))
         {
             string name = ph.Type.Name;
@@ -547,13 +628,20 @@ public class Generator : Runner
             {
                 name = $"{ph.Type.Name}_{i}";
             }
+            ph.TableName = name;
             DataTable table = new(name);
+            result.Tables.Add(table);
+            List<DataColumn> pk = [];
+            List<DataColumn> fk = [];
             if (_pocos.TryGetValue(ph.Type.BaseType!.FullName!, out PocoHolder? baseHolder))
             {
-                Console.WriteLine($"{ph.Type}: {ph.Type.BaseType}");
                 path.Clear();
                 path.Add("base");
-                DFM_GetForeignKeys(baseHolder, table, path);
+                DFM_GetForeignKeys(baseHolder, table, path, pk, fk);
+                if (fk.Count > 0)
+                {
+                    ph.ForeignKey = fk.ToArray();
+                }
             }
             foreach (PropertyModel pm in ph.Properties)
             {
@@ -566,19 +654,141 @@ public class Generator : Runner
                         {
                             col.AllowDBNull = true;
                         }
+                        if (pm.IsPrimaryKey)
+                        {
+                            pk.Add(col);
+                        }
                         table.Columns.Add(col);
                     }
-                    else if(_pocos.TryGetValue(pm.TypeName, out PocoHolder? holder))
+                    else if(_pocos.TryGetValue(pm.Type.FullName!, out PocoHolder? holder))
                     {
+                        fk.Clear();
                         path.Clear();
                         path.Add(pm.Name);
-                        DFM_GetForeignKeys(holder, table, path);
+                        DFM_GetForeignKeys(holder, table, path, pm.IsPrimaryKey ? pk : null, fk);
+                        if (fk.Count > 0)
+                        {
+                            pm.ForeignKey = fk.ToArray();
+                        }
                     }
                 }
             }
-            result.Tables.Add(table);
+            if (pk.Count > 0)
+            {
+                table.PrimaryKey = pk.ToArray();
+            }
         }
+        foreach (PocoHolder ph in _pocos.Values.Where(p => p.Kind is PocoKind.Entity))
+        {
+            if(ph.ForeignKey is { })
+            {
+                DataTable parent = result.Tables[_pocos[ph.Type.BaseType!.FullName!].TableName]!;
+                DataTable child = result.Tables[ph.TableName]!;
+                ForeignKeyConstraint fkcn = new(parent.PrimaryKey, ph.ForeignKey);
+                fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
+                child.Constraints.Add(fkcn);
+            }
+            foreach (PropertyModel pm in ph.Properties)
+            {
+                if (pm.IsCollection)
+                {
+                    if (!pm.IsComposition)
+                    {
+                        string name = $"{ph.Type.Name}_{pm.Name}";
+                        for (int i = 1; result.Tables.Contains(name); ++i)
+                        {
+                            name = $"{ph.Type.Name}_{pm.Name}_{i}";
+                        }
+                        DataTable table = new(name);
+                        result.Tables.Add(table);
+                        List<DataColumn> pk = [];
+                        DataTable parent = result.Tables[ph.TableName]!;
+                        foreach (DataColumn col in parent.PrimaryKey)
+                        {
+                            DataColumn col1 = new DataColumn(col.ColumnName, col.DataType);
+                            table.Columns.Add(col1);
+                            pk.Add(col1);
+                        }
+                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, pk.ToArray());
+                        fkcn.ConstraintName = $"FK_{table.TableName}_{table.Constraints.Count + 1}";
+                        table.Constraints.Add(fkcn);
 
+                        if (_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? holder))
+                        {
+                            DataTable child = result.Tables[holder.TableName]!;
+                            int pos = pk.Count;
+                            foreach (DataColumn col in child.PrimaryKey)
+                            {
+                                string col_name = col.ColumnName;
+                                for (int i = 1; table.Columns.Contains(col_name); ++i)
+                                {
+                                    col_name = $"{col.ColumnName}_{i}";
+                                }
+                                DataColumn col1 = new DataColumn(col_name, col.DataType);
+                                table.Columns.Add(col1);
+                                pk.Add(col1);
+                            }
+                            fkcn = new(child.PrimaryKey, pk.Skip(pos).ToArray());
+                            fkcn.ConstraintName = $"FK_{table.TableName}_{table.Constraints.Count + 1}";
+                            table.Constraints.Add(fkcn);
+                        }
+                        else
+                        {
+                            DataColumn col = new(pm.Name, pm.ItemType);
+                            if (pm.IsNullable)
+                            {
+                                col.AllowDBNull = true;
+                            }
+                            table.Columns.Add(col);
+                            string col_name = "id";
+                            for (int i = 1; table.Columns.Contains(col_name); ++i)
+                            {
+                                col_name = $"id_{i}";
+                            }
+                            col = new(col_name, typeof(ulong));
+                            col.AutoIncrement = true;
+                            pk.Add(col);
+                            table.Columns.Add(col);
+                        }
+                        if (pk.Count > 0)
+                        {
+                            table.PrimaryKey = pk.ToArray();
+                        }
+                    }
+                    else if (_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? holder))
+                    {
+                        DataTable child = result.Tables[holder.TableName]!;
+                        DataTable parent = result.Tables[ph.TableName]!;
+                        List<DataColumn> fk = [];
+                        foreach (DataColumn col in parent.PrimaryKey)
+                        {
+                            string col_name = $"{parent.TableName}_{col.ColumnName}";
+                            for (int i = 1; child.Columns.Contains(col_name); ++i)
+                            {
+                                col_name = $"{parent.TableName}_{col.ColumnName}_{i}";
+                            }
+                            DataColumn col1 = new DataColumn(col_name, col.DataType);
+                            child.Columns.Add(col1);
+                            fk.Add(col1);
+                        }
+                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, fk.ToArray());
+                        fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
+                        child.Constraints.Add(fkcn);
+                    }
+                }
+                else 
+                {
+                    if (pm.ForeignKey is { })
+                    {
+                        DataTable parent = result.Tables[_pocos[pm.Type.FullName!].TableName]!;
+                        DataTable child = result.Tables[ph.TableName]!;
+                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, pm.ForeignKey);
+                        fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
+                        child.Constraints.Add(fkcn);
+                    }
+                }
+            }
+        }
         //XmlDocument xml = new();
         //xml.LoadXml(result.GetXmlSchema());
         //XPathNodeIterator ni = xml.CreateNavigator()!.Select("//*[@msdata:DataType]/@msdata:DataType", _resolver);
@@ -598,22 +808,22 @@ public class Generator : Runner
         return result;
     }
 
-    private void DFM_GetForeignKeys(PocoHolder holder, DataTable table, List<string> path)
+    private void DFM_GetForeignKeys(PocoHolder holder, DataTable table, List<string> path, List<DataColumn>? pk, List<DataColumn>? fk)
     {
         if (_pocos.TryGetValue(holder.Type.BaseType!.FullName!, out PocoHolder? baseHolder))
         {
             path.Add("base");
-            DFM_GetForeignKeys(baseHolder, table, path);
+            DFM_GetForeignKeys(baseHolder, table, path, pk, fk);
             path.RemoveAt(path.Count - 1);
         }
-        foreach (PropertyUse pu in holder.PropertyUse!.Children!.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)))
+        foreach (PropertyUse pu in holder.PropertyUse!.Children!.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)).OrderBy(v => v.Name))
         {
             if (holder.Properties.Where(p => p.Name.Equals(pu.Name)).FirstOrDefault() is PropertyModel pm)
             {
                 path.Add(pu.Name);
                 if (_pocos.TryGetValue(pm.ItemType!.FullName!, out PocoHolder? ph))
                 {
-                    DFM_GetForeignKeys(ph, table, path);
+                    DFM_GetForeignKeys(ph, table, path, pk, fk);
                 }
                 else 
                 {
@@ -622,6 +832,8 @@ public class Generator : Runner
                     {
                         col.AllowDBNull = true;
                     }
+                    pk?.Add(col);
+                    fk?.Add(col);
                     table.Columns.Add(col);
                 }
                 path.RemoveAt(path.Count - 1);
@@ -769,6 +981,11 @@ public class Generator : Runner
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}PrimaryKey.cs"), contractSource.ReadToEnd());
         }
     }
+    private void GenerateDatabaseMetadata(DataSet dataSet, IConnector connector, string targetDir, string dialect = "mssql")
+    {
+        TextReader contractSource = connector.Get($"/Auxiliary/Database.{dialect}", dataSet);
+        File.WriteAllText(Path.Combine(targetDir, $"CreateDatabase.sql"), contractSource.ReadToEnd());
+    }
     private void ProcessContract()
     {
         Start();
@@ -836,11 +1053,6 @@ public class Generator : Runner
                     }
                 }
                 while (cur is { });
-            }
-
-            foreach (PocoHolder ph in _pocos.Values)
-            {
-                Console.WriteLine($"{ph.Type}: {string.Join(", ", ph.Inheritors)}");
             }
 
             foreach (PocoHolder ph in _pocos.Values)
@@ -950,7 +1162,16 @@ public class Generator : Runner
 
             foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
             {
-                if(!ph.Properties.Where(pm => pm.IsPrimaryKey).Any()) 
+                foreach(string inhe in ph.Inheritors)
+                {
+                    DFM_CopyPropertyUses(ph.PropertyUse!, _pocos[inhe].PropertyUse!);
+                }
+            }
+
+            foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
+            {
+
+                if(!GetAllProperties(ph).Any(pm => pm.IsPrimaryKey)) 
                 {
                     throw new InvalidOperationException($"An Entity must have at least one PrimaryKey defined, but {ph.Type} has not!");
                 }
@@ -1148,6 +1369,10 @@ public class Generator : Runner
             _currentPath.Add(found);
             if(_currentContractEventKind is ContractEventKind.PrimaryKey)
             {
+                if(args.Value is {} && args.Value.GetType() == _currentObject!.GetType())
+                {
+                    throw new InvalidOperationException($"Primary key cannot be the same type, but {_currentObject!.GetType()}.{string.Join('.', _currentPath.Select(pu => pu.Name))} is!");
+                }
                 if (_currentPath.Count > 1)
                 {
                     throw new InvalidOperationException($"Primary key must have one property path, for {_currentPath.First().Type} got {string.Join('.', _currentPath.Select(pu => pu.Name))}!");
@@ -1159,6 +1384,10 @@ public class Generator : Runner
             }
             else if (_currentContractEventKind is ContractEventKind.Composition)
             {
+                if (args.Value is { } && args.Value.GetType() == _currentObject!.GetType())
+                {
+                    throw new InvalidOperationException($"Composition cannot be the same type, but {_currentObject!.GetType()}.{string.Join('.', _currentPath.Select(pu => pu.Name))} is!");
+                }
                 if (_currentPath.Count > 1)
                 {
                     throw new InvalidOperationException($"Composition must have one property path, for {_currentPath.First().Type} got {string.Join('.', _currentPath.Select(pu => pu.Name))}!");

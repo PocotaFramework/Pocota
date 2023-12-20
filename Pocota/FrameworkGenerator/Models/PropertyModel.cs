@@ -1,4 +1,6 @@
-﻿namespace Net.Leksi.Pocota.FrameworkGenerator;
+﻿using System.Data;
+
+namespace Net.Leksi.Pocota.FrameworkGenerator;
 
 internal class PropertyModel
 {
@@ -18,4 +20,5 @@ internal class PropertyModel
     internal bool IsComposition { get; set; } = false;
     internal bool IsCollection { get; set; }
     internal bool IsSelf { get; set; } = false;
+    internal DataColumn[]? ForeignKey = null;
 }

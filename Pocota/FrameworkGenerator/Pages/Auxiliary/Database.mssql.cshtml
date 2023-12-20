@@ -1,0 +1,48 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator.Models
+@using System.Data
+@model DatabaseModel
+create database [@Model.DataSet.DataSetName]
+go
+use [@Model.DataSet.DataSetName]
+go
+@foreach (DataTable table in @Model.DataSet.Tables)
+{
+    <text>create table [dbo].[@table.TableName] (
+    @foreach (DataColumn col in @table.Columns)
+    {
+            <text>    [@col.ColumnName] @if(@Model.DataTypeMap is { } &&  @Model.DataTypeMap.TryGetValue(col.DataType, out DataTypeModel? dtm)){
+                    <text>[@dtm.Name]@if(dtm.Size > 0){<text>(@dtm.Size)</text>}@if(dtm.Check is {}){
+                        <text> check(@col.ColumnName in (@Html.Raw(string.Join(", ", dtm.Check.Select(v => $"'{v}'")))))</text>
+                    }</text>
+        }else{<text>[@col.DataType]</text>}@if(!col.AllowDBNull){<text> not null</text>}@if(col.AutoIncrement){<text> identity(1,1)</text>},
+</text>            
+    }
+    constraint [PK_@table.TableName@{}_1] primary key (@string.Join(", ", table.PrimaryKey.Select(v => v.ColumnName))),
+)
+go
+
+</text>
+}
+
+@foreach (DataTable table in @Model.DataSet.Tables)
+{
+    foreach(Constraint cn in table.Constraints)
+    {
+        if(cn is ForeignKeyConstraint fkcn)
+        {
+            <text>alter table [dbo].[@table.TableName] with check add constraint [@cn.ConstraintName] foreign key (@string.Join(
+                ", ", fkcn.Columns.Select(c => $"[{c.ColumnName}]")
+            ))
+    references [dbo].[@fkcn.RelatedTable.TableName]  (@string.Join(
+                ", ", fkcn.RelatedColumns.Select(c => $"[{c.ColumnName}]")
+            ))
+go
+alter table [dbo].[@table.TableName] check constraint [@cn.ConstraintName]
+go
+
+</text>
+        }
+    }
+}
+

@@ -36,7 +36,7 @@ public class Tests
     private static TestPipelineOptions[] TestPipelineOptionsSource()
     {
         return [ new() {
-            Seed = -1,
+            Seed = 798463155,
             NodesCount = 20,
             EntitiesFraction = .7,
             Completeness = .4,

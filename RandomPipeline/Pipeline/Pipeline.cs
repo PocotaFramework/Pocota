@@ -182,7 +182,12 @@ public class Pipeline(Random? random, Options options)
                 {
                     node.Properties[i].IsReadOnly = _random!.NextDouble() < _options.ReadOnlyFraction;
                     node.Properties[i].IsCollection = _random.NextDouble() < _options.CollectionFraction;
-                    if(node.Properties[i].IsCollection && node.Properties[i].Node is { } && node.Properties[i].Node!.Kind is NodeKind.Entity)
+                    if(
+                        node.Properties[i].IsCollection 
+                        && node.Properties[i].Node is { }
+                        && node.Properties[i].Node != node
+                        && node.Properties[i].Node!.Kind is NodeKind.Entity 
+                    )
                     {
                         node.Properties[i].IsNullable = false;
                         node.Properties[i].IsComposition = _random.NextDouble() < _options.CompositionFraction;

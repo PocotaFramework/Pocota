@@ -35,6 +35,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomServerImpl", "Tests\R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractProcessor", "Tests\Generated\ContractProcessor\ContractProcessor.csproj", "{D805ABC9-EFA3-444F-A774-77BA7221207D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "Tests\TestProject1\TestProject1.csproj", "{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,6 +116,12 @@ Global
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.RAC|Any CPU.Build.0 = RAC|Any CPU
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.ActiveCfg = RAC|Any CPU
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.Build.0 = RAC|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.RAC|Any CPU.ActiveCfg = Release|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.RAC|Any CPU.Build.0 = Release|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

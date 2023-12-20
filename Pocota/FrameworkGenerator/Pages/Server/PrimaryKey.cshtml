@@ -17,7 +17,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 #endregion Properties
     public IEnumerable<object> GetPrimaryKey()
     {
-@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+@foreach (PropertyModel pm in Model.Properties)
 {
     if(pm.PocoKind is PocoKind.Entity)
     {

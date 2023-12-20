@@ -1,4 +1,6 @@
-﻿namespace Net.Leksi.Pocota.FrameworkGenerator;
+﻿using System.Data;
+
+namespace Net.Leksi.Pocota.FrameworkGenerator;
 
 internal class PocoHolder
 {
@@ -8,4 +10,6 @@ internal class PocoHolder
     internal List<PropertyModel> Properties { get; private init; } = [];
     internal string? TableName { get; set; } = null;
     internal HashSet<string> Inheritors { get; private init; } = [];
+    internal DataColumn[]? ForeignKey = null;
+
 }
