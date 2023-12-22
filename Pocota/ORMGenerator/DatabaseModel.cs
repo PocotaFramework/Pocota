@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Net.Leksi.Pocota.FrameworkGenerator.Models;
 using System.Data;
 
-namespace Net.Leksi.Pocota.FrameworkGenerator.Models;
+namespace Net.Leksi.Pocota.ORMGenerator;
 
 public class DatabaseModel : PageModel
 {

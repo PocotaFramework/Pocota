@@ -1,6 +1,9 @@
-﻿using Net.Leksi.Pocota.FrameworkGenerator;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
+using Net.Leksi.Pocota.FrameworkGenerator;
+using Net.Leksi.Pocota.ORMGenerator;
 using Net.Leksi.RuntimeAssemblyCompiler;
-using System.Diagnostics.Metrics;
 using System.Reflection;
 using System.Text;
 
@@ -49,11 +52,12 @@ public class Pipeline(Random? random, Options options)
     public void GenerateFramework(string? contractAssemblyLocation = null)
     {
         Assembly contractAssembly = (contractAssemblyLocation is { } ? Assembly.LoadFile(contractAssemblyLocation) : _contract.CompiledAssembly)!;
-        Generator _generator = Generator.Create(new FrameworkGeneratorOptions
-        {
-            Contract = (Contract)Activator.CreateInstance(
+        Contract contract = (Contract)Activator.CreateInstance(
                    contractAssembly.GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
-                )!,
+                )!;
+        FrameworkGenerator.Generator _generator = FrameworkGenerator.Generator.Create(new FrameworkGeneratorOptions
+        {
+            Contract = contract,
             AdditionalReferences = [ typeof(MockEnum).Assembly.Location ],
             ServerStuffProject = _options.GeneratedServerStuffProjectDir,
             ReplaceFilesIfExist = true,
@@ -62,6 +66,29 @@ public class Pipeline(Random? random, Options options)
             ContractProcessorDir = _options.ContractProcessorDir,
         });
         _serverStuff = _generator.GenerateServerStuff()!;
+    }
+    public void GenerateORM(string? contractAssemblyLocation = null)
+    {
+        Assembly contractAssembly = (contractAssemblyLocation is { } ? Assembly.LoadFile(contractAssemblyLocation) : _contract.CompiledAssembly)!;
+        Contract contract = (Contract)Activator.CreateInstance(
+                   contractAssembly.GetType($"{_options.ContractNamespace}.{_options.ContractClassName}")!
+                )!;
+        ORMGenerator.Generator ormGenerator = ORMGenerator.Generator.Create(new ORMGenerator.Options
+        {
+            Contract = contract,
+            ServerAssembly = _serverStuff.CompiledAssembly!,
+            ORMProjectDir = _serverStuff.ProjectDir,
+            Dialect = _options.DatabaseDialect,
+        });
+        ormGenerator.Generate();
+        switch (_options.DatabaseDialect)
+        {
+            case Dialect.MSSql:
+                CreateMSSqlDatabase(Path.Combine(_serverStuff.ProjectDir, ORMGenerator.Generator.CreateDatabaseFileName));
+                break;
+            default:
+                throw new NotImplementedException($"Database dialect {_options.DatabaseDialect} is not supported yet!");
+        }
     }
     public void GenerateServerImplementation()
     {
@@ -76,6 +103,17 @@ public class Pipeline(Random? random, Options options)
             _options
         );
     }
+    private void CreateMSSqlDatabase(string file)
+    {
+        SqlConnection conn = new(_options.ConnectionString);
+        Microsoft.SqlServer.Management.Smo.Server server = new Microsoft.SqlServer.Management.Smo.Server(new ServerConnection(conn));
+        server.ConnectionContext.ExecuteNonQuery(@$"drop database [{_contract.Name}]
+go
+");
+        string script = File.ReadAllText(file);
+        server.ConnectionContext.ExecuteNonQuery(script);
+    }
+
     private void BuildTrees()
     {
         foreach (Node node in _graph.Nodes)
@@ -176,6 +214,7 @@ public class Pipeline(Random? random, Options options)
                         node.Properties[i].IsNullable = false;
                         node.Properties[i].IsCollection = false;
                         node.Properties[i].IsReadOnly = false;
+                        node.Properties[i].IsAuto = node.Properties[i].Type == typeof(int) && _random!.NextDouble() < _options.AutoFraction;
                     }
                 }
                 else
@@ -415,6 +454,8 @@ public class Pipeline(Random? random, Options options)
     {
         Stack<PropertyHolder> stack = new();
         StringBuilder sb = new();
+
+        _options.UpdateAuthorize = GetAuthorizeRoles();
 
         foreach (Node node in _graph.Nodes)
         {

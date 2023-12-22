@@ -2,22 +2,20 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Library</OutputType>
-    <RootNamespace>Net.Leksi.Pocota.FrameworkGenerator</RootNamespace>
-    <AssemblyName>Net.Leksi.Pocota.FrameworkGenerator</AssemblyName>
+    <RootNamespace>Net.Leksi.Pocota.ORMGenerator</RootNamespace>
+    <AssemblyName>Net.Leksi.Pocota.ORMGenerator</AssemblyName>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.*" />
-    <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="2.0.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Contract\ContractDebug.csproj" />
     <ProjectReference Include="..\Server\PocotaServer\PocotaServerDebug.csproj" />
   </ItemGroup>
-
 </Project>

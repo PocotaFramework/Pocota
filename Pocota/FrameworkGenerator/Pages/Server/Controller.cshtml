@@ -9,11 +9,16 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
 {
 @foreach(MethodModel mm in Model.Methods)
 {
-    ViewDataDictionary vdd = new(ViewData);
-    vdd["indentation"] = 4;
-    <text>#region @mm.Name PropertyUse
+    if (mm.PropertyUse is { })
+    {
+        ViewDataDictionary vdd = new(ViewData);
+        vdd["indentation"] = 4;
+        <text>#region @mm.Name PropertyUse
     private static readonly PropertyUse s_@mm.Name@{}PropertyUse = @Html.Partial("PropertyUse", mm.PropertyUse, vdd);
 #endregion @mm.Name PropertyUse    
+</text>
+    }
+    <text>    [HttpGet]
     [Route("@mm.Route")]
     @if(!string.IsNullOrEmpty(mm.Authorize))
     {
@@ -24,6 +29,7 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     {
         IPocoContext @mm.PocoContextVariable = Request.HttpContext.RequestServices.GetRequiredService<IPocoContext>();
         @mm.PocoContextVariable@{}.PropertyUse = s_@mm.Name@{}PropertyUse;
+
         JsonSerializerOptions @mm.JsonSerializerOptionsVariable = @mm.PocoContextVariable.@{}GetJsonSerializerOptions();
 
     @foreach(ParameterModel pm in mm.Parameters)
@@ -40,4 +46,14 @@ public class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(stri
     }
 </text>
 }
+    [HttpPost]
+    @if(!string.IsNullOrEmpty(Model.UpdateAuthorize))
+    {
+        <text>    [Authorize(@Html.Raw(Model.UpdateAuthorize))]
+</text>
+    }
+    public void Update()
+    {
+
+    }
 }

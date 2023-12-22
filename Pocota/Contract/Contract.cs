@@ -40,10 +40,19 @@ public abstract class Contract: ContractBase
         }
         return obj;
     }
+    public sealed override object Auto(object obj)
+    {
+        if (_serviceProvider is { })
+        {
+            ContractProcessing?.Invoke(new ContractEventArgs { EventKind = ContractEventKind.Auto });
+        }
+        return obj;
+    }
     public sealed override void Property(object obj, string propertyName, object? propertyValue)
     {
         ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName, Value = propertyValue });
     }
+    public abstract void Update();
     internal void MarkProperties<T>(Func<T, object[]> config, ContractEventKind eventKind) where T : class
     {
         if (_serviceProvider is { })

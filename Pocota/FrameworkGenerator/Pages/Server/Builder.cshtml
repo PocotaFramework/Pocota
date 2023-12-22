@@ -19,7 +19,7 @@ public abstract class @Model.ClassName@{}@if (Model.BaseClasses.Any())
         else 
         { 
             <text>@Html.Raw(mm.ReturnItemTypeName)</text>
-        }  @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{Html.Raw(p.TypeName)}{(p.IsNullable ? "?" : string.Empty)} {p.Name}")));
+        } @mm.Name@{}(@string.Join(", ", mm.Parameters.Select(p => $"{Html.Raw(p.TypeName)}{(p.IsNullable ? "?" : string.Empty)} {p.Name}")));
 </text>
 }
 }

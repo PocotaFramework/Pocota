@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.E6dWebApp;
-using Net.Leksi.Pocota.FrameworkGenerator.Models;
 using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.Pocota.Server;
@@ -19,6 +18,9 @@ public class Generator : Runner
     private const string s_self = "<self>";
     private const string s_internal = "Internal";
     private const string s_dependencyInjection = "Microsoft.Extensions.DependencyInjection";
+    private const string s_updateMethodName = "Update";
+    private const string s_httpGet = "HttpGet";
+    private const string s_httpPost = "HttpPost";
     private Contract _contract = null!;
     private readonly Dictionary<string, PocoHolder> _pocos = [];
     private readonly Dictionary<string, MethodHolder> _methods = [];
@@ -39,6 +41,7 @@ public class Generator : Runner
     private readonly Dictionary<object, PropertyUse> _propertyUses = [];
     private readonly List<PropertyUse> _currentPath = [];
     private readonly NullabilityInfoContext _nullabilityInfoContext = new();
+    private AuthorizeAttribute? _updateAuthorize = null;
     public static Generator Create(FrameworkGeneratorOptions options)
     {
         Generator generator = new()
@@ -158,16 +161,6 @@ public class Generator : Runner
         GenerateCore(connector, core);
         GenerateBuilder(connector, builder);
 
-        DataSet dataSet = GenerateDataSet();
-
-        FileStream fs = File.OpenWrite(Path.Combine(projectDir, "DataSetSchema.xml"));
-
-        dataSet.WriteXmlSchema(fs);
-
-        fs.Close();
-
-        GenerateDatabaseMetadata(dataSet, connector, projectDir);
-
         Stop();
 
         if (_doCreateProject)
@@ -219,7 +212,7 @@ public class Generator : Runner
             }
         }
         while (holder is { });
-        while(stack.Count > 0)
+        while (stack.Count > 0)
         {
             holder = stack.Pop();
             foreach (PropertyModel pm in holder.Properties)
@@ -312,10 +305,10 @@ public class Generator : Runner
             }
         }
         while (cur is { });
-        while(stack.Count > 0)
+        while (stack.Count > 0)
         {
             cur = stack.Pop();
-            foreach(PropertyModel pm in cur.Properties) 
+            foreach (PropertyModel pm in cur.Properties)
             {
                 yield return pm;
             }
@@ -361,9 +354,9 @@ public class Generator : Runner
             foreach (PropertyUse child in propertyUse.Children!)
             {
                 PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, usings);
-                if(next is { })
+                if (next is { })
                 {
-                    if(result.Children is null)
+                    if (result.Children is null)
                     {
                         result.Children = [];
                     }
@@ -380,7 +373,7 @@ public class Generator : Runner
         PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = handler.Type.Namespace;
         model.ClassName = handler.Type.Name;
-        if(_pocos.TryGetValue(handler.Type.BaseType.FullName!,  out PocoHolder? ph))
+        if (_pocos.TryGetValue(handler.Type.BaseType.FullName!, out PocoHolder? ph))
         {
             Util.AddNamespaces(model.Usings, ph.Type);
             model.BaseClasses.Add(Util.MakeTypeName(ph.Type));
@@ -437,7 +430,7 @@ public class Generator : Runner
             };
             sm.ImplTypeName = $"{sm.ServiceTypeName}Dto";
             model.Services.Add(sm);
-            if(ph.Kind is PocoKind.Entity)
+            if (ph.Kind is PocoKind.Entity)
             {
                 sm = new()
                 {
@@ -462,6 +455,7 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
         model.BaseClasses.Add(Util.MakeTypeName(typeof(Controller)));
         model.BuilderClassName = $"{_contract.GetType().Name}Builder";
+        model.UpdateAuthorize = MakeAuthorize(model, _updateAuthorize);
         foreach (MethodHolder mh in _methods.Values)
         {
             MethodModel mm = new()
@@ -471,7 +465,7 @@ public class Generator : Runner
                 ReturnItemTypeName = Util.MakeTypeName(mh.ReturnItemType),
                 IsCollectionReturn = mh.IsCollectionReturn,
             };
-            foreach(ParameterHolder ph in mh.Parameters)
+            foreach (ParameterHolder ph in mh.Parameters)
             {
                 ParameterModel pm = new()
                 {
@@ -489,92 +483,48 @@ public class Generator : Runner
                 pm.Variable = $"{pm.Name}Var";
             }
             mm.Route = Regex.Replace(mm.Route, "/{2,}", "/");
-            if(mh.Authorize is { })
-            {
-                List<string> parts = [];
-                if (!string.IsNullOrEmpty(mh.Authorize.Policy))
-                {
-                    parts.Add($"Policy = \"{mh.Authorize.Policy}\"");
-                }
-                if (!string.IsNullOrEmpty(mh.Authorize.Roles))
-                {
-                    parts.Add($"Roles = \"{mh.Authorize.Roles}\"");
-                }
-                if (!string.IsNullOrEmpty(mh.Authorize.AuthenticationSchemes))
-                {
-                    parts.Add($"AuthenticationSchemes = \"{mh.Authorize.AuthenticationSchemes}\"");
-                }
-                if(parts.Count > 0)
-                {
-                    Util.AddNamespaces(model.Usings, typeof(AuthorizeAttribute));
-                    mm.Authorize = string.Join(", ", parts);
-                }
-            }
+            mm.Authorize = MakeAuthorize(model, mh.Authorize);
             mm.PropertyUse = BuildPropertyUse(
-                mh.PropertyUse, 
-                0, 
+                mh.PropertyUse,
+                0,
                 GetSelfPropertyModel(
                     _pocos[$"{(
-                        !string.IsNullOrEmpty(mh.ReturnItemType.Namespace) 
-                        ? $"{mh.ReturnItemType.Namespace}." 
+                        !string.IsNullOrEmpty(mh.ReturnItemType.Namespace)
+                        ? $"{mh.ReturnItemType.Namespace}."
                         : string.Empty)}{mm.ReturnItemTypeName}"]
-                    ), 
+                ),
                 model.Usings
-                );
+            );
             model.Methods.Add(mm);
         }
     }
-    internal void RenderDatabase(DatabaseModel model)
+
+    private static string? MakeAuthorize(ClassModel model, AuthorizeAttribute? aa)
     {
-        DataSet dataSet = (DataSet)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        HashSet<Type> types = [];
-        foreach(DataTable table in dataSet.Tables)
+        if (aa is { })
         {
-            foreach (DataColumn col in table.Columns)
+            List<string> parts = [];
+            if (!string.IsNullOrEmpty(aa.Policy))
             {
-                types.Add(col.DataType);
+                parts.Add($"Policy = \"{aa.Policy}\"");
+            }
+            if (!string.IsNullOrEmpty(aa.Roles))
+            {
+                parts.Add($"Roles = \"{aa.Roles}\"");
+            }
+            if (!string.IsNullOrEmpty(aa.AuthenticationSchemes))
+            {
+                parts.Add($"AuthenticationSchemes = \"{aa.AuthenticationSchemes}\"");
+            }
+            if (parts.Count > 0)
+            {
+                Util.AddNamespaces(model.Usings, typeof(AuthorizeAttribute));
+                return string.Join(", ", parts);
             }
         }
-        if(types.Count > 0)
-        {
-            model.DataTypeMap = [];
-            foreach (Type type in types)
-            {
-                if (type.IsEnum)
-                {
-                    model.DataTypeMap.Add(
-                        type, 
-                        new DataTypeModel { 
-                            Name = "char", 
-                            Size = Enum.GetNames(type).Select(v => v.Length).Max(),
-                            Check = Enum.GetNames(type).ToList(),
-                        }
-                    );
-                }
-                else if (type == typeof(string))
-                {
-                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "varchar" });
-                }
-                else if (type == typeof(int))
-                {
-                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "integer" });
-                }
-                else if (type == typeof(DateOnly))
-                {
-                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "date" });
-                }
-                else if (type == typeof(TimeOnly))
-                {
-                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "time" });
-                }
-                else if (type == typeof(DateTime))
-                {
-                    model.DataTypeMap.Add(type, new DataTypeModel { Name = "timestamp" });
-                }
-            }
-        }
-        model.DataSet = dataSet;
+        return null;
     }
+
     internal void RenderBuilder(BuilderModel model)
     {
         model.Contract = _contract;
@@ -616,231 +566,6 @@ public class Generator : Runner
     {
         app.MapRazorPages();
     }
-    private DataSet GenerateDataSet()
-    {
-        DataSet result = new(_contract.GetType().Name!);
-
-        List<string> path = [];
-        foreach (PocoHolder ph in _pocos.Values.Where(p => p.Kind is PocoKind.Entity))
-        {
-            string name = ph.Type.Name;
-            for (int i = 1; result.Tables.Contains(name); ++i)
-            {
-                name = $"{ph.Type.Name}_{i}";
-            }
-            ph.TableName = name;
-            DataTable table = new(name);
-            result.Tables.Add(table);
-            List<DataColumn> pk = [];
-            List<DataColumn> fk = [];
-            if (_pocos.TryGetValue(ph.Type.BaseType!.FullName!, out PocoHolder? baseHolder))
-            {
-                path.Clear();
-                path.Add("base");
-                DFM_GetForeignKeys(baseHolder, table, path, pk, fk);
-                if (fk.Count > 0)
-                {
-                    ph.ForeignKey = fk.ToArray();
-                }
-            }
-            foreach (PropertyModel pm in ph.Properties)
-            {
-                if(!pm.IsCollection)
-                {
-                    if(pm.PocoKind is PocoKind.None)
-                    {
-                        DataColumn col = new(pm.Name, pm.ItemType);
-                        if (pm.IsNullable)
-                        {
-                            col.AllowDBNull = true;
-                        }
-                        if (pm.IsPrimaryKey)
-                        {
-                            pk.Add(col);
-                        }
-                        table.Columns.Add(col);
-                    }
-                    else if(_pocos.TryGetValue(pm.Type.FullName!, out PocoHolder? holder))
-                    {
-                        fk.Clear();
-                        path.Clear();
-                        path.Add(pm.Name);
-                        DFM_GetForeignKeys(holder, table, path, pm.IsPrimaryKey ? pk : null, fk);
-                        if (fk.Count > 0)
-                        {
-                            pm.ForeignKey = fk.ToArray();
-                        }
-                    }
-                }
-            }
-            if (pk.Count > 0)
-            {
-                table.PrimaryKey = pk.ToArray();
-            }
-        }
-        foreach (PocoHolder ph in _pocos.Values.Where(p => p.Kind is PocoKind.Entity))
-        {
-            if(ph.ForeignKey is { })
-            {
-                DataTable parent = result.Tables[_pocos[ph.Type.BaseType!.FullName!].TableName]!;
-                DataTable child = result.Tables[ph.TableName]!;
-                ForeignKeyConstraint fkcn = new(parent.PrimaryKey, ph.ForeignKey);
-                fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
-                child.Constraints.Add(fkcn);
-            }
-            foreach (PropertyModel pm in ph.Properties)
-            {
-                if (pm.IsCollection)
-                {
-                    if (!pm.IsComposition)
-                    {
-                        string name = $"{ph.Type.Name}_{pm.Name}";
-                        for (int i = 1; result.Tables.Contains(name); ++i)
-                        {
-                            name = $"{ph.Type.Name}_{pm.Name}_{i}";
-                        }
-                        DataTable table = new(name);
-                        result.Tables.Add(table);
-                        List<DataColumn> pk = [];
-                        DataTable parent = result.Tables[ph.TableName]!;
-                        foreach (DataColumn col in parent.PrimaryKey)
-                        {
-                            DataColumn col1 = new DataColumn(col.ColumnName, col.DataType);
-                            table.Columns.Add(col1);
-                            pk.Add(col1);
-                        }
-                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, pk.ToArray());
-                        fkcn.ConstraintName = $"FK_{table.TableName}_{table.Constraints.Count + 1}";
-                        table.Constraints.Add(fkcn);
-
-                        if (_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? holder))
-                        {
-                            DataTable child = result.Tables[holder.TableName]!;
-                            int pos = pk.Count;
-                            foreach (DataColumn col in child.PrimaryKey)
-                            {
-                                string col_name = col.ColumnName;
-                                for (int i = 1; table.Columns.Contains(col_name); ++i)
-                                {
-                                    col_name = $"{col.ColumnName}_{i}";
-                                }
-                                DataColumn col1 = new DataColumn(col_name, col.DataType);
-                                table.Columns.Add(col1);
-                                pk.Add(col1);
-                            }
-                            fkcn = new(child.PrimaryKey, pk.Skip(pos).ToArray());
-                            fkcn.ConstraintName = $"FK_{table.TableName}_{table.Constraints.Count + 1}";
-                            table.Constraints.Add(fkcn);
-                        }
-                        else
-                        {
-                            DataColumn col = new(pm.Name, pm.ItemType);
-                            if (pm.IsNullable)
-                            {
-                                col.AllowDBNull = true;
-                            }
-                            table.Columns.Add(col);
-                            string col_name = "id";
-                            for (int i = 1; table.Columns.Contains(col_name); ++i)
-                            {
-                                col_name = $"id_{i}";
-                            }
-                            col = new(col_name, typeof(ulong));
-                            col.AutoIncrement = true;
-                            pk.Add(col);
-                            table.Columns.Add(col);
-                        }
-                        if (pk.Count > 0)
-                        {
-                            table.PrimaryKey = pk.ToArray();
-                        }
-                    }
-                    else if (_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? holder))
-                    {
-                        DataTable child = result.Tables[holder.TableName]!;
-                        DataTable parent = result.Tables[ph.TableName]!;
-                        List<DataColumn> fk = [];
-                        foreach (DataColumn col in parent.PrimaryKey)
-                        {
-                            string col_name = $"{parent.TableName}_{col.ColumnName}";
-                            for (int i = 1; child.Columns.Contains(col_name); ++i)
-                            {
-                                col_name = $"{parent.TableName}_{col.ColumnName}_{i}";
-                            }
-                            DataColumn col1 = new DataColumn(col_name, col.DataType);
-                            child.Columns.Add(col1);
-                            fk.Add(col1);
-                        }
-                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, fk.ToArray());
-                        fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
-                        child.Constraints.Add(fkcn);
-                    }
-                }
-                else 
-                {
-                    if (pm.ForeignKey is { })
-                    {
-                        DataTable parent = result.Tables[_pocos[pm.Type.FullName!].TableName]!;
-                        DataTable child = result.Tables[ph.TableName]!;
-                        ForeignKeyConstraint fkcn = new(parent.PrimaryKey, pm.ForeignKey);
-                        fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
-                        child.Constraints.Add(fkcn);
-                    }
-                }
-            }
-        }
-        //XmlDocument xml = new();
-        //xml.LoadXml(result.GetXmlSchema());
-        //XPathNodeIterator ni = xml.CreateNavigator()!.Select("//*[@msdata:DataType]/@msdata:DataType", _resolver);
-        //HashSet<Type> notMapped = [];
-        //while (ni.MoveNext())
-        //{
-        //    string[] parts = ni.Current!.Value.Split(",", 2, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        //    notMapped.Add(Assembly.Load(new AssemblyName(parts[1])).GetType(parts[0], true)!);
-        //}
-
-        //foreach(Type t in notMapped)
-        //{
-        //    Console.WriteLine($"not mapped: {t}");
-        //}
-
-
-        return result;
-    }
-
-    private void DFM_GetForeignKeys(PocoHolder holder, DataTable table, List<string> path, List<DataColumn>? pk, List<DataColumn>? fk)
-    {
-        if (_pocos.TryGetValue(holder.Type.BaseType!.FullName!, out PocoHolder? baseHolder))
-        {
-            path.Add("base");
-            DFM_GetForeignKeys(baseHolder, table, path, pk, fk);
-            path.RemoveAt(path.Count - 1);
-        }
-        foreach (PropertyUse pu in holder.PropertyUse!.Children!.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)).OrderBy(v => v.Name))
-        {
-            if (holder.Properties.Where(p => p.Name.Equals(pu.Name)).FirstOrDefault() is PropertyModel pm)
-            {
-                path.Add(pu.Name);
-                if (_pocos.TryGetValue(pm.ItemType!.FullName!, out PocoHolder? ph))
-                {
-                    DFM_GetForeignKeys(ph, table, path, pk, fk);
-                }
-                else 
-                {
-                    DataColumn col = new(string.Join('_', path), pm.ItemType);
-                    if (pm.IsNullable)
-                    {
-                        col.AllowDBNull = true;
-                    }
-                    pk?.Add(col);
-                    fk?.Add(col);
-                    table.Columns.Add(col);
-                }
-                path.RemoveAt(path.Count - 1);
-            }
-        }
-    }
-
     private void DFM_CopyPropertyUses(PropertyUse src, PropertyUse dst)
     {
         if (src.Children is { })
@@ -981,11 +706,6 @@ public class Generator : Runner
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}PrimaryKey.cs"), contractSource.ReadToEnd());
         }
     }
-    private void GenerateDatabaseMetadata(DataSet dataSet, IConnector connector, string targetDir, string dialect = "mssql")
-    {
-        TextReader contractSource = connector.Get($"/Auxiliary/Database.{dialect}", dataSet);
-        File.WriteAllText(Path.Combine(targetDir, $"CreateDatabase.sql"), contractSource.ReadToEnd());
-    }
     private void ProcessContract()
     {
         Start();
@@ -993,11 +713,11 @@ public class Generator : Runner
         IConnector connector = GetConnector();
 
 
-        if(_contractProcessingDir is { } && Directory.Exists(_contractProcessingDir))
+        if (_contractProcessingDir is { } && Directory.Exists(_contractProcessingDir))
         {
             Directory.Delete(_contractProcessingDir, true);
         }
-        if(_contractProcessingDir is { })
+        if (_contractProcessingDir is { })
         {
             Directory.CreateDirectory(_contractProcessingDir);
         }
@@ -1041,7 +761,7 @@ public class Generator : Runner
                     if (_pocos.TryGetValue(cur.Type.BaseType!.FullName!, out PocoHolder? ph1))
                     {
                         ph1.Inheritors.Add(cur.Type.FullName!);
-                        foreach(string s in cur.Inheritors)
+                        foreach (string s in cur.Inheritors)
                         {
                             ph1.Inheritors.Add(s);
                         }
@@ -1106,23 +826,28 @@ public class Generator : Runner
                 //Console.WriteLine($"{mi}, {mi.GetBaseDefinition().DeclaringType}");
                 if (
                     mi.GetBaseDefinition().DeclaringType != typeof(ContractBase)
+                    && mi.GetBaseDefinition().DeclaringType != typeof(Contract)
                     && mi.GetBaseDefinition().DeclaringType != typeof(object)
                     && !mi.IsSpecialName
                 )
                 {
+                    if (s_updateMethodName.Equals(mi.Name))
+                    {
+                        throw new InvalidOperationException($"{s_updateMethodName} method is reserved!");
+                    }
                     _currentMethod = new MethodHolder
-                    { 
+                    {
                         Name = mi.Name,
                         ReturnType = mi.ReturnType,
                     };
                     _currentMethod.ReturnItemType = mi.ReturnType;
-                    if(mi.ReturnType == typeof(void))
+                    if (mi.ReturnType == typeof(void))
                     {
                         throw new InvalidOperationException($"void return is forbidden: {mi}");
                     }
                     if (mi.ReturnType.IsGenericType)
                     {
-                        if(mi.ReturnType.GetGenericTypeDefinition() != typeof(List<>))
+                        if (mi.ReturnType.GetGenericTypeDefinition() != typeof(List<>))
                         {
                             throw new InvalidOperationException($"Only non generic or List<> return type allowed:{mi}!");
                         }
@@ -1134,7 +859,7 @@ public class Generator : Runner
                         ParameterHolder ph = new()
                         {
                             Name = par.Name!,
-                            Type= par.ParameterType,
+                            Type = par.ParameterType,
                             IsNullable = _nullabilityInfoContext.Create(par).ReadState is NullabilityState.Nullable,
                         };
                         _currentMethod.Parameters.Add(ph);
@@ -1158,11 +883,22 @@ public class Generator : Runner
                 }
             }
 
+            if (contract.GetType().GetMethod(s_updateMethodName) is MethodInfo update)
+            {
+                if (update.GetBaseDefinition() is MethodInfo baseUpdate)
+                {
+                    if (baseUpdate.IsAbstract && baseUpdate.DeclaringType == typeof(Contract))
+                    {
+                        _updateAuthorize = update.GetCustomAttribute<AuthorizeAttribute>();
+                    }
+                }
+            }
+
             contract.ConfigurePocos();
 
             foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
             {
-                foreach(string inhe in ph.Inheritors)
+                foreach (string inhe in ph.Inheritors)
                 {
                     DFM_CopyPropertyUses(ph.PropertyUse!, _pocos[inhe].PropertyUse!);
                 }
@@ -1171,11 +907,11 @@ public class Generator : Runner
             foreach (PocoHolder ph in _pocos.Values.Where(v => v.Kind is PocoKind.Entity))
             {
 
-                if(!GetAllProperties(ph).Any(pm => pm.IsPrimaryKey)) 
+                if (!GetAllProperties(ph).Any(pm => pm.IsPrimaryKey))
                 {
                     throw new InvalidOperationException($"An Entity must have at least one PrimaryKey defined, but {ph.Type} has not!");
                 }
-                if(_allPropertyUses.TryGetValue(ph.PropertyUse!.Type!, out List<PropertyUse>? list))
+                if (_allPropertyUses.TryGetValue(ph.PropertyUse!.Type!, out List<PropertyUse>? list))
                 {
                     foreach (PropertyUse pu in list)
                     {
@@ -1197,7 +933,7 @@ public class Generator : Runner
     {
         foreach (PropertyInfo pi in ph.Type.GetProperties())
         {
-            if(pi.DeclaringType == ph.Type)
+            if (pi.DeclaringType == ph.Type)
             {
                 NullabilityInfo ni = _nullabilityInfoContext.Create(pi);
                 PocoKind pocoKind = PocoKind.None;
@@ -1312,12 +1048,20 @@ public class Generator : Runner
         }
         else
         {
+            if (args.EventKind is ContractEventKind.Auto && _currentContractEventKind is not ContractEventKind.PrimaryKey)
+            {
+                throw new InvalidOperationException($"{ContractEventKind.Auto} modifier cannot be used at {args.EventKind} context!");
+            }
+            if (args.EventKind is ContractEventKind.Mandatory && _currentContractEventKind is not ContractEventKind.Output)
+            {
+                throw new InvalidOperationException($"{ContractEventKind.Mandatory} modifier cannot be used at {args.EventKind} context!");
+            }
             if (_currentContractEventKind is ContractEventKind.Output)
             {
                 OutputEvent(args);
             }
             else if (
-                _currentContractEventKind is ContractEventKind.PrimaryKey 
+                _currentContractEventKind is ContractEventKind.PrimaryKey
                 || _currentContractEventKind is ContractEventKind.AccessSelector
                 || _currentContractEventKind is ContractEventKind.Composition
             )
@@ -1330,7 +1074,7 @@ public class Generator : Runner
     {
         if (args.EventKind is ContractEventKind.Property)
         {
-            if(args.Poco == _currentObject)
+            if (args.Poco == _currentObject)
             {
                 _currentPath.Clear();
             }
@@ -1367,9 +1111,9 @@ public class Generator : Runner
                 }
             }
             _currentPath.Add(found);
-            if(_currentContractEventKind is ContractEventKind.PrimaryKey)
+            if (_currentContractEventKind is ContractEventKind.PrimaryKey)
             {
-                if(args.Value is {} && args.Value.GetType() == _currentObject!.GetType())
+                if (args.Value is { } && args.Value.GetType() == _currentObject!.GetType())
                 {
                     throw new InvalidOperationException($"Primary key cannot be the same type, but {_currentObject!.GetType()}.{string.Join('.', _currentPath.Select(pu => pu.Name))} is!");
                 }
@@ -1394,22 +1138,45 @@ public class Generator : Runner
                 }
                 if (_currentPoco?.Properties.Where(pu => pu.Name.Equals(args.Property)).FirstOrDefault() is PropertyModel pm)
                 {
-                    if(!pm.IsCollection || !_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? ph) || ph.Kind is not PocoKind.Entity)
+                    if (!pm.IsCollection || !_pocos.TryGetValue(pm.ItemType.FullName!, out PocoHolder? ph) || ph.Kind is not PocoKind.Entity)
                     {
                         throw new InvalidOperationException($"Composition is applicable only to entities collections, but {_currentPoco.Type}.{pm.Name} is not!");
                     }
                     pm.IsComposition = true;
                 }
             }
-            found.Flags |= _currentContractEventKind switch {
+            found.Flags |= _currentContractEventKind switch
+            {
                 ContractEventKind.PrimaryKey => PropertyUseFlags.PrimaryKey,
                 ContractEventKind.AccessSelector => PropertyUseFlags.AccessSelector,
                 _ => PropertyUseFlags.Composition
             };
+            _lastPropertyUse = found;
             if (args.Value is { } && !_propertyUses.ContainsKey(args.Value))
             {
                 _propertyUses.Add(args.Value, found);
             }
+        }
+        else if (args.EventKind is ContractEventKind.Auto)
+        {
+            Type? type = _currentPoco!.Type.GetProperty(_lastPropertyUse!.Name)?.PropertyType;
+            if (
+                type is null
+                || (
+                    type != typeof(Int16)
+                    && type != typeof(Int32)
+                    && type != typeof(Int64)
+                    && type != typeof(Int128)
+                    && type != typeof(UInt16)
+                    && type != typeof(UInt32)
+                    && type != typeof(UInt64)
+                    && type != typeof(UInt128)
+                )
+            )
+            {
+                throw new InvalidOperationException($"Only integer type can have {ContractEventKind.Auto} modifier, got {_currentPoco.Type}.{_lastPropertyUse.Name}: {_lastPropertyUse.Type}!");
+            }
+            _lastPropertyUse!.Flags |= PropertyUseFlags.Auto;
         }
         else if (args.EventKind is ContractEventKind.Done)
         {

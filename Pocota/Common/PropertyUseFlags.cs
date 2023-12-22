@@ -4,9 +4,10 @@
 public enum PropertyUseFlags
 {
     None = 0,
-    Composition = 1,
-    Expected = 2,
-    Mandatory = 4,
-    AccessSelector = 8,
-    PrimaryKey = 16,
+    Auto = 1, 
+    Composition = 2,
+    Expected = 4,
+    Mandatory = 8,
+    AccessSelector = 16,
+    PrimaryKey = 32,
 }

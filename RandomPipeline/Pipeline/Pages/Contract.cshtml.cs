@@ -9,6 +9,7 @@ public class ContractModel: PageModel
     internal string ClassName { get; set; } = null!;
     internal string Namespace { get; set; } = null!;
     internal List<Node> Nodes { get; private init; } = [];
+    internal string? UpdateAuthorize { get; set; } = null;
     public void OnGet([FromServices] SourcesGenerator generator)
     {
         SourcesGenerator.RenderContractClass(this);

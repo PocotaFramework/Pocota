@@ -36,7 +36,7 @@ public class Tests
     private static TestPipelineOptions[] TestPipelineOptionsSource()
     {
         return [ new() {
-            Seed = 798463155,
+            Seed = -1,
             NodesCount = 20,
             EntitiesFraction = .7,
             Completeness = .4,
@@ -56,9 +56,11 @@ public class Tests
             FindersParamsCountBase = 2,
             FindersMandatoryFraction = .3,
             CompositionFraction = .4,
+            AutoFraction = .8,
             //CustomContractAssemblyLocation = @"W:\C#\PocotaNew3\Tests\CustomsContracts\Contract1\bin\Debug\net8.0-windows\Contract1.dll",
             ContractNamespace = "Contract1",
             ContractClassName = "Contract1",
+            ConnectionString = @"Server=.\sqlexpress;Database=master;Trusted_Connection=True;Encrypt=no;",
         }];
     }
 
@@ -110,6 +112,7 @@ public class Tests
         options.ContractProcessorDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "ContractProcessor"));
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
+        pipeline.GenerateORM(options.CustomContractAssemblyLocation);
 
         pipeline.GenerateServerImplementation();
 

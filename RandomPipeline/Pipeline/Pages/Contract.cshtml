@@ -26,7 +26,7 @@ public class @Model.ClassName: Contract
         <text>        Entity@{}@Html.Raw($"<{node.Name}>")@{}()@if(node.PrimaryKey is { } && node.PrimaryKey.Any(p => node.Properties.Any(p1 => p1.Name.Equals(p.Name))))
         {
             <text>
-            .PrimaryKey(o => new object[]{@string.Join(", ", node.PrimaryKey.Where(p => node.Properties.Any(p1 => p1.Name.Equals(p.Name))).Select(p => $"o.{p.Name}"))})</text>
+            .PrimaryKey(o => new object[]{@string.Join(", ", node.PrimaryKey.Where(p => node.Properties.Any(p1 => p1.Name.Equals(p.Name))).Select(p => p.IsAuto ? $"Auto(o.{p.Name})" : $"o.{p.Name}"))})</text>
         }@if(node.AccessSelectorPaths is { } && node.AccessSelectorPaths.Any())
         {
             <text>
@@ -52,8 +52,12 @@ public class @Model.ClassName: Contract
 {
     foreach(MethodHolder mh in node.Methods)
     {
-        <text>    //[Authorize(Roles = "@mh.Authorize")]
-    public @(
+        if(mh.Authorize is { })
+        {
+            <text>    //[Authorize(Roles = "@mh.Authorize")]
+</text>
+        }
+        <text>    public @(
             mh.IsCollection ? Html.Raw("List<") : string.Empty
             )@node.Name@(
             mh.IsCollection ? Html.Raw(">") : string.Empty
@@ -67,4 +71,13 @@ public class @Model.ClassName: Contract
 </text>
     }
 }
+@if(Model.UpdateAuthorize is { })
+{
+    <text>    //[Authorize(Roles = "@Model.UpdateAuthorize")]
+</text>
+}
+    public override void Update()
+    {
+
+    }
 }

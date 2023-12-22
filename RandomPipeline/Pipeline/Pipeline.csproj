@@ -9,13 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="170.18.*" />
     <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.*" />
     <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="2.0.*" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Pocota\Common\CommonDebug.csproj" />
     <ProjectReference Include="..\..\Pocota\FrameworkGenerator\FrameworkGeneratorDebug.csproj" />
+    <ProjectReference Include="..\..\Pocota\ORMGenerator\ORMGeneratorDebug.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 

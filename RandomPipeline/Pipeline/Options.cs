@@ -1,4 +1,6 @@
-﻿namespace Net.Leksi.Pocota.Pipeline;
+﻿using Net.Leksi.Pocota.ORMGenerator;
+
+namespace Net.Leksi.Pocota.Pipeline;
 
 public class Options
 {
@@ -31,5 +33,9 @@ public class Options
     public string ServerImplementationProject { get; set; } = null!;
     public double CompositionFraction { get; set; }
     public string? ContractProcessorDir { get; set; } = null;
+    public Dialect DatabaseDialect { get; set; } = Dialect.MSSql;
+    public string ConnectionString { get; set; } = null!;
+    public double AutoFraction { get; set; }
 
+    internal string? UpdateAuthorize { get; set; } = null;
 }

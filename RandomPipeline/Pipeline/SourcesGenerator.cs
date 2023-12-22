@@ -104,6 +104,7 @@ public class SourcesGenerator: Runner
         model.ClassName = options.ContractClassName;
         model.Namespace = options.ContractNamespace;
         model.Usings.Add(typeof(AuthorizeAttribute).Namespace!);
+        model.UpdateAuthorize = options.UpdateAuthorize;
         foreach(Node node in graph.Nodes)
         {
             if(node.Namespace is { })
