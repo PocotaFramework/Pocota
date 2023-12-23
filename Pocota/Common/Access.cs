@@ -1,8 +1,10 @@
 ﻿namespace Net.Leksi.Pocota;
-
+[Flags]
 public enum Access
 {
-    Full,
-    ReadOnly,
-    Denied,
+    None = 0,
+    Read = 1,
+    Update = 2,
+    Create = 4,
+    Delete = 8,
 }

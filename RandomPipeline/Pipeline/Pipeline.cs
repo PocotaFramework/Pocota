@@ -107,7 +107,7 @@ public class Pipeline(Random? random, Options options)
     {
         SqlConnection conn = new(_options.ConnectionString);
         Microsoft.SqlServer.Management.Smo.Server server = new Microsoft.SqlServer.Management.Smo.Server(new ServerConnection(conn));
-        server.ConnectionContext.ExecuteNonQuery(@$"drop database [{_contract.Name}]
+        server.ConnectionContext.ExecuteNonQuery(@$"drop database if exists [{_contract.Name}]
 go
 ");
         string script = File.ReadAllText(file);
@@ -193,6 +193,7 @@ go
     {
         foreach(Node node in _topolog.Where(n => n.Kind is NodeKind.Entity))
         {
+            bool hasAuto = false;
             int pkCount = Math.Min(
                     node.Properties.Count, Math.Max(
                         0,
@@ -214,7 +215,11 @@ go
                         node.Properties[i].IsNullable = false;
                         node.Properties[i].IsCollection = false;
                         node.Properties[i].IsReadOnly = false;
-                        node.Properties[i].IsAuto = node.Properties[i].Type == typeof(int) && _random!.NextDouble() < _options.AutoFraction;
+                        node.Properties[i].IsAuto = !hasAuto && node.Properties[i].Type == typeof(int) && _random!.NextDouble() < _options.AutoFraction;
+                        if (node.Properties[i].IsAuto)
+                        {
+                            hasAuto = true;
+                        }
                     }
                 }
                 else

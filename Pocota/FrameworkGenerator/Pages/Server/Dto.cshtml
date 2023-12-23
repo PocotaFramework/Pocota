@@ -159,7 +159,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>    private Access _@pm.Name@{}Access = Access.Full;
+        <text>    private Access _@pm.Name@{}Access = Access.Read | Access.Update@{}@if(pm.IsSelf){<text> | Access.Delete</text>};
 </text>
     }
 }
@@ -187,10 +187,10 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 @if(Model.PocoKind is PocoKind.Entity)
 {
     <text>    PropertyUse @nameof(IEntity)@{}.PropertyUse => s_propertyUse;
+    PocoState IEntity.PocoState => _processingInfo.PocoState;
     bool @nameof(IEntity)@{}.Changed => _changed;
 </text>
 }
-    IProcessingInfo @nameof(IPoco)@{}.ProcessingInfo => _processingInfo;
 @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsSelf))
 {
     <text>    public override @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name 

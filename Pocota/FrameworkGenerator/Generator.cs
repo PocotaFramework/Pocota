@@ -53,7 +53,7 @@ public class Generator : Runner
             _serverTargetFramework = options.ServerTargetFramework,
             _contractProcessingDir = options.ContractProcessorDir,
         };
-        generator._additionalReferences.Add(typeof(IPoco).Assembly.Location);
+        generator._additionalReferences.Add(typeof(IPrimaryKey).Assembly.Location);
         generator._additionalReferences.Add(typeof(IEntity).Assembly.Location);
         generator._additionalReferences.Add(typeof(ContractEventHandler).Assembly.Location);
         if (options.AdditionalReferences is { })
@@ -242,11 +242,6 @@ public class Generator : Runner
             Util.AddNamespaces(model.Usings, typeof(Access));
             model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
         }
-        else
-        {
-            model.BaseClasses.Add(Util.MakeTypeName(typeof(IPoco)));
-        }
-        Util.AddNamespaces(model.Usings, typeof(IPoco));
         Util.AddNamespaces(model.Usings, holder.Type);
         Util.AddNamespaces(model.Usings, typeof(IProperty));
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
@@ -338,7 +333,7 @@ public class Generator : Runner
         PropertyUseModel? result = new()
         {
             Level = level,
-            PropertyName = self is { } ? $"{self.ItemTypeName}Dto.s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", "Dto")}.s_{propertyUse.Name}Property"
+            PropertyName = self is { } ? $"{self.ItemTypeName}Dto.s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", string.Empty)}Dto.s_{propertyUse.Name}Property"
         };
         result.Flags = propertyUse.Flags;
         if (self is null)
@@ -777,6 +772,14 @@ public class Generator : Runner
 
             foreach (PocoHolder ph in _pocos.Values)
             {
+                if(ph.Kind is PocoKind.Entity)
+                {
+                    ph.PropertyUse = new()
+                    {
+                        Name = s_self,
+                        Children = [],
+                    };
+                }
                 BuildProperties(ph);
             }
 
@@ -809,11 +812,7 @@ public class Generator : Runner
                     services.AddTransient(implementationType.BaseType!, implementationType);
                     if (_pocos[serviceTypeName].Kind is PocoKind.Entity)
                     {
-                        _pocos[serviceTypeName].PropertyUse = new()
-                        {
-                            Type = implementationType,
-                            Name = s_self,
-                        };
+                        _pocos[serviceTypeName].PropertyUse!.Type = implementationType;
                     }
                 }
             }).Build();
@@ -974,6 +973,19 @@ public class Generator : Runner
                     PocoKind = pocoKind,
                     IsCollection = isCollection,
                 };
+                if (ph.Kind is PocoKind.Entity)
+                {
+                    if(!ph.PropertyUse!.Children!.Any(pu => pu.Name.Equals(pi.Name)))
+                    {
+
+                    }
+                    ph.PropertyUse.Children.Add(new PropertyUse
+                    {
+                        Name = pi.Name,
+                        Parent = ph.PropertyUse,
+                        Type = itemType,
+                    });
+                }
 
                 ph.Properties.Add(pm);
             }
