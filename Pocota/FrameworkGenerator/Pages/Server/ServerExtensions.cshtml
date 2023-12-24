@@ -18,4 +18,11 @@ public static class @Model.ClassName
 }
         return services;
     }
+
+    public static WebApplication @Model.UseMethodName@{}(this WebApplication app)
+    {
+        Middleware.UsePocotaExceptionsHandler(app);
+        app.MapControllers();
+        return app;
+    }
 }

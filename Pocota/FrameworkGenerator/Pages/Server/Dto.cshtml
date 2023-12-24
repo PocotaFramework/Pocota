@@ -187,8 +187,9 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 @if(Model.PocoKind is PocoKind.Entity)
 {
     <text>    PropertyUse @nameof(IEntity)@{}.PropertyUse => s_propertyUse;
-    PocoState IEntity.PocoState => _processingInfo.PocoState;
+    PocoState  @nameof(IEntity)@{}.PocoState => _processingInfo.PocoState;
     bool @nameof(IEntity)@{}.Changed => _changed;
+    Type @nameof(IEntity)@{}.PrimaryKeyType => typeof(IPrimaryKey<@Model.BaseClasses.First()>);
 </text>
 }
 @foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsSelf))

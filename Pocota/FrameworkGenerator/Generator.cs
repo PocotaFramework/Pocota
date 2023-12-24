@@ -407,12 +407,14 @@ public class Generator : Runner
         model.Contract = _contract;
         model.ClassName = $"{_contract.GetType().Name}Extensions";
         model.AddMethodName = $"Add{_contract.GetType().Name}";
+        model.UseMethodName = $"Use{_contract.GetType().Name}";
         model.Namespace = _contract.GetType().Namespace;
         model.Usings.Add(s_dependencyInjection);
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
         Util.AddNamespaces(model.Usings, typeof(ProcessingInfo));
         Util.AddNamespaces(model.Usings, typeof(ServerPocoContext));
+        //Util.AddNamespaces(model.Usings, typeof(WebApplication));
         foreach (PocoHolder ph in _pocos.Values)
         {
             Util.AddNamespaces(model.Usings, ph.Type);
@@ -975,11 +977,7 @@ public class Generator : Runner
                 };
                 if (ph.Kind is PocoKind.Entity)
                 {
-                    if(!ph.PropertyUse!.Children!.Any(pu => pu.Name.Equals(pi.Name)))
-                    {
-
-                    }
-                    ph.PropertyUse.Children.Add(new PropertyUse
+                    ph.PropertyUse!.Children!.Add(new PropertyUse
                     {
                         Name = pi.Name,
                         Parent = ph.PropertyUse,

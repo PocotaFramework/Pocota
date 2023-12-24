@@ -19,7 +19,7 @@ public class ServerImpl: Runner
 
     protected override void ConfigureApplication(WebApplication app)
     {
-        app.MapControllers();
+        app.UseRandomContract();
 
         app.MapGet("/", () => "Hello World!");
     }
