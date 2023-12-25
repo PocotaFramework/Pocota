@@ -35,13 +35,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomServerImpl", "Tests\R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ContractProcessor", "Tests\Generated\ContractProcessor\ContractProcessor.csproj", "{D805ABC9-EFA3-444F-A774-77BA7221207D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "Tests\TestProject1\TestProject1.csproj", "{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ORMGeneratorDebug", "Pocota\ORMGenerator\ORMGeneratorDebug.csproj", "{43CA3598-ECC4-40B5-A4DA-0929022C7952}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocotaClientDebug", "Pocota\Client\PocotaClient\PocotaClientDebug.csproj", "{B01FF1F3-DB26-47F8-9C80-4883C07235E3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "Tests\ConsoleApp1\ConsoleApp1.csproj", "{B4ED1460-D891-4348-A822-3DECF2A18EEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,12 +118,6 @@ Global
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.RAC|Any CPU.Build.0 = RAC|Any CPU
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.ActiveCfg = RAC|Any CPU
 		{D805ABC9-EFA3-444F-A774-77BA7221207D}.Release|Any CPU.Build.0 = RAC|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.RAC|Any CPU.ActiveCfg = Release|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.RAC|Any CPU.Build.0 = Release|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C37CDF8D-71AB-430A-B8A6-E46CCD3F4E2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{43CA3598-ECC4-40B5-A4DA-0929022C7952}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{43CA3598-ECC4-40B5-A4DA-0929022C7952}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43CA3598-ECC4-40B5-A4DA-0929022C7952}.RAC|Any CPU.ActiveCfg = Release|Any CPU
@@ -140,12 +130,6 @@ Global
 		{B01FF1F3-DB26-47F8-9C80-4883C07235E3}.RAC|Any CPU.Build.0 = Release|Any CPU
 		{B01FF1F3-DB26-47F8-9C80-4883C07235E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B01FF1F3-DB26-47F8-9C80-4883C07235E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.RAC|Any CPU.ActiveCfg = Release|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.RAC|Any CPU.Build.0 = Release|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4ED1460-D891-4348-A822-3DECF2A18EEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

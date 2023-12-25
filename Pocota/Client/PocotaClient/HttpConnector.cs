@@ -54,7 +54,7 @@ public class HttpConnector(IServiceProvider services)
         {
             PocoContext pocoManager = services.GetRequiredService<PocoContext>();
 
-            JsonSerializerOptions jsonSerializerOptions = pocoManager.GetJsonSerializerOptions();
+            JsonSerializerOptions jsonSerializerOptions = pocoManager.GetJsonSerializerOptions(null); //todo
 
             stream = await GetResponseStreamAsync<T>(context!);
 

@@ -4,7 +4,7 @@ namespace Net.Leksi.Pocota.Client;
 
 public class PocoContext(IServiceProvider services): IPocoContext
 {
-    public JsonSerializerOptions GetJsonSerializerOptions()
+    public JsonSerializerOptions GetJsonSerializerOptions(PropertyUse? propertyUse)
     {
         JsonSerializerOptions result = new();
         JsonSerializerContext context = new(services);
