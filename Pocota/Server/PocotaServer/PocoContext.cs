@@ -3,14 +3,14 @@ using System.Text.Json;
 
 namespace Net.Leksi.Pocota.Server;
 
-public class ServerPocoContext(IServiceProvider services) : PocoContext(services)
+public class PocoContext(IServiceProvider services) : IPocoContext
 {
-    private Dictionary<Type, EntityNode> _entitiesCache = new();
-    public override JsonSerializerOptions GetJsonSerializerOptions()
+    private readonly Dictionary<Type, EntityNode> _entitiesCache = [];
+    public JsonSerializerOptions GetJsonSerializerOptions()
     {
         throw new NotImplementedException();
     }
-    public override bool TryFindEntity<T>(IEnumerable<object> primaryKey, out T obj) where T : class
+    public bool TryFindEntity<T>(IEnumerable<object> primaryKey, out T obj) where T : class
     {
         bool result = true;
         EntityNode node = FindEntity(typeof(T), primaryKey);
@@ -36,10 +36,7 @@ public class ServerPocoContext(IServiceProvider services) : PocoContext(services
             {
                 throw new InvalidOperationException("Primary Key cannot have default part!");
             }
-            if (current.Children is null)
-            {
-                current.Children = [];
-            }
+            current.Children ??= [];
             if (!current.Children.TryGetValue(part, out EntityNode? node))
             {
                 node = new EntityNode();

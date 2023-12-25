@@ -165,12 +165,12 @@ public class Generator: Runner
                     if (pi.DeclaringType == ph.Type)
                     {
                         FieldInfo fi = ph.Poco.GetType().GetField($"s_{pi.Name}Property", BindingFlags.Static | BindingFlags.NonPublic)!;
-                        ph.Properties.Add(
-                            new PropertyHolder
-                            {
-                                EntityProperty = (IEntityProperty)fi.GetValue(null)!,
-                            }
-                        );
+                        PropertyHolder prop = new PropertyHolder
+                        {
+                            EntityProperty = (IEntityProperty)fi.GetValue(null)!,
+                        };
+                        ph.Properties.Add(prop);
+                        ph.PropertiesByName.Add(prop.EntityProperty.Name, prop);
                     }
                 }
                 _pocos.Add(
@@ -217,7 +217,10 @@ public class Generator: Runner
                     ph.ForeignKey = fk.ToArray();
                 }
             }
-            foreach (PropertyHolder pm in ph.Properties)
+            foreach (
+                PropertyHolder pm in ph.PropertyUse!.Children!.Where(v => ph.PropertiesByName.ContainsKey(v.Property.Name))
+                    .Select(v => ph.PropertiesByName[v.Property.Name])
+            )
             {
                 if (!pm.EntityProperty.IsCollection)
                 {
@@ -266,7 +269,10 @@ public class Generator: Runner
                 fkcn.ConstraintName = $"FK_{child.TableName}_{child.Constraints.Count + 1}";
                 child.Constraints.Add(fkcn);
             }
-            foreach (PropertyHolder pm in ph.Properties)
+            foreach (
+                PropertyHolder pm in ph.PropertyUse!.Children!.Where(v => ph.PropertiesByName.ContainsKey(v.Property.Name))
+                    .Select(v => ph.PropertiesByName[v.Property.Name])
+            )
             {
                 if (pm.EntityProperty.IsCollection)
                 {
@@ -393,7 +399,7 @@ public class Generator: Runner
             DFM_GetForeignKeys(baseHolder, table, path, pk, fk);
             path.RemoveAt(path.Count - 1);
         }
-        foreach (PropertyUse pu in holder.PropertyUse!.Children!.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)).OrderBy(v => v.Property.Name))
+        foreach (PropertyUse pu in holder.PropertyUse!.Children!.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)))
         {
             if (holder.Properties.Where(p => p.EntityProperty.Name.Equals(pu.Property.Name)).FirstOrDefault() is PropertyHolder pm)
             {

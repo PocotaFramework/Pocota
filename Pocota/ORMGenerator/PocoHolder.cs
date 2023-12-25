@@ -9,6 +9,7 @@ internal class PocoHolder
     internal object Poco { get; set; } = null!;
     internal PropertyUse? PropertyUse { get; set; } = null;
     internal List<PropertyHolder> Properties { get; private init; } = [];
+    internal Dictionary<string, PropertyHolder> PropertiesByName { get; private init; } = [];
     internal string? TableName { get; set; } = null;
     internal DataColumn[]? ForeignKey = null;
 }

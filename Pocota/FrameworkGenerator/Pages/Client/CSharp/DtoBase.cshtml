@@ -1,0 +1,15 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Client.CSharp
+@model ClientDtoBaseModel
+@Html.Partial("Header", Model)
+
+public abstract class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+@foreach(PropertyModel pm in Model.Properties)
+{
+    <text>    public abstract @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name { get; @if(!pm.IsReadOnly){<text>set; </text>}}
+</text>
+}
+}

@@ -36,6 +36,6 @@ public class Options
     public Dialect DatabaseDialect { get; set; } = Dialect.MSSql;
     public string ConnectionString { get; set; } = null!;
     public double AutoFraction { get; set; }
-
+    public string GeneratedCSharpClientStuffProjectDir { get; set; } = null!;
     internal string? UpdateAuthorize { get; set; } = null;
 }

@@ -17,4 +17,8 @@
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="W:\C#\E6dWebApp\Library\bin\Debug\net8.0-windows\Net.Leksi.E6dWebApp.dll"/>
+  </ItemGroup>
+
 </Project>

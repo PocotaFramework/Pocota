@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Net.Leksi.E6dWebApp;
+using Net.Leksi.Pocota.FrameworkGenerator.Client.CSharp;
 using Net.Leksi.Pocota.FrameworkGenerator.Pages.Server;
 using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.Pocota.Server;
@@ -30,8 +31,9 @@ public class Generator : Runner
     private string? _serverStuffProject = null;
     private bool _doCreateProject = false;
     private bool _replaceFilesIfExist = false;
-    private string? _serverTargetFramework = null;
+    private string? _targetFramework = null;
     private string? _contractProcessingDir = null;
+    private string? _cSharpClientStuffProject = null;
 
     private MethodHolder? _currentMethod = null;
     private PocoHolder? _currentPoco = null;
@@ -50,8 +52,9 @@ public class Generator : Runner
             _serverStuffProject = options.ServerStuffProject,
             _replaceFilesIfExist = options.ReplaceFilesIfExist,
             _doCreateProject = options.DoCreateProject,
-            _serverTargetFramework = options.ServerTargetFramework,
+            _targetFramework = options.TargetFramework,
             _contractProcessingDir = options.ContractProcessorDir,
+            _cSharpClientStuffProject = options.CSharpClientStuffProject,
         };
         generator._additionalReferences.Add(typeof(IPrimaryKey).Assembly.Location);
         generator._additionalReferences.Add(typeof(IEntity).Assembly.Location);
@@ -68,6 +71,66 @@ public class Generator : Runner
 
         return generator;
     }
+
+    public Project? GenerateCSharpClientStuff()
+    {
+        string projectDir = Path.GetFullPath(_cSharpClientStuffProject!);
+        string dtoBase = Path.Combine(_cSharpClientStuffProject!, "DtoBase");
+        if (!_replaceFilesIfExist)
+        {
+            if (
+                Directory.Exists(dtoBase)
+                || (_doCreateProject && Directory.Exists(projectDir))
+)
+            {
+                throw new InvalidOperationException($"Some files already exist! Delete them or set true {nameof(FrameworkGeneratorOptions.ReplaceFilesIfExist)} option.");
+            }
+        }
+
+        if (Directory.Exists(dtoBase))
+        {
+            Directory.Delete(dtoBase, true);
+        }
+        if (_doCreateProject && Directory.Exists(projectDir))
+        {
+            Directory.Delete(projectDir, true);
+        }
+        if (!Directory.Exists(projectDir))
+        {
+            Directory.CreateDirectory(projectDir!);
+        }
+        Directory.CreateDirectory(dtoBase);
+
+        Project? cSharpClientStuffProject = null;
+
+        if (_doCreateProject)
+        {
+            cSharpClientStuffProject = Project.Create(new ProjectOptions
+            {
+                Name = Path.GetFileName(_cSharpClientStuffProject),
+                ProjectDir = _cSharpClientStuffProject,
+                TargetFramework = _targetFramework,
+                Sdk = "Microsoft.NET.Sdk",
+            });
+            cSharpClientStuffProject.AddPackage(s_dependencyInjection, "*");
+            foreach (string ar in _additionalReferences)
+            {
+                cSharpClientStuffProject.AddReference(ar);
+            }
+        }
+        Start();
+
+        IConnector connector = GetConnector();
+        GenerateCSharpClientDtoBase(connector, dtoBase);
+
+        Stop();
+        if (_doCreateProject)
+        {
+            cSharpClientStuffProject!.Compile();
+        }
+        return cSharpClientStuffProject;
+    }
+
     public Project? GenerateServerStuff()
     {
         string dtoBase = Path.Combine(_serverStuffProject!, "DtoBase");
@@ -141,7 +204,7 @@ public class Generator : Runner
             {
                 Name = Path.GetFileName(_serverStuffProject),
                 ProjectDir = _serverStuffProject,
-                TargetFramework = _serverTargetFramework,
+                TargetFramework = _targetFramework,
                 Sdk = "Microsoft.NET.Sdk.Web",
             });
             serverStuffProject.AddPackage(s_dependencyInjection, "*");
@@ -413,7 +476,7 @@ public class Generator : Runner
         Util.AddNamespaces(model.Usings, typeof(IPocoContext));
         Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
         Util.AddNamespaces(model.Usings, typeof(ProcessingInfo));
-        Util.AddNamespaces(model.Usings, typeof(ServerPocoContext));
+        Util.AddNamespaces(model.Usings, typeof(PocoContext));
         //Util.AddNamespaces(model.Usings, typeof(WebApplication));
         foreach (PocoHolder ph in _pocos.Values)
         {
@@ -553,6 +616,29 @@ public class Generator : Runner
             model.Methods.Add(mm);
         }
     }
+
+    internal void RenderClientDtoBase(ClientDtoBaseModel model)
+    {
+        model.Contract = _contract;
+        PocoHolder handler = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
+        model.Namespace = handler.Type.Namespace;
+        model.ClassName = handler.Type.Name;
+        if (_pocos.TryGetValue(handler.Type.BaseType!.FullName!, out PocoHolder? ph))
+        {
+            Util.AddNamespaces(model.Usings, ph.Type);
+            model.BaseClasses.Add(Util.MakeTypeName(ph.Type));
+        }
+        foreach (PropertyModel pm in handler.Properties)
+        {
+            if (pm.IsCollection)
+            {
+                Util.AddNamespaces(model.Usings, typeof(List<>));
+            }
+            Util.AddNamespaces(model.Usings, pm.ItemType);
+            model.Properties.Add(pm);
+        }
+    }
+
     #endregion Rendering
     protected override void ConfigureBuilder(WebApplicationBuilder builder)
     {
@@ -703,6 +789,15 @@ public class Generator : Runner
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}PrimaryKey.cs"), contractSource.ReadToEnd());
         }
     }
+    private void GenerateCSharpClientDtoBase(IConnector connector, string targetDir)
+    {
+        foreach (PocoHolder ph in _pocos.Values)
+        {
+            TextReader contractSource = connector.Get("/Client/CSharp/DtoBase", ph);
+            File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}.cs"), contractSource.ReadToEnd());
+        }
+    }
+
     private void ProcessContract()
     {
         Start();
@@ -723,7 +818,7 @@ public class Generator : Runner
         {
             Name = "ContractProcessor",
             ProjectDir = _contractProcessingDir,
-            TargetFramework = _serverTargetFramework,
+            TargetFramework = _targetFramework,
         }))
         {
             contractProcessor.AddPackage("Microsoft.Extensions.DependencyInjection", "8.0.0");

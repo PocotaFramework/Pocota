@@ -30,6 +30,7 @@ public class Pipeline(Random? random, Options options)
     private Graph _graph = null!;
     private Project _contract = null!;
     private Project _serverStuff = null!;
+    private Project _cSharpClientStuff = null!;
 
     public void GenerateContract()
     {
@@ -60,12 +61,14 @@ public class Pipeline(Random? random, Options options)
             Contract = contract,
             AdditionalReferences = [ typeof(MockEnum).Assembly.Location ],
             ServerStuffProject = _options.GeneratedServerStuffProjectDir,
+            CSharpClientStuffProject = _options.GeneratedCSharpClientStuffProjectDir,
             ReplaceFilesIfExist = true,
             DoCreateProject = true,
-            ServerTargetFramework = _options.TargetFramework,
+            TargetFramework = _options.TargetFramework,
             ContractProcessorDir = _options.ContractProcessorDir,
         });
         _serverStuff = _generator.GenerateServerStuff()!;
+        _cSharpClientStuff = _generator.GenerateCSharpClientStuff()!;
     }
     public void GenerateORM(string? contractAssemblyLocation = null)
     {

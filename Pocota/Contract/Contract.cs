@@ -52,7 +52,6 @@ public abstract class Contract: ContractBase
     {
         ContractProcessing?.Invoke(new ContractEventArgs { Poco = obj, EventKind = ContractEventKind.Property, Property = propertyName, Value = propertyValue });
     }
-    public abstract void Update();
     internal void MarkProperties<T>(Func<T, object[]> config, ContractEventKind eventKind) where T : class
     {
         if (_serviceProvider is { })
