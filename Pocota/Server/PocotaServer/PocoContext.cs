@@ -6,7 +6,7 @@ namespace Net.Leksi.Pocota.Server;
 public class PocoContext(IServiceProvider services) : IPocoContext
 {
     private readonly Dictionary<Type, EntityNode> _entitiesCache = [];
-    public JsonSerializerOptions GetJsonSerializerOptions()
+    public JsonSerializerOptions GetJsonSerializerOptions(PropertyUse propertyUse)
     {
         throw new NotImplementedException();
     }
