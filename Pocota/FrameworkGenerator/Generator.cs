@@ -138,7 +138,7 @@ public class Generator : Runner
         Stop();
         if (_doCreateProject)
         {
-            cSharpClientStuffProject!.Compile();
+//            cSharpClientStuffProject!.Compile();
         }
         return cSharpClientStuffProject;
     }
@@ -353,7 +353,18 @@ public class Generator : Runner
                 model.Properties.Add(pm);
             }
         }
-        model.PropertyUse = BuildPropertyUse(holder.PropertyUse!, 0, self, model.Usings);
+        model.PropertyUse = BuildPropertyUse(holder!.PropertyUse!, 0, self, model.Usings);
+        foreach(PropertyUseModel pum in model.PropertyUse.Children!)
+        {
+            if (
+                pum.Flags.HasFlag(PropertyUseFlags.PrimaryKey) 
+                && holder.Type.GetProperty(pum.PropertyName) is PropertyInfo pi
+                && _pocos.ContainsKey(pi.PropertyType.FullName!)
+            )
+            {
+                model.Usings.Add($"{(string.IsNullOrEmpty(pi.PropertyType.Namespace) ? string.Empty : $"{pi.PropertyType.Namespace}.")}{s_internal}");
+            }
+        }
 
     }
     internal IEnumerable<PropertyModel> GetAllProperties(PocoHolder holder)
@@ -618,7 +629,7 @@ public class Generator : Runner
             IsSelf = true,
         };
     }
-    private PropertyUseModel? BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, HashSet<string> usings)
+    private PropertyUseModel BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, HashSet<string> usings)
     {
         PropertyUseModel? result = new()
         {

@@ -10,5 +10,5 @@ public class ClassModel: PageModel
     internal HashSet<string> Usings { get; init; } = [];
     internal Contract Contract { get; set; } = null!;
     internal List<string> BaseClasses { get; private init; } = [];
-    internal PropertyUseModel? PropertyUse;
+    internal PropertyUseModel PropertyUse { get; set; } = null!;
 }
