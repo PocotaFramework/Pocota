@@ -1,4 +1,5 @@
 using Net.Leksi.E6dWebApp;
+using System.Data;
 using System.Text;
 using System.Text.Json;
 
@@ -10,15 +11,6 @@ public class Tests
     public void Setup()
     {
     }
-    [Test]
-    public void Test2()
-    {
-        Http http = new();
-        http.Start();
-        IConnector connector = http.GetConnector();
-        Console.WriteLine(connector.GetLink("/"));
-        Thread.Sleep(TimeSpan.MaxValue);
-    }
 
     [Test]
     public async Task Test1()
@@ -28,6 +20,27 @@ public class Tests
         JsonSerializer.Serialize<IEnumerable<int>>(ms, ints);
         ms.Position = 0;
 
+    }
+
+    [Test]
+    public void Test2()
+    {
+        IEnumerable<int> ints = RandomInts();
+    }
+
+    internal IEnumerable<int> Ints1()
+    {
+        yield return 1;
+        yield return 2;
+        Ints2().for;
+        yield return 3;
+    }
+
+    internal IEnumerable<int> Ints2()
+    {
+        yield return 1;
+        yield return 2;
+        yield return 3;
     }
 
     internal IEnumerable<int> RandomInts()
@@ -42,56 +55,6 @@ public class Tests
                 Console.WriteLine();
             }
             yield return next;
-        }
-    }
-    internal class Http: Runner
-    {
-        protected override void ConfigureApplication(WebApplication app)
-        {
-            app.MapPost("/", async context => 
-            {
-                await foreach (int i in JsonSerializer.Deserialize<IAsyncEnumerable<int>>(context.Request.Body)!)
-                {
-                    Console.WriteLine($"3> {i}");
-                }
-            });
-        }
-    }
-    internal class AStream : Stream
-    {
-        public override bool CanRead => false;
-
-        public override bool CanSeek => false;
-
-        public override bool CanWrite => true;
-
-        public override long Length => throw new NotImplementedException();
-
-        public override long Position { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public override void Flush()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override int Read(byte[] buffer, int offset, int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override long Seek(long offset, SeekOrigin origin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void SetLength(long value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            Console.WriteLine($"2> {new String(Encoding.UTF8.GetChars(buffer, offset, count))}");
         }
     }
 

@@ -1,0 +1,9 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Client.CSharp
+@model ClientDtoModel
+@Html.Partial("Header", Model)
+
+public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+}

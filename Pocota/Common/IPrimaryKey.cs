@@ -2,5 +2,5 @@
 
 public interface IPrimaryKey
 { 
-    IEnumerable<object> GetPrimaryKey();
+    IEnumerable<object?> GetPrimaryKey();
 }

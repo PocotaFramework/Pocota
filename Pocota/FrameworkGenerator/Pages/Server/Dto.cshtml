@@ -242,13 +242,14 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 #endregion Properties
 @if(Model.PocoKind is PocoKind.Entity)
 {
-    <text>    IEnumerable<object> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
+    <text>    IEnumerable<object?> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
     {
-@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
-{
+    @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+    {
     if(pm.PocoKind is PocoKind.Entity)
     {
-        <text>        foreach (object pk in ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey())
+        <text>        IEnumerable<object?> seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
+        foreach (object? pk in seq)
         {
             yield return pk;
         }
@@ -259,7 +260,26 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
         <text>        yield return _@pm.Name;
 </text>
     }
-}
+    }
+    }
+    internal static IEnumerable<object?> GetEmptyPrimaryKey()
+    {
+        @foreach (PropertyUseModel pu in Model.PropertyUse.Children.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)))
+        {
+            if (Model.Properties.Where(v => $"{Model.ClassName}.s_{v.Name}Property".Equals(pu.PropertyName)).First().PocoKind is PocoKind.None)
+            {
+                <text>        yield return null;
+</text>
+            }
+            else
+            {
+                <text>        foreach(var obj in @Model.Properties.Where(v => $"{Model.ClassName}.s_{v.Name}Property".Equals(pu.PropertyName)).First().TypeName@{}Dto.GetEmptyPrimaryKey())
+        {
+            yield return null;
+        }
+</text>
+            }
+        }
     }
     void @nameof(IEntity)@{}.AccessGiven()
     {
@@ -283,14 +303,14 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
             throw new InvalidOperationException(s_notSerialization);
         }
     }
-@foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey))
-{
-    <text>    internal void Set@{}@pm.Name@{}(@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) value)
+    @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey))
+    {
+        <text>    internal void Set@{}@pm.Name@{}(@Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) value)
     {
         _@pm.Name = value;
     }
 </text>
-}
+    }
 </text>
 }
 }

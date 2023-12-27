@@ -218,7 +218,7 @@ go
                         node.Properties[i].IsNullable = false;
                         node.Properties[i].IsCollection = false;
                         node.Properties[i].IsReadOnly = false;
-                        node.Properties[i].IsAuto = !hasAuto && node.Properties[i].Type == typeof(int) && _random!.NextDouble() < _options.AutoFraction;
+                        node.Properties[i].IsAuto = !hasAuto && node.Properties[i].Type == typeof(int) && node.Properties[i].IsReadOnly && _random!.NextDouble() < _options.AutoFraction;
                         if (node.Properties[i].IsAuto)
                         {
                             hasAuto = true;

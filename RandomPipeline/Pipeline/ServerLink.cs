@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using Net.Leksi.RuntimeAssemblyCompiler;
+﻿using Net.Leksi.RuntimeAssemblyCompiler;
 
 namespace Net.Leksi.Pocota.Pipeline;
 
@@ -14,11 +13,12 @@ public class ServerLink
         object server = Activator.CreateInstance(serverImplType)!;
         Uri link = new Uri((string)serverImplType.GetMethod("GetServerLink")!.Invoke(server, [parameter, onRequest])!);
 
-        HttpClient result = new();
+        HttpClient result = new()
+        {
+            BaseAddress = new Uri($"{link.Scheme}://{link.Host}:{link.Port}"),
+        };
 
         
-        result.BaseAddress = new Uri($"{link.Scheme}://{link.Host}:{link.Port}");
-
         result.Send(new HttpRequestMessage(HttpMethod.Get, $"{link.AbsolutePath}{link.Query}"));
 
         return result;

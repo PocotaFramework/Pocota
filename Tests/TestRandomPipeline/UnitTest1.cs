@@ -119,6 +119,13 @@ public class Tests
 
         ServerLink serverLink = new();
 
-        serverLink.GetClient(options.ServerImplementationProject, null, null);
+        HttpClient httpClient = serverLink.GetClient(options.ServerImplementationProject, null, null);
+
+        HttpResponseMessage response = httpClient.Send(new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+        });
+
+        Console.WriteLine(new StreamReader(response.Content.ReadAsStream()).ReadToEnd());
     }
 }
