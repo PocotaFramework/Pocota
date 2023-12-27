@@ -241,7 +241,7 @@ go
                     }
                     else
                     {
-                        node.Properties[i].IsNullable = _random.NextDouble() < _options.NullableFraction;
+                        node.Properties[i].IsNullable = !node.Properties[i].IsCollection && _random.NextDouble() < _options.NullableFraction;
                     }
                 }
             }

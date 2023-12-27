@@ -3,9 +3,6 @@
 public interface IEntity: IPrimaryKey
 {
     Type PrimaryKeyType { get; }
-    PocoState PocoState { get; }
+    IProcessingInfo ProcessingInfo { get; }
     PropertyUse PropertyUse { get; }
-    bool Changed { get; }
-    void AcceptChanges();
-    void AccessGiven();
 }

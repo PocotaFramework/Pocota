@@ -305,9 +305,7 @@ public class Generator : Runner
     internal void RenderServerDto(DtoModel model)
     {
         model.Contract = _contract;
-        Tuple<PocoHolder, StreamWriter> param = (Tuple<PocoHolder, StreamWriter>)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
-        PocoHolder holder = param.Item1;
-        StreamWriter writer = param.Item2;
+        PocoHolder holder = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = $"{(string.IsNullOrEmpty(holder.Type.Namespace) ? string.Empty : $"{holder.Type.Namespace}.")}{s_internal}";
         model.ClassName = $"{holder.Type.Name}{s_dto}";
         model.BaseClasses.Add(holder.Type.Name);
@@ -355,20 +353,8 @@ public class Generator : Runner
                 model.Properties.Add(pm);
             }
         }
-        if (holder.Kind is PocoKind.Entity)
-        {
-            model.PropertyUse = BuildPropertyUse(holder.PropertyUse!, 0, self, model.Usings);
+        model.PropertyUse = BuildPropertyUse(holder.PropertyUse!, 0, self, model.Usings);
 
-            writer.WriteLine($"RenderServerDto: {holder.Type}");
-            foreach(var v in model.PropertyUse.Children!)
-            {
-                writer.WriteLine($"    PropertyUse: {v.PropertyName}");
-            }
-            foreach (var v in model.Properties)
-            {
-                writer.WriteLine($"    Property: {v.Name}");
-            }
-        }
     }
     internal IEnumerable<PropertyModel> GetAllProperties(PocoHolder holder)
     {
@@ -816,11 +802,9 @@ public class Generator : Runner
     }
     private void GenerateServerDto(IConnector connector, string targetDir)
     {
-        StreamWriter log = File.AppendText(Path.Combine(targetDir, "log.txt"));
-        log.AutoFlush = true;
         foreach (PocoHolder ph in _pocos.Values)
         {
-            TextReader contractSource = connector.Get("/Server/Dto", new Tuple<PocoHolder, StreamWriter>(ph, log));
+            TextReader contractSource = connector.Get("/Server/Dto", ph);
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
         }
     }
@@ -920,14 +904,11 @@ public class Generator : Runner
 
             foreach (PocoHolder ph in _pocos.Values)
             {
-                if(ph.Kind is PocoKind.Entity)
+                ph.PropertyUse = new()
                 {
-                    ph.PropertyUse = new()
-                    {
-                        Name = s_self,
-                        Children = [],
-                    };
-                }
+                    Name = s_self,
+                    Children = [],
+                };
                 BuildProperties(ph);
             }
 
@@ -958,10 +939,7 @@ public class Generator : Runner
                 {
                     Type implementationType = ass.GetType($"{_pocos[serviceTypeName].Type.FullName}_1", true)!;
                     services.AddTransient(implementationType.BaseType!, implementationType);
-                    if (_pocos[serviceTypeName].Kind is PocoKind.Entity)
-                    {
-                        _pocos[serviceTypeName].PropertyUse!.Type = implementationType;
-                    }
+                    _pocos[serviceTypeName].PropertyUse!.Type = implementationType;
                 }
             }).Build();
             Contract contract = host.Services.GetRequiredService<Contract>();
@@ -1093,7 +1071,7 @@ public class Generator : Runner
                         && pi.PropertyType.GetGenericTypeDefinition() != typeof(Nullable<>)
                     )
                     {
-                        throw new InvalidOperationException($"TODO: InvalidOperationException: {pi.PropertyType}");
+                        throw new InvalidOperationException($"Forbidden generic type: {pi.PropertyType}  {ph.Type}.{pi.Name}!");
                     }
                     itemType = pi.PropertyType.GetGenericArguments()[0];
                     if (_pocos.TryGetValue(itemType.FullName!, out PocoHolder? ph1))
@@ -1101,6 +1079,10 @@ public class Generator : Runner
                         pocoKind = ph1.Kind;
                     }
                     isCollection = pi.PropertyType.GetGenericTypeDefinition() == typeof(List<>);
+                    if (isCollection && ni.ReadState is NullabilityState.Nullable)
+                    {
+                        throw new InvalidOperationException($"Nullable list {ph.Type}.{pi.Name}!");
+                    }
                 }
                 else
                 {
@@ -1121,15 +1103,12 @@ public class Generator : Runner
                     PocoKind = pocoKind,
                     IsCollection = isCollection,
                 };
-                if (ph.Kind is PocoKind.Entity)
+                ph.PropertyUse!.Children!.Add(new PropertyUse
                 {
-                    ph.PropertyUse!.Children!.Add(new PropertyUse
-                    {
-                        Name = pi.Name,
-                        Parent = ph.PropertyUse,
-                        Type = itemType,
-                    });
-                }
+                    Name = pi.Name,
+                    Parent = ph.PropertyUse,
+                    Type = itemType,
+                });
 
                 ph.Properties.Add(pm);
             }

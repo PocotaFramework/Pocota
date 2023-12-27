@@ -135,11 +135,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     <text>    internal static readonly @pm.Name@{}PropertyClass s_@pm.Name@{}Property;
 </text>
 }
-@if(Model.PocoKind is PocoKind.Entity)
-{
-    <text>    private static readonly PropertyUse s_propertyUse;
-</text>
-}
+    private static readonly PropertyUse s_propertyUse;
     private readonly IProcessingInfo _processingInfo = services.GetRequiredService<IProcessingInfo>();
 @if (Model.PocoKind is PocoKind.Entity)
 {
@@ -172,8 +168,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     <text>        s_@pm.Name@{}Property = new();
 </text>
 }
-@if(Model.PocoKind is PocoKind.Entity)
-{
+@{
     ViewDataDictionary vdd = new(ViewData);
     vdd["indentation"] = 8;
     <text>#region PropertyUse
@@ -187,8 +182,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 @if(Model.PocoKind is PocoKind.Entity)
 {
     <text>    PropertyUse @nameof(IEntity)@{}.PropertyUse => s_propertyUse;
-    PocoState  @nameof(IEntity)@{}.PocoState => _processingInfo.PocoState;
-    bool @nameof(IEntity)@{}.Changed => _changed;
+    IProcessingInfo  @nameof(IEntity)@{}.ProcessingInfo => _processingInfo;
     Type @nameof(IEntity)@{}.PrimaryKeyType => typeof(IPrimaryKey<@Model.BaseClasses.First()>);
 </text>
 }
@@ -198,39 +192,32 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     { 
         get
         {
-            if(_@pm.Name@{}IsSet)
+            if(!_@pm.Name@{}IsSet)
             {
-                return _@pm.Name;
+                throw new InvalidOperationException(s_notSet);
             }
-            throw new InvalidOperationException(s_notSet);
+            if(_processingInfo.ProcessingStage is ProcessingStage.Serialization || _processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
+            {
+                _@pm.Name@{}Used = true;
+            }
+            return _@pm.Name;
         }
 
     @if(!pm.IsPrimaryKey)
     {
         <text>        set
         {
-            if(_processingInfo.ProcessingStage is ProcessingStage.Building || _processingInfo.ProcessingStage is ProcessingStage.Deserialization)
-            {
-                if(_@pm.Name != value){
-                    if(!_@pm.Name@{}Used)
-                    {
-                        _@pm.Name = value;
-                        _@pm.Name@{}IsSet = true;
-        @if(Model.PocoKind is PocoKind.Entity)
-        {
-            <text>                        _changed = true;
-</text>
-        }
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException(s_alreadyUsed);
-                    }
-                }
-            }
-            else
+            if(_processingInfo.ProcessingStage is ProcessingStage.Serialization || _processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
             {
                 throw new InvalidOperationException(s_notBuildingDeserialization);
+            }
+            if(_@pm.Name != value){
+                if(_@pm.Name@{}Used)
+                {
+                    throw new InvalidOperationException(s_alreadyUsed);
+                }
+                _@pm.Name = value;
+                _@pm.Name@{}IsSet = true;
             }
 
         }
@@ -244,11 +231,12 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 {
     <text>    IEnumerable<object?> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
     {
+        IEnumerable<object?> seq;
     @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
     {
     if(pm.PocoKind is PocoKind.Entity)
     {
-        <text>        IEnumerable<object?> seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
+        <text>        seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
         foreach (object? pk in seq)
         {
             yield return pk;
@@ -279,28 +267,6 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
         }
 </text>
             }
-        }
-    }
-    void @nameof(IEntity)@{}.AccessGiven()
-    {
-        if(_processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
-        {
-            _accessGiven = true;
-        }
-        else
-        {
-            throw new InvalidOperationException(s_notAccessGiving);
-        }
-    }
-    void @nameof(IEntity)@{}.AcceptChanges()
-    {
-        if(_processingInfo.ProcessingStage is ProcessingStage.Serialization)
-        {
-            _changed = false;
-        }
-        else
-        {
-            throw new InvalidOperationException(s_notSerialization);
         }
     }
     @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey))
