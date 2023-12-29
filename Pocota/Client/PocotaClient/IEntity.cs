@@ -1,7 +1,10 @@
-﻿namespace Net.Leksi.Pocota.Client;
-public interface IEntity : IPrimaryKey
+﻿using System.ComponentModel;
+
+namespace Net.Leksi.Pocota.Client;
+public interface IEntity : IPrimaryKey, INotifyPropertyChanged, INotifyPocoStateChanged
 {
-    Type PrimaryKeyType { get; }
-    PocoState PocoState { get; }
-    PropertyUse PropertyUse { get; }
+    IProcessingInfo ProcessingInfo { get; }
+    void Create();
+    void Delete();
+    void CancelChanges();
 }

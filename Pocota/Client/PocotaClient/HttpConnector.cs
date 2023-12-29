@@ -54,7 +54,7 @@ public class HttpConnector(IServiceProvider services)
 
         Stream output = new MemoryStream();
 
-        JsonSerializer.Serialize<IEnumerable<IEntity>>(output, entities, jsonSerializerOptions);
+        JsonSerializer.Serialize(output, entities, jsonSerializerOptions);
         context.HttpRequest.Content = new StreamContent(output);
 
         TieStream? stream = null;

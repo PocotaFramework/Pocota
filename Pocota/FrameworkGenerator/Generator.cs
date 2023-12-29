@@ -8,6 +8,7 @@ using Net.Leksi.Pocota.Pages.Auxiliary;
 using Net.Leksi.Pocota.Server;
 using Net.Leksi.RuntimeAssemblyCompiler;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Data;
 using System.Reflection;
 using System.Text.Json;
@@ -81,11 +82,13 @@ public class Generator : Runner
         string projectDir = Path.GetFullPath(_cSharpClientStuffProject!);
         string dtoBase = Path.Combine(_cSharpClientStuffProject!, "DtoBase");
         string dto = Path.Combine(_cSharpClientStuffProject!, "Dto");
+        string core = Path.Combine(_cSharpClientStuffProject!, "Core");
         if (!_replaceFilesIfExist)
         {
             if (
                 Directory.Exists(dtoBase)
                 || Directory.Exists(dto)
+                || Directory.Exists(core)
                 || (_doCreateProject && Directory.Exists(projectDir))
 )
             {
@@ -101,6 +104,10 @@ public class Generator : Runner
         {
             Directory.Delete(dto, true);
         }
+        if (Directory.Exists(core))
+        {
+            Directory.Delete(core, true);
+        }
         if (_doCreateProject && Directory.Exists(projectDir))
         {
             Directory.Delete(projectDir, true);
@@ -111,6 +118,7 @@ public class Generator : Runner
         }
         Directory.CreateDirectory(dtoBase);
         Directory.CreateDirectory(dto);
+        Directory.CreateDirectory(core);
 
         Project? cSharpClientStuffProject = null;
 
@@ -134,11 +142,12 @@ public class Generator : Runner
         IConnector connector = GetConnector();
         GenerateCSharpClientDtoBase(connector, dtoBase);
         GenerateCSharpClientDto(connector, dto);
+        GenerateCSharpClientCore(connector, core);
 
         Stop();
         if (_doCreateProject)
         {
-//            cSharpClientStuffProject!.Compile();
+            cSharpClientStuffProject!.Compile();
         }
         return cSharpClientStuffProject;
     }
@@ -233,7 +242,7 @@ public class Generator : Runner
         GenerateServerDto(connector, dto);
         GenerateServerPrimaryKeys(connector, primaryKeys);
         GenerateController(connector, controllers);
-        GenerateCore(connector, core);
+        GenerateServerCore(connector, core);
         GenerateBuilder(connector, builder);
 
         Stop();
@@ -314,7 +323,7 @@ public class Generator : Runner
             Util.AddNamespaces(model.Usings, typeof(IEntity));
             Util.AddNamespaces(model.Usings, typeof(IPrimaryKey));
             Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
-            Util.AddNamespaces(model.Usings, typeof(Access));
+            Util.AddNamespaces(model.Usings, typeof(AccessFlags));
             model.BaseClasses.Add(Util.MakeTypeName(typeof(IEntity)));
         }
         Util.AddNamespaces(model.Usings, holder.Type);
@@ -358,14 +367,13 @@ public class Generator : Runner
         {
             if (
                 pum.Flags.HasFlag(PropertyUseFlags.PrimaryKey) 
-                && holder.Type.GetProperty(pum.PropertyName) is PropertyInfo pi
+                && holder.Type.GetProperty(pum.SourcePropertyName!) is PropertyInfo pi
                 && _pocos.ContainsKey(pi.PropertyType.FullName!)
             )
             {
                 model.Usings.Add($"{(string.IsNullOrEmpty(pi.PropertyType.Namespace) ? string.Empty : $"{pi.PropertyType.Namespace}.")}{s_internal}");
             }
         }
-
     }
     internal IEnumerable<PropertyModel> GetAllProperties(PocoHolder holder)
     {
@@ -433,7 +441,7 @@ public class Generator : Runner
             model.Properties.Add(pm);
         }
     }
-    internal void RenderCore(ServerExtensionsModel model)
+    internal void RenderServerCore(ServerExtensionsModel model)
     {
         model.Contract = _contract;
         model.ClassName = $"{_contract.GetType().Name}Extensions";
@@ -558,7 +566,7 @@ public class Generator : Runner
         }
     }
 
-    internal void RenderClientDtoBase(ClientDtoBaseModel model)
+    internal void RenderCSharpClientDtoBase(ClientDtoBaseModel model)
     {
         model.Contract = _contract;
         PocoHolder holder = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
@@ -573,33 +581,99 @@ public class Generator : Runner
         {
             if (pm.IsCollection)
             {
-                Util.AddNamespaces(model.Usings, typeof(List<>));
+                Util.AddNamespaces(model.Usings, typeof(ObservableCollection<>));
             }
             Util.AddNamespaces(model.Usings, pm.ItemType);
             model.Properties.Add(pm);
         }
     }
-    internal void RenderClientDto(ClientDtoModel model)
+    internal void RenderCSharpClientDto(ClientDtoModel model)
     {
         model.Contract = _contract;
         PocoHolder holder = (PocoHolder)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;
         model.Namespace = $"{(string.IsNullOrEmpty(holder.Type.Namespace) ? string.Empty : $"{holder.Type.Namespace}." )}{s_internal}";
         model.ClassName = $"{holder.Type.Name}{s_dto}";
-        if (!string.IsNullOrEmpty(holder.Type.Namespace))
-        {
-            model.Usings.Add(holder.Type.Namespace);
-        }
         model.BaseClasses.Add(holder.Type.Name);
-        Util.AddNamespaces(model.Usings, typeof(Pocota.Client.IEntity));
-        model.BaseClasses.Add(Util.MakeTypeName(typeof(Pocota.Client.IEntity)));
-        foreach (PropertyModel pm in holder.Properties)
+        Util.AddNamespaces(model.Usings, holder.Type);
+        Util.AddNamespaces(model.Usings, typeof(PocoKind));
+        Util.AddNamespaces(model.Usings, typeof(IProperty));
+        if (holder.Kind is PocoKind.Entity)
         {
-            if (pm.IsCollection)
+            Util.AddNamespaces(model.Usings, typeof(Pocota.Client.IEntity));
+            Util.AddNamespaces(model.Usings, typeof(IEntityProperty));
+            Util.AddNamespaces(model.Usings, typeof(Pocota.Client.IEntity));
+            Util.AddNamespaces(model.Usings, typeof(INotifyPropertyChanged));
+            model.BaseClasses.Add(Util.MakeTypeName(typeof(Pocota.Client.IEntity)));
+        }
+        model.Usings.Add(s_dependencyInjection);
+        model.PocoKind = holder.Kind;
+        PropertyModel self = GetSelfPropertyModel(holder);
+        model.Properties.Insert(0, self);
+        Stack<PocoHolder> stack = new();
+        do
+        {
+            stack.Push(holder);
+            if (_pocos.TryGetValue(holder.Type.BaseType!.FullName!, out PocoHolder? ph))
             {
-                Util.AddNamespaces(model.Usings, typeof(ObservableCollection<>));
+                holder = ph;
             }
-            Util.AddNamespaces(model.Usings, pm.ItemType);
-            model.Properties.Add(pm);
+            else
+            {
+                holder = null!;
+            }
+        }
+        while (holder is { });
+        while (stack.Count > 0)
+        {
+            holder = stack.Pop();
+
+            foreach (PropertyModel pm in holder.Properties)
+            {
+                if (pm.IsCollection)
+                {
+                    Util.AddNamespaces(model.Usings, typeof(List<>));
+                    Util.AddNamespaces(model.Usings, typeof(ObservableCollection<>));
+                }
+                Util.AddNamespaces(model.Usings, pm.ItemType);
+                model.Properties.Add(pm);
+            }
+        }
+        model.PropertyUse = BuildPropertyUse(holder!.PropertyUse!, 0, self, model.Usings, true);
+        foreach (PropertyUseModel pum in model.PropertyUse.Children!)
+        {
+            if (
+                pum.Flags.HasFlag(PropertyUseFlags.PrimaryKey)
+                && holder.Type.GetProperty(pum.SourcePropertyName!) is PropertyInfo pi
+                && _pocos.ContainsKey(pi.PropertyType.FullName!)
+            )
+            {
+                model.Usings.Add($"{(string.IsNullOrEmpty(pi.PropertyType.Namespace) ? string.Empty : $"{pi.PropertyType.Namespace}.")}{s_internal}");
+            }
+        }
+    }
+    internal void RenderCSharpClientCore(ClientExtensionsModel model)
+    {
+        model.Contract = _contract;
+        model.ClassName = $"{_contract.GetType().Name}Extensions";
+        model.AddMethodName = $"Add{_contract.GetType().Name}";
+        model.Namespace = _contract.GetType().Namespace;
+        model.Usings.Add(s_dependencyInjection);
+        Util.AddNamespaces(model.Usings, typeof(IPocoContext));
+        Util.AddNamespaces(model.Usings, typeof(IProcessingInfo));
+        Util.AddNamespaces(model.Usings, typeof(Pocota.Client.ProcessingInfo));
+        Util.AddNamespaces(model.Usings, typeof(Pocota.Client.PocoContext));
+        foreach (PocoHolder ph in _pocos.Values)
+        {
+            Util.AddNamespaces(model.Usings, ph.Type);
+            model.Usings.Add($"{(string.IsNullOrEmpty(ph.Type.Namespace) ? string.Empty : $"{ph.Type.Namespace}.")}{s_internal}");
+
+            ServiceModel sm = new()
+            {
+                ServiceTypeName = Util.MakeTypeName(ph.Type),
+                Lifetime = ServiceLifetime.Scoped,
+            };
+            sm.ImplTypeName = $"{sm.ServiceTypeName}Dto";
+            model.Services.Add(sm);
         }
     }
     #endregion Rendering
@@ -629,14 +703,26 @@ public class Generator : Runner
             IsSelf = true,
         };
     }
-    private PropertyUseModel BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, HashSet<string> usings)
+    private PropertyUseModel BuildPropertyUse(PropertyUse propertyUse, int level, PropertyModel? self, HashSet<string> usings, bool forClient = false)
     {
         PropertyUseModel? result = new()
         {
             Level = level,
+            SourcePropertyName = self is { } ? null : propertyUse.Name,
             PropertyName = self is { } ? $"{self.ItemTypeName}Dto.s_{self.Name}Property" : $"{propertyUse.Parent!.Type!.Name.Replace("_1", string.Empty)}Dto.s_{propertyUse.Name}Property"
         };
         result.Flags = propertyUse.Flags;
+
+        if (forClient)
+        {
+            foreach(PropertyUseFlags flag in Enum.GetValues<PropertyUseFlags>())
+            {
+                if(flag != PropertyUseFlags.PrimaryKey && result.Flags.HasFlag(flag))
+                {
+                    result.Flags ^= flag;
+                }
+            }
+        }
         if (self is null)
         {
             usings.Add($"{(string.IsNullOrEmpty(propertyUse.Parent!.Type!.Namespace) ? string.Empty : $"{propertyUse.Parent!.Type!.Namespace}.")}{s_internal}");
@@ -645,11 +731,11 @@ public class Generator : Runner
         {
             usings.Add($"{(string.IsNullOrEmpty(self.ItemType.Namespace) ? string.Empty : $"{self.ItemType.Namespace}.")}{s_internal}");
         }
-        if ((propertyUse.Children?.Count ?? 0) > 0)
+        if ((!forClient || level < 1) && (propertyUse.Children?.Count ?? 0) > 0)
         {
             foreach (PropertyUse child in propertyUse.Children!)
             {
-                PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, usings);
+                PropertyUseModel? next = BuildPropertyUse(child, level + 1, null, usings, forClient);
                 if (next is { })
                 {
                     if (result.Children is null)
@@ -793,9 +879,9 @@ public class Generator : Runner
         TextReader contractSource = connector.Get("/Server/Builder");
         File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Builder.cs"), contractSource.ReadToEnd());
     }
-    private void GenerateCore(IConnector connector, string targetDir)
+    private void GenerateServerCore(IConnector connector, string targetDir)
     {
-        TextReader contractSource = connector.Get("/Server/ServerExtensions");
+        TextReader contractSource = connector.Get("/Server/Extensions");
         File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Extensions.cs"), contractSource.ReadToEnd());
     }
     private void GenerateController(IConnector connector, string targetDir)
@@ -815,8 +901,10 @@ public class Generator : Runner
     {
         foreach (PocoHolder ph in _pocos.Values)
         {
+            connector.RedirectConsoleOut = true;
             TextReader contractSource = connector.Get("/Server/Dto", ph);
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
+            connector.RedirectConsoleOut = false;
         }
     }
     private void GenerateServerPrimaryKeys(IConnector connector, string targetDir)
@@ -842,6 +930,11 @@ public class Generator : Runner
             TextReader contractSource = connector.Get("/Client/CSharp/Dto", ph);
             File.WriteAllText(Path.Combine(targetDir, $"{ph.Type.Name}Dto.cs"), contractSource.ReadToEnd());
         }
+    }
+    private void GenerateCSharpClientCore(IConnector connector, string targetDir)
+    {
+        TextReader contractSource = connector.Get("/Client/CSharp/Extensions");
+        File.WriteAllText(Path.Combine(targetDir, $"{_contract.GetType().Name}Extensions.cs"), contractSource.ReadToEnd());
     }
 
     private void ProcessContract()

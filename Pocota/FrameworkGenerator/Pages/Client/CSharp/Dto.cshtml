@@ -1,9 +1,365 @@
 ﻿@page
+@using Net.Leksi.Pocota
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.Client
 @using Net.Leksi.Pocota.FrameworkGenerator.Pages.Client.CSharp
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Client.CSharp
+@using System.Collections.ObjectModel
 @model ClientDtoModel
 @Html.Partial("Header", Model)
 
-public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+public class @Model.ClassName@{}@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
 
 {
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>    private PropertyChangedEventHandler? _propertyChanged;
+    event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
+    {
+        add
+        {
+            _propertyChanged += value;
+        }
+
+        remove
+        {
+            _propertyChanged -= value;
+        }
+    }
+    private PocoStateChangedEventHandler? _pocoStateChanged;
+    event PocoStateChangedEventHandler? INotifyPocoStateChanged.PocoStateChanged
+    {
+        add
+        {
+            _pocoStateChanged += value;
+        }
+
+        remove
+        {
+            _pocoStateChanged -= value;
+        }
+    }
+</text>
+}
+    private const string s_invalidTargetType = "The argument target must have type @Model.FullName!";
+    private const string s_notDeserialization = "Not at Deserialization stage!";
+#region PropertiesClasses
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    public class @pm.Name@{}PropertyClass: @(Model.PocoKind is PocoKind.Entity ? nameof(IEntityProperty) : nameof(IProperty))
+    {
+        public string Name => "@pm.Name";
+        public Type Type => typeof(@Html.Raw(pm.TypeName));
+        public Type ItemType => typeof(@Html.Raw(pm.ItemTypeName));
+        public bool IsCollection => @(pm.IsCollection ? "true" : "false");
+        public bool IsNullable => @(pm.IsNullable ? "true" : "false");
+        public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
+        public @nameof(PocoKind) PocoKind  => @nameof(PocoKind).@pm.PocoKind;
+        public object? GetValue(object target)
+        {
+            if(target is @Model.ClassName obj)
+            {
+    @if (pm.IsSelf) 
+    {
+        <text>                return obj;
+</text>
+    }
+    else
+    {
+        <text>                return obj.@pm.Name;
+</text>
+    }
+            }
+            throw new ArgumentException(s_invalidTargetType);
+        }
+        public void SetValue(object target, object? value)
+        {
+            if(target is @Model.ClassName@{}@if(!pm.IsSelf){<text> obj</text>})
+            {
+        @if (!pm.IsSelf) 
+        {
+            <text>@if(pm.IsCollection)
+        {
+            <text>                @Html.Raw($"{nameof(ObservableCollection<object>)}<{pm.ItemTypeName}>")</text>
+        }
+        else
+        {
+            <text>                @Html.Raw(pm.TypeName)</text>
+        }@(pm.IsNullable ? "?" : string.Empty) value1  = (@if(pm.IsCollection)
+        {
+            <text>@Html.Raw($"{nameof(ObservableCollection<object>)}<{pm.ItemTypeName}>")</text>
+        }
+        else
+        {
+            <text>@Html.Raw(pm.TypeName)</text>
+        }@(pm.IsNullable ? "?" : string.Empty))Convert.ChangeType(value, typeof(@Html.Raw(pm.TypeName)@(!pm.Type.IsClass && pm.IsNullable ? "?" : string.Empty)))@(!pm.IsNullable ? "!" : string.Empty);
+            @if(!pm.IsReadOnly)
+            {
+                <text>                obj.@pm.Name = value1;
+</text>
+            }
+            else
+            {
+                <text>                if(obj._@pm.Name != value1 && obj._processingInfo.ProcessingStage is @nameof(ProcessingStage).@nameof(ProcessingStage.Deserialization))
+                {
+                    obj._@pm.Name = value1;
+                    obj._@pm.Name@{}IsSet = true;
+                @if(Model.PocoKind is PocoKind.Entity)
+                {
+                    if(pm.IsCollection)
+                    {
+                        <text>                    obj._@pm.Name@{}Init = new List<@pm.ItemTypeName>();
+</text>
+                    }
+                    else
+                    {
+                        <text>                    obj._@pm.Name@{}Init = value1;
+</text>
+                    }
+                }
+                }
+</text>
+            }
+</text>
+        }
+            }
+            else
+            {
+                throw new ArgumentException(s_invalidTargetType);
+            }
+        }
+        public bool IsSet(object target)
+        {
+            if(target is @Model.ClassName@{}@if(!pm.IsSelf){<text> obj</text>})
+            {
+                return @if (pm.IsSelf) {<text>true</text>}else{<text>obj._@pm.Name@{}IsSet</text>};
+            }
+            throw new ArgumentException(s_invalidTargetType);
+        }
+    @if(Model.PocoKind is PocoKind.Entity)
+    {
+        <text>        public @nameof(AccessFlags) GetAccess(object target)
+        {
+            if(target is @Model.ClassName obj)
+            {
+                return obj._@pm.Name@{}Access;
+            }
+            throw new ArgumentException(s_invalidTargetType);
+        }
+        public void SetAccess(object target, AccessFlags access)
+        {
+            if (target is @Model.ClassName obj)
+            {
+                if(obj._processingInfo.ProcessingStage is not @nameof(ProcessingStage).@nameof(ProcessingStage.Deserialization))
+                {
+                    throw new InvalidOperationException(s_notDeserialization);
+                }
+                obj._@pm.Name@{}Access = access;
+            }
+            throw new ArgumentException(s_invalidTargetType);
+        }
+
+</text>
+    }
+    }
+</text>
+}
+#endregion PropertiesClasses
+    public @Model.ClassName@{}(IServiceProvider services)
+    {
+        _services = services;
+@if(@Model.PocoKind is PocoKind.Entity)
+{
+    <text>        _processingInfo = _services.GetRequiredService<IProcessingInfo>();
+        _processingInfo.SetEntity(this);
+            _processingInfo.ProcessingStageChanged += ProcessingStageChanged;
+</text>
+}
+    }
+#region Fields
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>    internal static readonly @pm.Name@{}PropertyClass s_@pm.Name@{}Property;
+</text>
+}
+    private static readonly PropertyUse s_propertyUse;
+    private readonly IServiceProvider _services;
+@if(@Model.PocoKind is PocoKind.Entity)
+{
+    <text>
+    private readonly IProcessingInfo _processingInfo;
+</text>
+}
+@foreach (PropertyModel pm in Model.Properties)
+{
+    if (!pm.IsSelf)
+    {
+        <text>
+    private @if(pm.IsCollection)
+        {
+            <text>@Html.Raw($"{nameof(ObservableCollection<object>)}<{pm.ItemTypeName}>")</text>
+        }
+        else
+        {
+            <text>@Html.Raw(pm.TypeName)</text>
+        }@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@(!pm.IsNullable && pm.Type.IsClass ? " = null!" : string.Empty);
+    private bool _@pm.Name@{}IsSet = false;    
+</text>
+    }
+    
+    @if(Model.PocoKind is PocoKind.Entity)
+    {
+        <text>    private @nameof(AccessFlags) _@pm.Name@{}Access = @nameof(AccessFlags).@nameof(AccessFlags.Read) | @nameof(AccessFlags).@nameof(AccessFlags.Update)@{}@if(pm.IsSelf){<text> | @nameof(AccessFlags).@nameof(AccessFlags.Delete)</text>};
+    private @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) _@pm.Name@{}Init;
+</text>
+    }
+}
+#endregion Fields
+    static @Model.ClassName@{}()
+    {
+@foreach (PropertyModel pm in Model.Properties)
+{
+    <text>        s_@pm.Name@{}Property = new();
+</text>
+}
+@{
+    ViewDataDictionary vdd = new(ViewData);
+    vdd["indentation"] = 8;
+    vdd["NoRecursion"] = true;
+
+    <text>#region PropertyUse
+        s_propertyUse = @Html.Partial("PropertyUse", Model.PropertyUse, vdd);
+#endregion PropertyUse
+</text>
+}
+    }
+#region Properties
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    <text>    IProcessingInfo  @nameof(IEntity)@{}.ProcessingInfo => _processingInfo;
+</text>
+}
+@foreach(PropertyModel pm in Model.Properties.Where(p => !p.IsSelf))
+{
+    <text>    public override @if(pm.IsCollection)
+        {
+            <text>@Html.Raw($"{nameof(ObservableCollection<object>)}<{pm.ItemTypeName}>")</text>
+        }
+        else
+        {
+            <text>@Html.Raw(pm.TypeName)</text>
+        }@(pm.IsNullable ? "?" : string.Empty) @pm.Name 
+    { 
+        get
+        {
+            if(!_@pm.Name@{}IsSet@{}@if(Model.PocoKind is PocoKind.Entity){<text> || !_@pm.Name@{}Access.HasFlag(@nameof(AccessFlags).@nameof(AccessFlags.Read))</text>})
+            {
+                return default;
+            }
+            return _@pm.Name;
+        }
+
+    @if(!pm.IsReadOnly)
+    {
+        <text>        set
+        {
+            if(_@pm.Name != value@{}@if(Model.PocoKind is PocoKind.Entity){<text> 
+                && (
+                    _processingInfo.PocoState is PocoState.Created 
+                    || (_@pm.Name@{}Access.HasFlag(AccessFlags.Update) && _@pm.Name@{}IsSet && _processingInfo.PocoState is not PocoState.Deleted)
+                    || _processingInfo.ProcessingStage is ProcessingStage.Deserialization
+                )
+            </text>}){
+                _@pm.Name = value;
+                _@pm.Name@{}IsSet = true;
+        @if(Model.PocoKind is PocoKind.Entity)
+        {
+            <text>                if(_processingInfo.ProcessingStage is ProcessingStage.Deserialization) 
+                {
+            @if(pm.IsCollection)
+            {
+                <text>                    _@pm.Name@{}Init = new List<@pm.ItemTypeName>();
+</text>
+            }
+            else
+            {
+                <text>                    _@pm.Name@{}Init = value;
+</text>
+            }
+                }
+</text>
+        }
+            }
+        }
+</text>
+    }
+    }
+</text>
+}
+#endregion Properties
+
+@if(Model.PocoKind is PocoKind.Entity)
+{
+    bool seqDeclared = false;
+    <text>    IEnumerable<object?> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
+    {
+    @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
+    {
+    if(pm.PocoKind is PocoKind.Entity)
+    {
+        <text>        @if(!seqDeclared){<text>IEnumerable<object?> </text>}seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
+        foreach (object? pk in seq)
+        {
+            yield return pk;
+        }
+</text>
+        seqDeclared = true;
+    }
+    else
+    {
+        <text>        yield return _@pm.Name;
+</text>
+    }
+    }
+    }
+    internal static IEnumerable<object?> GetEmptyPrimaryKey()
+    {
+        @foreach (PropertyUseModel pu in Model.PropertyUse.Children.Where(v => v.Flags.HasFlag(PropertyUseFlags.PrimaryKey)))
+        {
+            if (Model.Properties.Where(v => $"{Model.ClassName}.s_{v.Name}Property".Equals(pu.PropertyName)).First().PocoKind is PocoKind.None)
+            {
+                <text>        yield return null;
+</text>
+            }
+            else
+            {
+                <text>        foreach(var obj in @Model.Properties.Where(v => $"{Model.ClassName}.s_{v.Name}Property".Equals(pu.PropertyName)).First().TypeName@{}Dto.GetEmptyPrimaryKey())
+        {
+            yield return null;
+        }
+</text>
+            }
+        }
+    }
+    void @nameof(IEntity)@{}.Create()
+    {
+        _pocoStateChanged?.Invoke(this, new PocoStateChangedEventArgs { State = PocoState.Created, });
+    }
+
+    void @nameof(IEntity)@{}.Delete()
+    {
+        _pocoStateChanged?.Invoke(this, new PocoStateChangedEventArgs { State = PocoState.Deleted, });
+    }
+
+    void @nameof(IEntity)@{}.CancelChanges()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ProcessingStageChanged(object? sender, ProcessingStageChangedEventArgs args)
+    {
+
+    }
+</text>
+}
 }

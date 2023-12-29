@@ -5,6 +5,8 @@
     int indentation_len = (int)ViewData["indentation"]!;
     string indention = string.Format($"{{0,{indentation_len}}}", "");
     bool showFlags = (bool?)@ViewData["ShowFlags"] ?? true;
+    bool noRecursion = (bool?)@ViewData["NoRecursion"] ?? false;
+    int level = (int?)ViewData["level"] ?? 0;
 }
 new() 
 @indention@{}{
@@ -14,10 +16,16 @@ new()
     <text>@indention@{}    Flags = @string.Join(" | ", Enum.GetValues<PropertyUseFlags>().Where(v => v != PropertyUseFlags.None && Model.Flags.HasFlag(v)).Select(v => $"{nameof(PropertyUseFlags)}.{v}")),
 </text>
 }
-@if((Model.Children?.Count ?? 0) > 0)
+@if((!noRecursion || level < 1) && (Model.Children?.Count ?? 0) > 0)
 {
     ViewDataDictionary vdd = new(ViewData);
     vdd["indentation"] = indentation_len + 8;
+    vdd["level"] = level + 1;
+    if (noRecursion)
+    {
+        vdd["NoRecursion"] = true;
+    }
+
 
     <text>@indention@{}    Children = new([
     @foreach(PropertyUseModel pum in Model.Children!)

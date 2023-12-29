@@ -1,6 +1,6 @@
 ﻿namespace Net.Leksi.Pocota;
 [Flags]
-public enum Access
+public enum AccessFlags
 {
     None = 0,
     Read = 1,

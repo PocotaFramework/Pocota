@@ -6,7 +6,7 @@ public class ClientDtoBaseModel : PocoModel
 {
     public void OnGet([FromServices] Generator generator)
     {
-        generator.RenderClientDtoBase(this);
+        generator.RenderCSharpClientDtoBase(this);
     }
 }
 

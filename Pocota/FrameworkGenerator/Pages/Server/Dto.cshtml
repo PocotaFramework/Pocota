@@ -16,8 +16,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     private const string s_notSerialization = "Not at Serialization stage!";
 @if (Model.PocoKind is PocoKind.Entity)
 {
-    <text>    private const string s_accessAlreadyDone = "The access is already done!";
-    private const string s_primaryKey = "The Primary Key cannot be set indirectly!";
+    <text>    private const string s_primaryKey = "The Primary Key cannot be set indirectly!";
     private const string s_notAccessGiving = "Not at AccessGiving stage!";
 </text>
 }
@@ -33,7 +32,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
         public bool IsNullable => @(pm.IsNullable ? "true" : "false");
         public bool IsReadOnly => @(pm.IsReadOnly ? "true" : "false");
         public @nameof(PocoKind) PocoKind  => @nameof(PocoKind).@pm.PocoKind;
-        public object? GetValue(object target, bool setUsed)
+        public object? GetValue(object target)
         {
             if(target is @Model.ClassName obj)
             {
@@ -44,11 +43,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     }
     else
     {
-        <text>                if(setUsed)
-                {
-                    obj._@pm.Name@{}Used = true;
-                }
-                return obj.@pm.Name;
+        <text>                return obj.@pm.Name;
 </text>
     }
             }
@@ -88,7 +83,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
         }
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>        public Access GetAccess(object target)
+        <text>        public @nameof(AccessFlags) GetAccess(object target)
         {
             if(target is @Model.ClassName obj)
             {
@@ -96,19 +91,19 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
             }
             throw new ArgumentException(s_invalidTargetType);
         }
-        public void SetAccess(object target, Access access)
+        public void SetAccess(object target, @nameof(AccessFlags) access)
         {
             if(target is @Model.ClassName obj)
             {
                 if(obj._processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
                 {
-                    if(!obj._accessGiven)
+                    if(!obj._@pm.Name@{}Used)
                     {
                         obj._@pm.Name@{}Access = access;
                     }
                     else
                     {
-                        throw new InvalidOperationException(s_accessAlreadyDone);
+                        throw new InvalidOperationException(s_alreadyUsed);
                     }
                 }
                 else
@@ -137,12 +132,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 }
     private static readonly PropertyUse s_propertyUse;
     private readonly IProcessingInfo _processingInfo = services.GetRequiredService<IProcessingInfo>();
-@if (Model.PocoKind is PocoKind.Entity)
-{
-    <text>    private bool _accessGiven = false;
-    private bool _changed = false;
-</text>
-}
+    private bool _SelfUsed = false;
 @foreach (PropertyModel pm in Model.Properties)
 {
     if (!pm.IsSelf)
@@ -155,7 +145,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
     
     @if(Model.PocoKind is PocoKind.Entity)
     {
-        <text>    private Access _@pm.Name@{}Access = Access.Read | Access.Update@{}@if(pm.IsSelf){<text> | Access.Delete</text>};
+        <text>    private @nameof(AccessFlags) _@pm.Name@{}Access = @nameof(AccessFlags).@nameof(AccessFlags.Read) | @nameof(AccessFlags).@nameof(AccessFlags.Update)@{}@if(pm.IsSelf){<text> | @nameof(AccessFlags).@nameof(AccessFlags.Delete)</text>};
 </text>
     }
 }
@@ -199,6 +189,7 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
             if(_processingInfo.ProcessingStage is ProcessingStage.Serialization || _processingInfo.ProcessingStage is ProcessingStage.AccessGiving)
             {
                 _@pm.Name@{}Used = true;
+                _SelfUsed = true;
             }
             return _@pm.Name;
         }
@@ -229,19 +220,20 @@ public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses
 #endregion Properties
 @if(Model.PocoKind is PocoKind.Entity)
 {
+    bool seqDeclared = false;
     <text>    IEnumerable<object?> @nameof(IPrimaryKey)@{}.GetPrimaryKey()
     {
-        IEnumerable<object?> seq;
     @foreach (PropertyModel pm in Model.Properties.Where(v => v.IsPrimaryKey).OrderBy(v => v.Name))
     {
     if(pm.PocoKind is PocoKind.Entity)
     {
-        <text>        seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
+        <text>        @if(!seqDeclared){<text>IEnumerable<object?> </text>}seq = _@pm.Name is {} ? ((@nameof(IPrimaryKey))_@pm.Name).GetPrimaryKey() : @pm.TypeName@{}Dto.GetEmptyPrimaryKey();
         foreach (object? pk in seq)
         {
             yield return pk;
         }
 </text>
+        seqDeclared = true;
     }
     else
     {

@@ -1,0 +1,21 @@
+﻿@page
+@using Net.Leksi.Pocota.FrameworkGenerator
+@using Net.Leksi.Pocota.FrameworkGenerator.Pages.Client.CSharp
+@model ClientExtensionsModel
+@Html.Partial("Header", Model)
+
+public static class @Model.ClassName
+{
+    public static IServiceCollection @Model.AddMethodName@{}(this IServiceCollection services)
+    {
+        services.AddScoped<IPocoContext, PocoContext>();
+        services.AddScoped<IProcessingInfo, ProcessingInfo>();
+@foreach(ServiceModel sm in Model.Services)
+{
+    <text>        services.Add@{}@sm.Lifetime@{}@Html.Raw($"<{sm.ServiceTypeName}, {sm.ImplTypeName}>")@{}();
+</text>
+}
+        return services;
+    }
+
+}

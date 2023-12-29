@@ -1,6 +1,7 @@
 ﻿@page
 @using Net.Leksi.Pocota.FrameworkGenerator
 @using Net.Leksi.Pocota.FrameworkGenerator.Client.CSharp
+@using System.Collections.ObjectModel
 @model ClientDtoBaseModel
 @Html.Partial("Header", Model)
 
@@ -9,7 +10,14 @@ public abstract class @Model.ClassName@if(Model.BaseClasses.Any()){<text>: @Html
 {
 @foreach(PropertyModel pm in Model.Properties)
 {
-    <text>    public abstract @Html.Raw(pm.TypeName)@(pm.IsNullable ? "?" : string.Empty) @pm.Name { get; @if(!pm.IsReadOnly){<text>set; </text>}}
+    <text>    public abstract @if(pm.IsCollection)
+        {
+            <text>@Html.Raw($"{nameof(ObservableCollection<object>)}<{pm.ItemTypeName}>")</text>
+        }
+        else
+        {
+            <text>@Html.Raw(pm.TypeName)</text>
+        }@(pm.IsNullable ? "?" : string.Empty) @pm.Name { get; @if(!pm.IsReadOnly){<text>set; </text>}}
 </text>
 }
 }

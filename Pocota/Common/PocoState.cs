@@ -2,6 +2,7 @@
 
 public enum PocoState
 {
+    None,
     Unchanged,
     Modified,
     Deleted,
