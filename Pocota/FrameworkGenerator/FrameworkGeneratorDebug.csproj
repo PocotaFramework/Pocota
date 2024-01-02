@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.*" />
+    <PackageReference Include="Net.Leksi.E6dWebApp" Version="1.1.16" />
     <PackageReference Include="Net.Leksi.RuntimeAssemblyCompiler" Version="2.0.*" />
   </ItemGroup>
 
