@@ -98,11 +98,24 @@ public class Pipeline(Random? random, Options options)
         _generator.GenerateServerImplementation(
             _serverStuff.CompiledAssembly!.GetType(
                 $"{(
-                !string.IsNullOrEmpty(_options.ContractNamespace) 
-                    ?$"{_options.ContractNamespace}." 
+                !string.IsNullOrEmpty(_options.ContractNamespace)
+                    ? $"{_options.ContractNamespace}."
                     : string.Empty
                 )}{_options.ContractClassName}Builder"
-            ), 
+            ),
+            _options
+        );
+    }
+    public void GenerateClient1Implementation()
+    {
+        _generator.GenerateClient1Implementation(
+            _cSharpClientStuff.CompiledAssembly!.GetType(
+                $"{(
+                !string.IsNullOrEmpty(_options.ContractNamespace)
+                    ? $"{_options.ContractNamespace}."
+                    : string.Empty
+                )}{_options.ContractClassName}Builder"
+            ),
             _options
         );
     }

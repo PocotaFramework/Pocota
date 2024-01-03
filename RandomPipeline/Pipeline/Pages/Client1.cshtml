@@ -1,0 +1,22 @@
+﻿@page
+@using Net.Leksi.Pocota.Pipeline.Pages
+@model Client1Model
+@foreach (string usng in Model.Usings.OrderBy(v => v))
+{
+    <text>using @usng;
+</text>
+}
+@if(Model.Namespace is { })
+{
+    <text>
+namespace @Model.Namespace;
+</text>
+}
+public class @Model.ClassName@{}(IServiceProvider services)@if(Model.BaseClasses.Any()){<text>: @Html.Raw(string.Join(", ", Model.BaseClasses))</text>}
+
+{
+    public void Run()
+    {
+
+    }
+}

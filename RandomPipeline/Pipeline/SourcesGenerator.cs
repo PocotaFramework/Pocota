@@ -163,6 +163,36 @@ public class SourcesGenerator: Runner
  
     }
 
+    internal void GenerateClient1Implementation(Type? type, Options options)
+    {
+        string generated = Path.Combine(Path.GetDirectoryName(options.ClientImplementation1Project)!, "Generated");
+        if (!Directory.Exists(generated))
+        {
+            Directory.CreateDirectory(generated);
+        }
+
+        Start();
+
+        IConnector connector = GetConnector();
+
+        TextReader textReader = connector.Get("/Client1");
+        File.WriteAllText(
+            Path.Combine(generated, "Client.cs"),
+            textReader.ReadToEnd()
+        );
+
+        Stop();
+    }
+
+    internal static void RenderClient1(Client1Model model)
+    {
+        model.ClassName = "Client";
+        model.BaseClasses.Add(Util.MakeTypeName(typeof(IRunnable)));
+        Util.AddNamespaces(model.Usings, typeof(IServiceProvider));
+        Util.AddNamespaces(model.Usings, typeof(IRunnable));
+    }
+
+
     internal static void RenderBuilder(BuilderModel model)
     {
         Type baseType = (Type)model.HttpContext.RequestServices.GetRequiredService<RequestParameter>().Parameter!;

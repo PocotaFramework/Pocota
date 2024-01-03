@@ -37,5 +37,6 @@ public class Options
     public string ConnectionString { get; set; } = null!;
     public double AutoFraction { get; set; }
     public string GeneratedCSharpClientStuffProjectDir { get; set; } = null!;
+    public string ClientImplementation1Project { get; set; } = null!;
     internal string? UpdateAuthorize { get; set; } = null;
 }

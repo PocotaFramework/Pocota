@@ -110,12 +110,14 @@ public class Tests
         options.GeneratedServerStuffProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "Framework", "ServerStuff"));
         options.GeneratedCSharpClientStuffProjectDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "Framework", "CSharpClientStuff"));
         options.ServerImplementationProject = Path.GetFullPath(Path.Combine(projectDir, "..", "RandomServerImpl", "RandomServerImpl.csproj"));
+        options.ClientImplementation1Project = Path.GetFullPath(Path.Combine(projectDir, "..", "RandomClientImpl1", "RandomlientImpl1.csproj"));
         options.ContractProcessorDir = Path.GetFullPath(Path.Combine(projectDir, "..", "Generated", "ContractProcessor"));
 
         pipeline.GenerateFramework(options.CustomContractAssemblyLocation);
         pipeline.GenerateORM(options.CustomContractAssemblyLocation);
 
         pipeline.GenerateServerImplementation();
+        pipeline.GenerateClient1Implementation();
 
         ServerLink serverLink = new();
 
